@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>User Home - SwapTicket</title>
+</head>
+<body>
+
+    <h2>Welcome to SwapTicket!</h2>
+
+    <p th:text="${message}">Welcome, User!</p>
+
+    <h3>What would you like to do?</h3>
+
+    <form th:action="@{/user/sell}" method="get">
+        <button type="submit">Sell Ticket</button>
+    </form>
+
+    <br>
+
+    <form th:action="@{/tickets/buy}" method="get">
+        <button type="submit">Buy Ticket</button>
+    </form>
+
+    <br><br>
+
+    <form th:action="@{/logout}" method="post">
+        <button type="submit">Logout</button>
+    </form>
+
+</body>
+</html>

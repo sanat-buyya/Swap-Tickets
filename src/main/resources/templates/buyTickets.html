@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Buy Tickets</title>
+</head>
+<body>
+    <h2>Buy Available Tickets</h2>
+
+    <table border="1">
+        <thead>
+        <tr>
+            <th>Train Number</th>
+            <th>Train Name</th>
+            <th>From</th>
+            <th>To</th>
+            <th>Date</th>
+            <th>Class</th>
+            <th>PNR</th>
+            <th>Tickets</th>
+            <th>Age</th>
+            <th>Price</th>
+            <th>Status</th>
+            <th>Passenger Names</th>
+            <th>Ticket Image</th>
+            <th>Action</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="ticket : ${tickets}">
+            <td th:text="${ticket.trainNumber}">Train Number</td>
+            <td th:text="${ticket.trainName}">Train Name</td>
+            <td th:text="${ticket.fromStation}">From</td>
+            <td th:text="${ticket.toStation}">To</td>
+            <td th:text="${ticket.dateOfJourney}">Date</td>
+            <td th:text="${ticket.classType}">Class</td>
+            <td th:text="${ticket.pnrNumber}">PNR</td>
+            <td th:text="${ticket.numberOfTickets}">Tickets</td>
+            <td th:text="${ticket.age}">Age</td>
+            <td th:text="${ticket.price}">Price</td>
+            <td th:text="${ticket.sold} ? 'Sold' : 'Available'">Status</td>
+
+            <!-- Show Passenger Names only if Sold -->
+            <td th:text="${ticket.sold} ? ${ticket.passengerNames} : '-'"></td>
+
+            <!-- Show Ticket Image if Sold -->
+            <td>
+                <span th:if="${ticket.sold}">
+                    <a th:href="@{'/uploads/' + ${ticket.ticketImagePath}}" target="_blank">View</a>
+                </span>
+                <span th:unless="${ticket.sold}">-</span>
+            </td>
+
+            <!-- Buy button -->
+            <td>
+                <form th:if="${!ticket.sold}" th:action="@{'/tickets/buy/' + ${ticket.id}}" method="post">
+                    <button type="submit">Buy</button>
+                </form>
+                <span th:if="${ticket.sold}">Already Sold</span>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
+    <br/>
+    <a href="/userHome"><button>Back</button></a>
+</body>
+</html>

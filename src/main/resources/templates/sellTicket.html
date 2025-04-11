@@ -1,0 +1,58 @@
+<!DOCTYPE html> 
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Sell Ticket</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}" />
+</head>
+<body>
+    <h2>Sell Your Ticket</h2>
+
+    <form th:action="@{/tickets/sell}" method="post" enctype="multipart/form-data">
+
+        <label>Train Number:</label>
+        <input type="text" name="trainNumber" required /><br/>
+
+        <label>Train Name:</label>
+        <input type="text" name="trainName" required /><br/>
+
+        <label>From Station:</label>
+        <input type="text" name="fromStation" required /><br/>
+
+        <label>To Station:</label>
+        <input type="text" name="toStation" required /><br/>
+
+        <label>Date of Journey:</label>
+        <input type="date" name="dateOfJourney" required /><br/>
+
+		<label>Class Type:</label>
+			<select name="classType" required>
+    		<option value="">-- Select Class --</option>
+   			<option value="SL">Sleeper (SL)</option>
+    		<option value="3A">AC 3 Tier (3A)</option>
+    		<option value="2A">AC 2 Tier (2A)</option>
+    		<option value="1A">AC First Class (1A)</option>
+		</select><br/>
+		
+        <label>Number of Tickets:</label>
+        <input type="number" name="numberOfTickets" min="1" required /><br/>
+        
+        <label>Passenger Age:</label>
+        <input type="number" name="age" min="0" required /><br/>
+        
+        <label>PNR Number:</label>
+        <input type="text" name="pnrNumber" required /><br/>
+
+        <label>Passenger Names (comma separated):</label>
+        <input type="text" name="passengerNames" placeholder="e.g. Ramesh, Suresh" required /><br/>
+
+        <label>Ticket Price (₹):</label>
+        <input type="number" step="0.01" name="price" required /><br/>
+
+        <label>Upload Ticket Image (Screenshot or PDF):</label>
+        <input type="file" name="ticketImage" accept="image/*,application/pdf" required /><br/><br/>
+
+        <button type="submit">Submit Ticket</button>
+    </form>
+
+</body>
+</html>

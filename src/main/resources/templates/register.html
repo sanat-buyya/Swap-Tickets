@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Create Your Account</title>
+</head>
+<body>
+    <h2 style="text-align:center;">Create Your Account</h2>
+
+    <form th:action="@{/register}" th:object="${user}" method="post" style="width:400px;margin:auto;">
+        <div>
+            <label>Full Name</label>
+            <input type="text" th:field="*{name}" placeholder="Enter your full name"/>
+            <span th:if="${#fields.hasErrors('name')}" th:errors="*{name}" style="color:red"></span>
+        </div>
+
+        <div>
+            <label>Email Address</label>
+            <input type="email" th:field="*{email}" placeholder="Enter your email address"/>
+            <span th:if="${#fields.hasErrors('email')}" th:errors="*{email}" style="color:red"></span>
+        </div>
+
+        <div>
+            <label>Mobile Number</label>
+            <input type="text" th:field="*{mobile}" placeholder="Enter your mobile number"/>
+            <span th:if="${#fields.hasErrors('mobile')}" th:errors="*{mobile}" style="color:red"></span>
+        </div>
+
+        <div>
+            <label>Date of Birth</label>
+            <input type="date" th:field="*{dob}" placeholder="dd-mm-yyyy"/>
+            <span th:if="${#fields.hasErrors('dob')}" th:errors="*{dob}" style="color:red"></span>
+        </div>
+
+        <div>
+            <label>Password</label>
+            <input type="password" th:field="*{password}" placeholder="Create a strong password"/>
+            <span th:if="${#fields.hasErrors('password')}" th:errors="*{password}" style="color:red"></span>
+        </div>
+
+        <div>
+            <label>Confirm Password</label>
+            <input type="password" th:field="*{confirmPassword}" placeholder="Confirm your password"/>
+            <span th:if="${#fields.hasErrors('confirmPassword')}" th:errors="*{confirmPassword}" style="color:red"></span>
+        </div>
+
+        <div style="text-align:center; margin-top:15px;">
+            <button type="submit">Register</button>
+        </div>
+    </form>
+
+    <div style="text-align:center; margin-top:10px;">
+        Already have an account? <a th:href="@{/login}">Login</a>
+    </div>
+    <script>
+    const password = document.querySelector('input[name="password"]');
+    const confirmPassword = document.querySelector('input[name="confirmPassword"]');
+
+    confirmPassword.addEventListener('input', () => {
+        if (confirmPassword.value !== password.value) {
+            confirmPassword.setCustomValidity("Passwords do not match");
+        } else {
+            confirmPassword.setCustomValidity('');
+        }
+    });
+</script>
+    
+</body>
+</html>
