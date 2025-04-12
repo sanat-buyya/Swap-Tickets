@@ -25,7 +25,7 @@ public class Ticket {
     private double price;
     private String ticketImagePath;
 
-    @Column(nullable = false, columnDefinition = "BOOLEAN DEFAULT FALSE") // ✅ Fix for DB default value issue
+    @Column(nullable = false, columnDefinition = "BOOLEAN DEFAULT FALSE") 
     private boolean sold = false;
 
     private Integer numberOfTickets;
@@ -36,8 +36,7 @@ public class Ticket {
     private User user;
     
     private String sellerEmail;
-
-
+    
     // --- Getters and Setters ---
     
     public Long getId() {

@@ -35,6 +35,7 @@ public class UserController {
                             HttpSession session) {
 
         User user = userService.findByEmail(username);
+        
         if (user == null) {
             model.addAttribute("loginError", "Enter correct email");
             return "login";
@@ -43,11 +44,11 @@ public class UserController {
             return "login";
         } else {
             session.setAttribute("loggedInUserEmail", user.getEmail());
+            session.setAttribute("loggedInUserName", user.getName());
             model.addAttribute("message", "Welcome back, " + user.getName() + "!");
-            return "userHome";
+            return "redirect:/user/home";
         }
     }
-
 
     @GetMapping("/register")
     public String registerPage(Model model) {
@@ -77,21 +78,21 @@ public class UserController {
 
     @GetMapping("/user/sell")
     public String sellTicket() {
-        return "sellTicket"; // page to submit ticket
+        return "sellTicket"; 
     }
 
     @GetMapping("/user/home")
-    public String userHomePage() {
-        return "userHome"; // dashboard after login
+    public String userHomePage(Model model, HttpSession session) {
+        String name = (String) session.getAttribute("loggedInUserName");
+        model.addAttribute("userName", name); 
+        return "userHome";
     }
 
-    // ✅ Forgot password GET
     @GetMapping("/forgot-password")
     public String forgotPasswordPage() {
         return "forgotPassword";
     }
 
-    // ✅ Forgot password POST
     @PostMapping("/forgot-password")
     public String resetPassword(@RequestParam("email") String email,
                                 @RequestParam("newPassword") String newPassword,
@@ -115,7 +116,7 @@ public class UserController {
     }
     @GetMapping("/logout")
     public String logout(HttpSession session) {
-        session.invalidate(); // ✅ Clear session
+        session.invalidate(); // Clear session
         return "redirect:/login";
     }
 

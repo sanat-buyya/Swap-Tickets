@@ -52,7 +52,7 @@ public class TicketController {
             @RequestParam("price") Double price,
             @RequestParam("ticketImage") MultipartFile ticketImage,
             RedirectAttributes redirectAttributes,
-            Principal principal // ✅ To capture seller email
+            Principal principal // To capture seller email
     ) {
 
         Ticket ticket = new Ticket();
@@ -112,10 +112,6 @@ public class TicketController {
             Ticket ticket = optionalTicket.get();
             ticket.setSold(true);
 
-            // Optionally track buyer
-            // User currentUser = userRepository.findByUsername(principal.getName());
-            // ticket.setUser(currentUser);
-
             ticketRepository.save(ticket);
             return "redirect:/tickets/my/" + id;
         }
@@ -141,9 +137,11 @@ public class TicketController {
         }
 
         List<Ticket> myTickets = ticketRepository.findBySellerEmail(email);
+        System.out.println("Number of tickets: " + myTickets.size()); 
         model.addAttribute("tickets", myTickets);
         return "myTickets";
     }
+
 
 
 }

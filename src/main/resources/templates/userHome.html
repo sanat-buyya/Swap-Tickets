@@ -5,7 +5,8 @@
 </head>
 <body>
 
-    <h2>Welcome to SwapTicket!</h2>
+    <h2 th:text="'Hi ' + ${userName} + ', Welcome to SwapTicket!'">Welcome to SwapTicket!</h2>
+
 
     <p th:text="${message}">Welcome, User!</p>
 	
