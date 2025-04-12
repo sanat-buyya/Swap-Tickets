@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>My Ticket</title>
+</head>
+<body>
+    <h2>Your Purchased Ticket</h2>
+    <div th:object="${ticket}">
+        <p><strong>Train:</strong> <span th:text="*{trainNumber}"></span> - <span th:text="*{trainName}"></span></p>
+        <p><strong>From:</strong> <span th:text="*{fromStation}"></span> → <strong>To:</strong> <span th:text="*{toStation}"></span></p>
+        <p><strong>Date:</strong> <span th:text="*{dateOfJourney}"></span></p>
+        <p><strong>Class:</strong> <span th:text="*{classType}"></span></p>
+        <p><strong>PNR:</strong> <span th:text="*{pnrNumber}"></span></p>
+        <p><strong>Passenger Names:</strong> <span th:text="*{passengerNames}"></span></p>
+        <p><strong>Price Paid:</strong> ₹<span th:text="*{price + 20}"></span></p>
+        <p><strong>Ticket Image:</strong> 
+            <a th:href="@{'/uploads/' + *{ticketImagePath}}" target="_blank">View Ticket</a>
+        </p>
+    </div>
+
+    <br/>
+    <a href="/user/home"><button>Back to Home</button></a>
+</body>
+</html>

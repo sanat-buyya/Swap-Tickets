@@ -1,12 +1,10 @@
 package com.example.SwapTicket.controller;
 
-import com.example.SwapTicket.model.Ticket;
 import com.example.SwapTicket.model.User;
 import com.example.SwapTicket.service.UserService;
-import jakarta.validation.Valid;
 
-import java.util.List;
-import java.util.Optional;
+import jakarta.servlet.http.HttpSession;
+import jakarta.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -19,8 +17,7 @@ public class UserController {
 
     @Autowired
     private UserService userService;
-    
-    
+
     @GetMapping("/")
     public String defaultPage() {
         return "redirect:/login";
@@ -34,7 +31,9 @@ public class UserController {
     @PostMapping("/login")
     public String loginUser(@RequestParam String username,
                             @RequestParam String password,
-                            Model model) {
+                            Model model,
+                            HttpSession session) {
+
         User user = userService.findByEmail(username);
         if (user == null) {
             model.addAttribute("loginError", "Enter correct email");
@@ -43,10 +42,12 @@ public class UserController {
             model.addAttribute("loginError", "Enter correct password");
             return "login";
         } else {
+            session.setAttribute("loggedInUserEmail", user.getEmail());
             model.addAttribute("message", "Welcome back, " + user.getName() + "!");
             return "userHome";
         }
     }
+
 
     @GetMapping("/register")
     public String registerPage(Model model) {
@@ -76,12 +77,47 @@ public class UserController {
 
     @GetMapping("/user/sell")
     public String sellTicket() {
-        return "sellTicket"; // create sellTicket.html
+        return "sellTicket"; // page to submit ticket
     }
-    
-    
- 
-    
-    
-    
+
+    @GetMapping("/user/home")
+    public String userHomePage() {
+        return "userHome"; // dashboard after login
+    }
+
+    // ✅ Forgot password GET
+    @GetMapping("/forgot-password")
+    public String forgotPasswordPage() {
+        return "forgotPassword";
+    }
+
+    // ✅ Forgot password POST
+    @PostMapping("/forgot-password")
+    public String resetPassword(@RequestParam("email") String email,
+                                @RequestParam("newPassword") String newPassword,
+                                @RequestParam("confirmPassword") String confirmPassword,
+                                Model model) {
+        if (!newPassword.equals(confirmPassword)) {
+            model.addAttribute("error", "Passwords do not match.");
+            return "forgotPassword";
+        }
+
+        User user = userService.findByEmail(email);
+        if (user == null) {
+            model.addAttribute("error", "No user found with this email.");
+            return "forgotPassword";
+        }
+
+        user.setPassword(newPassword);
+        userService.saveUser(user);
+        model.addAttribute("success", "Password reset successfully!");
+        return "login";
+    }
+    @GetMapping("/logout")
+    public String logout(HttpSession session) {
+        session.invalidate(); // ✅ Clear session
+        return "redirect:/login";
+    }
+
+
 }

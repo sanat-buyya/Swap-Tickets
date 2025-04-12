@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>My Tickets</title>
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+
+        th, td {
+            padding: 8px;
+            border: 1px solid #ccc;
+            text-align: center;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+
+        h2 {
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <h2>My Listed Tickets</h2>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Train Name</th>
+                <th>From</th>
+                <th>To</th>
+                <th>Date</th>
+                <th>PNR</th>
+                <th>Price</th>
+                <th>Status</th>
+                <th>Ticket Image</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="ticket : ${tickets}">
+                <td th:text="${ticket.trainName}">Express</td>
+                <td th:text="${ticket.fromStation}">From</td>
+                <td th:text="${ticket.toStation}">To</td>
+                <td th:text="${ticket.dateOfJourney}">2025-04-15</td>
+                <td th:text="${ticket.pnrNumber}">1234567890</td>
+                <td th:text="${ticket.price}">500</td>
+                <td th:text="${ticket.sold ? 'Sold' : 'Available'}"></td>
+                <td>
+                    <a th:if="${ticket.ticketImagePath != null}" th:href="@{'/uploads/' + ${ticket.ticketImagePath}}" target="_blank">View</a>
+                    <span th:if="${ticket.ticketImagePath == null}">No Image</span>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <br/>
+    <div style="text-align: center;">
+        <a href="/user/home"><button>Back</button></a>
+    </div>
+</body>
+</html>

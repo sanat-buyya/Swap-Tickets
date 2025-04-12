@@ -24,21 +24,21 @@
         <label>Date of Journey:</label>
         <input type="date" name="dateOfJourney" required /><br/>
 
-		<label>Class Type:</label>
-			<select name="classType" required>
-    		<option value="">-- Select Class --</option>
-   			<option value="SL">Sleeper (SL)</option>
-    		<option value="3A">AC 3 Tier (3A)</option>
-    		<option value="2A">AC 2 Tier (2A)</option>
-    		<option value="1A">AC First Class (1A)</option>
-		</select><br/>
-		
+        <label>Class Type:</label>
+        <select name="classType" required>
+            <option value="">-- Select Class --</option>
+            <option value="SL">Sleeper (SL)</option>
+            <option value="3A">AC 3 Tier (3A)</option>
+            <option value="2A">AC 2 Tier (2A)</option>
+            <option value="1A">AC First Class (1A)</option>
+        </select><br/>
+
         <label>Number of Tickets:</label>
         <input type="number" name="numberOfTickets" min="1" required /><br/>
-        
+
         <label>Passenger Age:</label>
         <input type="number" name="age" min="0" required /><br/>
-        
+
         <label>PNR Number:</label>
         <input type="text" name="pnrNumber" required /><br/>
 
@@ -54,5 +54,7 @@
         <button type="submit">Submit Ticket</button>
     </form>
 
+    <br/>
+    <a th:href="@{/user/home}"><button>Back</button></a>
 </body>
 </html>

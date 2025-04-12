@@ -1,6 +1,5 @@
 package com.example.SwapTicket.service;
 
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
@@ -11,24 +10,34 @@ import java.nio.file.*;
 @Service
 public class FileStorageService {
 
-    @Value("${file.upload-dir}")
-    private String uploadDir;
+    private final Path fileStorageLocation = Paths.get("uploads").toAbsolutePath().normalize();
+
+    public FileStorageService() {
+        try {
+            Files.createDirectories(this.fileStorageLocation); // creates uploads folder if not exist
+        } catch (Exception ex) {
+            throw new RuntimeException("Could not create upload directory.", ex);
+        }
+    }
 
     public String storeFile(MultipartFile file) {
+        String fileName = StringUtils.cleanPath(file.getOriginalFilename());
+
         try {
-            // Normalize file name
-            String fileName = StringUtils.cleanPath(file.getOriginalFilename());
+            // Check for invalid file name
+            if (fileName.contains("..")) {
+                throw new RuntimeException("Invalid file name: " + fileName);
+            }
 
-            // Resolve path
-            Path uploadPath = Paths.get(uploadDir).toAbsolutePath().normalize();
-            Files.createDirectories(uploadPath); // create folder if not exists
+            Path targetLocation = this.fileStorageLocation.resolve(fileName);
 
-            Path targetLocation = uploadPath.resolve(fileName);
+            // Replace if file exists already
             Files.copy(file.getInputStream(), targetLocation, StandardCopyOption.REPLACE_EXISTING);
 
             return fileName;
+
         } catch (IOException ex) {
-            throw new RuntimeException("Could not store file. Please try again!", ex);
+            throw new RuntimeException("Could not store file " + fileName + ". Please try again!", ex);
         }
     }
 }

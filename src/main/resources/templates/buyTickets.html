@@ -2,66 +2,97 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <title>Buy Tickets</title>
+    <style>
+        .active button {
+            background-color: lightgreen;
+            font-weight: bold;
+        }
+        button {
+            padding: 5px 10px;
+            margin: 3px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+        th, td {
+            padding: 8px;
+            border: 1px solid #ccc;
+            text-align: center;
+        }
+    </style>
 </head>
 <body>
     <h2>Buy Available Tickets</h2>
 
-    <table border="1">
+    <!-- Filter Buttons -->
+    <div>
+        <a th:href="@{/tickets/buy(filter='available')}" th:classappend="${filter} == 'available' ? 'active' : ''"><button>Available</button></a>
+        <a th:href="@{/tickets/buy(filter='sold')}" th:classappend="${filter} == 'sold' ? 'active' : ''"><button>Sold</button></a>
+    </div>
+
+    <table>
         <thead>
-        <tr>
-            <th>Train Number</th>
-            <th>Train Name</th>
-            <th>From</th>
-            <th>To</th>
-            <th>Date</th>
-            <th>Class</th>
-            <th>PNR</th>
-            <th>Tickets</th>
-            <th>Age</th>
-            <th>Price</th>
-            <th>Status</th>
-            <th>Passenger Names</th>
-            <th>Ticket Image</th>
-            <th>Action</th>
-        </tr>
+            <tr>
+                <th>Train Number</th>
+                <th>Train Name</th>
+                <th>From</th>
+                <th>To</th>
+                <th>Date</th>
+                <th>Class</th>
+                <th>PNR</th>
+                <th>Tickets</th>
+                <th>Age</th>
+                <th>Price</th>
+                <th>Status</th>
+                <th>Passenger Names</th>
+                <th>Ticket Image</th>
+                <th>Action</th>
+            </tr>
         </thead>
         <tbody>
         <tr th:each="ticket : ${tickets}">
-            <td th:text="${ticket.trainNumber}">Train Number</td>
-            <td th:text="${ticket.trainName}">Train Name</td>
+            <td th:text="${ticket.trainNumber}">12345</td>
+            <td th:text="${ticket.trainName}">Express</td>
             <td th:text="${ticket.fromStation}">From</td>
             <td th:text="${ticket.toStation}">To</td>
-            <td th:text="${ticket.dateOfJourney}">Date</td>
-            <td th:text="${ticket.classType}">Class</td>
-            <td th:text="${ticket.pnrNumber}">PNR</td>
-            <td th:text="${ticket.numberOfTickets}">Tickets</td>
-            <td th:text="${ticket.age}">Age</td>
-            <td th:text="${ticket.price}">Price</td>
+            <td th:text="${ticket.dateOfJourney}">2025-04-15</td>
+            <td th:text="${ticket.classType}">SL</td>
+            <td th:text="${ticket.pnrNumber}">9876543210</td>
+            <td th:text="${ticket.numberOfTickets}">2</td>
+            <td th:text="${ticket.age}">30</td>
+            <td th:text="${ticket.price+20}">500.0</td>
             <td th:text="${ticket.sold} ? 'Sold' : 'Available'">Status</td>
 
-            <!-- Show Passenger Names only if Sold -->
-            <td th:text="${ticket.sold} ? ${ticket.passengerNames} : '-'"></td>
+      <!-- Passenger Names -->
+			<td>
+    			<span th:if="${ticket.sold}"><b style="color: red">SOLD</b></span>
+    			<span th:unless="${ticket.sold}"><b style="color: green">Buy to view details</b></span>
+			</td>
 
-            <!-- Show Ticket Image if Sold -->
-            <td>
-                <span th:if="${ticket.sold}">
-                    <a th:href="@{'/uploads/' + ${ticket.ticketImagePath}}" target="_blank">View</a>
-                </span>
-                <span th:unless="${ticket.sold}">-</span>
-            </td>
+		<!-- Ticket Image -->
+			<td>
+				<span th:if="${ticket.sold}"><b style="color: red">SOLD</b></span>
+   			 	<span th:unless="${ticket.sold}"><b style="color: green">Buy to view details</b></span>
+			</td>
+
 
             <!-- Buy button -->
             <td>
-                <form th:if="${!ticket.sold}" th:action="@{'/tickets/buy/' + ${ticket.id}}" method="post">
-                    <button type="submit">Buy</button>
-                </form>
-                <span th:if="${ticket.sold}">Already Sold</span>
+                <form th:if="${!ticket.sold}" th:action="@{'/tickets/buy/' + ${ticket.id}}" method="post"
+                onsubmit="return confirm('Are you sure you want to buy this ticket?');">
+    			<button type="submit">Buy</button>
+				</form>
+			<span th:if="${ticket.sold}">Already Sold</span>
+
             </td>
         </tr>
         </tbody>
     </table>
 
     <br/>
-    <a href="/userHome"><button>Back</button></a>
+    <a th:href="@{/user/home}"><button>Back</button></a>
+
 </body>
 </html>

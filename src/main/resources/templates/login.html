@@ -3,15 +3,78 @@
 <head>
     <meta charset="UTF-8">
     <title>Login - SwapTicket</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f3f3f3;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .login-container {
+            background: #fff;
+            padding: 25px 40px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        h2 {
+            margin-bottom: 20px;
+        }
+
+        input[type="text"], input[type="password"] {
+            width: 100%;
+            padding: 10px;
+            margin: 8px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        button {
+            background-color: #28a745;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            margin-top: 10px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #218838;
+        }
+
+        .error {
+            color: red;
+            margin-top: 10px;
+        }
+
+        .register-link {
+            margin-top: 15px;
+            display: block;
+        }
+    </style>
 </head>
 <body>
+<div class="login-container">
+<div th:if="${param.logout}">
+    <p style="color: green;">You have been logged out successfully.</p>
+</div>
+
     <h2>Login</h2>
     <form th:action="@{/login}" method="post">
         <input type="text" name="username" placeholder="Email" required><br>
         <input type="password" name="password" placeholder="Password" required><br>
-        <div th:if="${loginError}" style="color:red;" th:text="${loginError}"></div><br>
+        <div th:if="${loginError}" class="error" th:text="${loginError}"></div>
         <button type="submit">Login</button>
     </form>
-    <p>Don't have an account? <a th:href="@{/register}">Register here</a></p>
+    
+    <p><a th:href="@{/forgot-password}">Forgot Password</a></p>
+    
+    <p class="register-link">Don't have an account? <a th:href="@{/register}">Register here</a></p>
+</div>
 </body>
 </html>

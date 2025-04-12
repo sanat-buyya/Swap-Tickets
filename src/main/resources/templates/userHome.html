@@ -8,8 +8,19 @@
     <h2>Welcome to SwapTicket!</h2>
 
     <p th:text="${message}">Welcome, User!</p>
+	
+	<div th:if="${successMessage}" style="color: green; font-weight: bold;">
+    <p th:text="${successMessage}"></p>
+	</div>
 
+	<div th:if="${error}" style="color: red; font-weight: bold;">
+    <p th:text="${error}"></p>
+	</div>
+	
     <h3>What would you like to do?</h3>
+    
+    <a th:href="@{/tickets/my-tickets}"><button>My Tickets</button></a>
+
 
     <form th:action="@{/user/sell}" method="get">
         <button type="submit">Sell Ticket</button>
@@ -23,9 +34,8 @@
 
     <br><br>
 
-    <form th:action="@{/logout}" method="post">
-        <button type="submit">Logout</button>
-    </form>
+    <a th:href="@{/logout}"><button>Logout</button></a>
+    
 
 </body>
 </html>
