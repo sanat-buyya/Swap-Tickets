@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>My Purchased Tickets</title>
+<style>
+    body {
+        font-family: 'Poppins', sans-serif;
+        background: linear-gradient(to right, #ece9e6, #ffffff);
+        margin: 0;
+        padding: 40px;
+    }
+
+    h2 {
+        text-align: center;
+        color: #2c3e50;
+        font-size: 32px;
+        margin-bottom: 30px;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        background-color: #ffffff;
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+    }
+
+    th, td {
+        padding: 16px 20px;
+        text-align: center;
+    }
+
+    thead {
+        background-color: #4a90e2;
+        color: white;
+        font-weight: 600;
+        text-transform: uppercase;
+    }
+
+    tbody tr:nth-child(even) {
+        background-color: #f2f6fc;
+    }
+
+    tbody tr:hover {
+        background-color: #e1ebf7;
+        transition: background-color 0.3s ease;
+    }
+
+    td {
+        color: #2c3e50;
+        font-size: 14px;
+    }
+
+    a {
+        color: #4a90e2;
+        font-weight: 600;
+        text-decoration: none;
+    }
+
+    a:hover {
+        text-decoration: underline;
+    }
+
+    button {
+        display: inline-block;
+        margin: 30px auto;
+        padding: 12px 24px;
+        font-size: 16px;
+        background: #4a90e2;
+        color: white;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        transition: background 0.3s ease;
+    }
+
+    button:hover {
+        background: #357ab8;
+    }
+
+    .no-data {
+        text-align: center;
+        padding: 40px;
+        color: #888;
+        font-size: 18px;
+    }
+</style>
+
+    
+</head>
+<body>
+    <h2>My Purchased Tickets</h2>
+	
+    <table>
+        <thead>
+            <tr>
+                <th>Train</th>
+                <th>From</th>
+                <th>To</th>
+                <th>Date</th>
+                <th>Seat</th>
+                <th>Gender</th>
+                <th>PNR</th>
+                <th>Price</th>
+                <th>Passenger Names</th>
+                <th>Ticket Image</th>
+                <th>Original Document</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="ticket : ${tickets}">
+                <td th:text="${ticket.trainNumber} + ' - ' + ${ticket.trainName}">Train</td>
+                <td th:text="${ticket.fromStation}">From</td>
+                <td th:text="${ticket.toStation}">To</td>
+                <td th:text="${ticket.dateOfJourney}">Date</td>
+                <td th:text="${ticket.seatNumber}">Seat</td>
+                <td th:text="${ticket.gender}">Gender</td>
+                <td th:text="${ticket.pnrNumber}">PNR</td>
+                <td>₹<span th:text="${ticket.price}">Price</span></td>
+                <td th:text="${ticket.passengerNames}">Names</td>
+                <td>
+                    <a th:if="${ticket.ticketImagePath != null}" th:href="@{'/uploads/' + ${ticket.ticketImagePath}}" target="_blank">View</a>
+                    <span th:if="${ticket.ticketImagePath == null}">No Image</span>
+                </td>
+                <td>
+    				<a th:if="${ticket.originalDocumentPath != null}" th:href="@{'/uploads/' + ${ticket.originalDocumentPath}}" target="_blank">View Doc</a>
+    				<span th:if="${ticket.originalDocumentPath == null}">No Doc</span>
+				</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <br>
+    <a href="/user/home"><button>Back</button></a>
+</body>
+</html>

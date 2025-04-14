@@ -1,6 +1,8 @@
 package com.example.SwapTicket.model;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.FutureOrPresent;
+
 import java.time.LocalDate;
 import java.util.List;
 
@@ -15,6 +17,7 @@ public class Ticket {
     private String trainName;
     private String fromStation;
     private String toStation;
+    @FutureOrPresent(message = "Date of journey must be today or in the future")
     private LocalDate dateOfJourney;
     private String classType;
     private String pnrNumber;
@@ -37,13 +40,23 @@ public class Ticket {
     
     private String sellerEmail;
     
+    private String gender;
     // --- Getters and Setters ---
+    
     
     public Long getId() {
         return id;
     }
 
-    public String getSellerEmail() {
+    public String getGender() {
+		return gender;
+	}
+
+	public void setGender(String gender) {
+		this.gender = gender;
+	}
+
+	public String getSellerEmail() {
 		return sellerEmail;
 	}
 
@@ -177,6 +190,39 @@ public class Ticket {
     public void setBuyer(User buyer) {
         this.buyer = buyer;
     }
+    
+    private String originalDocumentPath;
+
+    public String getOriginalDocumentPath() {
+        return originalDocumentPath;
+    }
+
+    public void setOriginalDocumentPath(String originalDocumentPath) {
+        this.originalDocumentPath = originalDocumentPath;
+    }
+    
+    private String seatNumber;
+
+ // Getter and Setter
+    public String getSeatNumber() {
+     return seatNumber;
+    }
+
+    public void setSeatNumber(String seatNumber) {
+     this.seatNumber = seatNumber;
+    }
+    private String buyerEmail;
+
+ // + getter and setter
+    public String getBuyerEmail() {
+     return buyerEmail;
+    }
+
+    public void setBuyerEmail(String buyerEmail) {
+     this.buyerEmail = buyerEmail;
+    }
+
+
 
 	@Override
 	public String toString() {

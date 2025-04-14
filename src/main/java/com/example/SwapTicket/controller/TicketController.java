@@ -45,12 +45,16 @@ public class TicketController {
             @RequestParam("toStation") String toStation,
             @RequestParam("dateOfJourney") String dateOfJourney,
             @RequestParam("classType") String classType,
+            @RequestParam("seatNumber") String seatNumber,
             @RequestParam("numberOfTickets") Integer numberOfTickets,
             @RequestParam("age") Integer age,
             @RequestParam("pnrNumber") String pnrNumber,
-            @RequestParam("passengerNames") String passengerNames,
             @RequestParam("price") Double price,
+            @RequestParam("passengerNames") String passengerNames,
+            @RequestParam("gender") String gender,
             @RequestParam("ticketImage") MultipartFile ticketImage,
+            @RequestParam("originalDocument") MultipartFile originalDocument,
+
             RedirectAttributes redirectAttributes,
             Principal principal // To capture seller email
     ) {
@@ -62,11 +66,13 @@ public class TicketController {
         ticket.setToStation(toStation);
         ticket.setDateOfJourney(LocalDate.parse(dateOfJourney));
         ticket.setClassType(classType);
+        ticket.setSeatNumber(seatNumber);
         ticket.setNumberOfTickets(numberOfTickets);
         ticket.setAge(age);
         ticket.setPnrNumber(pnrNumber);
         ticket.setPrice(price);
         ticket.setPassengerNames(Arrays.asList(passengerNames.split("\\s*,\\s*")));
+        ticket.setGender(gender);
         ticket.setSold(false);
 
         String sellerEmail = (String) session.getAttribute("loggedInUserEmail");
@@ -83,40 +89,88 @@ public class TicketController {
                 return "redirect:/tickets/sell";
             }
         }
+        
+        if (!originalDocument.isEmpty()) {
+            try {
+                String docFileName = fileStorageService.storeFile(originalDocument);
+                ticket.setOriginalDocumentPath(docFileName);
+            } catch (Exception e) {
+                e.printStackTrace();
+                redirectAttributes.addFlashAttribute("error", "Failed to upload original document.");
+                return "redirect:/tickets/sell";
+            }
+        }
+
 
         ticketRepository.save(ticket);
-        redirectAttributes.addFlashAttribute("successMessage", "🎉 Ticket submitted successfully!");
+        redirectAttributes.addFlashAttribute("successMessage", "🎉 Ticket submitted successfully! & Go to Buy Ticket to check your ticket is sold or not");
         return "redirect:/user/home";
     }
 
     @GetMapping("/buy")
-    public String showFilteredTickets(@RequestParam(required = false) String filter, Model model) {
-        List<Ticket> tickets;
+    public String showFilteredTickets(
+            @RequestParam(required = false) String filter,
+            @RequestParam(required = false) String fromStation,
+            @RequestParam(required = false) String toStation,
+            @RequestParam(required = false) String pnr,
+            Model model) {
 
-        if ("sold".equalsIgnoreCase(filter)) {
-            tickets = ticketRepository.findBySold(true);
+        List<Ticket> tickets;
+        boolean sold = "sold".equalsIgnoreCase(filter);
+
+        if (pnr != null && !pnr.isEmpty()) {
+            tickets = ticketRepository.findByPnrNumberAndSold(pnr, sold);
+        } else if (fromStation != null && toStation != null && !fromStation.isEmpty() && !toStation.isEmpty()) {
+            tickets = ticketRepository.findByFromStationIgnoreCaseAndToStationIgnoreCaseAndSold(fromStation, toStation, sold);
         } else {
-            tickets = ticketRepository.findBySold(false);
-            filter = "available";
+            tickets = ticketRepository.findBySold(sold);
         }
 
         model.addAttribute("tickets", tickets);
-        model.addAttribute("filter", filter);
+        model.addAttribute("filter", sold ? "sold" : "available");
+        model.addAttribute("fromStation", fromStation);
+        model.addAttribute("toStation", toStation);
+        model.addAttribute("pnr", pnr);
         return "buyTickets";
     }
+    
+    
 
     @PostMapping("/buy/{id}")
-    public String buyTicket(@PathVariable Long id, Principal principal) {
+    public String buyTicket(@PathVariable Long id, HttpSession session, RedirectAttributes redirectAttributes) {
         Optional<Ticket> optionalTicket = ticketRepository.findById(id);
+
         if (optionalTicket.isPresent()) {
             Ticket ticket = optionalTicket.get();
-            ticket.setSold(true);
 
-            ticketRepository.save(ticket);
-            return "redirect:/tickets/my/" + id;
+            if (!ticket.isSold()) {
+                String currentUserEmail = (String) session.getAttribute("loggedInUserEmail");
+
+                // Prevent seller from buying their own ticket
+                if (ticket.getSellerEmail().equals(currentUserEmail)) {
+                    redirectAttributes.addFlashAttribute("error", "You cannot buy your own ticket.");
+                    return "redirect:/tickets/buy";
+                }
+
+                // Set buyer email and mark as sold
+                ticket.setSold(true);
+                ticket.setBuyerEmail(currentUserEmail);
+                ticketRepository.save(ticket);
+
+                redirectAttributes.addFlashAttribute("successMessage", "Ticket purchased successfully!");
+
+                return "redirect:/tickets/my/" + id;  // ✅ Redirects to individual ticket details page
+            } else {
+                redirectAttributes.addFlashAttribute("error", "Ticket already sold.");
+            }
+        } else {
+            redirectAttributes.addFlashAttribute("error", "Ticket not found.");
         }
+
         return "redirect:/tickets/buy";
     }
+
+
 
     @GetMapping("/my/{id}")
     public String viewMyTicket(@PathVariable Long id, Model model) {
@@ -141,6 +195,22 @@ public class TicketController {
         model.addAttribute("tickets", myTickets);
         return "myTickets";
     }
+    @GetMapping("/my-purchases")
+    public String viewMyPurchasedTickets(HttpSession session, Model model) {
+        String currentUserEmail = (String) session.getAttribute("loggedInUserEmail");
+
+        List<Ticket> purchasedTickets = ticketRepository.findByBuyerEmail(currentUserEmail);
+        System.out.println("Purchased Tickets for " + currentUserEmail + ": " + purchasedTickets.size());
+
+        model.addAttribute("tickets", purchasedTickets);
+        return "myPurchasedTickets";
+    }
+
+    
+
+
+
+
 
 
 

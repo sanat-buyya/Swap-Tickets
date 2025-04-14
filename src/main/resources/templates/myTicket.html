@@ -2,8 +2,74 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <title>My Ticket</title>
+<style>
+    body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        background-color: #f4f4f9;
+        margin: 0;
+        padding: 40px 20px;
+        display: flex;
+        justify-content: center;
+        align-items: flex-start;
+        min-height: 100vh;
+    }
+
+    .ticket-container {
+        background: #ffffff;
+        padding: 30px 40px;
+        border-radius: 10px;
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+        width: 100%;
+        max-width: 600px;
+    }
+
+    h2 {
+        text-align: center;
+        color: #333;
+        margin-bottom: 25px;
+    }
+
+    p {
+        font-size: 16px;
+        line-height: 1.6;
+        margin: 10px 0;
+    }
+
+    strong {
+        color: #444;
+    }
+
+    a {
+        color: #007bff;
+        text-decoration: none;
+        font-weight: bold;
+    }
+
+    a:hover {
+        text-decoration: underline;
+    }
+
+    button {
+        background-color: #28a745;
+        color: #fff;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        font-size: 16px;
+        display: block;
+        margin: 25px auto 0;
+    }
+
+    button:hover {
+        background-color: #218838;
+    }
+</style>
+
+    
 </head>
 <body>
+<div class="ticket-container">
     <h2>Your Purchased Ticket</h2>
     <div th:object="${ticket}">
         <p><strong>Train:</strong> <span th:text="*{trainNumber}"></span> - <span th:text="*{trainName}"></span></p>
@@ -18,7 +84,8 @@
         </p>
     </div>
 
-    <br/>
     <a href="/user/home"><button>Back to Home</button></a>
+</div>
 </body>
+
 </html>

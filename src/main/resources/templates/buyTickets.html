@@ -3,40 +3,127 @@
 <head>
     <title>Buy Tickets</title>
     <style>
-        .active button {
-            background-color: lightgreen;
-            font-weight: bold;
-        }
-        button {
-            padding: 5px 10px;
-            margin: 3px;
-        }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 15px;
-        }
-        th, td {
-            padding: 8px;
-            border: 1px solid #ccc;
-            text-align: center;
-        }
-    </style>
+    body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        margin: 30px;
+        background-color: #f5f5f5;
+        color: #333;
+    }
+
+    h2 {
+        text-align: center;
+        color: #2c3e50;
+        margin-bottom: 20px;
+    }
+
+    form {
+        text-align: center;
+        margin-bottom: 20px;
+    }
+
+    form label {
+        margin: 0 10px;
+        font-weight: bold;
+    }
+
+    input[type="text"], select {
+        padding: 6px;
+        margin: 0 5px;
+        border-radius: 4px;
+        border: 1px solid #ccc;
+        min-width: 100px;
+    }
+
+    button {
+        padding: 7px 14px;
+        background-color: #3498db;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        transition: background-color 0.2s;
+    }
+
+    button:hover {
+        background-color: #2980b9;
+    }
+
+    .active button {
+        background-color: lightgreen;
+        font-weight: bold;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        background-color: white;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    th {
+        background-color: #2c3e50;
+        color: white;
+        padding: 10px;
+    }
+
+    td {
+        padding: 8px;
+        border: 1px solid #ccc;
+        text-align: center;
+    }
+
+    tr:nth-child(even) {
+        background-color: #f9f9f9;
+    }
+
+    tr:hover {
+        background-color: #eef;
+    }
+
+    .sold-tag {
+        color: red;
+        font-weight: bold;
+    }
+
+    .available-tag {
+        color: green;
+        font-weight: bold;
+    }
+
+    a button {
+        background-color: #95a5a6;
+    }
+
+    a button:hover {
+        background-color: #7f8c8d;
+    }
+</style>
 </head>
 <body>
     <h2>Buy Available Tickets</h2>
+	
+	
+	
+   <form method="get" action="/tickets/buy" style="text-align: center; margin-bottom: 20px;">
+    <label>From: <input type="text" name="fromStation" th:value="${fromStation}"/></label>
+    <label>To: <input type="text" name="toStation" th:value="${toStation}"/></label>
+    <label>PNR: <input type="text" name="pnr" th:value="${pnr}"/></label>
+    <select name="filter">
+    	<option value="sold" th:selected="${filter == 'sold'}">Sold</option>
+        <option value="available" th:selected="${filter == 'available'}">Available</option>
+        
+    </select>
+    <button type="submit">Search</button>
+</form>
 
-    <!-- Filter Buttons -->
-    <div>
-        <a th:href="@{/tickets/buy(filter='available')}" th:classappend="${filter} == 'available' ? 'active' : ''"><button>Available</button></a>
-        <a th:href="@{/tickets/buy(filter='sold')}" th:classappend="${filter} == 'sold' ? 'active' : ''"><button>Sold</button></a>
-    </div>
-
-    <table>
+	<h3>*Before the buy the ticket please conform the ticket using PNR
+	<a href="https://www.indianrail.gov.in/enquiry/PNR/PnrEnquiry.html?locale=en" target="_blank">CLICK HERE</a> TO CHECK PNR STATUS</h3>
+	
+	    <table>
         <thead>
             <tr>
                 <th>Train Number</th>
-                <th>Train Name</th>
+                <th>Gender</th>
                 <th>From</th>
                 <th>To</th>
                 <th>Date</th>
@@ -47,14 +134,14 @@
                 <th>Price</th>
                 <th>Status</th>
                 <th>Passenger Names</th>
-                <th>Ticket Image</th>
+                <th>Ticket & Aadhar Image </th>
                 <th>Action</th>
             </tr>
         </thead>
         <tbody>
         <tr th:each="ticket : ${tickets}">
             <td th:text="${ticket.trainNumber}">12345</td>
-            <td th:text="${ticket.trainName}">Express</td>
+            <td th:text="${ticket.gender}">Gender</td>
             <td th:text="${ticket.fromStation}">From</td>
             <td th:text="${ticket.toStation}">To</td>
             <td th:text="${ticket.dateOfJourney}">2025-04-15</td>
@@ -62,7 +149,7 @@
             <td th:text="${ticket.pnrNumber}">9876543210</td>
             <td th:text="${ticket.numberOfTickets}">2</td>
             <td th:text="${ticket.age}">30</td>
-            <td th:text="${ticket.price+20}">500.0</td>
+            <td th:text="${ticket.price+20}">500.0</td> 
             <td th:text="${ticket.sold} ? 'Sold' : 'Available'">Status</td>
 
       <!-- Passenger Names -->

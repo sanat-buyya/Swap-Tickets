@@ -2,24 +2,76 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <title>My Tickets</title>
-    <style>
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 15px;
-        }
-        th, td {
-            padding: 8px;
-            border: 1px solid #ccc;
-            text-align: center;
-        }
-        th {
-            background-color: #f2f2f2;
-        }
-        h2 {
-            text-align: center;
-        }
-    </style>
+   <style>
+    body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        background-color: #f9f9f9;
+        margin: 0;
+        padding: 40px 20px;
+    }
+
+    h2 {
+        text-align: center;
+        color: #333;
+        margin-bottom: 30px;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        background-color: #fff;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    }
+
+    th, td {
+        padding: 12px 10px;
+        border: 1px solid #ddd;
+        text-align: center;
+        font-size: 15px;
+    }
+
+    th {
+        background-color: #e6f2ff;
+        color: #333;
+        font-weight: 600;
+    }
+
+    tr:nth-child(even) {
+        background-color: #f7f7f7;
+    }
+
+    tr:hover {
+        background-color: #f0f8ff;
+    }
+
+    a {
+        color: #007bff;
+        text-decoration: none;
+    }
+
+    a:hover {
+        text-decoration: underline;
+    }
+
+    button {
+        padding: 10px 18px;
+        background-color: #28a745;
+        color: white;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        font-size: 16px;
+    }
+
+    button:hover {
+        background-color: #218838;
+    }
+
+    .center {
+        text-align: center;
+        margin-top: 20px;
+    }
+</style>
 </head>
 <body>
     <h2>My Listed Tickets</h2>
@@ -32,9 +84,11 @@
                 <th>To</th>
                 <th>Date</th>
                 <th>PNR</th>
+                <th>Seat Number</th>
                 <th>Price</th>
                 <th>Status</th>
                 <th>Ticket Image</th>
+                <th>Original Document</th>
             </tr>
         </thead>
         <tbody>
@@ -44,12 +98,18 @@
                 <td th:text="${ticket.toStation}">To</td>
                 <td th:text="${ticket.dateOfJourney}">2025-04-15</td>
                 <td th:text="${ticket.pnrNumber}">123456</td>
+                <td th:text="${ticket.seatNumber}">B2/72</td>
                 <td th:text="${ticket.price}">500</td>
                 <td th:text="${ticket.sold ? 'Sold' : 'Available'}">Available</td>
                 <td>
                     <a th:if="${ticket.ticketImagePath != null}" th:href="@{'/uploads/' + ${ticket.ticketImagePath}}" target="_blank">View</a>
                     <span th:if="${ticket.ticketImagePath == null}">No Image</span>
                 </td>
+                <td>
+    				<a th:if="${ticket.originalDocumentPath != null}" th:href="@{'/uploads/' + ${ticket.originalDocumentPath}}" target="_blank">View Doc</a>
+    				<span th:if="${ticket.originalDocumentPath == null}">No Doc</span>
+				</td>
+                
             </tr>
         </tbody>
     </table>

@@ -3,6 +3,89 @@
 <head>
     <meta charset="UTF-8">
     <title>Create Your Account</title>
+    <head>
+    <meta charset="UTF-8">
+    <title>Create Your Account</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f5f5f5;
+            margin: 0;
+            padding: 40px 0;
+        }
+
+        h2 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 30px;
+        }
+
+        form {
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            width: 400px;
+            margin: auto;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #555;
+        }
+
+        input[type="text"],
+        input[type="email"],
+        input[type="password"],
+        input[type="date"] {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 12px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+       .error-message {
+    		font-size: 13px;
+    		color: red;
+    		display: block;
+    		margin-top: -8px;
+   			margin-bottom: 10px;
+		}
+		
+        button {
+            background-color: #007bff;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 15px;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        .login-link {
+            text-align: center;
+            margin-top: 15px;
+            font-size: 14px;
+        }
+
+        .login-link a {
+            color: #007bff;
+            text-decoration: none;
+        }
+
+        .login-link a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+    
 </head>
 <body>
     <h2 style="text-align:center;">Create Your Account</h2>
@@ -11,47 +94,47 @@
         <div>
             <label>Full Name</label>
             <input type="text" th:field="*{name}" placeholder="Enter your full name"/>
-            <span th:if="${#fields.hasErrors('name')}" th:errors="*{name}" style="color:red"></span>
+            <span th:if="${#fields.hasErrors('name')}" th:errors="*{name}" class="error-message" style="color:red"></span>
         </div>
 
         <div>
             <label>Email Address</label>
             <input type="email" th:field="*{email}" placeholder="Enter your email address"/>
-            <span th:if="${#fields.hasErrors('email')}" th:errors="*{email}" style="color:red"></span>
+            <span th:if="${#fields.hasErrors('email')}" th:errors="*{email}" class="error-message" style="color:red"></span>
         </div>
 
         <div>
             <label>Mobile Number</label>
             <input type="text" th:field="*{mobile}" placeholder="Enter your mobile number"/>
-            <span th:if="${#fields.hasErrors('mobile')}" th:errors="*{mobile}" style="color:red"></span>
+            <span th:if="${#fields.hasErrors('mobile')}" th:errors="*{mobile}" class="error-message" style="color:red"></span>
         </div>
 
         <div>
             <label>Date of Birth</label>
             <input type="date" th:field="*{dob}" placeholder="dd-mm-yyyy"/>
-            <span th:if="${#fields.hasErrors('dob')}" th:errors="*{dob}" style="color:red"></span>
+            <span th:if="${#fields.hasErrors('dob')}" th:errors="*{dob}" class="error-message" style="color:red"></span>
         </div>
 
         <div>
             <label>Password</label>
             <input type="password" th:field="*{password}" placeholder="Create a strong password"/>
-            <span th:if="${#fields.hasErrors('password')}" th:errors="*{password}" style="color:red"></span>
+            <span th:if="${#fields.hasErrors('password')}" th:errors="*{password}" class="error-message" style="color:red"></span>
         </div>
 
         <div>
             <label>Confirm Password</label>
             <input type="password" th:field="*{confirmPassword}" placeholder="Confirm your password"/>
-            <span th:if="${#fields.hasErrors('confirmPassword')}" th:errors="*{confirmPassword}" style="color:red"></span>
+            <span th:if="${#fields.hasErrors('confirmPassword')}" th:errors="*{confirmPassword}" class="error-message" style="color:red"></span>
         </div>
 
         <div style="text-align:center; margin-top:15px;">
             <button type="submit">Register</button>
-        </div>
-    </form>
-
-    <div style="text-align:center; margin-top:10px;">
+        </div> <br>
+        <div style="text-align:center; margin-top:10px;">
         Already have an account? <a th:href="@{/login}">Login</a>
     </div>
+    </form>
+
     <script>
     const password = document.querySelector('input[name="password"]');
     const confirmPassword = document.querySelector('input[name="confirmPassword"]');

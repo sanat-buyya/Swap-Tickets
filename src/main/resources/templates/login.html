@@ -4,59 +4,83 @@
     <meta charset="UTF-8">
     <title>Login - SwapTicket</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f3f3f3;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-        }
+    body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        background-color: #eef2f3;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        margin: 0;
+    }
 
-        .login-container {
-            background: #fff;
-            padding: 25px 40px;
-            border-radius: 10px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            text-align: center;
-        }
+    .login-container {
+        background: #fff;
+        padding: 30px 40px;
+        border-radius: 12px;
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+        width: 100%;
+        max-width: 400px;
+        text-align: center;
+    }
 
-        h2 {
-            margin-bottom: 20px;
-        }
+    h2 {
+        color: #333;
+        margin-bottom: 25px;
+    }
 
-        input[type="text"], input[type="password"] {
-            width: 100%;
-            padding: 10px;
-            margin: 8px 0;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-        }
+    input[type="text"],
+    input[type="password"] {
+        width: 100%;
+        padding: 12px;
+        margin: 10px 0;
+        border: 1px solid #ccc;
+        border-radius: 6px;
+        box-sizing: border-box;
+        font-size: 15px;
+    }
 
-        button {
-            background-color: #28a745;
-            color: white;
-            padding: 10px 20px;
-            border: none;
-            margin-top: 10px;
-            border-radius: 5px;
-            cursor: pointer;
-        }
+    button {
+        background-color: #28a745;
+        color: #fff;
+        padding: 12px;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        font-size: 16px;
+        width: 100%;
+        margin-top: 10px;
+    }
 
-        button:hover {
-            background-color: #218838;
-        }
+    button:hover {
+        background-color: #218838;
+    }
 
-        .error {
-            color: red;
-            margin-top: 10px;
-        }
+    .error {
+        color: red;
+        margin-top: 10px;
+        font-size: 14px;
+    }
 
-        .register-link {
-            margin-top: 15px;
-            display: block;
-        }
-    </style>
+    .login-container p {
+        font-size: 14px;
+        margin-top: 15px;
+    }
+
+    a {
+        color: #007bff;
+        text-decoration: none;
+    }
+
+    a:hover {
+        text-decoration: underline;
+    }
+
+    .register-link {
+        margin-top: 10px;
+    }
+</style>
+
 </head>
 <body>
 <div class="login-container">
