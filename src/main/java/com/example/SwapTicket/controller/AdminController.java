@@ -88,4 +88,16 @@ public class AdminController {
         model.addAttribute("success", "Seller paid successfully!");
         return "redirect:/admin/dashboard";
     }
+    @GetMapping("/wallets")
+    public String viewWallets(Model model, HttpSession session) {
+        Boolean isAdmin = (Boolean) session.getAttribute("admin");
+        if (isAdmin == null || !isAdmin) {
+            return "redirect:/login";
+        }
+
+        List<Wallet> allWallets = walletRepository.findAll();
+        model.addAttribute("wallets", allWallets);
+        return "adminWallet";
+    }
+
 }

@@ -97,7 +97,7 @@ a button:hover {
         <input type="text" name="toStation" required /><br/>
 
         <label>Date of Journey:</label>
-        <input type="date" name="dateOfJourney" min="${T(java.time.LocalDate).now()}" required />
+       <input type="date" name="dateOfJourney" th:min="${T(java.time.LocalDate).now()}" required />
 
         <label>Class Type:</label>
         <select name="classType" required>

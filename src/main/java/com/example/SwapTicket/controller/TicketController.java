@@ -266,7 +266,7 @@ public class TicketController {
     @PostMapping("/tickets/initiate-payment")
     public String initiatePayment(@RequestParam("ticketId") Long ticketId, Model model, HttpSession session) {
         try {
-            RazorpayClient razorpay = new RazorpayClient("YOUR_TEST_API_KEY", "YOUR_TEST_API_SECRET");
+            RazorpayClient razorpay = new RazorpayClient("razor-pay.api.key", "razor-pay.api.secret");
 
             // Example: set the ticket price here (in paise)
             int amount = 50000; // = ₹500.00
@@ -282,7 +282,7 @@ public class TicketController {
             model.addAttribute("orderId", order.get("id"));
             model.addAttribute("amount", amount);
             model.addAttribute("ticketId", ticketId);
-            model.addAttribute("apiKey", "YOUR_TEST_API_KEY"); // for JS frontend
+            model.addAttribute("apiKey", "razor-pay.api.key"); // for JS frontend
 
             return "razorpayPayment"; // Razorpay payment page (you'll create this)
         } catch (RazorpayException e) {
@@ -291,9 +291,89 @@ public class TicketController {
             return "errorPage";
         }
     }
-
     
+    @GetMapping("/tickets/buy-now/{ticketId}")
+    public String buyNow(@PathVariable Long ticketId, Model model, HttpSession session) {
+        try {
+            RazorpayClient razorpay = new RazorpayClient("razor-pay.api.key", "razor-pay.api.secret");
 
+            Optional<Ticket> ticketOpt = ticketRepository.findById(ticketId);
+            if (ticketOpt.isEmpty()) {
+                model.addAttribute("error", "Ticket not found");
+                return "userHome";
+            }
+
+            Ticket ticket = ticketOpt.get();
+
+            JSONObject orderRequest = new JSONObject();
+            orderRequest.put("amount", (int)(ticket.getPrice() * 100)); // Razorpay amount is in paise
+            orderRequest.put("currency", "INR");
+            orderRequest.put("receipt", "ticket_" + ticketId);
+            orderRequest.put("payment_capture", true);
+
+            Order order = razorpay.orders.create(orderRequest);
+
+            model.addAttribute("ticket", ticket);
+            model.addAttribute("razorpayOrderId", order.get("id"));
+            model.addAttribute("razorpayKey", "razor-pay.api.key");
+            model.addAttribute("ticketId", ticketId);
+            model.addAttribute("amount", ticket.getPrice() * 100);
+
+            return "paymentPage"; // Create paymentPage.html to handle Razorpay checkout
+        } catch (Exception e) {
+            e.printStackTrace();
+            model.addAttribute("error", "Payment failed to initialize.");
+            return "userHome";
+        }
+    }
+    @PostMapping("/razorpay/success")
+    public String paymentSuccess(@RequestParam("ticketId") Long ticketId, HttpSession session) {
+        String buyerEmail = (String) session.getAttribute("email");
+
+        Optional<Ticket> ticketOpt = ticketRepository.findById(ticketId);
+        Optional<Wallet> adminWalletOpt = walletRepository.findByEmail("admin@swapticket.com");
+
+        if (ticketOpt.isPresent() && adminWalletOpt.isPresent()) {
+            Ticket ticket = ticketOpt.get();
+            Wallet adminWallet = adminWalletOpt.get();
+
+            ticket.setSold(true);
+            ticket.setBuyerEmail(buyerEmail);
+            ticketRepository.save(ticket);
+
+            adminWallet.setBalance(adminWallet.getBalance() + ticket.getPrice());
+            walletRepository.save(adminWallet);
+
+            return "redirect:/tickets/my-purchases";
+        }
+
+        return "redirect:/error";
+    }
+    @GetMapping("/confirm/{ticketId}")
+    public String confirmTicketPurchase(@PathVariable Long ticketId,
+                                        @RequestParam String paymentId,
+                                        HttpSession session,
+                                        Model model) {
+        Optional<Ticket> optionalTicket = ticketRepository.findById(ticketId);
+        if (optionalTicket.isEmpty()) {
+            model.addAttribute("error", "Ticket not found");
+            return "error";
+        }
+
+        Ticket ticket = optionalTicket.get();
+        ticket.setSold(true);
+        ticket.setBuyerEmail((String) session.getAttribute("loggedInUserEmail"));
+        ticketRepository.save(ticket);
+
+        Optional<Wallet> adminWalletOpt = walletRepository.findByEmail("admin@swapticket.com");
+        if (adminWalletOpt.isPresent()) {
+            Wallet adminWallet = adminWalletOpt.get();
+            adminWallet.setBalance(adminWallet.getBalance() + ticket.getPrice());
+            walletRepository.save(adminWallet);
+        }
+
+        return "redirect:/tickets/my-purchases";
+    }
 
 
 

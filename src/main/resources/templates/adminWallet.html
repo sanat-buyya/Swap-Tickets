@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Wallets - Admin</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<style type="text/css">
+table {
+    width: 100%;
+    border-collapse: collapse;
+    background: white;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+th, td {
+    padding: 16px;
+    text-align: left;
+    border-bottom: 1px solid #eee;
+}
+
+th {
+    background-color: #f5f5f5;
+    color: #2c3e50;
+}
+
+tr:hover {
+    background-color: #f0f8ff;
+}
+</style>
+</head>
+<body>
+<div class="admin-container">
+    <nav class="admin-nav">
+        <h2><i class="fas fa-user-shield"></i> Admin Panel</h2>
+        <ul>
+            <li><a th:href="@{/admin/dashboard}"><i class="fas fa-home"></i> Dashboard</a></li>
+            <li><a th:href="@{/admin/view-tickets}"><i class="fas fa-ticket-alt"></i> View Tickets</a></li>
+            <li><a th:href="@{/admin/wallets}" class="active"><i class="fas fa-wallet"></i> Wallets</a></li>
+            <li><a th:href="@{/logout}"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+        </ul>
+    </nav>
+
+    <main class="admin-main">
+        <h2><i class="fas fa-wallet"></i> Wallet Balances</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Email</th>
+                    <th>Balance (₹)</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="wallet : ${wallets}">
+                    <td th:text="${wallet.email}">email@example.com</td>
+                    <td th:text="${wallet.balance}">0.00</td>
+                </tr>
+            </tbody>
+        </table>
+    </main>
+</div>
+</body>
+</html>
