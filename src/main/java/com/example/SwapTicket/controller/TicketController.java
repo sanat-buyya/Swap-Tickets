@@ -2,8 +2,10 @@ package com.example.SwapTicket.controller;
 
 import com.example.SwapTicket.model.Ticket;
 import com.example.SwapTicket.model.User;
+import com.example.SwapTicket.model.Wallet;
 import com.example.SwapTicket.repository.TicketRepository;
 import com.example.SwapTicket.repository.UserRepository;
+import com.example.SwapTicket.repository.WalletRepository;
 import com.example.SwapTicket.service.FileStorageService;
 
 import jakarta.servlet.http.HttpSession;
@@ -21,6 +23,12 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
+import com.razorpay.Order;
+import com.razorpay.RazorpayClient;
+import com.razorpay.RazorpayException;
+import org.json.JSONObject;
+
+
 @Controller
 @RequestMapping("/tickets")
 public class TicketController {
@@ -30,6 +38,9 @@ public class TicketController {
 
     @Autowired
     private FileStorageService fileStorageService;
+    
+    @Autowired
+    private WalletRepository walletRepository;
     
     @Autowired
     private UserRepository userRepository;
@@ -134,42 +145,57 @@ public class TicketController {
         return "buyTickets";
     }
     
-    
-
     @PostMapping("/buy/{id}")
     public String buyTicket(@PathVariable Long id, HttpSession session, RedirectAttributes redirectAttributes) {
-        Optional<Ticket> optionalTicket = ticketRepository.findById(id);
+        String buyerEmail = (String) session.getAttribute("email");
 
-        if (optionalTicket.isPresent()) {
-            Ticket ticket = optionalTicket.get();
+        Optional<Ticket> ticketOpt = ticketRepository.findById(id);
+        Optional<Wallet> buyerWalletOpt = walletRepository.findByEmail(buyerEmail);
+        Optional<Wallet> adminWalletOpt = walletRepository.findByEmail("admin@swapticket.com");
 
-            if (!ticket.isSold()) {
-                String currentUserEmail = (String) session.getAttribute("loggedInUserEmail");
-
-                // Prevent seller from buying their own ticket
-                if (ticket.getSellerEmail().equals(currentUserEmail)) {
-                    redirectAttributes.addFlashAttribute("error", "You cannot buy your own ticket.");
-                    return "redirect:/tickets/buy";
-                }
-
-                // Set buyer email and mark as sold
-                ticket.setSold(true);
-                ticket.setBuyerEmail(currentUserEmail);
-                ticketRepository.save(ticket);
-
-                redirectAttributes.addFlashAttribute("successMessage", "Ticket purchased successfully!");
-
-                return "redirect:/tickets/my/" + id;  // ✅ Redirects to individual ticket details page
-            } else {
-                redirectAttributes.addFlashAttribute("error", "Ticket already sold.");
-            }
-        } else {
-            redirectAttributes.addFlashAttribute("error", "Ticket not found.");
+        if (ticketOpt.isEmpty() || buyerWalletOpt.isEmpty() || adminWalletOpt.isEmpty()) {
+            redirectAttributes.addFlashAttribute("error", "Transaction failed: Missing ticket or wallet.");
+            return "redirect:/tickets/buy";
         }
+
+        Ticket ticket = ticketOpt.get();
+
+        // 🚫 Prevent seller from buying their own ticket
+        if (buyerEmail != null && buyerEmail.equals(ticket.getSellerEmail())) {
+            redirectAttributes.addFlashAttribute("error", "❌ You cannot buy your own ticket.");
+            return "redirect:/tickets/buy";
+        }
+
+        Wallet buyerWallet = buyerWalletOpt.get();
+        Wallet adminWallet = adminWalletOpt.get();
+
+        double price = ticket.getPrice();
+
+        if (ticket.isSold()) {
+            redirectAttributes.addFlashAttribute("error", "Ticket already sold.");
+            return "redirect:/tickets/buy";
+        }
+
+        if (buyerWallet.getBalance() < price) {
+            redirectAttributes.addFlashAttribute("error", "Insufficient balance.");
+            return "redirect:/tickets/buy";
+        }
+
+        // Perform transaction
+        buyerWallet.setBalance(buyerWallet.getBalance() - price);
+        adminWallet.setBalance(adminWallet.getBalance() + price);
+
+        ticket.setSold(true);
+        ticket.setBuyerEmail(buyerEmail);
+
+        walletRepository.save(buyerWallet);
+        walletRepository.save(adminWallet);
+        ticketRepository.save(ticket);
+
+        redirectAttributes.addFlashAttribute("successMessage", "🎉 Ticket bought successfully!");
 
         return "redirect:/tickets/buy";
     }
-
 
 
     @GetMapping("/my/{id}")
@@ -204,6 +230,66 @@ public class TicketController {
 
         model.addAttribute("tickets", purchasedTickets);
         return "myPurchasedTickets";
+    }
+    
+    @GetMapping("/tickets/confirm/{id}")
+    public String confirmPayment(@PathVariable Long id,
+                                 @RequestParam("paymentId") String paymentId,
+                                 HttpSession session,
+                                 RedirectAttributes redirectAttributes) {
+        String buyerEmail = (String) session.getAttribute("email");
+        Optional<Ticket> ticketOpt = ticketRepository.findById(id);
+        Optional<Wallet> adminWalletOpt = walletRepository.findByEmail("admin@swapticket.com");
+
+        if (ticketOpt.isEmpty() || adminWalletOpt.isEmpty()) {
+            redirectAttributes.addFlashAttribute("error", "Payment failed or ticket not found.");
+            return "redirect:/tickets/buy";
+        }
+
+        Ticket ticket = ticketOpt.get();
+        if (ticket.isSold()) {
+            redirectAttributes.addFlashAttribute("error", "Ticket already sold.");
+            return "redirect:/tickets/buy";
+        }
+
+        // Update ticket and admin wallet
+        ticket.setSold(true);
+        ticket.setBuyerEmail(buyerEmail);
+        adminWalletOpt.get().setBalance(adminWalletOpt.get().getBalance() + ticket.getPrice());
+
+        ticketRepository.save(ticket);
+        walletRepository.save(adminWalletOpt.get());
+
+        redirectAttributes.addFlashAttribute("successMessage", "🎉 Payment successful! Ticket bought.");
+        return "redirect:/tickets/buy";
+    }
+    @PostMapping("/tickets/initiate-payment")
+    public String initiatePayment(@RequestParam("ticketId") Long ticketId, Model model, HttpSession session) {
+        try {
+            RazorpayClient razorpay = new RazorpayClient("YOUR_TEST_API_KEY", "YOUR_TEST_API_SECRET");
+
+            // Example: set the ticket price here (in paise)
+            int amount = 50000; // = ₹500.00
+
+            JSONObject orderRequest = new JSONObject();
+            orderRequest.put("amount", amount);
+            orderRequest.put("currency", "INR");
+            orderRequest.put("payment_capture", 1);
+
+            Order order = razorpay.orders.create(orderRequest);
+
+            // Send order details to frontend
+            model.addAttribute("orderId", order.get("id"));
+            model.addAttribute("amount", amount);
+            model.addAttribute("ticketId", ticketId);
+            model.addAttribute("apiKey", "YOUR_TEST_API_KEY"); // for JS frontend
+
+            return "razorpayPayment"; // Razorpay payment page (you'll create this)
+        } catch (RazorpayException e) {
+            e.printStackTrace();
+            model.addAttribute("error", "Payment failed to initiate.");
+            return "errorPage";
+        }
     }
 
     

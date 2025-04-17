@@ -98,6 +98,9 @@
         background-color: #7f8c8d;
     }
 </style>
+
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+
 </head>
 <body>
     <h2>Buy Available Tickets</h2>
@@ -118,6 +121,11 @@
 
 	<h3>*Before the buy the ticket please conform the ticket using PNR
 	<a href="https://www.indianrail.gov.in/enquiry/PNR/PnrEnquiry.html?locale=en" target="_blank">CLICK HERE</a> TO CHECK PNR STATUS</h3>
+	
+	<!-- Flash message -->
+<div th:if="${error}" class="alert alert-danger" role="alert">
+    <span th:text="${error}"></span>
+</div>
 	
 	    <table>
         <thead>
@@ -164,20 +172,40 @@
    			 	<span th:unless="${ticket.sold}"><b style="color: green">Buy to view details</b></span>
 			</td>
 
+      <td th:if="${!ticket.sold}">
+    <button type="button" th:onclick="'startPayment(' + ${ticket.id} + ',' + (${ticket.price + 20}) + ')'">Buy</button>
+</td>
 
-            <!-- Buy button -->
-            <td>
-                <form th:if="${!ticket.sold}" th:action="@{'/tickets/buy/' + ${ticket.id}}" method="post"
-                onsubmit="return confirm('Are you sure you want to buy this ticket?');">
-    			<button type="submit">Buy</button>
-				</form>
-			<span th:if="${ticket.sold}">Already Sold</span>
-
-            </td>
+<td th:if="${ticket.sold}">
+    <span>Already Sold</span>
+</td>
         </tr>
         </tbody>
     </table>
-
+    
+    <script>
+    function startPayment(ticketId, amount) {
+        var options = {
+            "key": "rzp_test_HkFY3rSv7zcCnX", // Replace with your actual Razorpay key
+            "amount": amount * 100, // Amount in paisa
+            "currency": "INR",
+            "name": "SwapTicket",
+            "description": "Ticket Purchase",
+            "handler": function (response) {
+                window.location.href = "/tickets/confirm/" + ticketId + "?paymentId=" + response.razorpay_payment_id;
+            },
+            "prefill": {
+                "email": "[[${session.email}]]"
+            },
+            "theme": {
+                "color": "#3399cc"
+            }
+        };
+        var rzp = new Razorpay(options);
+        rzp.open();
+    }
+</script>
+    
     <br/>
     <a th:href="@{/user/home}"><button>Back</button></a>
 

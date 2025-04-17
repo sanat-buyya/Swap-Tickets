@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Home - SwapTicket</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Link to Google Fonts for a better font style -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+    <!-- Font Awesome for icons -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+
+    <style>
+        /* Base Styling */
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #f7f8fc, #e1e9f0);
+            margin: 0;
+            padding: 0;
+            color: #333;
+        }
+
+        /* Navbar Styling */
+        .navbar {
+            background-color: #4a90e2;
+            color: white;
+            padding: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: background-color 0.3s;
+        }
+
+        .navbar a {
+            color: white;
+            text-decoration: none;
+            margin: 0 15px;
+            font-weight: 600;
+            font-size: 16px;
+            transition: transform 0.3s ease;
+        }
+
+        .navbar a:hover {
+            transform: scale(1.1);
+            text-decoration: underline;
+        }
+
+        .navbar .logo {
+            font-size: 24px;
+            font-weight: 600;
+        }
+
+        /* Main Content */
+        .container {
+            text-align: center;
+            padding: 100px 20px;
+            transition: opacity 0.6s ease-in-out;
+        }
+
+        .container h1 {
+            font-size: 36px;
+            color: #34495e;
+            animation: fadeIn 1.5s ease;
+        }
+
+        .container p {
+            font-size: 18px;
+            margin: 20px 0;
+            color: #555;
+            animation: fadeIn 1.5s ease 0.5s;
+        }
+
+        /* Animation for fading in */
+        @keyframes fadeIn {
+            0% { opacity: 0; }
+            100% { opacity: 1; }
+        }
+
+        .btn {
+            padding: 12px 24px;
+            background-color: #4a90e2;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            text-decoration: none;
+            font-weight: 600;
+            margin: 10px;
+            transition: background-color 0.3s, transform 0.3s;
+        }
+
+        .btn:hover {
+            background-color: #357ab8;
+            transform: scale(1.05);
+        }
+
+        /* About Section Styling */
+        .about-section {
+            margin-top: 50px;
+            animation: fadeIn 1.5s ease 1s;
+        }
+
+        .about-section h2 {
+            font-size: 28px;
+            color: #2c3e50;
+        }
+
+        .about-section p {
+            font-size: 16px;
+            color: #777;
+            max-width: 800px;
+            margin: 20px auto;
+        }
+
+        /* Icons in About Section */
+        .about-icons {
+            display: flex;
+            justify-content: center;
+            margin-top: 30px;
+        }
+
+        .about-icons div {
+            margin: 0 30px;
+            text-align: center;
+            transition: transform 0.3s ease;
+        }
+
+        .about-icons div:hover {
+            transform: translateY(-5px);
+        }
+
+        .about-icons i {
+            font-size: 48px;
+            color: #4a90e2;
+            margin-bottom: 10px;
+        }
+
+        /* Footer Section */
+        .footer {
+            text-align: center;
+            margin-top: 50px;
+            padding: 20px 0;
+            background-color: #34495e;
+            color: white;
+        }
+
+        /* Mobile Responsiveness */
+        @media (max-width: 600px) {
+            .container h1 {
+                font-size: 28px;
+            }
+
+            .about-icons {
+                flex-direction: column;
+            }
+
+            .about-icons div {
+                margin: 20px 0;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Navigation Bar -->
+    <div class="navbar">
+        <div class="logo">
+            <h3>SwapTicket</h3>
+        </div>
+        <div class="auth-links">
+            <a href="/login" class="btn">Login <i class="fas fa-sign-in-alt"></i></a>
+            <a href="/register" class="btn">Register <i class="fas fa-user-plus"></i></a>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="container">
+        <h1>Welcome to SwapTicket</h1>
+        <p>Buy and sell your train tickets safely without scams. A platform to ensure secure peer-to-peer ticket trading.</p>
+        
+        <!-- Call to Action Buttons -->
+        <a href="/login" class="btn">Get Started</a>
+
+        <!-- About Section -->
+        <div class="about-section">
+            <h2>What is SwapTicket?</h2>
+            <p>SwapTicket is your trusted platform for buying and selling train tickets. We aim to provide a safe, user-friendly experience for both buyers and sellers. Say goodbye to scams and be assured that your transactions are handled securely.</p>
+            
+            <!-- Icons representing key features -->
+            <div class="about-icons">
+                <div>
+                    <i class="fas fa-shield-alt"></i>
+                    <p>Secure Transactions</p>
+                </div>
+                <div>
+                    <i class="fas fa-clock"></i>
+                    <p>Instant Updates</p>
+                </div>
+                <div>
+                    <i class="fas fa-users"></i>
+                    <p>Community Support</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer Section -->
+    <div class="footer">
+        <p>&copy; 2025 SwapTicket. All Rights Reserved.</p>
+    </div>
+
+</body>
+</html>

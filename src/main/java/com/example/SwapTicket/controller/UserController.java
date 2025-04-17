@@ -1,6 +1,7 @@
 package com.example.SwapTicket.controller;
 
 import com.example.SwapTicket.model.User;
+import com.example.SwapTicket.repository.WalletRepository;
 import com.example.SwapTicket.service.UserService;
 
 import jakarta.servlet.http.HttpSession;
@@ -14,14 +15,24 @@ import org.springframework.web.bind.annotation.*;
 
 @Controller
 public class UserController {
+	
+
+    @Autowired
+    private WalletRepository walletRepository;
 
     @Autowired
     private UserService userService;
+    
 
     @GetMapping("/")
-    public String defaultPage() {
-        return "redirect:/login";
+    public String defaultPage(HttpSession session) {
+        // Check if the user is logged in
+        if (session.getAttribute("loggedInUserEmail") != null) {
+            return "redirect:/user/home";  // Redirect logged-in users to the dashboard
+        }
+        return "home";  // Otherwise, show the home page (landing page with login/register buttons)
     }
+
 
     @GetMapping("/login")
     public String loginPage() {
@@ -33,6 +44,10 @@ public class UserController {
                             @RequestParam String password,
                             Model model,
                             HttpSession session) {
+    	if (username.equals("admin@swapticket.com") && password.equals("admin")) { // use your configured password
+            session.setAttribute("admin", true);
+            return "redirect:/admin/dashboard";
+        }
 
         User user = userService.findByEmail(username);
         
@@ -82,11 +97,17 @@ public class UserController {
     }
 
     @GetMapping("/user/home")
-    public String userHomePage(Model model, HttpSession session) {
-        String name = (String) session.getAttribute("loggedInUserName");
-        model.addAttribute("userName", name); 
+    public String userHome(Model model, HttpSession session) {
+        String userEmail = (String) session.getAttribute("loggedInUserEmail");
+        model.addAttribute("userName", userEmail);
+
+        walletRepository.findByEmail(userEmail).ifPresent(wallet -> {
+            model.addAttribute("walletBalance", wallet.getBalance());
+        });
+
         return "userHome";
     }
+
 
     @GetMapping("/forgot-password")
     public String forgotPasswordPage() {
@@ -117,7 +138,7 @@ public class UserController {
     @GetMapping("/logout")
     public String logout(HttpSession session) {
         session.invalidate(); // Clear session
-        return "redirect:/login";
+        return "home";
     }
 
 
