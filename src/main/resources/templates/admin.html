@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Admin Home</title>
+    <link rel="stylesheet" href="/css/style.css"/>
+</head>
+<body>
+    <h1>Welcome, Admin</h1>
+
+    <nav>
+        <ul>
+            <li><a th:href="@{/admin/dashboard}">Dashboard</a></li>
+            <li><a th:href="@{/admin/wallets}">View Wallets</a></li>
+            <li><a th:href="@{/logout}">Logout</a></li>
+        </ul>
+    </nav>
+
+    <p>Use the navigation links above to manage ticket payments and wallet balances.</p>
+</body>
+</html>

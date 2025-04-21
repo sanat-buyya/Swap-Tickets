@@ -4,6 +4,8 @@ import com.example.SwapTicket.model.Ticket;
 import com.example.SwapTicket.model.Wallet;
 import com.example.SwapTicket.repository.TicketRepository;
 import com.example.SwapTicket.repository.WalletRepository;
+import com.example.SwapTicket.service.PaymentService;
+
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -16,9 +18,13 @@ import java.util.Optional;
 @Controller
 @RequestMapping("/admin")
 public class AdminController {
+	
+	@Autowired
+	private PaymentService paymentService;
 
-    private final String ADMIN_EMAIL = "admin@swapticket.com"; // must match application.properties
 
+    private final String ADMIN_EMAIL = "admin@swapticket.com"; 
+    
     @Autowired
     private TicketRepository ticketRepository;
 
@@ -33,15 +39,21 @@ public class AdminController {
         }
 
         List<Ticket> allTickets = ticketRepository.findAll();
+
+        // Filter to show only sold but unpaid tickets
+        List<Ticket> unpaidTickets = allTickets.stream()
+            .filter(ticket -> ticket.isSold() && !ticket.isSellerPaid())
+            .toList();
+
         Wallet adminWallet = walletRepository.findByEmail(ADMIN_EMAIL).orElse(new Wallet());
 
-        model.addAttribute("tickets", allTickets);
+        model.addAttribute("tickets", unpaidTickets);
         model.addAttribute("adminWallet", adminWallet.getBalance());
 
-        return "adminDashboard"; // Make sure adminDashboard.html exists
+        return "adminDashboard";
     }
 
-    // Pay seller
+
     @PostMapping("/pay-seller/{ticketId}")
     public String paySeller(@PathVariable Long ticketId, Model model, HttpSession session) {
         if (session.getAttribute("admin") == null) {
@@ -61,29 +73,12 @@ public class AdminController {
             return "redirect:/admin/dashboard";
         }
 
-        Optional<Wallet> adminWalletOpt = walletRepository.findByEmail(ADMIN_EMAIL);
-        Optional<Wallet> sellerWalletOpt = walletRepository.findByEmail(ticket.getSellerEmail());
+        boolean success = paymentService.transferToSeller(ticket);
 
-        if (adminWalletOpt.isEmpty() || sellerWalletOpt.isEmpty()) {
-            model.addAttribute("error", "Wallet not found");
+        if (!success) {
+            model.addAttribute("error", "Payment failed: Insufficient balance or wallet not found");
             return "redirect:/admin/dashboard";
         }
-
-        Wallet adminWallet = adminWalletOpt.get();
-        Wallet sellerWallet = sellerWalletOpt.get();
-
-        double price = ticket.getPrice();
-        if (adminWallet.getBalance() < price) {
-            model.addAttribute("error", "Insufficient admin balance");
-            return "redirect:/admin/dashboard";
-        }
-
-        // Transfer money
-        adminWallet.setBalance(adminWallet.getBalance() - price);
-        sellerWallet.setBalance(sellerWallet.getBalance() + price);
-
-        walletRepository.save(adminWallet);
-        walletRepository.save(sellerWallet);
 
         model.addAttribute("success", "Seller paid successfully!");
         return "redirect:/admin/dashboard";
@@ -99,5 +94,22 @@ public class AdminController {
         model.addAttribute("wallets", allWallets);
         return "adminWallet";
     }
+    @GetMapping("/withdraw/form/{walletId}")
+    public String showWithdrawForm(@PathVariable Long walletId, Model model, HttpSession session) {
+        if (session.getAttribute("admin") == null) {
+            return "redirect:/login";
+        }
+
+        Optional<Wallet> walletOpt = walletRepository.findById(walletId);
+        if (walletOpt.isEmpty()) {
+            model.addAttribute("error", "Wallet not found");
+            return "redirect:/admin/wallets";
+        }
+
+        model.addAttribute("wallet", walletOpt.get());
+        return "withdrawForm";
+    }
+
+    
 
 }

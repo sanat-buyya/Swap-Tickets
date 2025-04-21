@@ -12,7 +12,7 @@ public class Ticket {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
+    
     private String trainNumber;
     private String trainName;
     private String fromStation;
@@ -43,6 +43,19 @@ public class Ticket {
     private String gender;
     // --- Getters and Setters ---
     
+    @Column(nullable = false, columnDefinition = "BOOLEAN DEFAULT FALSE")
+    private boolean sellerPaid = false;
+
+    // … getters / setters …
+
+    public boolean isSellerPaid() {
+        return sellerPaid;
+    }
+
+    public void setSellerPaid(boolean sellerPaid) {
+        this.sellerPaid = sellerPaid;
+    }
+
     
     public Long getId() {
         return id;

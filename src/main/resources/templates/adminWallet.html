@@ -1,62 +1,158 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>Wallets - Admin</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-<style type="text/css">
-table {
-    width: 100%;
-    border-collapse: collapse;
-    background: white;
-    border-radius: 8px;
-    overflow: hidden;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Admin Wallets - SwapTicket</title>
+    <link rel="stylesheet" th:href="@{/css/adminWallet.css}" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+	<style type="text/css">
+	body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: 0;
+    background-color: #f9f9f9;
 }
 
-th, td {
-    padding: 16px;
+.wallet-container {
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+}
+
+.wallet-nav h2 {
+    margin: 0 0 10px;
+    color: #333;
+}
+
+.wallet-nav ul {
+    list-style: none;
+    padding: 0;
+    margin-bottom: 20px;
+    display: flex;
+    gap: 15px;
+}
+
+.wallet-nav ul li a {
+    text-decoration: none;
+    color: #007bff;
+    font-weight: 600;
+}
+
+.wallet-main {
+    overflow-x: auto;
+}
+
+.wallet-table {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: #fff;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.wallet-table thead {
+    background-color: #007bff;
+    color: #fff;
+}
+
+.wallet-table th, .wallet-table td {
+    padding: 12px 15px;
     text-align: left;
     border-bottom: 1px solid #eee;
 }
 
-th {
-    background-color: #f5f5f5;
-    color: #2c3e50;
+.wallet-table tr:hover {
+    background-color: #f1f1f1;
 }
 
-tr:hover {
-    background-color: #f0f8ff;
+input[type="number"] {
+    padding: 6px 8px;
+    width: 100px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
 }
-</style>
+
+.withdraw-btn {
+    background-color: #28a745;
+    color: white;
+    border: none;
+    padding: 6px 10px;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-left: 5px;
+}
+
+.withdraw-btn:hover {
+    background-color: #218838;
+}
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+    .wallet-table th, .wallet-table td {
+        padding: 10px 8px;
+        font-size: 14px;
+    }
+
+    input[type="number"] {
+        width: 80px;
+    }
+
+    .wallet-nav ul {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .wallet-nav h2 {
+        font-size: 20px;
+    }
+}
+	
+	</style>
 </head>
 <body>
-<div class="admin-container">
-    <nav class="admin-nav">
-        <h2><i class="fas fa-user-shield"></i> Admin Panel</h2>
+<div class="wallet-container">
+    <nav class="wallet-nav">
+        <h2><i class="fas fa-wallet"></i> Wallets Overview</h2>
         <ul>
-            <li><a th:href="@{/admin/dashboard}"><i class="fas fa-home"></i> Dashboard</a></li>
-            <li><a th:href="@{/admin/view-tickets}"><i class="fas fa-ticket-alt"></i> View Tickets</a></li>
-            <li><a th:href="@{/admin/wallets}" class="active"><i class="fas fa-wallet"></i> Wallets</a></li>
+            <li><a th:href="@{/admin/dashboard}"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
             <li><a th:href="@{/logout}"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
         </ul>
     </nav>
 
-    <main class="admin-main">
-        <h2><i class="fas fa-wallet"></i> Wallet Balances</h2>
-        <table>
-            <thead>
-                <tr>
-                    <th>Email</th>
-                    <th>Balance (₹)</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr th:each="wallet : ${wallets}">
-                    <td th:text="${wallet.email}">email@example.com</td>
-                    <td th:text="${wallet.balance}">0.00</td>
-                </tr>
-            </tbody>
-        </table>
+    <main class="wallet-main">
+        <div th:if="${session.admin}">
+            <table class="wallet-table">
+                <thead>
+                    <tr>
+                        <th>Email</th>
+                        <th>Role</th>
+                        <th>Balance (₹)</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="wallet : ${wallets}">
+                        <td th:text="${wallet.email}">email@example.com</td>
+                        <td th:text="${wallet.email == 'admin@swapticket.com' ? 'Admin' : 'Seller'}">Seller</td>
+                        <td th:text="${wallet.balance}">0.00</td>
+                        <td>
+                            <form th:action="@{'/admin/withdraw/' + ${wallet.id}}" method="post">
+                                <input type="number" name="amount" placeholder="₹ Amount" required />
+                                <button type="submit" class="withdraw-btn">Withdraw</button>
+                            </form>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div th:if="${session.admin == null}">
+            <p style="color: red;">Access denied. Admin only.</p>
+        </div>
+       <br> <div align="center"><button><a href="/admin/dashboard">Back</a></button>
+        </div>
+        
     </main>
 </div>
 </body>

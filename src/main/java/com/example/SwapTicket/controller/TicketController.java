@@ -1,5 +1,6 @@
 package com.example.SwapTicket.controller;
 
+import com.cloudinary.Cloudinary;
 import com.example.SwapTicket.model.Ticket;
 import com.example.SwapTicket.model.User;
 import com.example.SwapTicket.model.Wallet;
@@ -7,6 +8,7 @@ import com.example.SwapTicket.repository.TicketRepository;
 import com.example.SwapTicket.repository.UserRepository;
 import com.example.SwapTicket.repository.WalletRepository;
 import com.example.SwapTicket.service.FileStorageService;
+import com.example.SwapTicket.service.PaymentService;
 
 import jakarta.servlet.http.HttpSession;
 
@@ -22,12 +24,19 @@ import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 import com.razorpay.Order;
 import com.razorpay.RazorpayClient;
 import com.razorpay.RazorpayException;
 import org.json.JSONObject;
 
+import com.cloudinary.utils.ObjectUtils;
+
+import java.io.IOException;
+import java.util.Map;
+
+import org.springframework.web.multipart.MultipartFile;
 
 @Controller
 @RequestMapping("/tickets")
@@ -35,6 +44,9 @@ public class TicketController {
 
     @Autowired
     private TicketRepository ticketRepository;
+    
+    @Autowired
+    private PaymentService paymentService;
 
     @Autowired
     private FileStorageService fileStorageService;
@@ -47,6 +59,9 @@ public class TicketController {
 
     @Autowired
     private HttpSession session;
+    
+    @Autowired
+    private Cloudinary cloudinary;
 
     @PostMapping("/sell")
     public String sellTicket(
@@ -65,11 +80,10 @@ public class TicketController {
             @RequestParam("gender") String gender,
             @RequestParam("ticketImage") MultipartFile ticketImage,
             @RequestParam("originalDocument") MultipartFile originalDocument,
-
             RedirectAttributes redirectAttributes,
-            Principal principal // To capture seller email
-    ) {
-
+            Principal principal,
+            HttpSession session
+    ) throws IOException {
         Ticket ticket = new Ticket();
         ticket.setTrainNumber(trainNumber);
         ticket.setTrainName(trainName);
@@ -87,36 +101,40 @@ public class TicketController {
         ticket.setSold(false);
 
         String sellerEmail = (String) session.getAttribute("loggedInUserEmail");
-        ticket.setSellerEmail(sellerEmail); // Set seller info
+        ticket.setSellerEmail(sellerEmail);
 
-
+        // 💼 Create seller wallet if not already exists
+        Optional<Wallet> existingWallet = walletRepository.findByEmail(sellerEmail);
+        if 	(existingWallet.isEmpty()) {
+            Wallet wallet = new Wallet();
+            wallet.setEmail(sellerEmail);
+            wallet.setBalance(0.0);
+            walletRepository.save(wallet);
+        }
+        // 📄 Save ticket image
+     // 📄 Save ticket image
         if (!ticketImage.isEmpty()) {
-            try {
-                String fileName = fileStorageService.storeFile(ticketImage);
-                ticket.setTicketImagePath(fileName);
-            } catch (Exception e) {
-                e.printStackTrace();
-                redirectAttributes.addFlashAttribute("error", "Failed to upload ticket image.");
-                return "redirect:/tickets/sell";
-            }
-        }
-        
-        if (!originalDocument.isEmpty()) {
-            try {
-                String docFileName = fileStorageService.storeFile(originalDocument);
-                ticket.setOriginalDocumentPath(docFileName);
-            } catch (Exception e) {
-                e.printStackTrace();
-                redirectAttributes.addFlashAttribute("error", "Failed to upload original document.");
-                return "redirect:/tickets/sell";
-            }
+            Map uploadResultImage = cloudinary.uploader().upload(ticketImage.getBytes(), ObjectUtils.asMap(
+                "resource_type", "auto" // Automatically detects if it's JPG or PDF
+            ));
+            ticket.setTicketImagePath((String) uploadResultImage.get("secure_url"));
         }
 
+        // 📑 Save original document (PDF or other)
+        if (!originalDocument.isEmpty()) {
+            Map uploadResultImage = cloudinary.uploader().upload(originalDocument.getBytes(), ObjectUtils.asMap(
+                "resource_type", "auto" // Automatically detects if it's JPG or PDF
+            ));
+            ticket.setOriginalDocumentPath((String) uploadResultImage.get("secure_url"));
+        }
 
         ticketRepository.save(ticket);
-        redirectAttributes.addFlashAttribute("successMessage", "🎉 Ticket submitted successfully! & Go to Buy Ticket to check your ticket is sold or not");
+        redirectAttributes.addFlashAttribute("successMessage", "🎉 Ticket submitted successfully! Go to My Listed Tickets to check if it is sold.");
         return "redirect:/user/home";
+
+          
     }
+
 
     @GetMapping("/buy")
     public String showFilteredTickets(
@@ -306,7 +324,9 @@ public class TicketController {
             Ticket ticket = ticketOpt.get();
 
             JSONObject orderRequest = new JSONObject();
-            orderRequest.put("amount", (int)(ticket.getPrice() * 100)); // Razorpay amount is in paise
+            double serviceFee = 20.0;
+            double totalAmount = ticket.getPrice() + serviceFee;
+            orderRequest.put("amount", (int)(totalAmount * 100)); // price + ₹20 service charge
             orderRequest.put("currency", "INR");
             orderRequest.put("receipt", "ticket_" + ticketId);
             orderRequest.put("payment_capture", true);
@@ -317,38 +337,52 @@ public class TicketController {
             model.addAttribute("razorpayOrderId", order.get("id"));
             model.addAttribute("razorpayKey", "razor-pay.api.key");
             model.addAttribute("ticketId", ticketId);
-            model.addAttribute("amount", ticket.getPrice() * 100);
-
-            return "paymentPage"; // Create paymentPage.html to handle Razorpay checkout
+            model.addAttribute("amount", totalAmount * 100);
+           return "paymentPage"; // Create paymentPage.html to handle Razorpay checkout
         } catch (Exception e) {
             e.printStackTrace();
             model.addAttribute("error", "Payment failed to initialize.");
             return "userHome";
         }
     }
-    @PostMapping("/razorpay/success")
-    public String paymentSuccess(@RequestParam("ticketId") Long ticketId, HttpSession session) {
-        String buyerEmail = (String) session.getAttribute("email");
 
-        Optional<Ticket> ticketOpt = ticketRepository.findById(ticketId);
+    @PostMapping("/razorpay/success")
+    public String paymentSuccess(@RequestParam("ticketId") Long ticketId, HttpSession session, RedirectAttributes flash) {
+        String buyerEmail = (String) session.getAttribute("loggedInUserEmail");
+
+        Optional<Ticket> ticketOpt     = ticketRepository.findById(ticketId);
         Optional<Wallet> adminWalletOpt = walletRepository.findByEmail("admin@swapticket.com");
 
-        if (ticketOpt.isPresent() && adminWalletOpt.isPresent()) {
-            Ticket ticket = ticketOpt.get();
-            Wallet adminWallet = adminWalletOpt.get();
-
-            ticket.setSold(true);
-            ticket.setBuyerEmail(buyerEmail);
-            ticketRepository.save(ticket);
-
-            adminWallet.setBalance(adminWallet.getBalance() + ticket.getPrice());
-            walletRepository.save(adminWallet);
-
-            return "redirect:/tickets/my-purchases";
+        if (ticketOpt.isEmpty() || adminWalletOpt.isEmpty()) {
+            flash.addFlashAttribute("error", "Payment error or wallet missing.");
+            return "redirect:/tickets/buy";
         }
 
-        return "redirect:/error";
+        Ticket ticket       = ticketOpt.get();
+        Wallet adminWallet  = adminWalletOpt.get();
+
+        // 1) mark sold & buyer
+        ticket.setSold(true);
+        ticket.setBuyerEmail(buyerEmail);
+        ticketRepository.save(ticket);
+
+        // 2) credit service fee to admin only
+        double serviceFee = 20.0;
+        adminWallet.setBalance(adminWallet.getBalance() + serviceFee);
+        walletRepository.save(adminWallet);
+
+        // 3) now transfer the base fare to seller + mark sellerPaid
+        boolean ok = paymentService.transferToSeller(ticket);
+        if (!ok) {
+            flash.addFlashAttribute("error", "Failed to pay seller—please contact support.");
+        } else {
+            flash.addFlashAttribute("successMessage", "🎉 Payment successful!");
+        }
+
+        return "redirect:/tickets/my-purchases";
     }
+
+
     @GetMapping("/confirm/{ticketId}")
     public String confirmTicketPurchase(@PathVariable Long ticketId,
                                         @RequestParam String paymentId,

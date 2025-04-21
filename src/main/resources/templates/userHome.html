@@ -1,18 +1,39 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>User Dashboard - SwapTicket</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SwapTicket | User Dashboard</title>
+    <meta name="description" content="User dashboard for SwapTicket - Sell and buy train tickets safely and easily." />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
     <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap');
 
+        :root {
+            --bg-light: #f0f4f8;
+            --bg-dark: #1e1e2f;
+            --text-light: #333;
+            --text-dark: #f9f9f9;
+            --card-light: #fff;
+            --card-dark: #2c2c3c;
+        }
+
+        [data-theme="dark"] {
+            background-color: var(--bg-dark);
+            color: var(--text-dark);
+        }
+
+        [data-theme="dark"] .navbar,
+        [data-theme="dark"] .card {
+            background-color: var(--card-dark);
+        }
+
         body {
             font-family: 'Inter', sans-serif;
-            background: linear-gradient(to right, #f0f4f8, #d9e2ec);
             margin: 0;
-            padding: 0;
+            background-color: var(--bg-light);
+            transition: background-color 0.3s ease;
         }
 
         .navbar {
@@ -26,14 +47,32 @@
 
         .navbar h1 {
             font-size: 24px;
-            margin: 0;
         }
 
-        .navbar a {
+        .navbar-right {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .user-avatar {
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            background-color: #16a085;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
             color: white;
-            margin-left: 20px;
-            text-decoration: none;
-            font-weight: 500;
+        }
+
+        .dark-toggle {
+            cursor: pointer;
+            background: none;
+            border: none;
+            color: white;
+            font-size: 18px;
         }
 
         .dashboard {
@@ -46,16 +85,16 @@
         }
 
         .card {
-            background-color: white;
+            background-color: var(--card-light);
             border-radius: 12px;
             padding: 30px;
             box-shadow: 0 10px 25px rgba(0, 0, 0, 0.07);
             text-align: center;
-            transition: transform 0.3s ease;
+            transition: transform 0.3s ease, background-color 0.3s ease;
         }
 
         .card:hover {
-            transform: translateY(-5px);
+            transform: translateY(-8px);
         }
 
         .card i {
@@ -67,15 +106,13 @@
         .card h3 {
             margin-bottom: 10px;
             font-size: 20px;
-            color: #34495e;
         }
 
         .card p {
             margin-bottom: 20px;
-            color: #555;
         }
 
-        .blue-button, .red-button {
+        .blue-button {
             background-color: #4a90e2;
             color: white;
             border: none;
@@ -83,7 +120,6 @@
             border-radius: 8px;
             font-size: 16px;
             cursor: pointer;
-            transition: background-color 0.3s;
         }
 
         .blue-button:hover {
@@ -92,6 +128,11 @@
 
         .red-button {
             background-color: #e74c3c;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 6px;
+            cursor: pointer;
         }
 
         .red-button:hover {
@@ -109,81 +150,92 @@
         .success {
             background-color: #eafaf1;
             color: #27ae60;
-            border: 1px solid #27ae60;
         }
 
         .error {
             background-color: #fdecea;
             color: #e74c3c;
-            border: 1px solid #e74c3c;
         }
 
-        .username {
-            color: #16a085;
-            font-weight: 600;
+        @media (max-width: 600px) {
+            .navbar {
+                flex-direction: column;
+                text-align: center;
+                gap: 10px;
+            }
+
+            .navbar-right {
+                flex-direction: column;
+            }
         }
     </style>
 </head>
-<body>
+<body data-theme="light">
+    <header class="navbar" role="banner">
+        <h1>SwapTicket</h1>
+        <div class="navbar-right">
+            <div class="user-avatar" th:text="${userName.substring(0,1)}">U</div>
+            <span aria-label="Logged in user">Welcome, <strong th:text="${userName}">User</strong></span>
+            <a th:href="@{/logout}" class="red-button">Logout</a>
+        </div>
+    </header>
 
-<div class="navbar">
-    <h1>SwapTicket</h1>
-    <div>
-        <span>Welcome, <span class="username" th:text="${userName}">User</span>!</span>
-        <a th:href="@{/logout}" class="red-button">Logout</a>
+    <div class="message success" th:if="${successMessage}">
+        <p th:text="${successMessage}"></p>
     </div>
-</div>
-
-<div class="message success" th:if="${successMessage}">
-    <p th:text="${successMessage}"></p>
-</div>
-<div class="message error" th:if="${error}">
-    <p th:text="${error}"></p>
-</div>
-
-<div class="dashboard">
-    <div class="card" data-aos="fade-up">
-        <i class="fas fa-wallet"></i>
-        <h3>Wallet Balance</h3>
-        <p>₹<span th:text="${walletBalance}">0.00</span></p>
+    <div class="message error" th:if="${error}">
+        <p th:text="${error}"></p>
     </div>
 
-    <div class="card" data-aos="fade-up">
-        <i class="fas fa-ticket-alt"></i>
-        <h3>List Tickets</h3>
-        <form th:action="@{/tickets/my-tickets}" method="get">
-            <button type="submit" class="blue-button">View</button>
-        </form>
-    </div>
+    <main class="dashboard" role="main">
+        <div class="card" data-aos="fade-up">
+            <i class="fas fa-wallet"></i>
+            <h3>Wallet Balance</h3>
+            <p>₹<span th:text="${walletBalance}">0.00</span></p>
+        </div>
 
-    <div class="card" data-aos="fade-up">
-        <i class="fas fa-shopping-cart"></i>
-        <h3>Purchased Tickets</h3>
-        <form th:action="@{/tickets/my-purchases}" method="get">
-            <button type="submit" class="blue-button">View</button>
-        </form>
-    </div>
+        <div class="card" data-aos="fade-up">
+            <i class="fas fa-ticket-alt"></i>
+            <h3>List Tickets</h3>
+            <form th:action="@{/tickets/my-tickets}" method="get">
+                <button type="submit" class="blue-button">View</button>
+            </form>
+        </div>
 
-    <div class="card" data-aos="fade-up">
-        <i class="fas fa-upload"></i>
-        <h3>Sell Ticket</h3>
-        <form th:action="@{/user/sell}" method="get">
-            <button type="submit" class="blue-button">Sell</button>
-        </form>
-    </div>
+        <div class="card" data-aos="fade-up">
+            <i class="fas fa-shopping-cart"></i>
+            <h3>Purchased Tickets</h3>
+            <form th:action="@{/tickets/my-purchases}" method="get">
+                <button type="submit" class="blue-button">View</button>
+            </form>
+        </div>
 
-    <div class="card" data-aos="fade-up">
-        <i class="fas fa-search"></i>
-        <h3>Buy Ticket</h3>
-        <form th:action="@{/tickets/buy}" method="get">
-            <button type="submit" class="blue-button">Buy</button>
-        </form>
-    </div>
-</div>
+        <div class="card" data-aos="fade-up">
+            <i class="fas fa-upload"></i>
+            <h3>Sell Ticket</h3>
+            <form th:action="@{/user/sell}" method="get">
+                <button type="submit" class="blue-button">Sell</button>
+            </form>
+        </div>
 
-<script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
-<script>
-  AOS.init();
-</script>
+        <div class="card" data-aos="fade-up">
+            <i class="fas fa-search"></i>
+            <h3>Buy Ticket</h3>
+            <form th:action="@{/tickets/buy}" method="get">
+                <button type="submit" class="blue-button">Buy</button>
+            </form>
+        </div>
+    </main>
+
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script>
+        AOS.init();
+
+        function toggleTheme() {
+            const body = document.body;
+            const current = body.getAttribute("data-theme");
+            body.setAttribute("data-theme", current === "light" ? "dark" : "light");
+        }
+    </script>
 </body>
 </html>

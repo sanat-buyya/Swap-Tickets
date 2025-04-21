@@ -44,10 +44,10 @@ public class UserController {
                             @RequestParam String password,
                             Model model,
                             HttpSession session) {
-    	if (username.equals("admin@swapticket.com") && password.equals("admin")) { // use your configured password
-            session.setAttribute("admin", true);
-            return "redirect:/admin/dashboard";
-        }
+    	if (username.equals("admin@swapticket.com") && password.equals("admin")) {
+    	    session.setAttribute("admin", true);
+    	    return "redirect:/admin/dashboard";
+    	}
 
         User user = userService.findByEmail(username);
         

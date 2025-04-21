@@ -3,102 +3,130 @@
 <head>
     <meta charset="UTF-8">
     <title>Login - SwapTicket</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- Google Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome (Optional for icons) -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+
     <style>
-    body {
-        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        background-color: #eef2f3;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        height: 100vh;
-        margin: 0;
-    }
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #f0f4f8, #d9e4ec);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            padding: 20px;
+        }
 
-    .login-container {
-        background: #fff;
-        padding: 30px 40px;
-        border-radius: 12px;
-        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
-        width: 100%;
-        max-width: 400px;
-        text-align: center;
-    }
+        .login-container {
+            background: white;
+            padding: 30px 25px;
+            border-radius: 12px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+        }
 
-    h2 {
-        color: #333;
-        margin-bottom: 25px;
-    }
+        h2 {
+            color: #2c3e50;
+            margin-bottom: 25px;
+        }
 
-    input[type="text"],
-    input[type="password"] {
-        width: 100%;
-        padding: 12px;
-        margin: 10px 0;
-        border: 1px solid #ccc;
-        border-radius: 6px;
-        box-sizing: border-box;
-        font-size: 15px;
-    }
+        input[type="text"],
+        input[type="password"] {
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            font-size: 15px;
+            box-sizing: border-box;
+        }
 
-    button {
-        background-color: #28a745;
-        color: #fff;
-        padding: 12px;
-        border: none;
-        border-radius: 6px;
-        cursor: pointer;
-        font-size: 16px;
-        width: 100%;
-        margin-top: 10px;
-    }
+        button {
+            background-color: #4a90e2;
+            color: white;
+            padding: 12px;
+            width: 100%;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 10px;
+            transition: background-color 0.3s;
+        }
 
-    button:hover {
-        background-color: #218838;
-    }
+        button:hover {
+            background-color: #357ab8;
+        }
 
-    .error {
-        color: red;
-        margin-top: 10px;
-        font-size: 14px;
-    }
+        .error {
+            color: red;
+            margin-top: 10px;
+            font-size: 14px;
+        }
 
-    .login-container p {
-        font-size: 14px;
-        margin-top: 15px;
-    }
+        .login-container p {
+            font-size: 14px;
+            margin-top: 15px;
+        }
 
-    a {
-        color: #007bff;
-        text-decoration: none;
-    }
+        a {
+            color: #4a90e2;
+            text-decoration: none;
+            font-weight: 500;
+        }
 
-    a:hover {
-        text-decoration: underline;
-    }
+        a:hover {
+            text-decoration: underline;
+        }
 
-    .register-link {
-        margin-top: 10px;
-    }
-</style>
+        .register-link {
+            margin-top: 10px;
+        }
 
+        @media (max-width: 480px) {
+            .login-container {
+                padding: 20px;
+            }
+
+            h2 {
+                font-size: 22px;
+            }
+
+            input,
+            button {
+                font-size: 14px;
+            }
+        }
+    </style>
 </head>
 <body>
+
 <div class="login-container">
     <h2>Login</h2>
+
     <div th:if="${param.logout}">
-    <p style="color: green;">You have been logged out successfully.</p>
-</div>
-    
+        <p style="color: green;">You have been logged out successfully.</p>
+    </div>
+
     <form th:action="@{/login}" method="post">
         <input type="text" name="username" placeholder="Email" required><br>
         <input type="password" name="password" placeholder="Password" required><br>
         <div th:if="${loginError}" class="error" th:text="${loginError}"></div>
         <button type="submit">Login</button>
     </form>
-    
-    <p><a th:href="@{/forgot-password}">Forgot Password</a></p>
-    
+
+    <p><a th:href="@{/forgot-password}">Forgot Password?</a></p>
     <p class="register-link">Don't have an account? <a th:href="@{/register}">Register here</a></p>
 </div>
+
 </body>
 </html>

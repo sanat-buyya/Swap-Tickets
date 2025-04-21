@@ -2,192 +2,180 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <title>Buy Tickets</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
-    body {
-        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        margin: 30px;
-        background-color: #f5f5f5;
-        color: #333;
-    }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f5f5f5;
+            padding: 20px;
+            color: #333;
+        }
 
-    h2 {
-        text-align: center;
-        color: #2c3e50;
-        margin-bottom: 20px;
-    }
+        h2 {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 20px;
+        }
 
-    form {
-        text-align: center;
-        margin-bottom: 20px;
-    }
+        form {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
 
-    form label {
-        margin: 0 10px;
-        font-weight: bold;
-    }
+        input[type="text"], select {
+            padding: 8px;
+            border-radius: 4px;
+            border: 1px solid #ccc;
+            min-width: 150px;
+        }
 
-    input[type="text"], select {
-        padding: 6px;
-        margin: 0 5px;
-        border-radius: 4px;
-        border: 1px solid #ccc;
-        min-width: 100px;
-    }
+        button {
+            padding: 8px 16px;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
 
-    button {
-        padding: 7px 14px;
-        background-color: #3498db;
-        color: white;
-        border: none;
-        border-radius: 4px;
-        cursor: pointer;
-        transition: background-color 0.2s;
-    }
+        button:hover {
+            background-color: #2980b9;
+        }
 
-    button:hover {
-        background-color: #2980b9;
-    }
+        .ticket-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            justify-content: center;
+        }
 
-    .active button {
-        background-color: lightgreen;
-        font-weight: bold;
-    }
+        .ticket-card {
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            width: 100%;
+            max-width: 360px;
+            box-sizing: border-box;
+        }
 
-    table {
-        width: 100%;
-        border-collapse: collapse;
-        background-color: white;
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-    }
+        .ticket-card h3 {
+            margin-top: 0;
+            color: #2c3e50;
+        }
 
-    th {
-        background-color: #2c3e50;
-        color: white;
-        padding: 10px;
-    }
+        .ticket-card p {
+            margin: 5px 0;
+        }
 
-    td {
-        padding: 8px;
-        border: 1px solid #ccc;
-        text-align: center;
-    }
+        .sold-tag {
+            color: red;
+            font-weight: bold;
+        }
 
-    tr:nth-child(even) {
-        background-color: #f9f9f9;
-    }
+        .available-tag {
+            color: green;
+            font-weight: bold;
+        }
 
-    tr:hover {
-        background-color: #eef;
-    }
+        .ticket-card button {
+            margin-top: 10px;
+            width: 100%;
+        }
 
-    .sold-tag {
-        color: red;
-        font-weight: bold;
-    }
+        .back-button {
+            background-color: #95a5a6;
+        }
 
-    .available-tag {
-        color: green;
-        font-weight: bold;
-    }
+        .back-button:hover {
+            background-color: #7f8c8d;
+        }
 
-    a button {
-        background-color: #95a5a6;
-    }
+        @media (min-width: 768px) {
+            .ticket-card {
+                flex: 1 0 45%;
+            }
+        }
 
-    a button:hover {
-        background-color: #7f8c8d;
-    }
-</style>
-
-<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
-
+        @media (min-width: 1024px) {
+            .ticket-card {
+                flex: 1 0 30%;
+            }
+        }
+    </style>
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 </head>
 <body>
-    <h2>Buy Available Tickets</h2>
-	
-	
-	
-   <form method="get" action="/tickets/buy" style="text-align: center; margin-bottom: 20px;">
-    <label>From: <input type="text" name="fromStation" th:value="${fromStation}"/></label>
-    <label>To: <input type="text" name="toStation" th:value="${toStation}"/></label>
-    <label>PNR: <input type="text" name="pnr" th:value="${pnr}"/></label>
+
+<h2>Buy Available Tickets</h2>
+
+<form method="get" action="/tickets/buy">
+    <input type="text" name="fromStation" placeholder="From" th:value="${fromStation}" />
+    <input type="text" name="toStation" placeholder="To" th:value="${toStation}" />
+    <input type="text" name="pnr" placeholder="PNR" th:value="${pnr}" />
     <select name="filter">
-    	<option value="sold" th:selected="${filter == 'sold'}">Sold</option>
+        <option value="" th:selected="${filter == null}">All</option>
+        <option value="sold" th:selected="${filter == 'sold'}">Sold</option>
         <option value="available" th:selected="${filter == 'available'}">Available</option>
-        
     </select>
     <button type="submit">Search</button>
 </form>
 
-	<h3>*Before the buy the ticket please conform the ticket using PNR
-	<a href="https://www.indianrail.gov.in/enquiry/PNR/PnrEnquiry.html?locale=en" target="_blank">CLICK HERE</a> TO CHECK PNR STATUS</h3>
-	
-	<!-- Flash message -->
+<h3 style="text-align:center;">*Confirm your ticket using PNR before buying: 
+    <a href="https://www.indianrail.gov.in/enquiry/PNR/PnrEnquiry.html?locale=en" target="_blank">Click here</a>
+</h3>
+
+<!-- Flash Message -->
 <div th:if="${error}" class="alert alert-danger" role="alert">
     <span th:text="${error}"></span>
 </div>
-	
-	    <table>
-        <thead>
-            <tr>
-                <th>Train Number</th>
-                <th>Gender</th>
-                <th>From</th>
-                <th>To</th>
-                <th>Date</th>
-                <th>Class</th>
-                <th>PNR</th>
-                <th>Tickets</th>
-                <th>Age</th>
-                <th>Price</th>
-                <th>Status</th>
-                <th>Passenger Names</th>
-                <th>Ticket & Aadhar Image </th>
-                <th>Action</th>
-            </tr>
-        </thead>
-        <tbody>
-        <tr th:each="ticket : ${tickets}">
-            <td th:text="${ticket.trainNumber}">12345</td>
-            <td th:text="${ticket.gender}">Gender</td>
-            <td th:text="${ticket.fromStation}">From</td>
-            <td th:text="${ticket.toStation}">To</td>
-            <td th:text="${ticket.dateOfJourney}">2025-04-15</td>
-            <td th:text="${ticket.classType}">SL</td>
-            <td th:text="${ticket.pnrNumber}">9876543210</td>
-            <td th:text="${ticket.numberOfTickets}">2</td>
-            <td th:text="${ticket.age}">30</td>
-            <td th:text="${ticket.price+20}">500.0</td> 
-            <td th:text="${ticket.sold} ? 'Sold' : 'Available'">Status</td>
 
-      <!-- Passenger Names -->
-			<td>
-    			<span th:if="${ticket.sold}"><b style="color: red">SOLD</b></span>
-    			<span th:unless="${ticket.sold}"><b style="color: green">Buy to view details</b></span>
-			</td>
+<!-- Ticket Cards -->
+<div class="ticket-container">
+    <div class="ticket-card" th:each="ticket : ${tickets}"
+         th:if="${filter == null or (filter == 'sold' and ticket.sold) or (filter == 'available' and !ticket.sold)}">
+        <h3 th:text="'Train: ' + ${ticket.trainNumber} + ' (' + ${ticket.classType} + ')'"></h3>
+        <p><strong>From:</strong> <span th:text="${ticket.fromStation}">From</span></p>
+        <p><strong>To:</strong> <span th:text="${ticket.toStation}">To</span></p>
+        <p><strong>Date:</strong> <span th:text="${ticket.dateOfJourney}">2025-04-15</span></p>
+        <p><strong>PNR:</strong> <span th:text="${ticket.pnrNumber}">9876543210</span></p>
+        <p><strong>Gender:</strong> <span th:text="${ticket.gender}">Male</span></p>
+        <p><strong>Tickets:</strong> <span th:text="${ticket.numberOfTickets}">2</span></p>
+        <p><strong>Age:</strong> <span th:text="${ticket.age}">30</span></p>
+        <p><strong>Price:</strong> ₹<span th:text="${ticket.price + 20}" >500</span></p>
+        <p><strong>Status:</strong>
+            <span th:if="${ticket.sold}" class="sold-tag">Sold</span>
+            <span th:unless="${ticket.sold}" class="available-tag">Available</span>
+        </p>
 
-		<!-- Ticket Image -->
-			<td>
-				<span th:if="${ticket.sold}"><b style="color: red">SOLD</b></span>
-   			 	<span th:unless="${ticket.sold}"><b style="color: green">Buy to view details</b></span>
-			</td>
+        <p><strong>Passenger Details:</strong>
+            <span th:if="${ticket.sold}"> SOLD </span>
+            <span th:unless="${ticket.sold}">Buy to view</span>
+        </p>
 
-      <td th:if="${!ticket.sold}">
-    <button type="button" th:onclick="'startPayment(' + ${ticket.id} + ',' + (${ticket.price + 20}) + ')'">Buy</button>
-</td>
+        <p><strong>Images:</strong>
+            <span th:if="${ticket.sold}">Uploaded</span>
+            <span th:unless="${ticket.sold}">Buy to view</span>
+        </p>
 
-<td th:if="${ticket.sold}">
-    <span>Already Sold</span>
-</td>
-        </tr>
-        </tbody>
-    </table>
-    
-    <script>
+        <div th:if="${!ticket.sold}">
+            <button type="button"
+                    th:onclick="'startPayment(' + ${ticket.id} + ',' + (${ticket.price + 20}) + ')'">Buy</button>
+        </div>
+        <div th:if="${ticket.sold}">
+            <button disabled class="back-button">Already Sold</button>
+        </div>
+    </div>
+</div>
+
+<script>
     function startPayment(ticketId, amount) {
         var options = {
-            "key": "rzp_test_HkFY3rSv7zcCnX", // Replace with your actual Razorpay key
-            "amount": amount * 100, // Amount in paisa
+            "key": "rzp_test_HkFY3rSv7zcCnX",
+            "amount": amount * 100,
             "currency": "INR",
             "name": "SwapTicket",
             "description": "Ticket Purchase",
@@ -205,9 +193,11 @@
         rzp.open();
     }
 </script>
-    
-    <br/>
-    <a th:href="@{/user/home}"><button>Back</button></a>
+
+<br/>
+<div style="text-align:center;">
+    <a th:href="@{/user/home}"><button class="back-button">Back</button></a>
+</div>
 
 </body>
 </html>

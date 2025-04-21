@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Withdraw Funds - SwapTicket</title>
+    <link rel="stylesheet" th:href="@{/css/admin.css}" />
+    <style>
+        .withdraw-form-container {
+            max-width: 600px;
+            margin: 40px auto;
+            padding: 30px;
+            background-color: #f9f9f9;
+            border-radius: 12px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .withdraw-form-container h2 {
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        label {
+            display: block;
+            margin-top: 12px;
+            font-weight: bold;
+        }
+
+        input[type="text"], input[type="number"] {
+            width: 100%;
+            padding: 10px;
+            margin-top: 6px;
+            border-radius: 6px;
+            border: 1px solid #ccc;
+        }
+
+        .withdraw-button {
+            margin-top: 20px;
+            padding: 10px 20px;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-weight: bold;
+            cursor: pointer;
+            width: 100%;
+        }
+
+        .withdraw-button:hover {
+            background-color: #218838;
+        }
+    </style>
+</head>
+<body>
+<div class="withdraw-form-container">
+    <h2>Withdraw Funds</h2>
+
+    <form th:action="@{'/admin/withdraw/' + ${wallet.id}}" method="post">
+        <p><strong>Email:</strong> <span th:text="${wallet.email}">wallet@example.com</span></p>
+        <p><strong>Balance:</strong> ₹<span th:text="${wallet.balance}">0.00</span></p>
+
+        <label for="amount">Withdraw Amount (₹):</label>
+        <input type="number" name="amount" min="1" required />
+
+        <label for="accountNumber">Account Number:</label>
+        <input type="text" name="accountNumber" required />
+
+        <label for="accountHolder">Account Holder Name:</label>
+        <input type="text" name="accountHolder" required />
+
+        <label for="bankName">Bank Name:</label>
+        <input type="text" name="bankName" required />
+
+        <label for="ifscCode">IFSC Code:</label>
+        <input type="text" name="ifscCode" required />
+
+        <label for="remarks">Remarks (optional):</label>
+        <input type="text" name="remarks" />
+
+        <button type="submit" class="withdraw-button">Confirm Withdrawal</button>
+        
+    </form>
+    <br><button ><a href="/admin/wallets">Back</a></button>
+</div>
+</body>
+</html>

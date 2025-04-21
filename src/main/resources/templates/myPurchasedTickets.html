@@ -2,96 +2,126 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <title>My Purchased Tickets</title>
-<style>
-    body {
-        font-family: 'Poppins', sans-serif;
-        background: linear-gradient(to right, #ece9e6, #ffffff);
-        margin: 0;
-        padding: 40px;
-    }
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(to right, #ece9e6, #ffffff);
+            margin: 0;
+            padding: 40px 20px;
+        }
 
-    h2 {
-        text-align: center;
-        color: #2c3e50;
-        font-size: 32px;
-        margin-bottom: 30px;
-    }
+        h2 {
+            text-align: center;
+            color: #2c3e50;
+            font-size: 32px;
+            margin-bottom: 30px;
+        }
 
-    table {
-        width: 100%;
-        border-collapse: collapse;
-        background-color: #ffffff;
-        border-radius: 12px;
-        overflow: hidden;
-        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
-    }
+        /* Desktop Table */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background-color: #ffffff;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
 
-    th, td {
-        padding: 16px 20px;
-        text-align: center;
-    }
+        th, td {
+            padding: 16px 20px;
+            text-align: center;
+        }
 
-    thead {
-        background-color: #4a90e2;
-        color: white;
-        font-weight: 600;
-        text-transform: uppercase;
-    }
+        thead {
+            background-color: #4a90e2;
+            color: white;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
 
-    tbody tr:nth-child(even) {
-        background-color: #f2f6fc;
-    }
+        tbody tr:nth-child(even) {
+            background-color: #f2f6fc;
+        }
 
-    tbody tr:hover {
-        background-color: #e1ebf7;
-        transition: background-color 0.3s ease;
-    }
+        tbody tr:hover {
+            background-color: #e1ebf7;
+            transition: background-color 0.3s ease;
+        }
 
-    td {
-        color: #2c3e50;
-        font-size: 14px;
-    }
+        td {
+            color: #2c3e50;
+            font-size: 14px;
+        }
 
-    a {
-        color: #4a90e2;
-        font-weight: 600;
-        text-decoration: none;
-    }
+        a {
+            color: #4a90e2;
+            font-weight: 600;
+            text-decoration: none;
+        }
 
-    a:hover {
-        text-decoration: underline;
-    }
+        a:hover {
+            text-decoration: underline;
+        }
 
-    button {
-        display: inline-block;
-        margin: 30px auto;
-        padding: 12px 24px;
-        font-size: 16px;
-        background: #4a90e2;
-        color: white;
-        border: none;
-        border-radius: 6px;
-        cursor: pointer;
-        transition: background 0.3s ease;
-    }
+        button {
+            display: inline-block;
+            margin: 30px auto;
+            padding: 12px 24px;
+            font-size: 16px;
+            background: #4a90e2;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
 
-    button:hover {
-        background: #357ab8;
-    }
+        button:hover {
+            background: #357ab8;
+        }
 
-    .no-data {
-        text-align: center;
-        padding: 40px;
-        color: #888;
-        font-size: 18px;
-    }
-</style>
+        .no-data {
+            text-align: center;
+            padding: 40px;
+            color: #888;
+            font-size: 18px;
+        }
 
-    
+        /* Mobile Card Layout */
+        .ticket-card {
+            display: none;
+            background: #fff;
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 20px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+        }
+
+        .ticket-card p {
+            margin: 8px 0;
+            font-size: 15px;
+        }
+
+        .ticket-card strong {
+            color: #2c3e50;
+        }
+
+        @media (max-width: 768px) {
+            table {
+                display: none;
+            }
+
+            .ticket-card {
+                display: block;
+            }
+        }
+    </style>
 </head>
 <body>
     <h2>My Purchased Tickets</h2>
-	
+
+    <!-- Desktop Table -->
     <table>
         <thead>
             <tr>
@@ -120,18 +150,40 @@
                 <td>₹<span th:text="${ticket.price}">Price</span></td>
                 <td th:text="${ticket.passengerNames}">Names</td>
                 <td>
-                    <a th:if="${ticket.ticketImagePath != null}" th:href="@{'/uploads/' + ${ticket.ticketImagePath}}" target="_blank">View</a>
-                    <span th:if="${ticket.ticketImagePath == null}">No Image</span>
+                    <a th:if="${ticket.ticketImagePath != null}" th:href="${ticket.ticketImagePath}" target="_blank">View</a>
+                    <span th:if="${ticket.ticketImagePath == null}">No File</span>
                 </td>
                 <td>
-    				<a th:if="${ticket.originalDocumentPath != null}" th:href="@{'/uploads/' + ${ticket.originalDocumentPath}}" target="_blank">View Doc</a>
-    				<span th:if="${ticket.originalDocumentPath == null}">No Doc</span>
-				</td>
+                    <a th:if="${ticket.originalDocumentPath != null}" th:href="${ticket.originalDocumentPath}" target="_blank">View Doc</a>
+                    <span th:if="${ticket.originalDocumentPath == null}">No Doc</span>
+                </td>
             </tr>
         </tbody>
     </table>
 
-    <br>
-    <a href="/user/home"><button>Back</button></a>
+    <!-- Mobile Card View -->
+    <div th:each="ticket : ${tickets}" class="ticket-card">
+        <p><strong>Train:</strong> <span th:text="${ticket.trainNumber} + ' - ' + ${ticket.trainName}">Train</span></p>
+        <p><strong>From:</strong> <span th:text="${ticket.fromStation}">From</span></p>
+        <p><strong>To:</strong> <span th:text="${ticket.toStation}">To</span></p>
+        <p><strong>Date:</strong> <span th:text="${ticket.dateOfJourney}">Date</span></p>
+        <p><strong>Seat:</strong> <span th:text="${ticket.seatNumber}">Seat</span></p>
+        <p><strong>Gender:</strong> <span th:text="${ticket.gender}">Gender</span></p>
+        <p><strong>PNR:</strong> <span th:text="${ticket.pnrNumber}">PNR</span></p>
+        <p><strong>Price:</strong> ₹<span th:text="${ticket.price}">Price</span></p>
+        <p><strong>Passenger Names:</strong> <span th:text="${ticket.passengerNames}">Names</span></p>
+        <p><strong>Ticket Image:</strong>
+            <a th:if="${ticket.ticketImagePath != null}" th:href="${ticket.ticketImagePath}" target="_blank">View</a>
+            <span th:if="${ticket.ticketImagePath == null}">No File</span>
+        </p>
+        <p><strong>Original Document:</strong>
+            <a th:if="${ticket.originalDocumentPath != null}" th:href="${ticket.originalDocumentPath}" target="_blank">View Doc</a>
+            <span th:if="${ticket.originalDocumentPath == null}">No Doc</span>
+        </p>
+    </div>
+
+    <div style="text-align: center;">
+        <a href="/user/home"><button>Back</button></a>
+    </div>
 </body>
 </html>

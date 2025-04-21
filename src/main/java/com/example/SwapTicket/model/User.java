@@ -17,8 +17,8 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Size(min = 3, max = 15, message = "* It Should be between 3~15 charecters")
-	private String name;
+    @Size(min = 3, max = 15, message = "* It should be between 3–15 characters")
+    private String name;
 
     @NotBlank(message = "Email is required")
     @Email(message = "Invalid email format")
@@ -26,21 +26,26 @@ public class User {
     private String email;
 
     @NotBlank(message = "Mobile number is required")
-    @DecimalMin(value = "6000000000", message = "* It should be Proper Mobile Number")
-	@DecimalMax(value = "9999999999", message = "* It should be Proper Mobile Number")
-	private String mobile;
+    @Pattern(regexp = "^[6-9]\\d{9}$", message = "* It should be a proper 10-digit Indian mobile number")
+    private String mobile;
 
-    @Past(message = "* Enter Proper DOB")
-	@NotNull(message = "* It is Required Field")
-	private LocalDate dob;
+    @Past(message = "* Enter a valid date of birth")
+    @NotNull(message = "* DOB is required")
+    private LocalDate dob;
 
     @NotBlank(message = "Password is required")
-    @Pattern(regexp = "^.*(?=.{8,})(?=..*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=]).*$", message = "* It should be One Uppercase, One Lowercase, One Number, One Special Chrecter,Minium 8 charecters")
-	private String password;
+    @Pattern(
+        regexp = "^.*(?=.{8,})(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=]).*$",
+        message = "* Password must have 1 uppercase, 1 lowercase, 1 number, 1 special character, and be at least 8 characters long"
+    )
+    private String password;
 
     @Transient
-	@Pattern(regexp = "^.*(?=.{8,})(?=..*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=]).*$", message = "* It should be One Uppercase, One Lowercase, One Number, One Special Chrecter,Minium 8 charecters")
-	private String confirmPassword;
+    @Pattern(
+        regexp = "^.*(?=.{8,})(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=]).*$",
+        message = "* Confirm password must match password rules"
+    )
+    private String confirmPassword;
 
 	public Long getId() {
 		return id;
@@ -98,10 +103,11 @@ public class User {
 		this.confirmPassword = confirmPassword;
 	}
 
-	
+	@Override
+	public String toString() {
+		return "User [id=" + id + ", name=" + name + ", email=" + email + ", mobile=" + mobile + ", dob=" + dob
+				+ ", password=" + password + ", confirmPassword=" + confirmPassword + "]";
+	}
     
     
 }
-
-
-
