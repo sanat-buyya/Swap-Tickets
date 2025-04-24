@@ -41,6 +41,10 @@ public class Ticket {
     private String sellerEmail;
     
     private String gender;
+    
+    @Transient 
+    private String sellerMobile;
+
     // --- Getters and Setters ---
     
     @Column(nullable = false, columnDefinition = "BOOLEAN DEFAULT FALSE")
@@ -235,7 +239,15 @@ public class Ticket {
      this.buyerEmail = buyerEmail;
     }
 
+    
 
+	public String getSellerMobile() {
+		return sellerMobile;
+	}
+
+	public void setSellerMobile(String sellerMobile) {
+		this.sellerMobile = sellerMobile;
+	}
 
 	@Override
 	public String toString() {

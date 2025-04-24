@@ -8,14 +8,28 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
   <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet" />
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
 
     :root {
-      --main-bg: #f8fbfe;
+      --primary: #00bfa6;
+      --primary-dark: #009688;
+      --secondary: #4a90e2;
+      --accent: linear-gradient(135deg, var(--primary), var(--secondary));
+      --main-bg: #f5f7fa;
       --card-bg: #ffffff;
-      --accent: linear-gradient(135deg, #00bfa6, #4a90e2);
-      --text: #333;
-      --card-radius: 16px;
+      --text: #2d3748;
+      --text-light: #718096;
+      --card-radius: 12px;
+      --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.1);
+      --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
+      --shadow-lg: 0 10px 25px rgba(0, 0, 0, 0.1);
+      --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
     }
 
     body {
@@ -23,245 +37,621 @@
       font-family: 'Poppins', sans-serif;
       background-color: var(--main-bg);
       color: var(--text);
+      line-height: 1.6;
     }
 
+    /* Navbar Styles */
     .navbar {
       background: var(--accent);
       color: #fff;
-      padding: 1rem 2rem;
+      padding: 1rem 2.5rem;
       display: flex;
       justify-content: space-between;
       align-items: center;
       flex-wrap: wrap;
+      box-shadow: var(--shadow-md);
+      position: relative;
+      z-index: 100;
     }
 
     .navbar h1 {
-      font-size: 24px;
+      font-size: 1.75rem;
       font-weight: 600;
       margin: 0;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      z-index: 101;
+    }
+
+    .navbar h1 i {
+      font-size: 1.5rem;
+    }
+
+    .menu-toggle {
+      display: none;
+      background: none;
+      border: none;
+      color: white;
+      font-size: 1.5rem;
+      cursor: pointer;
+      z-index: 101;
+      padding: 0.5rem;
     }
 
     .navbar-right {
       display: flex;
       align-items: center;
-      gap: 12px;
+      gap: 20px;
       flex-wrap: wrap;
+      transition: var(--transition);
+    }
+
+    .user-info {
+      display: flex;
+      align-items: center;
+      gap: 12px;
     }
 
     .user-avatar {
-      width: 40px;
-      height: 40px;
-      background-color: #ffffff33;
+      width: 42px;
+      height: 42px;
+      background-color: rgba(255, 255, 255, 0.2);
       color: #fff;
       border-radius: 50%;
       display: flex;
       justify-content: center;
       align-items: center;
       font-weight: bold;
+      font-size: 1.1rem;
+      transition: var(--transition);
+    }
+
+    .user-avatar:hover {
+      transform: scale(1.05);
+      background-color: rgba(255, 255, 255, 0.3);
+    }
+
+    .username {
+      font-weight: 500;
+    }
+
+    .logout-btn {
+      background-color: rgba(255, 255, 255, 0.2);
+      color: white;
+      border: none;
+      padding: 8px 18px;
+      border-radius: 30px;
+      cursor: pointer;
+      font-size: 0.9rem;
+      font-weight: 500;
+      transition: var(--transition);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      text-decoration: none;
+    }
+
+    .logout-btn:hover {
+      background-color: rgba(255, 255, 255, 0.3);
+      transform: translateY(-1px);
+    }
+
+    .logout-btn i {
+      font-size: 0.9rem;
+    }
+
+    /* Mobile Menu Styles */
+    .mobile-menu {
+      display: none;
+      list-style: none;
+      width: 100%;
+      padding: 0;
+      margin: 0;
+    }
+
+    .mobile-menu li {
+      width: 100%;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .mobile-menu li:last-child {
+      border-bottom: none;
+    }
+
+    .mobile-menu .menu-item {
+      display: flex;
+      align-items: center;
+      padding: 1rem 1.5rem;
+      color: white;
+      text-decoration: none;
+      transition: var(--transition);
+      width: 100%;
+    }
+
+    .mobile-menu .menu-item:hover {
+      background-color: rgba(255, 255, 255, 0.1);
+    }
+
+    .mobile-menu .menu-item i {
+      margin-right: 12px;
+      font-size: 1.1rem;
+      width: 24px;
+      text-align: center;
+    }
+
+    /* Main Content Styles */
+    .container {
+      padding: 1.5rem;
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+
+    .welcome-section {
+      margin-bottom: 1.5rem;
+      text-align: center;
+    }
+
+    .welcome-title {
+      font-size: 1.6rem;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+      color: var(--text);
+      background: var(--accent);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      display: inline-block;
+    }
+
+    .welcome-subtitle {
+      font-size: 0.95rem;
+      color: var(--text-light);
+      max-width: 600px;
+      margin: 0 auto;
     }
 
     .dashboard {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
       gap: 20px;
-      padding: 30px 16px;
-      max-width: 1200px;
-      margin: auto;
     }
 
+    /* ATM-Style Wallet Card */
+    .wallet-card {
+      background: linear-gradient(135deg, #4e54c8, #8f94fb);
+      color: white;
+      border-radius: var(--card-radius);
+      padding: 1.5rem;
+      box-shadow: var(--shadow-md);
+      position: relative;
+      overflow: hidden;
+      min-height: 180px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .wallet-card::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      right: -50%;
+      width: 200%;
+      height: 200%;
+      background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0) 70%);
+      transform: rotate(30deg);
+    }
+
+    .wallet-card i {
+      font-size: 1.8rem;
+      color: rgba(255, 255, 255, 0.8);
+      margin-bottom: 0.5rem;
+      align-self: flex-end;
+    }
+
+    .wallet-card h3 {
+      font-size: 1rem;
+      font-weight: 500;
+      margin-bottom: 0.5rem;
+      color: rgba(255, 255, 255, 0.9);
+    }
+
+    .wallet-amount {
+      font-size: 1.8rem;
+      font-weight: 700;
+      margin: 0.5rem 0;
+    }
+
+    .wallet-card .button {
+      background: rgba(255, 255, 255, 0.2);
+      backdrop-filter: blur(5px);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      align-self: flex-start;
+      margin-top: 0.5rem;
+    }
+
+    .wallet-card .button:hover {
+      background: rgba(255, 255, 255, 0.3);
+    }
+
+    /* Standard Cards */
     .card {
       background-color: var(--card-bg);
       border-radius: var(--card-radius);
-      padding: 25px 20px;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+      padding: 1.5rem;
+      box-shadow: var(--shadow-sm);
       text-align: center;
-      transition: transform 0.3s ease;
+      transition: var(--transition);
+      border: 1px solid rgba(0, 0, 0, 0.05);
+      min-height: 180px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 4px;
+      background: var(--accent);
     }
 
     .card:hover {
-      transform: translateY(-6px);
+      transform: translateY(-5px);
+      box-shadow: var(--shadow-lg);
     }
 
     .card i {
-      font-size: 36px;
+      font-size: 1.8rem;
       background: var(--accent);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
-      margin-bottom: 12px;
+      margin-bottom: 0.5rem;
     }
 
     .card h3 {
-      font-size: 18px;
-      margin-bottom: 8px;
+      font-size: 1.1rem;
+      margin-bottom: 0.5rem;
+      font-weight: 600;
     }
 
     .card p {
-      font-size: 15px;
-      color: #666;
+      font-size: 0.85rem;
+      color: var(--text-light);
+      margin-bottom: 0.8rem;
     }
 
+    /* Button Styles */
     .button {
       background: var(--accent);
       border: none;
-      padding: 10px 20px;
+      padding: 0.6rem 1.2rem;
       color: #fff;
-      border-radius: 8px;
+      border-radius: 30px;
       cursor: pointer;
-      font-size: 15px;
-      margin-top: 10px;
+      font-size: 0.9rem;
+      font-weight: 500;
+      transition: var(--transition);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      min-width: 120px;
+      margin: 0 auto;
+    }
+
+    .button i {
+      font-size: 0.8rem;
+      -webkit-text-fill-color: white;
     }
 
     .button:hover {
-      opacity: 0.9;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0, 191, 166, 0.3);
     }
 
-    .logout-btn {
-      background-color: #e74c3c;
-      color: white;
-      border: none;
-      padding: 8px 15px;
-      border-radius: 6px;
-      cursor: pointer;
-      font-size: 14px;
-    }
-
+    /* Message Styles */
     .message {
-      max-width: 600px;
-      margin: 20px auto;
+      max-width: 800px;
+      margin: 1.5rem auto;
       text-align: center;
-      padding: 12px;
-      border-radius: 10px;
+      padding: 1rem 1.5rem;
+      border-radius: var(--card-radius);
+      font-size: 0.95rem;
+      box-shadow: var(--shadow-sm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
+
+    .message i {
+      font-size: 1.2rem;
     }
 
     .success {
-      background-color: #d4f9e3;
-      color: #2ecc71;
+      background-color: #f0fff4;
+      color: #2f855a;
+      border-left: 4px solid #38a169;
     }
 
     .error {
-      background-color: #fce4e4;
-      color: #e74c3c;
+      background-color: #fff5f5;
+      color: #c53030;
+      border-left: 4px solid #e53e3e;
     }
 
-    /* Enhanced mobile responsiveness */
-    @media (max-width: 768px) {
+    /* Responsive Styles */
+    @media (max-width: 992px) {
       .navbar {
-        flex-direction: column;
-        align-items: flex-start;
-        padding: 1rem;
+        padding: 1rem 1.5rem;
       }
+    }
 
-      .navbar h1 {
-        margin-bottom: 10px;
+    @media (max-width: 768px) {
+      .menu-toggle {
+        display: block;
       }
 
       .navbar-right {
-        width: 100%;
-        justify-content: space-between;
+        position: fixed;
+        top: 0;
+        right: -100%;
+        width: 70%;
+        max-width: 300px;
+        height: 100vh;
+        background: var(--accent);
+        flex-direction: column;
+        justify-content: flex-start;
+        padding: 5rem 0 2rem;
+        gap: 0;
+        box-shadow: -5px 0 15px rgba(0, 0, 0, 0.1);
+      }
+
+      .navbar-right.active {
+        right: 0;
+      }
+
+      .user-info, .logout-btn {
+        display: none;
+      }
+
+      .mobile-menu {
+        display: block;
+      }
+
+      .mobile-user-info {
+        display: flex;
+        align-items: center;
+        padding: 1.5rem;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+      }
+
+      .mobile-user-avatar {
+        width: 42px;
+        height: 42px;
+        background-color: rgba(255, 255, 255, 0.2);
+        color: #fff;
+        border-radius: 50%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-weight: bold;
+        font-size: 1.1rem;
+        margin-right: 12px;
+      }
+
+      .mobile-username {
+        font-weight: 500;
+        font-size: 1rem;
       }
 
       .dashboard {
-        grid-template-columns: 1fr;
-        padding: 20px 10px;
+        grid-template-columns: 1fr 1fr;
+        gap: 15px;
       }
-
-      .card {
-        padding: 20px 15px;
-      }
-
-      .card i {
-        font-size: 32px;
-      }
-
-      .card h3 {
-        font-size: 17px;
-      }
-
-      .button, .logout-btn {
-        font-size: 14px;
-        padding: 8px 16px;
+      
+      .welcome-title {
+        font-size: 1.4rem;
       }
     }
 
-    @media (max-width: 400px) {
+    @media (max-width: 576px) {
+      .dashboard {
+        grid-template-columns: 1fr;
+      }
+      
+      .card, .wallet-card {
+        min-height: 160px;
+        padding: 1.2rem;
+      }
+      
+      .wallet-amount {
+        font-size: 1.6rem;
+      }
+
+      .navbar h1 {
+        font-size: 1.4rem;
+      }
+
       .navbar-right {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 8px;
-      }
-
-      .card {
-        padding: 18px 12px;
-      }
-
-      .card h3 {
-        font-size: 16px;
+        width: 80%;
       }
     }
   </style>
 </head>
 <body>
   <div class="navbar">
-    <h1>SwapTicket</h1>
-    <div class="navbar-right">
-      <div class="user-avatar" th:text="${userName.substring(0,1)}">U</div>
-      <strong th:text="${userName}">User</strong>
-      <a th:href="@{/logout}" class="logout-btn">Logout</a>
+    <h1><i class="fas fa-ticket-alt"></i> SwapTicket</h1>
+    <button class="menu-toggle" id="menuToggle">
+      <i class="fas fa-bars"></i>
+    </button>
+    <div class="navbar-right" id="navbarRight">
+      <!-- Desktop version -->
+      <div class="user-info">
+        <div class="user-avatar" th:text="${userName.substring(0,1).toUpperCase()}">U</div>
+        <span class="username" th:text="${userName}">User</span>
+      </div>
+      <a th:href="@{/logout}" class="logout-btn">
+        <i class="fas fa-sign-out-alt"></i>
+        <span>Logout</span>
+      </a>
+
+      <!-- Mobile version -->
+      
+      <ul class="mobile-menu">
+        <li>
+          <a th:href="@{/tickets/my-tickets}" class="menu-item">
+            <i class="fas fa-ticket-alt"></i>
+            <span>My Tickets</span>
+          </a>
+        </li>
+        <li>
+          <a th:href="@{/tickets/my-purchases}" class="menu-item">
+            <i class="fas fa-shopping-cart"></i>
+            <span>Purchases</span>
+          </a>
+        </li>
+        <li>
+          <a th:href="@{/user/sell}" class="menu-item">
+            <i class="fas fa-upload"></i>
+            <span>Sell Ticket</span>
+          </a>
+        </li>
+        <li>
+          <a th:href="@{/tickets/buy}" class="menu-item">
+            <i class="fas fa-search"></i>
+            <span>Buy Ticket</span>
+          </a>
+        </li>
+        <li>
+          <a th:href="@{/wallet/withdraw}" class="menu-item">
+            <i class="fas fa-wallet"></i>
+            <span>Wallet</span>
+          </a>
+        </li>
+        <li>
+          <a th:href="@{/logout}" class="menu-item">
+            <i class="fas fa-sign-out-alt"></i>
+            <span>Logout</span>
+          </a>
+        </li>
+      </ul>
     </div>
   </div>
 
-  <div class="message success" th:if="${successMessage}">
-    <p th:text="${successMessage}"></p>
+  <div class="container">
+    <div class="welcome-section" data-aos="fade-up">
+      <h1 class="welcome-title">Welcome Back!</h1>
+      <p class="welcome-subtitle">Manage your tickets, wallet, and transactions all in one place</p>
+    </div>
+
+    <div class="message success" th:if="${successMessage}">
+      <i class="fas fa-check-circle"></i>
+      <p th:text="${successMessage}"></p>
+    </div>
+    <div class="message error" th:if="${error}">
+      <i class="fas fa-exclamation-circle"></i>
+      <p th:text="${error}"></p>
+    </div>
+
+    <main class="dashboard">
+      <div class="card wallet-card" data-aos="fade-up" data-aos-delay="100">
+        <i class="fas fa-wallet"></i>
+        <div>
+          <h3>Wallet Balance</h3>
+          <div class="wallet-amount">₹<span th:text="${walletBalance}">0.00</span></div>
+        </div>
+        <form th:action="@{/wallet/withdraw}" method="get">
+          <button class="button" type="submit">
+            <i class="fas fa-rupee-sign"></i>
+            <span>Withdraw</span>
+          </button>
+        </form>
+      </div>
+
+      <div class="card" data-aos="fade-up" data-aos-delay="150">
+        <i class="fas fa-ticket-alt"></i>
+        <h3>My Tickets</h3>
+        <p>View and manage your listed tickets</p>
+        <form th:action="@{/tickets/my-tickets}" method="get">
+          <button class="button">
+            <i class="fas fa-eye"></i>
+            <span>View</span>
+          </button>
+        </form>
+      </div>
+
+      <div class="card" data-aos="fade-up" data-aos-delay="200">
+        <i class="fas fa-shopping-cart"></i>
+        <h3>Purchased Tickets</h3>
+        <p>View tickets you've purchased</p>
+        <form th:action="@{/tickets/my-purchases}" method="get">
+          <button class="button">
+            <i class="fas fa-receipt"></i>
+            <span>View</span>
+          </button>
+        </form>
+      </div>
+
+      <div class="card" data-aos="fade-up" data-aos-delay="250">
+        <i class="fas fa-upload"></i>
+        <h3>Sell a Ticket</h3>
+        <p>List your IRCTC ticket for sale</p>
+        <form th:action="@{/user/sell}" method="get">
+          <button class="button">
+            <i class="fas fa-plus-circle"></i>
+            <span>Sell</span>
+          </button>
+        </form>
+      </div>
+
+      <div class="card" data-aos="fade-up" data-aos-delay="300">
+        <i class="fas fa-search"></i>
+        <h3>Buy a Ticket</h3>
+        <p>Find available tickets to purchase</p>
+        <form th:action="@{/tickets/buy}" method="get">
+          <button class="button">
+            <i class="fas fa-search-dollar"></i>
+            <span>Browse</span>
+          </button>
+        </form>
+      </div>
+    </main>
   </div>
-  <div class="message error" th:if="${error}">
-    <p th:text="${error}"></p>
-  </div>
-
-  <main class="dashboard">
-<div class="card" data-aos="fade-up"> 
-    <i class="fas fa-wallet"></i>
-    <h3>Wallet Balance</h3>
-    <p>₹<span th:text="${walletBalance}">0.00</span></p>
-    <form th:action="@{/wallet/withdraw}" method="get">
-    <button class="button" type="submit">Withdraw</button>
-</form>
-
-</div>
-
-    <div class="card" data-aos="fade-up">
-      <i class="fas fa-ticket-alt"></i>
-      <h3>My Tickets</h3>
-      <form th:action="@{/tickets/my-tickets}" method="get">
-        <button class="button">View</button>
-      </form>
-    </div>
-
-    <div class="card" data-aos="fade-up">
-      <i class="fas fa-shopping-cart"></i>
-      <h3>Purchased Tickets</h3>
-      <form th:action="@{/tickets/my-purchases}" method="get">
-        <button class="button">View</button>
-      </form>
-    </div>
-
-    <div class="card" data-aos="fade-up">
-      <i class="fas fa-upload"></i>
-      <h3>Sell a Ticket</h3>
-      <form th:action="@{/user/sell}" method="get">
-        <button class="button">Sell</button>
-      </form>
-    </div>
-
-    <div class="card" data-aos="fade-up">
-      <i class="fas fa-search"></i>
-      <h3>Buy a Ticket</h3>
-      <form th:action="@{/tickets/buy}" method="get">
-        <button class="button">Buy</button>
-      </form>
-    </div>
-  </main>
 
   <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
-  <script>AOS.init();</script>
+  <script>
+    // Initialize animations
+    AOS.init({
+      duration: 800,
+      once: true
+    });
+
+    // Mobile menu toggle functionality
+    const menuToggle = document.getElementById('menuToggle');
+    const navbarRight = document.getElementById('navbarRight');
+
+    menuToggle.addEventListener('click', (e) => {
+      e.stopPropagation();
+      navbarRight.classList.toggle('active');
+      menuToggle.innerHTML = navbarRight.classList.contains('active') 
+        ? '<i class="fas fa-times"></i>' 
+        : '<i class="fas fa-bars"></i>';
+    });
+
+    // Close menu when clicking outside on mobile
+    document.addEventListener('click', (e) => {
+      if (window.innerWidth <= 768) {
+        if (!navbarRight.contains(e.target) && e.target !== menuToggle) {
+          navbarRight.classList.remove('active');
+          menuToggle.innerHTML = '<i class="fas fa-bars"></i>';
+        }
+      }
+    });
+  </script>
 </body>
 </html>

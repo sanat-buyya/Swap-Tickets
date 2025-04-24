@@ -5,31 +5,126 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Email Verification</title>
 </head>
-<body style="margin: 0; padding: 0; font-family: Arial, sans-serif; background-color: #f4f4f4;">
-    <table role="presentation" width="100%" cellspacing="0" cellpadding="0">
+<body style="margin: 0; padding: 0; font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; background-color: #f8f9fa;">
+    <!-- Style Option 1: Modern Gradient -->
+    <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
         <tr>
-            <td style="padding: 20px 0; text-align: center; background-color: #ffffff;">
-                <div style="max-width: 600px; margin: 0 auto; padding: 20px;">
-                    <h1 style="color: #333333; margin-bottom: 20px;">Email Verification</h1>
-                    <p style="color: #666666; font-size: 16px; line-height: 1.5;">
-                        Hello <span th:text="${name}"></span>,
-                    </p>
-                    <p style="color: #666666; font-size: 16px; line-height: 1.5;">
-                        Thank you for registering. Please use the following OTP to verify your email address:
-                    </p>
-                    <div style="background-color: #f8f8f8; padding: 15px; margin: 25px 0; border-radius: 5px;">
-                        <h2 style="color: #333333; margin: 0; letter-spacing: 5px;" th:text="${otp}" ></h2>
-                    </div>
-                    <p style="color: #666666; font-size: 14px;">
-                        If you didn't request this verification, please ignore this email.
-                    </p>
-                    <hr style="border: 1px solid #eeeeee; margin: 20px 0;">
-                    <p style="color: #999999; font-size: 12px;">
-                        This is an automated message, please do not reply.
-                    </p>
-                </div>
+            <td style="padding: 40px 20px;">
+                <table align="center" role="presentation" cellspacing="0" cellpadding="0" width="600" style="margin: 0 auto; background-color: #ffffff; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); overflow: hidden;">
+                    <tr>
+                        <td style="padding: 40px 30px; text-align: center;">
+                            <img src="https://via.placeholder.com/150x50?text=Your+Logo" alt="Company Logo" style="height: 50px; margin-bottom: 20px;">
+                            <h1 style="color: #2d3748; margin: 0 0 20px; font-size: 28px; font-weight: 600;">Verify Your Email Address</h1>
+                            
+                            <p style="color: #4a5568; font-size: 16px; line-height: 1.6; margin: 0 0 20px;">
+                                Hello <span style="font-weight: 600; color: #2d3748;" th:text="${name}"></span>,
+                            </p>
+                            
+                            <p style="color: #4a5568; font-size: 16px; line-height: 1.6; margin: 0 0 30px;">
+                                Thank you for registering with us. Please use the following verification code to complete your registration:
+                            </p>
+                            
+                            <div style="background-color: #f7fafc; border: 1px dashed #cbd5e0; padding: 20px; margin: 0 auto 30px; border-radius: 8px; display: inline-block;">
+                                <h2 style="color: #2d3748; margin: 0; font-size: 32px; letter-spacing: 8px; font-weight: 700;" th:text="${otp}"></h2>
+                            </div>
+                            
+                            <p style="color: #718096; font-size: 14px; line-height: 1.6; margin: 0 0 30px;">
+                                This code will expire in 15 minutes. If you didn't request this, please ignore this email.
+                            </p>
+                            
+                            <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid #edf2f7;">
+                                <p style="color: #a0aec0; font-size: 12px; line-height: 1.5; margin: 0;">
+                                    © 2023 Your Company. All rights reserved.<br>
+                                    <a href="#" style="color: #667eea; text-decoration: none;">Privacy Policy</a> | 
+                                    <a href="#" style="color: #667eea; text-decoration: none;">Terms of Service</a>
+                                </p>
+                            </div>
+                        </td>
+                    </tr>
+                </table>
             </td>
         </tr>
     </table>
+
+    <!-- Style Option 2: Clean Minimalist -->
+    <!--
+    <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="background-color: #ffffff;">
+        <tr>
+            <td style="padding: 60px 20px;">
+                <table align="center" role="presentation" cellspacing="0" cellpadding="0" width="600" style="margin: 0 auto; border: 1px solid #e2e8f0; border-radius: 8px;">
+                    <tr>
+                        <td style="padding: 40px 30px; text-align: center;">
+                            <h1 style="color: #1a202c; margin: 0 0 25px; font-size: 24px; font-weight: 600;">Email Verification Required</h1>
+                            
+                            <p style="color: #4a5568; font-size: 16px; line-height: 1.6; margin: 0 0 15px;">
+                                Hello <span style="font-weight: 500;" th:text="${name}"></span>,
+                            </p>
+                            
+                            <p style="color: #4a5568; font-size: 16px; line-height: 1.6; margin: 0 0 30px;">
+                                Please enter the following verification code in your application:
+                            </p>
+                            
+                            <div style="background-color: #f8fafc; border: 1px solid #e2e8f0; padding: 15px; margin: 0 auto 30px; border-radius: 6px; display: inline-block;">
+                                <h2 style="color: #1a202c; margin: 0; font-size: 28px; letter-spacing: 5px; font-weight: 600;" th:text="${otp}"></h2>
+                            </div>
+                            
+                            <p style="color: #718096; font-size: 14px; line-height: 1.6; margin: 0 0 30px;">
+                                This code is valid for 15 minutes only.
+                            </p>
+                            
+                            <div style="margin-top: 40px; padding-top: 20px; border-top: 1px solid #edf2f7;">
+                                <p style="color: #a0aec0; font-size: 12px; line-height: 1.5; margin: 0;">
+                                    If you didn't request this email, you can safely ignore it.
+                                </p>
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
+    -->
+
+    <!-- Style Option 3: Colorful Card -->
+    <!--
+    <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="background-color: #f0f4f8;">
+        <tr>
+            <td style="padding: 40px 20px;">
+                <table align="center" role="presentation" cellspacing="0" cellpadding="0" width="600" style="margin: 0 auto; background-color: #ffffff; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); overflow: hidden;">
+                    <tr>
+                        <td style="background-color: #4299e1; padding: 20px; text-align: center;">
+                            <h1 style="color: #ffffff; margin: 0; font-size: 24px; font-weight: 600;">Verify Your Account</h1>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 40px 30px; text-align: center;">
+                            <p style="color: #4a5568; font-size: 16px; line-height: 1.6; margin: 0 0 15px;">
+                                Hi <span style="font-weight: 600; color: #2d3748;" th:text="${name}"></span>,
+                            </p>
+                            
+                            <p style="color: #4a5568; font-size: 16px; line-height: 1.6; margin: 0 0 30px;">
+                                Here's your verification code to complete your registration:
+                            </p>
+                            
+                            <div style="background-color: #ebf8ff; border-left: 4px solid #4299e1; padding: 20px; margin: 0 auto 30px; border-radius: 4px; display: inline-block;">
+                                <h2 style="color: #2b6cb0; margin: 0; font-size: 32px; letter-spacing: 5px; font-weight: 700;" th:text="${otp}"></h2>
+                            </div>
+                            
+                            <p style="color: #718096; font-size: 14px; line-height: 1.6; margin: 0 0 30px;">
+                                Please use this code within the next 15 minutes to verify your email address.
+                            </p>
+                            
+                            <div style="margin-top: 40px; padding-top: 20px; border-top: 1px solid #e2e8f0;">
+                                <p style="color: #a0aec0; font-size: 12px; line-height: 1.5; margin: 0;">
+                                    Need help? <a href="#" style="color: #4299e1; text-decoration: none;">Contact our support team</a>
+                                </p>
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
+    -->
 </body>
 </html>

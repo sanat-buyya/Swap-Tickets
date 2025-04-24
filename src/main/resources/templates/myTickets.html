@@ -3,89 +3,219 @@
 <head>
     <title>My Tickets</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
+        :root {
+            --primary: #6C63FF;
+            --primary-light: #8E85FF;
+            --secondary: #FF6584;
+            --accent: #63C7FF;
+            --success: #28a745;
+            --warning: #FFC107;
+            --danger: #F44336;
+            --dark: #2C3E50;
+            --light: #F8F9FA;
+        }
+        
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #f9f9f9;
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #e4e8eb 100%);
             margin: 0;
             padding: 40px 20px;
+            min-height: 100vh;
         }
 
         h2 {
             text-align: center;
-            color: #333;
+            color: var(--dark);
+            font-size: 2.2rem;
             margin-bottom: 30px;
+            position: relative;
+            display: inline-block;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: -8px;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            border-radius: 2px;
         }
 
         /* Desktop Table */
         table {
             width: 100%;
-            border-collapse: collapse;
-            background-color: #fff;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            border-collapse: separate;
+            border-spacing: 0;
+            background-color: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+            margin-bottom: 40px;
         }
 
         th, td {
-            padding: 12px 10px;
-            border: 1px solid #ddd;
+            padding: 16px 20px;
             text-align: center;
-            font-size: 15px;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
         }
 
         th {
-            background-color: #e6f2ff;
-            color: #333;
+            background: linear-gradient(90deg, var(--primary), var(--primary-light));
+            color: white;
             font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-size: 0.9rem;
         }
 
         tr:nth-child(even) {
-            background-color: #f7f7f7;
+            background-color: rgba(108, 99, 255, 0.03);
         }
 
         tr:hover {
-            background-color: #f0f8ff;
+            background-color: rgba(108, 99, 255, 0.08);
+            transform: scale(1.005);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+        }
+
+        td {
+            color: var(--dark);
+            font-size: 0.95rem;
+        }
+
+        .status-available {
+            color: var(--success);
+            font-weight: 600;
+            background-color: rgba(40, 167, 69, 0.1);
+            padding: 5px 10px;
+            border-radius: 20px;
+            display: inline-block;
+        }
+
+        .status-sold {
+            color: var(--danger);
+            font-weight: 600;
+            background-color: rgba(244, 67, 54, 0.1);
+            padding: 5px 10px;
+            border-radius: 20px;
+            display: inline-block;
+        }
+
+        a {
+            color: var(--primary);
+            font-weight: 600;
+            text-decoration: none;
+            padding: 5px 10px;
+            border-radius: 4px;
+            transition: all 0.3s ease;
+        }
+
+        a:hover {
+            color: white;
+            background-color: var(--primary);
+            text-decoration: none;
+            box-shadow: 0 3px 10px rgba(108, 99, 255, 0.3);
+        }
+
+        .action-btn {
+            display: inline-block;
+            margin: 30px auto;
+            padding: 14px 28px;
+            font-size: 1rem;
+            font-weight: 600;
+            background: linear-gradient(90deg, var(--primary), var(--primary-light));
+            color: white;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(108, 99, 255, 0.3);
+        }
+
+        .action-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(108, 99, 255, 0.4);
+            background: linear-gradient(90deg, var(--primary-light), var(--primary));
         }
 
         /* Mobile Card Style */
         .ticket-card {
             display: none;
-            background-color: #fff;
-            border-radius: 8px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-            margin-bottom: 20px;
-            padding: 16px;
+            background: white;
+            border-radius: 16px;
+            padding: 24px;
+            margin-bottom: 25px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .ticket-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 5px;
+            height: 100%;
+            background: linear-gradient(to bottom, var(--primary), var(--secondary));
+        }
+
+        .ticket-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.12);
         }
 
         .ticket-card p {
-            margin: 6px 0;
-            font-size: 15px;
+            margin: 12px 0;
+            font-size: 1rem;
+            display: flex;
+            justify-content: space-between;
         }
 
         .ticket-card strong {
-            color: #333;
+            color: var(--dark);
+            font-weight: 600;
         }
 
-        button {
-            padding: 10px 18px;
-            background-color: #28a745;
+        .ticket-card a {
+            display: inline-block;
+            margin-left: 10px;
+            padding: 3px 8px;
+        }
+
+        .status-badge {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
             color: white;
-            border: none;
-            border-radius: 6px;
-            cursor: pointer;
-            font-size: 16px;
         }
 
-        button:hover {
-            background-color: #218838;
+        .badge-available {
+            background: linear-gradient(90deg, var(--success), #5cb85c);
+            box-shadow: 0 3px 10px rgba(40, 167, 69, 0.3);
         }
 
-        a {
-            color: #007bff;
-            text-decoration: none;
+        .badge-sold {
+            background: linear-gradient(90deg, var(--danger), #d9534f);
+            box-shadow: 0 3px 10px rgba(244, 67, 54, 0.3);
         }
 
-        a:hover {
-            text-decoration: underline;
+        .center {
+            text-align: center;
+            margin-top: 20px;
         }
 
         /* Responsive Layouts */
@@ -97,17 +227,16 @@
             .ticket-card {
                 display: block;
             }
+            
+            h2 {
+                font-size: 1.8rem;
+            }
         }
 
         @media (min-width: 769px) {
             .ticket-card {
                 display: none;
             }
-        }
-
-        .center {
-            text-align: center;
-            margin-top: 20px;
         }
     </style>
 </head>
@@ -138,8 +267,11 @@
                 <td th:text="${ticket.dateOfJourney}">2025-04-15</td>
                 <td th:text="${ticket.pnrNumber}">123456</td>
                 <td th:text="${ticket.seatNumber}">B2/72</td>
-                <td th:text="${ticket.price}">500</td>
-                <td th:text="${ticket.sold ? 'Sold' : 'Available'}">Available</td>
+                <td>₹<span th:text="${ticket.price}">500</span></td>
+                <td>
+                    <span th:if="${ticket.sold}" class="status-sold">Sold</span>
+                    <span th:unless="${ticket.sold}" class="status-available">Available</span>
+                </td>
                 <td>
                     <a th:if="${ticket.ticketImagePath != null}" th:href="${ticket.ticketImagePath}" target="_blank">View</a>
                     <span th:if="${ticket.ticketImagePath == null}">No File</span>
@@ -154,6 +286,9 @@
 
     <!-- Mobile Cards -->
     <div th:each="ticket : ${tickets}" class="ticket-card">
+        <div th:class="${ticket.sold} ? 'status-badge badge-sold' : 'status-badge badge-available'">
+            <span th:text="${ticket.sold} ? 'Sold' : 'Available'"></span>
+        </div>
         <p><strong>Train:</strong> <span th:text="${ticket.trainName}">Train</span></p>
         <p><strong>From:</strong> <span th:text="${ticket.fromStation}">From</span></p>
         <p><strong>To:</strong> <span th:text="${ticket.toStation}">To</span></p>
@@ -161,7 +296,10 @@
         <p><strong>PNR:</strong> <span th:text="${ticket.pnrNumber}">123456</span></p>
         <p><strong>Seat:</strong> <span th:text="${ticket.seatNumber}">B2/72</span></p>
         <p><strong>Price:</strong> ₹<span th:text="${ticket.price}">500</span></p>
-        <p><strong>Status:</strong> <span th:text="${ticket.sold ? 'Sold' : 'Available'}">Available</span></p>
+        <p><strong>Status:</strong> 
+            <span th:if="${ticket.sold}" class="status-sold">Sold</span>
+            <span th:unless="${ticket.sold}" class="status-available">Available</span>
+        </p>
         <p><strong>Ticket Image:</strong>
             <a th:if="${ticket.ticketImagePath != null}" th:href="${ticket.ticketImagePath}" target="_blank">View</a>
             <span th:if="${ticket.ticketImagePath == null}">No File</span>
@@ -173,7 +311,7 @@
     </div>
 
     <div class="center">
-        <a href="/user/home"><button>Back</button></a>
+        <a href="/user/home"><button class="action-btn">Back to Dashboard</button></a>
     </div>
 </body>
 </html>

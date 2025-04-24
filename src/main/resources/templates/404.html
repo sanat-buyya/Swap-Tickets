@@ -6,36 +6,96 @@
     <title>404 - Page Not Found</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             text-align: center;
-            padding: 50px;
+            padding: 0;
+            margin: 0;
             background-color: #f8f9fa;
+            color: #333;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #f5f7fa 0%, #e4e8eb 100%);
         }
+        
         .error-container {
-            max-width: 600px;
-            margin: 0 auto;
+            max-width: 650px;
+            padding: 40px;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            margin: 20px;
+            transition: transform 0.3s ease;
         }
+        
+        .error-container:hover {
+            transform: translateY(-5px);
+        }
+        
         .error-code {
             font-size: 120px;
-            color: #dc3545;
             margin: 0;
+            background: linear-gradient(135deg, #ff6b6b 0%, #f06595 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            line-height: 1;
+            font-weight: 800;
         }
+        
         .error-message {
-            font-size: 24px;
-            color: #343a40;
-            margin: 20px 0;
+            font-size: 32px;
+            color: #2d3436;
+            margin: 20px 0 15px;
+            font-weight: 600;
         }
+        
+        .error-description {
+            font-size: 18px;
+            color: #636e72;
+            margin-bottom: 30px;
+            line-height: 1.6;
+        }
+        
         .home-button {
             display: inline-block;
-            padding: 10px 20px;
-            background-color: #007bff;
+            padding: 12px 30px;
+            background: linear-gradient(135deg, #74b9ff 0%, #0984e3 100%);
             color: white;
             text-decoration: none;
-            border-radius: 5px;
+            border-radius: 50px;
             margin-top: 20px;
+            font-size: 16px;
+            font-weight: 500;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(9, 132, 227, 0.3);
         }
+        
         .home-button:hover {
-            background-color: #0056b3;
+            background: linear-gradient(135deg, #0984e3 0%, #74b9ff 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(9, 132, 227, 0.4);
+        }
+        
+        .home-button:active {
+            transform: translateY(0);
+        }
+        
+        @media (max-width: 600px) {
+            .error-code {
+                font-size: 80px;
+            }
+            
+            .error-message {
+                font-size: 24px;
+            }
+            
+            .error-description {
+                font-size: 16px;
+            }
         }
     </style>
 </head>
@@ -43,7 +103,10 @@
     <div class="error-container">
         <h1 class="error-code">404</h1>
         <h2 class="error-message">Oops! Page Not Found</h2>
-        <p>The page you are looking for might have been removed or is temporarily unavailable.</p>
+        <p class="error-description">
+            The page you're looking for doesn't exist or might have been moved. 
+            Don't worry, you can find your way back home.
+        </p>
         <a href="/" class="home-button">Return to Homepage</a>
     </div>
 </body>
