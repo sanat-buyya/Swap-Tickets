@@ -17,10 +17,6 @@ public class FileStorageService {
     public FileStorageService(Cloudinary cloudinary) {
         this.cloudinary = cloudinary;
     }
-
-    /**
-     * Uploads the file to Cloudinary and returns the public URL.
-     */
     public String storeFile(MultipartFile file) {
         try {
             Map uploadResult = cloudinary.uploader()

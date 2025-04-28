@@ -12,8 +12,9 @@ public interface TicketRepository extends JpaRepository<Ticket, Long> {
     List<Ticket> findBySellerEmail(String email);
     List<Ticket> findBySellerEmailAndDateOfJourneyAfterOrDateOfJourneyEquals(String email, LocalDate afterDate, LocalDate equalDate);
     List<Ticket> findBySoldFalseAndDateOfJourneyAfterOrderByDateOfJourneyAsc(LocalDate currentDate);
-    List<Ticket> findByPnrNumberAndSold(String pnrNumber, boolean sold);
+    List<Ticket> findByTrainNumberAndSold(String trainNumber, boolean sold);
     List<Ticket> findByFromStationIgnoreCaseAndToStationIgnoreCaseAndSold(String fromStation, String toStation, boolean sold);
     List<Ticket> findByBuyerEmail(String buyerEmail);
 
+	
 }

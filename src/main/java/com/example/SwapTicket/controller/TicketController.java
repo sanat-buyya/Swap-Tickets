@@ -141,14 +141,14 @@ public class TicketController {
             @RequestParam(required = false) String filter,
             @RequestParam(required = false) String fromStation,
             @RequestParam(required = false) String toStation,
-            @RequestParam(required = false) String pnr,
+            @RequestParam(required = false) String trainNumber,
             Model model) {
 
         List<Ticket> tickets;
         boolean sold = "sold".equalsIgnoreCase(filter);
 
-        if (pnr != null && !pnr.isEmpty()) {
-            tickets = ticketRepository.findByPnrNumberAndSold(pnr, sold);
+        if (trainNumber != null && !trainNumber.isEmpty()) {
+            tickets = ticketRepository.findByTrainNumberAndSold(trainNumber, sold);
         } else if (fromStation != null && toStation != null && !fromStation.isEmpty() && !toStation.isEmpty()) {
             tickets = ticketRepository.findByFromStationIgnoreCaseAndToStationIgnoreCaseAndSold(fromStation, toStation, sold);
         } else {
@@ -159,7 +159,7 @@ public class TicketController {
         model.addAttribute("filter", sold ? "sold" : "available");
         model.addAttribute("fromStation", fromStation);
         model.addAttribute("toStation", toStation);
-        model.addAttribute("pnr", pnr);
+        model.addAttribute("trainNumber", trainNumber);
         return "buyTickets";
     }
     
@@ -408,12 +408,6 @@ public class TicketController {
 
         return "redirect:/tickets/my-purchases";
     }
-    
-
-
-
-
-
 
 
 }
