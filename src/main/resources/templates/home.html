@@ -431,6 +431,11 @@
                 padding: 1rem;
             }
             
+             .navbar a{
+    text-decoration: none;
+        color: var(--dark);
+    }
+            
             .auth-links {
                 margin-top: 1rem;
             }
@@ -439,14 +444,19 @@
                 margin: 0 0.8rem;
             }
         }
+         .navbar a{
+    text-decoration: none;
+        color: var(--dark);
+    }
+        
     </style>
 </head>
 <body>
     <div class="navbar">
-        <div class="logo">
+        <a href="/"><div class="logo">
             <img src="https://img.icons8.com/color/48/train.png" alt="Train Icon">
             <h3>SwapTicket</h3>
-        </div>
+        </div></a>
         <div class="auth-links">
             <a href="/login"><i class="fas fa-sign-in-alt"></i> Login</a>
             <a href="/register"><i class="fas fa-user-plus"></i> Register</a>

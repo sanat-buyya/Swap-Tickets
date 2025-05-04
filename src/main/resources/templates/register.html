@@ -134,15 +134,15 @@
             font-size: 0.9rem;
         }
 
-        .form-control {
-            width: 100%;
-            padding: 12px 15px 12px 40px;
-            border: 1px solid #e0e0e0;
-            border-radius: 8px;
-            font-size: 0.95rem;
-            transition: all 0.3s;
-            background-color: #f8f9fa;
-        }
+       .form-control {
+    width: 100%;
+    padding: 12px 40px 12px 40px; /* Adjusted for both icons */
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    font-size: 0.95rem;
+    transition: all 0.3s;
+    background-color: #f8f9fa;
+}
 
         .form-control:focus {
             outline: none;
@@ -151,18 +151,22 @@
             background-color: white;
         }
 
-        .toggle-password {
-            position: absolute;
-            right: 15px;
-            top: 50%;
-            transform: translateY(-50%);
-            background: none;
-            border: none;
-            color: var(--light-text);
-            cursor: pointer;
-            font-size: 0.9rem;
-        }
-
+.toggle-password {
+    position: absolute;
+    right: 40px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    color: var(--light-text);
+    cursor: pointer;
+    font-size: 0.9rem;
+    padding: 8px;
+    z-index: 2;
+}
+		.toggle-password:hover {
+    color: var(--primary);
+}
         .error-message {
             font-size: 0.8rem;
             color: var(--error);
@@ -412,7 +416,7 @@
             if (hasSpecial) strength++;
             
             // Adjust based on length
-            if (password.length > 12) strength++;
+            if (password.length > 8) strength++;
             if (password.length > 16) strength++;
             
             return Math.min(strength, 4);

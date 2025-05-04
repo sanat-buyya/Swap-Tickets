@@ -144,7 +144,7 @@
 
         .toggle-password {
             position: absolute;
-            right: 15px;
+            right: 45px;
             top: 50%;
             transform: translateY(-50%);
             background: none;
@@ -368,7 +368,7 @@
                 <label for="password">Password</label>
                 <div class="input-with-icon">
                     <i class="fas fa-lock"></i>
-                    <input type="password" id="password" name="password" placeholder="••••••••" required>
+                    <input type="password" id="password" name="password" placeholder="••••••••"  required>
                     <button type="button" class="toggle-password">
                         <i class="fas fa-eye"></i>
                     </button>
@@ -393,19 +393,7 @@
             </div>
         </form>
         
-        <div class="auth-social">
-            <p>Or login with</p>
-            <div class="social-buttons">
-                <button type="button" class="social-btn google">
-                    <i class="fab fa-google"></i> Google
-                </button>
-                <button type="button" class="social-btn facebook">
-                    <i class="fab fa-facebook-f"></i> Facebook
-                </button>
-            </div>
-        </div>
-    </div>
-
+        
     <script>
         // Toggle password visibility
         document.querySelectorAll('.toggle-password').forEach(button => {

@@ -42,7 +42,8 @@ public class Ticket {
     
     private String gender;
     
-    @Transient 
+    private String upiId;
+    
     private String sellerMobile;
 
     // --- Getters and Setters ---
@@ -51,12 +52,19 @@ public class Ticket {
     private boolean sellerPaid = false;
 
     // … getters / setters …
+    public String getUpiId() {
+		return upiId;
+	}
 
+	public void setUpiId(String upiId) {
+		this.upiId = upiId;
+	}
+    
     public boolean isSellerPaid() {
         return sellerPaid;
     }
 
-    public void setSellerPaid(boolean sellerPaid) {
+	public void setSellerPaid(boolean sellerPaid) {
         this.sellerPaid = sellerPaid;
     }
 

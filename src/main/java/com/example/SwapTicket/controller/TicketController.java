@@ -78,6 +78,8 @@ public class TicketController {
             @RequestParam("price") Double price,
             @RequestParam("passengerNames") String passengerNames,
             @RequestParam("gender") String gender,
+            @RequestParam("upiId") String upiId,
+            @RequestParam("sellerMobile") String sellerMobile,
             @RequestParam("ticketImage") MultipartFile ticketImage,
             @RequestParam("originalDocument") MultipartFile originalDocument,
             RedirectAttributes redirectAttributes,
@@ -98,6 +100,8 @@ public class TicketController {
         ticket.setPrice(price);
         ticket.setPassengerNames(Arrays.asList(passengerNames.split("\\s*,\\s*")));
         ticket.setGender(gender);
+        ticket.setUpiId(upiId);
+        ticket.setSellerMobile(sellerMobile);
         ticket.setSold(false);
 
         String sellerEmail = (String) session.getAttribute("loggedInUserEmail");
@@ -130,11 +134,8 @@ public class TicketController {
 
         ticketRepository.save(ticket);
         redirectAttributes.addFlashAttribute("successMessage", "🎉 Ticket submitted successfully! Go to My Listed Tickets to check if it is sold.");
-        return "redirect:/user/home";
-
-          
+        return "redirect:/user/home";   
     }
-
 
     @GetMapping("/buy")
     public String showFilteredTickets(

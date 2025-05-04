@@ -63,6 +63,11 @@
       gap: 10px;
       z-index: 101;
     }
+    
+    .navbar a{
+    text-decoration: none;
+        color: var(--dark);
+    }
 
     .navbar h1 i {
       font-size: 1.5rem;
@@ -215,10 +220,10 @@
       grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
       gap: 20px;
     }
-
-    /* ATM-Style Wallet Card */
+    
+    /* Updated Wallet Card Design */
     .wallet-card {
-      background: linear-gradient(135deg, #4e54c8, #8f94fb);
+      background: linear-gradient(135deg, #1a2a6c, #b21f1f, #fdbb2d);
       color: white;
       border-radius: var(--card-radius);
       padding: 1.5rem;
@@ -229,6 +234,7 @@
       display: flex;
       flex-direction: column;
       justify-content: space-between;
+      border-top: 3px solid rgba(255, 255, 255, 0.3);
     }
 
     .wallet-card::before {
@@ -243,10 +249,11 @@
     }
 
     .wallet-card i {
-      font-size: 1.8rem;
+      font-size: 2.2rem;
       color: rgba(255, 255, 255, 0.8);
       margin-bottom: 0.5rem;
       align-self: flex-end;
+      text-shadow: 0 2px 4px rgba(0,0,0,0.2);
     }
 
     .wallet-card h3 {
@@ -257,9 +264,10 @@
     }
 
     .wallet-amount {
-      font-size: 1.8rem;
+      font-size: 2rem;
       font-weight: 700;
       margin: 0.5rem 0;
+      text-shadow: 0 2px 4px rgba(0,0,0,0.2);
     }
 
     .wallet-card .button {
@@ -268,10 +276,24 @@
       border: 1px solid rgba(255, 255, 255, 0.3);
       align-self: flex-start;
       margin-top: 0.5rem;
+      color: white;
     }
 
     .wallet-card .button:hover {
       background: rgba(255, 255, 255, 0.3);
+    }
+
+    .swap-ticket-label {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      background: rgba(255, 255, 255, 0.2);
+      padding: 4px 8px;
+      border-radius: 4px;
+      font-size: 0.8rem;
+      font-weight: 500;
+      backdrop-filter: blur(2px);
+      color: white;
     }
 
     /* Standard Cards */
@@ -366,6 +388,15 @@
       align-items: center;
       justify-content: center;
       gap: 10px;
+      transition: opacity 0.5s ease;
+    }
+
+    .message.hide {
+      opacity: 0;
+      height: 0;
+      padding: 0;
+      margin: 0 auto;
+      overflow: hidden;
     }
 
     .message i {
@@ -470,7 +501,7 @@
       }
       
       .wallet-amount {
-        font-size: 1.6rem;
+        font-size: 1.8rem;
       }
 
       .navbar h1 {
@@ -485,7 +516,7 @@
 </head>
 <body>
   <div class="navbar">
-    <h1><i class="fas fa-ticket-alt"></i> SwapTicket</h1>
+    <a href="/"><h1><i class="fas fa-ticket-alt"></i> SwapTicket</h1></a>
     <button class="menu-toggle" id="menuToggle">
       <i class="fas fa-bars"></i>
     </button>
@@ -499,8 +530,6 @@
         <i class="fas fa-sign-out-alt"></i>
         <span>Logout</span>
       </a>
-
-      <!-- Mobile version -->
       
       <ul class="mobile-menu">
         <li>
@@ -549,28 +578,24 @@
       <p class="welcome-subtitle">Manage your tickets, wallet, and transactions all in one place</p>
     </div>
 
-    <div class="message success" th:if="${successMessage}">
+    <div class="message success" th:if="${successMessage}" id="successMessage">
       <i class="fas fa-check-circle"></i>
       <p th:text="${successMessage}"></p>
     </div>
-    <div class="message error" th:if="${error}">
+    <div class="message error" th:if="${error}" id="errorMessage">
       <i class="fas fa-exclamation-circle"></i>
       <p th:text="${error}"></p>
     </div>
 
     <main class="dashboard">
       <div class="card wallet-card" data-aos="fade-up" data-aos-delay="100">
+        <div class="swap-ticket-label">SwapTicket Wallet</div>
         <i class="fas fa-wallet"></i>
         <div>
-          <h3>Wallet Balance</h3>
+          <h3>Over all Amount</h3>
+          <p>SwapTicket sended to seller </p>
           <div class="wallet-amount">₹<span th:text="${walletBalance}">0.00</span></div>
-        </div>
-        <form th:action="@{/wallet/withdraw}" method="get">
-          <button class="button" type="submit">
-            <i class="fas fa-rupee-sign"></i>
-            <span>Withdraw</span>
-          </button>
-        </form>
+        </div>       
       </div>
 
       <div class="card" data-aos="fade-up" data-aos-delay="150">
@@ -650,6 +675,24 @@
           navbarRight.classList.remove('active');
           menuToggle.innerHTML = '<i class="fas fa-bars"></i>';
         }
+      }
+    });
+
+    // Auto-hide success message after 3 seconds
+    document.addEventListener('DOMContentLoaded', function() {
+      const successMessage = document.getElementById('successMessage');
+      const errorMessage = document.getElementById('errorMessage');
+      
+      if (successMessage) {
+        setTimeout(function() {
+          successMessage.classList.add('hide');
+        }, 3000);
+      }
+      
+      if (errorMessage) {
+        setTimeout(function() {
+          errorMessage.classList.add('hide');
+        }, 5000); // Keep error messages longer (5 seconds)
       }
     });
   </script>
