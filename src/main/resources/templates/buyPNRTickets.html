@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Buy PNR Tickets</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+    <style>
+        /* Global Styles */
+        :root {
+            --primary-color: #4a6bff;
+            --secondary-color: #f8f9fa;
+            --accent-color: #ff6b6b;
+            --text-color: #333;
+            --light-gray: #e9ecef;
+            --border-color: #dee2e6;
+            --success-color: #28a745;
+            --warning-color: #ffc107;
+            --info-color: #17a2b8;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #f5f7fa;
+            color: var(--text-color);
+            line-height: 1.5;
+            padding: 15px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        h1, h2, h3, h4 {
+            color: var(--primary-color);
+            margin-bottom: 12px;
+        }
+
+        h1 {
+            text-align: center;
+            margin: 15px 0 20px;
+            font-size: 1.8rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        /* Filter Form */
+        .filter-form {
+            background: white;
+            padding: 15px;
+            border-radius: 6px;
+            box-shadow: 0 1px 5px rgba(0, 0, 0, 0.1);
+            margin-bottom: 15px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 10px;
+            align-items: end;
+        }
+
+        .form-group {
+            margin-bottom: 0;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 4px;
+            font-weight: 600;
+            color: #555;
+            font-size: 14px;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 8px 10px;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            font-size: 14px;
+        }
+
+        button {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            transition: all 0.2s ease;
+        }
+
+        button:hover {
+            background-color: #3a5bef;
+        }
+
+        /* PNR Notice */
+        .pnr-notice {
+            background-color: #fff3cd;
+            padding: 12px;
+            border-radius: 6px;
+            margin-bottom: 15px;
+            border-left: 3px solid #ffc107;
+            font-size: 14px;
+            line-height: 1.4;
+        }
+
+        .pnr-notice a {
+            color: var(--primary-color);
+            font-weight: 600;
+            text-decoration: none;
+        }
+
+        .pnr-notice a:hover {
+            text-decoration: underline;
+        }
+
+        /* PNR Cards */
+        .pnr-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .pnr-card {
+            background: white;
+            border-radius: 6px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        .pnr-header {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 12px 15px;
+        }
+
+        .pnr-header h3 {
+            color: white;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 1.1rem;
+        }
+
+        .pnr-body {
+            padding: 15px;
+        }
+
+        .pnr-details {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 10px;
+            font-size: 14px;
+        }
+
+        .detail-item {
+            margin-bottom: 6px;
+        }
+
+        .detail-item strong {
+            color: #555;
+            font-size: 13px;
+        }
+
+        /* Passenger Cards */
+        .passenger-card {
+            background: var(--secondary-color);
+            border-radius: 5px;
+            padding: 12px;
+            margin-top: 12px;
+            border-left: 3px solid var(--primary-color);
+            font-size: 14px;
+        }
+
+        .passenger-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+
+        .status {
+            padding: 3px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .status-available {
+            background-color: #d4edda;
+            color: var(--success-color);
+        }
+
+        .status-sold {
+            background-color: #f8d7da;
+            color: #dc3545;
+        }
+
+        .passenger-details {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+        }
+
+        /* Ticket Image */
+        .ticket-image {
+            margin: 12px 0;
+            text-align: center;
+            font-size: 14px;
+        }
+
+        .ticket-image img {
+            max-width: 100%;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+        }
+
+        /* Buttons */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            font-size: 14px;
+        }
+
+        .btn-buy {
+            background-color: var(--success-color);
+            width: 100%;
+            margin-top: 8px;
+            padding: 8px 12px;
+        }
+
+        .btn-disabled {
+            background-color: #6c757d;
+            cursor: not-allowed;
+            width: 100%;
+            padding: 8px 12px;
+        }
+
+        .back-button {
+            background-color: #6c757d;
+            margin-top: 15px;
+            padding: 8px 15px;
+        }
+
+        /* Action Buttons */
+        .action-buttons {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        /* Emoji styling */
+        .emoji {
+            font-size: 1.1em;
+            vertical-align: middle;
+        }
+
+        /* Responsive Adjustments */
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+            
+            h1 {
+                font-size: 1.5rem;
+                margin: 10px 0 15px;
+            }
+            
+            .filter-form {
+                grid-template-columns: 1fr;
+                padding: 12px;
+                gap: 8px;
+            }
+            
+            .pnr-container {
+                grid-template-columns: 1fr;
+                gap: 12px;
+            }
+            
+            .pnr-details, .passenger-details {
+                grid-template-columns: 1fr;
+                gap: 6px;
+            }
+            
+            .pnr-header {
+                padding: 10px 12px;
+            }
+            
+            .pnr-body {
+                padding: 12px;
+            }
+            
+            .pnr-notice {
+                padding: 10px;
+                font-size: 13px;
+            }
+            
+            button {
+                padding: 8px 12px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            h1 {
+                font-size: 1.3rem;
+            }
+            
+            .filter-form {
+                padding: 10px;
+            }
+            
+            input, select {
+                padding: 7px 9px;
+            }
+            
+            .pnr-card {
+                border-radius: 5px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<h1><span class="emoji">🎫</span> Available Tickets</h1>
+
+<!-- 🔍 FILTER FORM -->
+<form method="get" action="/pnr/buy" class="filter-form">
+    <div class="form-group">
+        <label for="fromStation">From:</label>
+        <input type="text" name="fromStation" th:value="${fromStation}" placeholder="Station">
+    </div>
+    
+    <div class="form-group">
+        <label for="toStation">To:</label>
+        <input type="text" name="toStation" th:value="${toStation}" placeholder="Station">
+    </div>
+    
+    <div class="form-group">
+        <label for="trainNumber">Train No:</label>
+        <input type="text" name="trainNumber" th:value="${trainNumber}" placeholder="Number">
+    </div>
+    
+    <div class="form-group">
+        <label for="journeyDate">Journey Date:</label>
+        <input type="date" name="journeyDate" th:value="${journeyDate}">
+    </div>
+    
+    <div class="form-group">
+        <label for="filter">Status:</label>
+        <select name="filter">
+            <option value="available" th:selected="${filter == 'available'}">Available</option>
+            <option value="sold" th:selected="${filter == 'sold'}">Sold</option>
+        </select>
+    </div>
+    
+    <div class="form-group">
+        <button type="submit">Search</button>
+    </div>
+</form>
+
+<div class="pnr-notice">
+    *Confirm ticket using PNR before buying: 
+    <a href="https://www.indianrail.gov.in/enquiry/PNR/PnrEnquiry.html?locale=en" target="_blank">Click here</a>
+</div>
+
+<!-- 🎫 LIST OF PNRs -->
+<div class="pnr-container">
+    <div th:each="pnr : ${pnrs}" class="pnr-card">
+        <div class="pnr-header">
+            <h3><span class="emoji">📄</span> PNR: <span th:text="${pnr.pnrNumber}"></span></h3>
+        </div>
+        
+        <div class="pnr-body">
+            <div class="pnr-details">
+                <div class="detail-item">
+                    <strong>Train:</strong> <span th:text="${pnr.trainNumber}"></span>
+                </div>
+                <div class="detail-item">
+                    <strong>Date:</strong> <span th:text="${pnr.journeyDate}"></span>
+                </div>
+                <div class="detail-item">
+                    <strong>From:</strong> <span th:text="${pnr.fromStation}"></span>
+                </div>
+                <div class="detail-item">
+                    <strong>To:</strong> <span th:text="${pnr.toStation}"></span>
+                </div>
+            </div>
+
+            <!-- ✅ Ticket Image -->
+            <div class="ticket-image">
+                <strong>Ticket Image:</strong>
+                <div th:if="${pnr.sold}">
+                    <img th:src="${pnr.ticketImage}" alt="Ticket Image"/>
+                </div>
+                <div th:unless="${pnr.sold}" class="image-placeholder">
+                    Buy to view
+                </div>
+            </div>
+
+            <!-- 👤 Passenger list -->
+            <div th:each="passenger : ${pnr.passenger}" class="passenger-card">
+                <div class="passenger-header">
+                    <h4><span class="emoji">👤</span> Passenger</h4>
+                    <span th:if="${passenger.sold}" class="status status-sold">SOLD</span>
+                    <span th:unless="${passenger.sold}" class="status status-available">AVAILABLE</span>
+                </div>
+                
+                <div class="passenger-details">
+                    <div class="detail-item">
+                        <strong>Name:</strong>
+                        <span th:if="${passenger.sold}">SOLD</span>
+                        <span th:unless="${passenger.sold}">Buy to view</span>
+                    </div>
+                    <div class="detail-item">
+                        <strong>Age:</strong> <span th:text="${passenger.age}"></span>
+                    </div>
+                    <div class="detail-item">
+                        <strong>Gender:</strong> <span th:text="${passenger.gender}"></span>
+                    </div>
+                    <div class="detail-item">
+                        <strong>Coach:</strong> <span th:text="${passenger.coach}"></span>
+                    </div>
+                    <div class="detail-item">
+                        <strong>Seat No:</strong>
+                        <span th:if="${passenger.sold}">SOLD</span>
+                        <span th:unless="${passenger.sold}">Buy to view</span>
+                    </div>
+                    <div class="detail-item">
+                        <strong>Price:</strong> ₹<span th:text="${passenger.price + 20}"></span>
+                    </div>
+                    <div class="detail-item">
+                        <strong>Document:</strong>
+                        <span th:if="${passenger.sold}"><span class="emoji">📎</span> Uploaded</span>
+                        <span th:unless="${passenger.sold}">Buy to view</span>
+                    </div>
+                </div>
+
+                <!-- 💳 Razorpay -->
+                <div th:unless="${passenger.sold}">
+                    <button type="button" class="btn btn-buy"
+                            th:onclick="'startPayment(' + ${passenger.id} + ',' + (${passenger.price + 20}) + ')'">
+                        <i class="fas fa-shopping-cart"></i> Buy (₹<span th:text="${passenger.price + 20}"></span>)
+                    </button>
+                </div>
+
+                <div th:if="${passenger.sold}">
+                    <button class="btn btn-disabled" disabled>
+                        <i class="fas fa-check-circle"></i> Sold
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="action-buttons">
+    <a th:href="@{/user/home}"><button class="btn back-button">
+        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" viewBox="0 0 16 16">
+            <path fill-rule="evenodd" d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8z"/>
+        </svg>
+        Back to Home
+    </button></a>
+</div>
+
+<!-- 💳 Razorpay Script -->
+<script>
+    function startPayment(passengerId, price) {
+        var options = {
+            "key": "rzp_test_HkFY3rSv7zcCnX",
+            "amount": price * 100,
+            "currency": "INR",
+            "name": "SwapTicket",
+            "description": "Ticket Purchase",
+            handler: function (response) {
+                const form = document.createElement('form');
+                form.method = 'POST';
+                form.action = `/pnr/confirm/${passengerId}`;
+
+                const paymentIdInput = document.createElement('input');
+                paymentIdInput.type = 'hidden';
+                paymentIdInput.name = 'razorpay_payment_id';
+                paymentIdInput.value = response.razorpay_payment_id;
+                form.appendChild(paymentIdInput);
+
+                const orderIdInput = document.createElement('input');
+                orderIdInput.type = 'hidden';
+                orderIdInput.name = 'razorpay_order_id';
+                orderIdInput.value = response.razorpay_order_id;
+                form.appendChild(orderIdInput);
+
+                document.body.appendChild(form);
+                form.submit();
+            },
+            "prefill": {
+                "email": "[[${session.loggedInUserEmail}]]"
+            },
+            "theme": {
+                "color": "#3399cc"
+            }
+        };
+        var rzp = new Razorpay(options);
+        rzp.open();
+    }
+</script>
+
+</body>
+</html>

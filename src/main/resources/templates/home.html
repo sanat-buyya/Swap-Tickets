@@ -46,7 +46,7 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 1.2rem 5%;
+            padding: 1rem 5%;
             position: sticky;
             top: 0;
             z-index: 1000;
@@ -65,7 +65,7 @@
         }
 
         .logo h3 {
-            font-size: 1.8rem;
+            font-size: 1.5rem;
             font-weight: 700;
             background: linear-gradient(to right, #fff 0%, #ffd166 100%);
             -webkit-background-clip: text;
@@ -74,13 +74,14 @@
 
         .auth-links a {
             color: white;
-            margin-left: 1.8rem;
+            margin-left: 1rem;
             text-decoration: none;
             font-weight: 500;
             transition: all 0.3s ease;
             display: inline-flex;
             align-items: center;
-            gap: 8px;
+            gap: 6px;
+            font-size: 0.9rem;
         }
 
         .auth-links a:hover {
@@ -89,15 +90,19 @@
         }
 
         .auth-links a i {
-            font-size: 0.9rem;
+            font-size: 0.8rem;
         }
 
         .hero {
             background: url('https://images.unsplash.com/photo-1506929562872-bb421503ef21?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80') no-repeat center center/cover;
-            padding: 6rem 2rem;
+            padding: 4rem 1rem;
             text-align: center;
             position: relative;
             color: white;
+            min-height: 60vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
         .hero::before {
@@ -115,25 +120,27 @@
             z-index: 1;
             max-width: 800px;
             margin: 0 auto;
+            padding: 0 1rem;
         }
 
         .hero h1 {
-            font-size: 3rem;
-            margin-bottom: 1.5rem;
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
             text-shadow: 0 2px 4px rgba(0,0,0,0.3);
             animation: fadeInDown 1s ease;
+            line-height: 1.2;
         }
 
         .hero p {
-            font-size: 1.2rem;
-            margin-bottom: 2.5rem;
+            font-size: 1rem;
+            margin-bottom: 2rem;
             animation: fadeInUp 1s ease 0.3s both;
         }
 
         .btn {
             background-color: var(--cta);
             color: white;
-            padding: 0.9rem 2.5rem;
+            padding: 0.8rem 2rem;
             border-radius: 50px;
             text-decoration: none;
             font-weight: 600;
@@ -143,6 +150,7 @@
             animation: fadeIn 1s ease 0.6s both;
             border: none;
             cursor: pointer;
+            font-size: 0.95rem;
         }
 
         .btn:hover {
@@ -156,14 +164,14 @@
         }
 
         .about-section {
-            padding: 5rem 2rem;
+            padding: 3rem 1rem;
             background-color: white;
             text-align: center;
         }
 
         .section-title {
-            font-size: 2.5rem;
-            margin-bottom: 1.5rem;
+            font-size: 2rem;
+            margin-bottom: 1rem;
             background: var(--gradient);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
@@ -172,24 +180,26 @@
 
         .section-subtitle {
             max-width: 800px;
-            margin: 0 auto 4rem;
-            font-size: 1.1rem;
+            margin: 0 auto 2rem;
+            font-size: 1rem;
             color: var(--light-text);
+            padding: 0 1rem;
         }
 
         .icon-row {
             display: flex;
             justify-content: center;
-            gap: 3rem;
+            gap: 1.5rem;
             flex-wrap: wrap;
-            margin-top: 3rem;
+            margin-top: 2rem;
         }
 
         .icon-box {
             background-color: white;
             border-radius: 15px;
-            padding: 2.5rem 2rem;
-            width: 220px;
+            padding: 1.5rem 1rem;
+            width: 100%;
+            max-width: 280px;
             text-align: center;
             box-shadow: var(--card-shadow);
             transition: all 0.4s ease;
@@ -202,28 +212,28 @@
         }
 
         .icon-box i {
-            font-size: 2.5rem;
-            margin-bottom: 1.5rem;
+            font-size: 2rem;
+            margin-bottom: 1rem;
             background: var(--gradient);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
 
         .icon-box h3 {
-            font-size: 1.3rem;
-            margin-bottom: 1rem;
+            font-size: 1.2rem;
+            margin-bottom: 0.8rem;
             color: var(--primary-dark);
         }
 
         .icon-box p {
-            font-size: 0.95rem;
+            font-size: 0.9rem;
             color: var(--light-text);
             font-weight: 400;
         }
 
         .stats-section {
             background: var(--gradient);
-            padding: 4rem 2rem;
+            padding: 3rem 1rem;
             color: white;
             text-align: center;
         }
@@ -231,34 +241,35 @@
         .stats-container {
             display: flex;
             justify-content: center;
-            gap: 4rem;
+            gap: 2rem;
             flex-wrap: wrap;
-            margin-top: 3rem;
+            margin-top: 2rem;
         }
 
         .stat-box {
-            padding: 1.5rem;
+            padding: 1rem;
+            min-width: 120px;
         }
 
         .stat-number {
-            font-size: 3rem;
+            font-size: 2rem;
             font-weight: 700;
             margin-bottom: 0.5rem;
         }
 
         .stat-label {
-            font-size: 1.1rem;
+            font-size: 0.9rem;
             opacity: 0.9;
         }
 
         .testimonials {
-            padding: 5rem 2rem;
+            padding: 3rem 1rem;
             background-color: #f8f9fa;
         }
 
         .testimonial-card {
             background: white;
-            padding: 2rem;
+            padding: 1.5rem;
             border-radius: 15px;
             box-shadow: var(--card-shadow);
             max-width: 350px;
@@ -267,56 +278,62 @@
 
         .testimonial-text {
             font-style: italic;
-            margin-bottom: 1.5rem;
+            margin-bottom: 1.2rem;
             color: var(--light-text);
+            font-size: 0.95rem;
         }
 
         .testimonial-author {
             display: flex;
             align-items: center;
-            gap: 15px;
+            gap: 12px;
         }
 
         .author-avatar {
-            width: 50px;
-            height: 50px;
+            width: 45px;
+            height: 45px;
             border-radius: 50%;
             object-fit: cover;
         }
 
         .author-info h4 {
             margin-bottom: 0.2rem;
+            font-size: 1rem;
         }
 
         .author-info p {
             color: var(--light-text);
-            font-size: 0.9rem;
+            font-size: 0.85rem;
         }
 
         .footer {
             background: var(--dark-text);
             color: white;
-            padding: 3rem 2rem 1.5rem;
+            padding: 2rem 1rem 1rem;
         }
 
         .footer-content {
             display: flex;
-            justify-content: space-around;
             flex-wrap: wrap;
             gap: 2rem;
             max-width: 1200px;
-            margin: 0 auto 3rem;
+            margin: 0 auto 2rem;
         }
 
         .footer-column {
-            flex: 1;
-            min-width: 200px;
+            flex: 1 1 200px;
+            min-width: 0;
         }
 
         .footer-column h3 {
-            margin-bottom: 1.5rem;
-            font-size: 1.3rem;
+            margin-bottom: 1.2rem;
+            font-size: 1.1rem;
             color: var(--cta);
+        }
+
+        .footer-column p {
+            font-size: 0.9rem;
+            line-height: 1.5;
         }
 
         .footer-column ul {
@@ -324,13 +341,14 @@
         }
 
         .footer-column ul li {
-            margin-bottom: 0.8rem;
+            margin-bottom: 0.6rem;
         }
 
         .footer-column ul li a {
             color: #adb5bd;
             text-decoration: none;
             transition: color 0.3s;
+            font-size: 0.9rem;
         }
 
         .footer-column ul li a:hover {
@@ -339,20 +357,21 @@
 
         .social-links {
             display: flex;
-            gap: 1rem;
+            gap: 0.8rem;
             margin-top: 1rem;
         }
 
         .social-links a {
             color: white;
             background: rgba(255,255,255,0.1);
-            width: 40px;
-            height: 40px;
+            width: 35px;
+            height: 35px;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
             transition: all 0.3s;
+            font-size: 0.9rem;
         }
 
         .social-links a:hover {
@@ -365,34 +384,34 @@
             padding-top: 1.5rem;
             border-top: 1px solid rgba(255,255,255,0.1);
             color: #adb5bd;
-            font-size: 0.9rem;
+            font-size: 0.8rem;
         }
 
         .floating-cta {
             position: fixed;
-            bottom: 30px;
-            right: 30px;
+            bottom: 20px;
+            right: 20px;
             background: var(--cta);
             color: white;
             border: none;
             border-radius: 50px;
-            padding: 1rem 2rem;
+            padding: 0.8rem 1.5rem;
             font-weight: 600;
-            font-size: 1rem;
-            box-shadow: 0 10px 25px rgba(247, 37, 133, 0.4);
+            font-size: 0.9rem;
+            box-shadow: 0 8px 20px rgba(247, 37, 133, 0.4);
             cursor: pointer;
             transition: all 0.3s;
             z-index: 1000;
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 8px;
             animation: pulse 2s infinite;
         }
 
         .floating-cta:hover {
             background-color: var(--cta-hover);
             transform: translateY(-5px);
-            box-shadow: 0 15px 30px rgba(247, 37, 133, 0.5);
+            box-shadow: 0 12px 25px rgba(247, 37, 133, 0.5);
         }
 
         @keyframes pulse {
@@ -400,7 +419,7 @@
                 box-shadow: 0 0 0 0 rgba(247, 37, 133, 0.7);
             }
             70% {
-                box-shadow: 0 0 0 15px rgba(247, 37, 133, 0);
+                box-shadow: 0 0 0 12px rgba(247, 37, 133, 0);
             }
             100% {
                 box-shadow: 0 0 0 0 rgba(247, 37, 133, 0);
@@ -409,46 +428,143 @@
 
         /* Responsive adjustments */
         @media (max-width: 768px) {
-            .hero h1 {
-                font-size: 2.2rem;
-            }
-            
-            .hero p {
-                font-size: 1rem;
-            }
-            
-            .icon-row {
-                gap: 1.5rem;
-            }
-            
-            .icon-box {
-                width: 100%;
-                max-width: 280px;
-            }
-            
             .navbar {
-                flex-direction: column;
-                padding: 1rem;
+                padding: 0.8rem 5%;
             }
             
-             .navbar a{
-    text-decoration: none;
-        color: var(--dark);
-    }
-            
-            .auth-links {
-                margin-top: 1rem;
+            .logo h3 {
+                font-size: 1.3rem;
             }
             
             .auth-links a {
-                margin: 0 0.8rem;
+                margin-left: 0.8rem;
+                font-size: 0.85rem;
+            }
+            
+            .hero h1 {
+                font-size: 2rem;
+            }
+            
+            .hero p {
+                font-size: 0.95rem;
+            }
+            
+            .btn {
+                padding: 0.7rem 1.5rem;
+                font-size: 0.9rem;
+            }
+            
+            .section-title {
+                font-size: 1.8rem;
+            }
+            
+            .section-subtitle {
+                font-size: 0.95rem;
+                margin-bottom: 1.5rem;
+            }
+            
+            .icon-row {
+                gap: 1rem;
+            }
+            
+            .icon-box {
+                padding: 1.2rem 1rem;
+            }
+            
+            .stats-container {
+                gap: 1rem;
+            }
+            
+            .stat-box {
+                padding: 0.8rem;
+                min-width: 100px;
+            }
+            
+            .stat-number {
+                font-size: 1.8rem;
+            }
+            
+            .stat-label {
+                font-size: 0.8rem;
+            }
+            
+            .testimonial-card {
+                padding: 1.2rem;
+            }
+            
+            .footer-content {
+                gap: 1.5rem;
+            }
+            
+            .footer-column {
+                flex: 1 1 150px;
+            }
+            
+            .floating-cta {
+                bottom: 15px;
+                right: 15px;
+                padding: 0.7rem 1.2rem;
+                font-size: 0.85rem;
             }
         }
-         .navbar a{
-    text-decoration: none;
-        color: var(--dark);
-    }
         
+        @media (max-width: 480px) {
+            .navbar {
+                flex-direction: column;
+                padding: 0.8rem;
+            }
+            
+            .logo {
+                margin-bottom: 0.5rem;
+            }
+            
+            .auth-links {
+                display: flex;
+                justify-content: center;
+                width: 100%;
+            }
+            
+            .auth-links a {
+                margin: 0 0.5rem;
+            }
+            
+            .hero {
+                padding: 3rem 1rem;
+                min-height: 50vh;
+            }
+            
+            .hero h1 {
+                font-size: 1.8rem;
+            }
+            
+            .hero p {
+                font-size: 0.9rem;
+            }
+            
+            .section-title {
+                font-size: 1.6rem;
+            }
+            
+            .stat-box {
+                min-width: 80px;
+            }
+            
+            .stat-number {
+                font-size: 1.5rem;
+            }
+            
+            .floating-cta {
+                bottom: 10px;
+                right: 10px;
+                padding: 0.6rem 1rem;
+                font-size: 0.8rem;
+            }
+        }
+        
+        .navbar a {
+            text-decoration: none;
+            color: white;
+        }
     </style>
 </head>
 <body>

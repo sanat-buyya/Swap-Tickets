@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>My Listed Tickets</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #4361ee;
+            --primary-light: #eef2ff;
+            --secondary: #3f37c9;
+            --accent: #f72585;
+            --light: #f8f9fa;
+            --dark: #212529;
+            --gray: #6c757d;
+            --success: #4cc9f0;
+            --warning: #f8961e;
+            --danger: #ef233c;
+            --border: #dee2e6;
+            --sold: #d4edda;
+            --available: #d1ecf1;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Roboto, sans-serif;
+        }
+
+        body {
+            background-color: #f5f7ff;
+            color: var(--dark);
+            line-height: 1.6;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        h1 {
+            color: var(--primary);
+            font-size: 28px;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .ticket-count {
+            background-color: var(--primary);
+            color: white;
+            padding: 3px 10px;
+            border-radius: 20px;
+            font-size: 14px;
+        }
+
+        /* Ticket Cards */
+        .ticket-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 20px;
+        }
+
+        .ticket-card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+            overflow: hidden;
+            transition: transform 0.3s ease;
+        }
+
+        .ticket-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .ticket-header {
+            background-color: var(--primary);
+            color: white;
+            padding: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .ticket-pnr {
+            font-weight: bold;
+            font-size: 18px;
+        }
+
+        .ticket-train {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+
+        .ticket-body {
+            padding: 20px;
+        }
+
+        .journey-info {
+            display: grid;
+            grid-template-columns: 1fr auto 1fr;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .station {
+            text-align: center;
+        }
+
+        .station-name {
+            font-weight: bold;
+            font-size: 18px;
+        }
+
+        .station-label {
+            font-size: 12px;
+            color: var(--gray);
+            text-transform: uppercase;
+        }
+
+        .arrow-icon {
+            text-align: center;
+            color: var(--primary);
+            font-size: 20px;
+        }
+
+        .journey-date {
+            text-align: center;
+            margin: 10px 0;
+            color: var(--gray);
+            font-size: 14px;
+        }
+
+        /* Passenger Table */
+        .passenger-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+            font-size: 14px;
+        }
+
+        .passenger-table th {
+            background-color: var(--primary-light);
+            color: var(--primary);
+            padding: 10px;
+            text-align: left;
+        }
+
+        .passenger-table td {
+            padding: 10px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .passenger-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .status {
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .status-available {
+            background-color: var(--available);
+            color: #0c5460;
+        }
+
+        .status-sold {
+            background-color: var(--sold);
+            color: #155724;
+        }
+
+        .price {
+            font-weight: bold;
+            color: var(--primary);
+        }
+
+        .back-btn {
+            display: block;
+            text-align: center;
+            margin-top: 30px;
+        }
+
+        .action-btn {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none;
+        }
+
+        .action-btn:hover {
+            background-color: var(--secondary);
+            transform: translateY(-2px);
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 50px 20px;
+            color: var(--gray);
+        }
+
+        .empty-icon {
+            font-size: 50px;
+            color: var(--border);
+            margin-bottom: 20px;
+        }
+
+        /* Responsive Adjustments */
+        @media (max-width: 768px) {
+            .ticket-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .passenger-table {
+                display: block;
+                overflow-x: auto;
+            }
+            
+            h1 {
+                font-size: 24px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            body {
+                padding: 15px;
+            }
+            
+            .ticket-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 5px;
+            }
+            
+            .journey-info {
+                grid-template-columns: 1fr;
+                gap: 10px;
+                display: flex; /* Change to flex layout */
+        		justify-content: space-between; /* Space out the items horizontally */
+        		align-items: center;
+            }
+            .station {
+        text-align: center; /* Keep text centered */
+        flex: 1; /* Allow stations to take equal space */
+    }
+            
+            .arrow-icon {
+                
+                margin: 5px 0;
+            }
+            
+            .action-btn {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="header">
+        <h1>
+            <i class="fas fa-clipboard-list"></i> My Listed Tickets
+            <span class="ticket-count" th:text="${pnrs.size()}">0</span>
+        </h1>
+        <p>Manage all tickets you've listed for sale</p>
+    </div>
+
+    <div th:if="${pnrs.empty}" class="empty-state">
+        <div class="empty-icon">
+            <i class="far fa-folder-open"></i>
+        </div>
+        <h3>No Tickets Listed</h3>
+        <p>You haven't listed any tickets for sale yet. List your tickets to find buyers.</p>
+        <a href="/pnr/sell" class="action-btn" style="margin-top: 20px;">
+            <i class="fas fa-plus-circle"></i> List a Ticket
+        </a>
+    </div>
+
+    <div class="ticket-container" th:unless="${pnrs.empty}">
+        <div th:each="pnr : ${pnrs}" class="ticket-card">
+            <div class="ticket-header">
+                <div class="ticket-pnr" th:text="${pnr.pnrNumber}">PNR12345678</div>
+                <div class="ticket-train" th:text="${pnr.trainNumber}">Train No.</div>
+            </div>
+            
+            <div class="ticket-body">
+                <div class="journey-info">
+                    <div class="station">
+                        <div class="station-label">From</div>
+                        <div class="station-name" th:text="${pnr.fromStation}">DEL</div>
+                    </div>
+                    
+                    <div class="arrow-icon">
+                        <i class="fas fa-arrow-right"></i>
+                    </div>
+                    
+                    <div class="station">
+                        <div class="station-label">To</div>
+                        <div class="station-name" th:text="${pnr.toStation}">BOM</div>
+                    </div>
+                </div>
+                
+                <div class="journey-date">
+                    <i class="far fa-calendar-alt"></i>
+                    <span th:text="${pnr.journeyDate}">01 Jan 2023</span>
+                </div>
+                
+                <table class="passenger-table">
+                    <thead>
+                        <tr>
+                            <th>Passenger</th>
+                            <th>Details</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="passenger : ${pnr.passenger}">
+                            <td>
+                                <strong th:text="${passenger.name}">Name</strong><br>
+                                <span th:text="${passenger.gender} + ', ' + ${passenger.age}">Gender, Age</span>
+                            </td>
+                            <td>
+                                <span th:text="${passenger.coach}">Coach</span> /
+                                <span th:text="${passenger.seat}">Seat</span><br>
+                                <span class="price">₹<span th:text="${passenger.price}">500</span></span>
+                            </td>
+                            <td>
+                                <span th:if="${passenger.sold}" class="status status-sold">
+                                    <i class="fas fa-check-circle"></i> Sold
+                                </span>
+                                <span th:unless="${passenger.sold}" class="status status-available">
+                                    <i class="fas fa-circle"></i> Available
+                                </span>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    
+    <div class="back-btn" th:unless="${pnrs.empty}">
+        <a href="/user/home" class="action-btn">
+            <i class="fas fa-arrow-left"></i> Back to Dashboard
+        </a>
+    </div>
+</div>
+
+</body>
+</html>

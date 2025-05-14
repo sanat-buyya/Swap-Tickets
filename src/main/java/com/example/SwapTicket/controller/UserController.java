@@ -1,7 +1,9 @@
 package com.example.SwapTicket.controller;
 
+import com.example.SwapTicket.model.PNR;
 import com.example.SwapTicket.model.User;
 import com.example.SwapTicket.model.Wallet;
+import com.example.SwapTicket.repository.PNRRepository;
 import com.example.SwapTicket.repository.WalletRepository;
 import com.example.SwapTicket.service.UserService;
 import com.example.SwapTicket.helper.EmailSender;
@@ -9,10 +11,12 @@ import com.example.SwapTicket.helper.EmailSender;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 
+import java.util.List;
 import java.util.Optional; // Replace with your actual package
 import java.util.Random;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -20,10 +24,19 @@ import org.springframework.web.bind.annotation.*;
 @Controller
 public class UserController {
 	
+	@Value("${admin.email}")
+	String adminEmail;
+
+	@Value("${admin.password}")
+	String adminPassword;
 
     @Autowired
     private WalletRepository walletRepository;
+    
+    @Autowired
+    private PNRRepository pnrRepository;
 
+    
     @Autowired
     private UserService userService;
     
@@ -31,10 +44,9 @@ public class UserController {
 	EmailSender emailSender;
     
     @GetMapping("/")
-    public String defaultPage(HttpSession session) {
-        // Check if the user is logged in
+    public String defaultPage(HttpSession session) { 
         if (session.getAttribute("loggedInUserEmail") != null) {
-            return "redirect:/user/home";  // Redirect logged-in users to the dashboard
+            return "redirect:/user/home";
         }
         return "home";  
     }
@@ -50,7 +62,7 @@ public class UserController {
                             @RequestParam String password,
                             Model model,
                             HttpSession session) {
-    	if (username.equals("admin@swapticket.com") && password.equals("admin")) {
+    	if (username.equals(adminEmail) && password.equals(adminPassword)) {
     	    session.setAttribute("admin", true);
     	    return "redirect:/admin/dashboard";
     	}
@@ -117,13 +129,15 @@ public class UserController {
         }
 
         if (userOtp == sessionOtp) {
-            userService.saveUser(user); // Save only after OTP is verified
-
-            // Clean up session
+            userService.saveUser(user); 
+            Wallet wallet = new Wallet();
+            wallet.setEmail(user.getEmail());
+            wallet.setBalance(0.0);
+            walletRepository.save(wallet); 
+            
             session.removeAttribute("otp");
             session.removeAttribute("userDto");
-            
-            userService.saveUser(user);
+
             return "redirect:/login";
         } else {
             model.addAttribute("otpError", "Invalid OTP. Please try again.");
@@ -132,9 +146,10 @@ public class UserController {
     }
 
 
+
     @GetMapping("/user/sell")
     public String sellTicket() {
-        return "sellTicket"; 
+        return "sellTicket1"; 
     }
 
     @GetMapping("/user/home")
@@ -197,7 +212,13 @@ public class UserController {
 
         return "withdrawForm";
     }
-
-
+    
+    @GetMapping("/my-listed-tickets")
+    public String getMyListedTickets(HttpSession session, Model model) {
+        String sellerEmail = (String) session.getAttribute("loggedInUserEmail");
+        List<PNR> pnrs = pnrRepository.findBySellerEmailOrderByJourneyDateAsc(sellerEmail);
+        model.addAttribute("pnrs", pnrs);
+        return "myListedTickets"; // Name of the template
+    }
 
 }

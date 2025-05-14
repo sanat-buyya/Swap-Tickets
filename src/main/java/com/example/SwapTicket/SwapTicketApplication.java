@@ -4,10 +4,13 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
+import org.springframework.scheduling.annotation.EnableScheduling;
+
 
 import com.example.SwapTicket.model.Wallet;
 import com.example.SwapTicket.repository.WalletRepository;
 
+@EnableScheduling
 @SpringBootApplication
 public class SwapTicketApplication {
 
@@ -19,7 +22,7 @@ public class SwapTicketApplication {
     CommandLineRunner initAdminWallet(WalletRepository walletRepo) {
         return args -> {
             walletRepo.findByEmail("admin@swapticket.com").orElseGet(() -> {
-                Wallet adminWallet = new Wallet();
+            	Wallet adminWallet = new Wallet();
                 adminWallet.setEmail("admin@swapticket.com");
                 adminWallet.setBalance(10000.0); // Initial balance
                 return walletRepo.save(adminWallet);

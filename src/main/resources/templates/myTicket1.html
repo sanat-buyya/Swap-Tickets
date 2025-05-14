@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>My Tickets</title>
+</head>
+<body>
+    <h2>🎫 My Purchased Tickets</h2>
+
+    <div th:if="${#lists.isEmpty(tickets)}">
+        <p>No tickets purchased yet.</p>
+    </div>
+
+    <table th:if="${!#lists.isEmpty(tickets)}" border="1">
+        <thead>
+            <tr>
+                <th>Passenger Name</th>
+                <th>Age</th>
+                <th>Gender</th>
+                <th>Coach</th>
+                <th>Seat</th>
+                <th>Price</th>
+                <th>Train</th>
+                <th>Journey Date</th>
+                <th>PNR</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="p : ${tickets}">
+                <td th:text="${p.name}">Name</td>
+                <td th:text="${p.age}">Age</td>
+                <td th:text="${p.gender}">Gender</td>
+                <td th:text="${p.coach}">Coach</td>
+                <td th:text="${p.seatNumber}">Seat</td>
+                <td th:text="${p.price}">₹</td>
+                <td th:text="${p.pnr.trainNumber}">Train</td>
+                <td th:text="${p.pnr.dateOfJourney}">Date</td>
+                <td th:text="${p.pnr.pnrNumber}">PNR</td>
+            </tr>
+        </tbody>
+    </table>
+</body>
+</html>

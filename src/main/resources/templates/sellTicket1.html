@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Sell Ticket</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #4a6bff;
+            --secondary-color: #f8f9fa;
+            --accent-color: #ff6b6b;
+            --text-color: #333;
+            --light-gray: #e9ecef;
+            --border-color: #dee2e6;
+            --success-color: #28a745;
+            --warning-color: #ffc107;
+            --info-color: #17a2b8;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #f5f7fa;
+            color: var(--text-color);
+            line-height: 1.6;
+            padding: 20px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        h1, h2, h3 {
+            color: var(--primary-color);
+            margin-bottom: 20px;
+        }
+
+        h1 {
+            text-align: center;
+            margin: 20px 0;
+            font-size: 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .form-container {
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+        }
+
+        .form-section {
+            margin-bottom: 25px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid var(--light-gray);
+        }
+
+        .form-section:last-child {
+            border-bottom: none;
+        }
+
+        .form-group {
+            margin-bottom: 18px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #555;
+            font-size: 15px;
+        }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            font-size: 15px;
+            transition: border 0.3s ease;
+        }
+
+        input:focus, select:focus {
+            border-color: var(--primary-color);
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(74, 107, 255, 0.1);
+        }
+
+        .passenger-block {
+            background: var(--secondary-color);
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-left: 4px solid var(--primary-color);
+            position: relative;
+        }
+
+        .remove-passenger {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: var(--accent-color);
+            color: white;
+            border: none;
+            width: 25px;
+            height: 25px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 12px;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 12px 20px;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: none;
+            font-size: 15px;
+        }
+
+        .btn-primary {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: #3a5bef;
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            background-color: #6c757d;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background-color: #5a6268;
+        }
+
+        .btn-success {
+            background-color: var(--success-color);
+            color: white;
+        }
+
+        .btn-success:hover {
+            background-color: #218838;
+        }
+
+        .btn-add {
+            background-color: var(--info-color);
+            color: white;
+            margin-bottom: 20px;
+        }
+
+        .btn-add:hover {
+            background-color: #138496;
+        }
+
+        .terms-checkbox {
+            display: flex;
+            align-items: center;
+            margin: 20px 0;
+            font-size: 14px;
+        }
+
+        .terms-checkbox input {
+            width: auto;
+            margin-right: 10px;
+        }
+
+        .note {
+            font-size: 13px;
+            color: #666;
+            margin-top: 5px;
+            font-style: italic;
+        }
+
+        .file-input-wrapper {
+            position: relative;
+            overflow: hidden;
+            display: inline-block;
+            width: 100%;
+        }
+
+        .file-input-wrapper input[type="file"] {
+            font-size: 100px;
+            position: absolute;
+            left: 0;
+            top: 0;
+            opacity: 0;
+        }
+
+        .file-input-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            border: 1px dashed var(--border-color);
+            padding: 30px;
+            border-radius: 6px;
+            text-align: center;
+            background: var(--secondary-color);
+            color: #666;
+            font-weight: 500;
+        }
+
+        .file-input-btn:hover {
+            background: #e9ecef;
+        }
+
+        .file-name {
+            margin-top: 5px;
+            font-size: 13px;
+            color: var(--primary-color);
+            display: none;
+        }
+
+        /* Number of Tickets Styling */
+        .ticket-count-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .ticket-count-input {
+            max-width: 80px;
+            text-align: center;
+        }
+
+        /* Responsive Adjustments */
+        @media (max-width: 768px) {
+            body {
+                padding: 15px;
+            }
+            
+            .form-container {
+                padding: 20px;
+            }
+            
+            h1 {
+                font-size: 1.7rem;
+            }
+            
+            input, select, textarea {
+                padding: 10px 12px;
+            }
+            
+            .passenger-block {
+                padding: 15px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            body {
+                padding: 10px;
+            }
+            
+            .form-container {
+                padding: 15px;
+            }
+            
+            h1 {
+                font-size: 1.5rem;
+            }
+            
+            .btn {
+                padding: 10px 15px;
+                font-size: 14px;
+            }
+            
+            .ticket-count-container {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 5px;
+            }
+            
+            .ticket-count-input {
+                max-width: 100%;
+            }
+        }
+
+        /* Animation */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .passenger-block {
+            animation: fadeIn 0.3s ease-out;
+        }
+    </style>
+</head>
+<body>
+
+<h1><i class="fas fa-ticket-alt"></i> Sell Your Ticket</h1>
+
+<div class="form-container">
+    <form th:action="@{/pnr/sell}" method="post" enctype="multipart/form-data">
+
+        <!-- PNR + Train Info -->
+        <div class="form-section">
+            <h3><i class="fas fa-train"></i> Journey Details</h3>
+            
+            <div class="form-group">
+                <label for="pnrNumber">PNR Number</label>
+                <input type="text" id="pnrNumber" name="pnrNumber" pattern="\d{10}" title="PNR must be exactly 10 digits" required>
+                <div class="note">10-digit PNR from your ticket</div>
+            </div>
+            
+            <div class="form-group">
+                <label for="trainNumber">Train Number</label>
+                <input type="text" id="trainNumber" name="trainNumber" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="fromStation">From Station</label>
+                <input type="text" id="fromStation" name="fromStation" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="toStation">To Station</label>
+                <input type="text" id="toStation" name="toStation" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="journeyDate">Journey Date</label>
+                <input type="date" id="journeyDate" name="journeyDate" th:min="${T(java.time.LocalDate).now()}" required>
+            </div>
+            
+            <!-- Number of Tickets Field -->
+            <div class="form-group">
+                <label for="numberOfTickets">Number of Tickets</label>
+                <div class="ticket-count-container">
+                    <input type="number" id="numberOfTickets" name="numberOfTickets" 
+                           min="1" max="6" value="1" class="ticket-count-input" required>
+                    <span class="note">(Max 6 tickets per PNR)</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Seller Info -->
+        <div class="form-section">
+            <h3><i class="fas fa-user-circle"></i> Seller Information</h3>
+            
+            <div class="form-group">
+                <label for="sellerMobile">Mobile Number</label>
+                <input type="tel" id="sellerMobile" name="sellerMobile" placeholder="9876543210" pattern="[0-9]{10}" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="upiId">UPI ID</label>
+                <input type="text" id="upiId" name="upiId" placeholder="yourname@upi" required>
+                <div class="note">For receiving payment after journey completion</div>
+            </div>
+            
+            <div class="form-group">
+                <label>Ticket Image</label>
+                <div class="file-input-wrapper">
+                    <div class="file-input-btn">
+                        <i class="fas fa-cloud-upload-alt"></i>
+                        <span>Click to upload ticket image</span>
+                    </div>
+                    <input type="file" name="ticketImage" accept=".jpg,.jpeg,.png" required onchange="showFileName(this)">
+                </div>
+                <div class="file-name" id="ticketFileName"></div>
+            </div>
+        </div>
+
+        <!-- Passenger Details -->
+        <div class="form-section">
+            <h3><i class="fas fa-users"></i> Passenger Details</h3>
+            <p class="note">Add details for each passenger on the ticket</p>
+            
+            <div id="passenger-container"></div>
+            
+            <button type="button" class="btn btn-add" onclick="addPassenger()">
+                <i class="fas fa-plus"></i> Add Passenger
+            </button>
+        </div>
+
+        <!-- Terms and Submit -->
+        <div class="terms-checkbox">
+            <input type="checkbox" id="acceptTerms" name="acceptTerms" required>
+            <label for="acceptTerms">I accept the <a href="/docs/terms.pdf" target="_blank">Terms and Conditions</a></label>
+        </div>
+        
+        <p class="note"><i class="fas fa-info-circle"></i> Check your ticket status in My Tickets. Payment will be transferred after journey completion.</p>
+        
+        <div style="text-align: center; margin-top: 30px;">
+            <button type="submit" class="btn btn-success">
+                <i class="fas fa-paper-plane"></i> Submit Ticket
+            </button>
+        </div>
+    </form>
+</div>
+
+<div style="text-align: center; margin-top: 20px;">
+    <a th:href="@{/user/home}">
+        <button class="btn btn-secondary">
+            <i class="fas fa-arrow-left"></i> Back to Home
+        </button>
+    </a>
+</div>
+
+<script>
+    let passengerCount = 0;
+
+    function addPassenger() {
+        const container = document.getElementById('passenger-container');
+        const index = passengerCount++;
+
+        const block = document.createElement('div');
+        block.className = 'passenger-block';
+
+        block.innerHTML = `
+            <button type="button" class="remove-passenger" onclick="this.parentNode.remove()">
+                <i class="fas fa-times"></i>
+            </button>
+            <div class="form-group">
+                <label>Passenger Name</label>
+                <input type="text" name="passengerNames[${index}]" required>
+            </div>
+            <div class="form-group">
+                <label>Gender</label>
+                <select name="genders[${index}]" required>
+                    <option value="">-- Select Gender --</option>
+                    <option value="Male">Male</option>
+                    <option value="Female">Female</option>
+                    <option value="Other">Other</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Age</label>
+                <input type="number" name="ages[${index}]" min="1" max="120" required>
+            </div>
+            <div class="form-group">
+                <label>Coach Class</label>
+                <select name="coaches[${index}]" required>
+                    <option value="">-- Select Class --</option>
+                    <option value="SL">Sleeper (SL)</option>
+                    <option value="3A">AC 3 Tier (3A)</option>
+                    <option value="2A">AC 2 Tier (2A)</option>
+                    <option value="1A">AC First Class (1A)</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Seat Number</label>
+                <input type="text" name="seats[${index}]" placeholder="e.g., B2/72" required>
+            </div>
+            <div class="form-group">
+                <label>Price (₹)</label>
+                <input type="number" step="0.01" name="prices[${index}]" placeholder="Enter exact IRCTC ticket price" required>
+            </div>
+            <div class="form-group">
+                <label>ID Proof Document</label>
+                <div class="file-input-wrapper">
+                    <div class="file-input-btn">
+                        <i class="fas fa-cloud-upload-alt"></i>
+                        <span>Upload ID Proof</span>
+                    </div>
+                    <input type="file" name="documentUrls" accept=".jpg,.jpeg,.png" required onchange="showPassengerFileName(this, ${index})">
+                </div>
+                <div class="file-name" id="passengerFile${index}"></div>
+            </div>
+        `;
+
+        container.appendChild(block);
+    }
+
+    function showFileName(input) {
+        const fileNameDisplay = document.getElementById('ticketFileName');
+        if (input.files.length > 0) {
+            fileNameDisplay.textContent = input.files[0].name;
+            fileNameDisplay.style.display = 'block';
+        }
+    }
+
+    function showPassengerFileName(input, index) {
+        const fileNameDisplay = document.getElementById(`passengerFile${index}`);
+        if (input.files.length > 0) {
+            fileNameDisplay.textContent = input.files[0].name;
+            fileNameDisplay.style.display = 'block';
+        }
+    }
+
+    // Add first passenger by default
+    window.onload = addPassenger;
+</script>
+
+</body>
+</html>	

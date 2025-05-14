@@ -1,31 +1,56 @@
-package com.example.SwapTicket.model;
+ package com.example.SwapTicket.model;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
 
 @Entity
 public class Passenger {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue
     private Long id;
 
+    @NotBlank
     private String name;
-    private String gender;
+
+    @Min(0)
     private int age;
-
+    private String gender;
     private String coach;
-    private int seat;
 
-    private String documentUrl; // Cloudinary uploaded file URL
+    private String seat;
+
+    private String documentUrls;
+
+    private double price;
+
+    @Column(nullable = false, columnDefinition = "BOOLEAN DEFAULT FALSE", name = "is_sold")
+    private boolean sold;
 
     @ManyToOne
-    @JoinColumn(name = "ticket_id")
-    private Ticket ticket;
-
-    // Getters and Setters
-
+    @JoinColumn(name = "pnr_number") 
+    private PNR pnr; 
+    
+    private String buyerEmail;
+    private String sellerEmail;
+    private boolean sellerPaid;
+    private String razorpayPaymentId;
+    private String razorpayOrderId;
+    private boolean paid;
+    // Getters and setters
     public Long getId() {
         return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getName() {
@@ -36,14 +61,6 @@ public class Passenger {
         this.name = name;
     }
 
-    public String getGender() {
-        return gender;
-    }
-
-    public void setGender(String gender) {
-        this.gender = gender;
-    }
-
     public int getAge() {
         return age;
     }
@@ -52,7 +69,31 @@ public class Passenger {
         this.age = age;
     }
 
-    public String getCoach() {
+    public String getGender() {
+        return gender;
+    }
+
+    public void setGender(String gender) {
+        this.gender = gender;
+    } 
+
+    public String getSellerEmail() {
+		return sellerEmail;
+	}
+
+	public void setSellerEmail(String sellerEmail) {
+		this.sellerEmail = sellerEmail;
+	}
+	
+	public boolean isSellerPaid() {
+		return sellerPaid;
+	}
+
+	public void setSellerPaid(boolean sellerPaid) {
+		this.sellerPaid = sellerPaid;
+	}
+
+	public String getCoach() {
         return coach;
     }
 
@@ -60,27 +101,78 @@ public class Passenger {
         this.coach = coach;
     }
 
-    public int getSeat() {
+    public String getSeat() {
         return seat;
     }
 
-    public void setSeat(int seat) {
+    public void setSeat(String seat) {
         this.seat = seat;
     }
 
-    public String getDocumentUrl() {
-        return documentUrl;
+    public String getDocumentUrls() {
+        return documentUrls;
     }
 
-    public void setDocumentUrl(String documentUrl) {
-        this.documentUrl = documentUrl;
+    public void setDocumentUrls(String documentUrls) {
+        this.documentUrls = documentUrls;
     }
 
-    public Ticket getTicket() {
-        return ticket;
+    public double getPrice() {
+        return price;
     }
 
-    public void setTicket(Ticket ticket) {
-        this.ticket = ticket;
+    public void setPrice(double price) {
+        this.price = price;
     }
+    
+	public boolean isSold() {
+		return sold;
+	}
+
+	public void setSold(boolean sold) {
+		this.sold = sold;
+	}
+
+	public PNR getPnr() {
+        return pnr;
+    }
+
+    public void setPnr(PNR pnr) {
+        this.pnr = pnr;
+    }
+
+	public String getBuyerEmail() {
+		return buyerEmail;
+	}
+
+	public void setBuyerEmail(String buyerEmail) {
+		this.buyerEmail = buyerEmail;
+	}
+
+	public String getRazorpayPaymentId() {
+		return razorpayPaymentId;
+	}
+
+	public void setRazorpayPaymentId(String razorpayPaymentId) {
+		this.razorpayPaymentId = razorpayPaymentId;
+	}
+
+	public String getRazorpayOrderId() {
+		return razorpayOrderId;
+	}
+
+	public void setRazorpayOrderId(String razorpayOrderId) {
+		this.razorpayOrderId = razorpayOrderId;
+	}
+
+	public boolean isPaid() {
+		return paid;
+	}
+
+	public void setPaid(boolean paid) {
+		this.paid = paid;
+	}
+	
+	
+    
 }

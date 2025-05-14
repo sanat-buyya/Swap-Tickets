@@ -516,7 +516,7 @@
 </head>
 <body>
   <div class="navbar">
-    <a href="/"><h1><i class="fas fa-ticket-alt"></i> SwapTicket</h1></a>
+    <a href="/"><h1><img src="https://img.icons8.com/color/48/train.png" alt="Train Icon"> SwapTicket</h1></a>
     <button class="menu-toggle" id="menuToggle">
       <i class="fas fa-bars"></i>
     </button>
@@ -602,7 +602,7 @@
         <i class="fas fa-ticket-alt"></i>
         <h3>My Tickets</h3>
         <p>View and manage your listed tickets</p>
-        <form th:action="@{/tickets/my-tickets}" method="get">
+        <form th:action="@{/my-listed-tickets}" method="get">
           <button class="button">
             <i class="fas fa-eye"></i>
             <span>View</span>
@@ -614,7 +614,7 @@
         <i class="fas fa-shopping-cart"></i>
         <h3>Purchased Tickets</h3>
         <p>View tickets you've purchased</p>
-        <form th:action="@{/tickets/my-purchases}" method="get">
+        <form th:action="@{/pnr/my-purchases}" method="get">
           <button class="button">
             <i class="fas fa-receipt"></i>
             <span>View</span>
@@ -638,7 +638,7 @@
         <i class="fas fa-search"></i>
         <h3>Buy a Ticket</h3>
         <p>Find available tickets to purchase</p>
-        <form th:action="@{/tickets/buy}" method="get">
+        <form th:action="@{/pnr/buy}" method="get">
           <button class="button">
             <i class="fas fa-search-dollar"></i>
             <span>Browse</span>

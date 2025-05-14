@@ -1,8 +1,8 @@
 package com.example.SwapTicket.service;
 
-import com.example.SwapTicket.model.Ticket;
+import com.example.SwapTicket.model.Passenger;
 import com.example.SwapTicket.model.Wallet;
-import com.example.SwapTicket.repository.TicketRepository;
+import com.example.SwapTicket.repository.PassengerRepository;
 import com.example.SwapTicket.repository.WalletRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -16,34 +16,29 @@ public class PaymentService {
     private WalletRepository walletRepository;
 
     @Autowired
-    private TicketRepository ticketRepository;
+    private PassengerRepository passengerRepository;
 
-    public boolean transferToSeller(Ticket ticket) {
-        Optional<Wallet> sellerWalletOpt = walletRepository.findByEmail(ticket.getSellerEmail());
-        Optional<Wallet> adminWalletOpt = walletRepository.findByEmail("admin@swapticket.com");
+    public boolean paySeller(Passenger passenger) {
+        Wallet sellerWallet = walletRepository.findByEmail(passenger.getSellerEmail())
+                .orElseThrow(() -> new RuntimeException("Seller wallet not found"));
+        Wallet adminWallet = walletRepository.findByEmail("admin@swapticket.com")
+                .orElseThrow(() -> new RuntimeException("Admin wallet not found"));
 
-        if (sellerWalletOpt.isPresent() && adminWalletOpt.isPresent()) {
-            Wallet sellerWallet = sellerWalletOpt.get();
-            Wallet adminWallet = adminWalletOpt.get();
+        double ticketPrice = passenger.getPrice();
 
-            double ticketPrice = ticket.getPrice();
-
-            if (adminWallet.getBalance() < ticketPrice) {
-                return false;
-            }
-
-            adminWallet.setBalance(adminWallet.getBalance() - ticketPrice);
-            walletRepository.save(adminWallet);
-
-            sellerWallet.setBalance(sellerWallet.getBalance() + ticketPrice);
-            walletRepository.save(sellerWallet);
-
-            ticket.setSellerPaid(true);
-            ticketRepository.save(ticket);
-
-            return true;
+        if (adminWallet.getBalance() < ticketPrice) {
+            return false;
         }
 
-        return false;
+        adminWallet.setBalance(adminWallet.getBalance() - ticketPrice);
+        walletRepository.save(adminWallet);
+
+        sellerWallet.setBalance(sellerWallet.getBalance() + ticketPrice);
+        walletRepository.save(sellerWallet);
+
+        passenger.setSellerPaid(true);
+        passengerRepository.save(passenger);
+
+        return true;
     }
 }
