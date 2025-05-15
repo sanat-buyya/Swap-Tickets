@@ -4,6 +4,9 @@ import com.example.SwapTicket.model.Passenger;
 import com.example.SwapTicket.model.Wallet;
 import com.example.SwapTicket.repository.PassengerRepository;
 import com.example.SwapTicket.repository.WalletRepository;
+
+import jakarta.transaction.Transactional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -41,4 +44,21 @@ public class PaymentService {
 
         return true;
     }
+    
+    @Transactional
+    public synchronized boolean buyPassenger(Long passengerId, String buyerEmail) {
+        Passenger passenger = passengerRepository.findById(passengerId)
+            .orElseThrow(() -> new RuntimeException("Passenger not found"));
+
+        if (passenger.isSold()) {
+            throw new RuntimeException("Passenger already sold");
+        }
+
+        // set details
+        passenger.setBuyerEmail(buyerEmail);
+        passenger.setSold(true);
+        passengerRepository.save(passenger);
+        return true;
+    }
+
 }

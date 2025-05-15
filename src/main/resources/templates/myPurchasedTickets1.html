@@ -378,7 +378,7 @@
                 
                 <div class="ticket-footer">
                     <div class="price">
-                        ₹<span th:text="${passenger.price}">500</span>
+                        ₹<span th:text="${passenger.price + passenger.adminFee}"></span>
                     </div>
                     
                     <div class="actions">

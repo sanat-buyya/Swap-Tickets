@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Admin Dashboard - View Tickets</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        body {
+            font-family: "Segoe UI", sans-serif;
+            background-color: #f5f5f5;
+            margin: 0;
+            padding: 20px;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .dashboard-stats {
+            display: flex;
+            justify-content: space-around;
+            margin-bottom: 30px;
+            gap: 20px;
+        }
+
+        .stat-box {
+            background-color: #fff;
+            padding: 20px;
+            flex: 1;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        .stat-box h4 {
+            margin-bottom: 10px;
+            color: #555;
+        }
+
+        .stat-box strong {
+            font-size: 1.8em;
+            color: #333;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background-color: #fff;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: center;
+            border-bottom: 1px solid #ddd;
+        }
+
+        th {
+            background-color: #007bff;
+            color: white;
+        }
+
+        tr:hover {
+            background-color: #f1f1f1;
+        }
+
+        .sold {
+            color: green;
+            font-weight: bold;
+        }
+
+        .available {
+            color: orange;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Admin Dashboard - View Tickets</h1>
+
+    <div class="dashboard-stats">
+        <div class="stat-box">
+            <h4>Total Tickets</h4>
+            <strong th:text="${totalTickets}">0</strong>
+        </div>
+        <div class="stat-box">
+            <h4>Sold Tickets</h4>
+            <strong th:text="${soldTickets}">0</strong>
+        </div>
+        <div class="stat-box">
+            <h4>Available Tickets</h4>
+            <strong th:text="${availableTickets}">0</strong>
+        </div>
+    </div>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Passenger Name</th>
+                <th>Age</th>
+                <th>Gender</th>
+                <th>Coach</th>
+                <th>Seat</th>
+                <th>Price</th>
+                <th>Seller Email</th>
+                <th>Buyer Email</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="passenger : ${passengers}">
+                <td th:text="${passenger.name}">Name</td>
+                <td th:text="${passenger.age}">Age</td>
+                <td th:text="${passenger.gender}">Gender</td>
+                <td th:text="${passenger.coach}">Coach</td>
+                <td th:text="${passenger.seat}">Seat</td>
+                <td>₹<span th:text="${passenger.price}">0</span></td>
+                <td th:text="${passenger.sellerEmail}">Seller</td>
+                <td th:text="${passenger.buyerEmail}">Buyer</td>
+                <td>
+                    <span th:classappend="${passenger.sold} ? 'sold' : 'available'"
+                          th:text="${passenger.sold} ? 'Sold' : 'Available'">
+                        Status
+                    </span>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+</body>
+</html>

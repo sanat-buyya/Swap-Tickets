@@ -81,7 +81,7 @@
             display: inline-flex;
             align-items: center;
             gap: 6px;
-            font-size: 0.9rem;
+            font-size: 1.2rem;
         }
 
         .auth-links a:hover {
@@ -99,7 +99,7 @@
             text-align: center;
             position: relative;
             color: white;
-            min-height: 60vh;
+            min-height: 65vh;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -118,7 +118,7 @@
         .hero-content {
             position: relative;
             z-index: 1;
-            max-width: 800px;
+            max-width: 900px;
             margin: 0 auto;
             padding: 0 1rem;
         }
@@ -413,6 +413,22 @@
             transform: translateY(-5px);
             box-shadow: 0 12px 25px rgba(247, 37, 133, 0.5);
         }
+        .moving-arrow i {
+        display: inline-block;
+        animation: moveArrow 1s infinite;
+    }
+
+    @keyframes moveArrow {
+        0% {
+            transform: translateX(0);
+        }
+        50% {
+            transform: translateX(5px); /* Move 5px to the right */
+        }
+        100% {
+            transform: translateX(0); /* Return to the original position */
+        }
+    }
 
         @keyframes pulse {
             0% {
@@ -583,8 +599,9 @@
         <div class="hero-content">
             <h1 class="animate__animated animate__fadeInDown">Your Ticket Exchange Platform</h1>
             <p class="animate__animated animate__fadeInUp">SwapTicket revolutionizes train travel by providing a secure marketplace for buying and selling tickets with guaranteed transactions and fraud protection.</p>
-            <a href="/login" class="btn animate__animated animate__fadeIn">Get Started <i class="fas fa-arrow-right"></i></a>
-        </div>
+            <a href="/login" class="btn animate__animated animate__fadeIn moving-arrow">
+    Get Started <i class="fas fa-arrow-right"></i></a>        
+</div>
     </div>
 
     <div class="about-section">

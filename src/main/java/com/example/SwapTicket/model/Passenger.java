@@ -44,6 +44,9 @@ public class Passenger {
     private String razorpayPaymentId;
     private String razorpayOrderId;
     private boolean paid;
+    
+    private double adminFee;
+
     // Getters and setters
     public Long getId() {
         return id;
@@ -173,6 +176,13 @@ public class Passenger {
 		this.paid = paid;
 	}
 	
-	
+	public double getAdminFee() {
+	    return adminFee;
+	}
+
+	public void setAdminFee(double adminFee) {
+	    this.adminFee = adminFee;
+	}
+
     
 }

@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Admin - All Users</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #4e73df;
+            --secondary-color: #f8f9fc;
+            --success-color: #1cc88a;
+            --text-color: #5a5c69;
+            --table-header: #4e73df;
+            --table-hover: #f8f9fa;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f8f9fc;
+            color: var(--text-color);
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15);
+            padding: 2rem;
+        }
+        
+        h1 {
+            color: var(--primary-color);
+            margin-bottom: 1.5rem;
+            font-weight: 600;
+            text-align: center;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid #e3e6f0;
+        }
+        
+        .summary {
+            text-align: center;
+            margin-bottom: 2rem;
+            font-size: 1.2em;
+            padding: 0.75rem;
+            background-color: var(--secondary-color);
+            border-radius: 0.35rem;
+            font-weight: 500;
+        }
+        
+        .summary strong {
+            color: var(--primary-color);
+            font-size: 1.3em;
+        }
+        
+        .table-container {
+            overflow-x: auto;
+            border-radius: 8px;
+            box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
+            margin-bottom: 1.5rem;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            min-width: 600px;
+        }
+        
+        th {
+            background-color: var(--table-header);
+            color: white;
+            font-weight: 600;
+            padding: 1rem;
+            text-align: left;
+        }
+        
+        td {
+            padding: 0.75rem 1rem;
+            border-bottom: 1px solid #e3e6f0;
+            vertical-align: middle;
+        }
+        
+        tr:hover {
+            background-color: var(--table-hover);
+        }
+        
+        .wallet-balance {
+            font-weight: 600;
+            color: #28a745;
+        }
+        
+        /* Pagination Styles */
+        .pagination {
+            display: flex;
+            justify-content: center;
+            margin: 2rem 0;
+            list-style: none;
+            padding: 0;
+        }
+        
+        .pagination li {
+            margin: 0 0.25rem;
+        }
+        
+        .pagination a, .pagination span {
+            display: inline-block;
+            padding: 0.5rem 1rem;
+            border: 1px solid #dee2e6;
+            border-radius: 0.25rem;
+            color: var(--primary-color);
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+        
+        .pagination a:hover {
+            background-color: #e9ecef;
+        }
+        
+        .pagination .active a {
+            background-color: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
+        }
+        
+        .pagination .disabled a {
+            color: #6c757d;
+            pointer-events: none;
+            background-color: #e9ecef;
+            border-color: #dee2e6;
+        }
+        
+        .back-btn {
+            display: inline-block;
+            margin-top: 1rem;
+            padding: 0.5rem 1.5rem;
+            border-radius: 0.35rem;
+        }
+        
+        /* Status indicators */
+        .status-active {
+            color: var(--success-color);
+            font-weight: 600;
+        }
+        
+        .status-inactive {
+            color: #dc3545;
+            font-weight: 600;
+        }
+        
+        @media (max-width: 992px) {
+            .container {
+                padding: 1.5rem;
+            }
+            
+            table {
+                font-size: 0.95rem;
+            }
+            
+            th, td {
+                padding: 0.75rem;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+                margin: 0.5rem;
+            }
+            
+            h1 {
+                font-size: 1.75rem;
+            }
+            
+            .summary {
+                font-size: 1.1rem;
+            }
+            
+            .pagination li {
+                margin: 0 0.1rem;
+            }
+            
+            .pagination a, .pagination span {
+                padding: 0.4rem 0.8rem;
+            }
+        }
+        
+        @media (max-width: 576px) {
+            body {
+                padding: 10px;
+            }
+            
+            .container {
+                padding: 0.75rem;
+            }
+            
+            h1 {
+                font-size: 1.5rem;
+            }
+            
+            .summary {
+                font-size: 1rem;
+                padding: 0.5rem;
+            }
+            
+            th, td {
+                padding: 0.5rem;
+            }
+            
+            .pagination {
+                flex-wrap: wrap;
+            }
+            
+            .pagination li {
+                margin: 0.1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+
+    <h1>Registered Users</h1>
+
+    <div class="summary">
+        <i class="fas fa-users"></i> Total Users: <strong th:text="${totalUsers}">0</strong>
+        | Showing page <strong th:text="${currentPage + 1}">1</strong> of <strong th:text="${totalPages}">1</strong>
+    </div>
+
+    <div class="table-container">
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Full Name</th>
+                    <th>Email</th>
+                    <th>Mobile</th>
+                    <th>Wallet Balance</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="entry : ${userData}">
+                    <td th:text="${entry.user.id}">1</td>
+                    <td th:text="${entry.user.name}">Name</td>
+                    <td th:text="${entry.user.email}">email@example.com</td>
+                    <td th:text="${entry.user.mobile}">1234567890</td>
+                    <td class="wallet-balance" th:text="${entry.walletBalance != null ? '₹' + entry.walletBalance : '₹0.00'}">₹0.00</td>
+                    
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <nav th:if="${totalPages > 1}">
+        <ul class="pagination">
+            <li th:class="${currentPage == 0} ? 'disabled'">
+                <a th:href="@{'/admin/users'(page=${currentPage - 1})}" th:unless="${currentPage == 0}">
+                    &laquo; Previous
+                </a>
+                <span th:if="${currentPage == 0}">&laquo; Previous</span>
+            </li>
+            
+            <li th:each="i : ${#numbers.sequence(0, totalPages - 1)}"
+                th:class="${i == currentPage} ? 'active'">
+                <a th:href="@{'/admin/users'(page=${i})}" th:text="${i + 1}">1</a>
+            </li>
+            
+            <li th:class="${currentPage == totalPages - 1} ? 'disabled'">
+                <a th:href="@{'/admin/users'(page=${currentPage + 1})}" th:unless="${currentPage == totalPages - 1}">
+                    Next &raquo;
+                </a>
+                <span th:if="${currentPage == totalPages - 1}">Next &raquo;</span>
+            </li>
+        </ul>
+    </nav>
+
+    <div class="text-center">
+        <a href="/admin/dashboard" class="btn btn-primary back-btn">
+            <i class="fas fa-arrow-left"></i> Back to Dashboard
+        </a>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

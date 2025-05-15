@@ -2,9 +2,11 @@ package com.example.SwapTicket.controller;
 
 import com.cloudinary.Cloudinary;
 import com.cloudinary.utils.ObjectUtils;
+import com.example.SwapTicket.model.AdminConfig;
 import com.example.SwapTicket.model.PNR;
 import com.example.SwapTicket.model.Passenger;
 import com.example.SwapTicket.model.Wallet;
+import com.example.SwapTicket.repository.AdminConfigRepository;
 import com.example.SwapTicket.repository.PNRRepository;
 import com.example.SwapTicket.repository.PassengerRepository;
 import com.example.SwapTicket.repository.WalletRepository;
@@ -46,6 +48,9 @@ public class PNRController {
 
     @Autowired
     private Cloudinary cloudinary;
+    
+    @Autowired
+    private AdminConfigRepository adminConfigRepository;
     
     @Autowired
 	com.example.SwapTicket.helper.RazorPayHelper razorPayHelper;
@@ -171,13 +176,13 @@ public class PNRController {
                     .filter(pnr -> !pnr.getPassenger().isEmpty())
                     .toList();
         }
-
+        
         model.addAttribute("pnrs", pnrs);
         model.addAttribute("filter", filter != null ? filter : "available");
         model.addAttribute("fromStation", fromStation);
         model.addAttribute("toStation", toStation);
         model.addAttribute("trainNumber", trainNumber);
-
+       
         return "buyPNRTickets";
     }
     
@@ -205,8 +210,10 @@ public class PNRController {
         if (passenger.isSold()) {
             return ResponseEntity.badRequest().body(Map.of("error", "Passenger ticket already sold."));
         }
+        
+        double adminFee = adminConfigRepository.findById(1L).orElseThrow().getBookingFee();
 
-        double amountToPay = passenger.getPrice() + 20; // Add ₹20 service charge
+        double amountToPay = passenger.getPrice() + adminFee; 
 
         String razorpayOrderId = razorPayHelper.createPayment(amountToPay);
         if (razorpayOrderId == null) {
@@ -252,8 +259,9 @@ public class PNRController {
         passenger.setRazorpayOrderId(razorpayOrderId);
 
         double ticketPrice = passenger.getPrice();
-        double serviceCharge = 20.0;
-        double totalAmount = ticketPrice + serviceCharge;
+        double adminFee = adminConfigRepository.findById(1L).orElseThrow().getBookingFee();
+        double totalAmount = ticketPrice + adminFee;
+        passenger.setAdminFee(adminFee);
 
         // Admin wallet update: Add total amount
         Optional<Wallet> adminWalletOpt = walletRepository.findByEmail("admin@swapticket.com");
@@ -281,10 +289,12 @@ public class PNRController {
         String currentUserEmail = (String) session.getAttribute("loggedInUserEmail");
 
         List<Passenger> purchasedPassengers = passengerRepository.findByBuyerEmail(currentUserEmail);
-        model.addAttribute("purchasedPassengers", purchasedPassengers);
 
+        model.addAttribute("purchasedPassengers", purchasedPassengers);
+       
         return "myPurchasedTickets1";
     }
+
 
    
 
