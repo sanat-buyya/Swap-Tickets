@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FAQ - SwapTicket</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #4361ee;
+            --primary-dark: #3a0ca3;
+            --secondary: #f8f9fa;
+            --cta: #f72585;
+            --dark-text: #212529;
+            --light-text: #6c757d;
+            --border-color: #e0e0e0;
+            --success-color: #28a745;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            line-height: 1.6;
+            color: var(--dark-text);
+            background-color: #f9f9f9;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        header {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white;
+            padding: 60px 0;
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        h1 {
+            font-size: 2.8rem;
+            margin-bottom: 15px;
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            max-width: 700px;
+            margin: 0 auto;
+            opacity: 0.9;
+        }
+
+        .faq-container {
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            padding: 40px;
+            margin-bottom: 40px;
+        }
+
+        .faq-item {
+            margin-bottom: 30px;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 25px;
+        }
+
+        .faq-item:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+
+        .faq-question {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+            color: var(--primary-dark);
+            font-size: 1.3rem;
+            font-weight: 600;
+        }
+
+        .faq-icon {
+            width: 30px;
+            height: 30px;
+            background-color: var(--primary);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+            flex-shrink: 0;
+        }
+
+        .faq-answer {
+            color: var(--light-text);
+            margin-left: 45px;
+        }
+
+        .faq-answer ul {
+            padding-left: 20px;
+            margin-top: 10px;
+        }
+
+        .faq-answer li {
+            margin-bottom: 8px;
+            position: relative;
+        }
+
+        .faq-answer li::before {
+            content: "•";
+            color: var(--primary);
+            font-weight: bold;
+            display: inline-block;
+            width: 1em;
+            margin-left: -1em;
+        }
+
+        .highlight {
+            background-color: rgba(67, 97, 238, 0.1);
+            padding: 15px 20px;
+            border-radius: 8px;
+            margin: 15px 0;
+            border-left: 4px solid var(--primary);
+        }
+
+        .contact-info {
+            text-align: center;
+            margin-top: 30px;
+        }
+
+        .contact-email {
+            color: var(--primary);
+            font-weight: 600;
+            text-decoration: none;
+        }
+
+        .contact-email:hover {
+            text-decoration: underline;
+        }
+
+        footer {
+            text-align: center;
+            padding: 30px 20px;
+            color: var(--light-text);
+            font-size: 0.9rem;
+            margin-top: 40px;
+            border-top: 1px solid var(--border-color);
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .container {
+                padding: 15px;
+            }
+            
+            header {
+                padding: 40px 0;
+            }
+            
+            h1 {
+                font-size: 2.2rem;
+            }
+            
+            .subtitle {
+                font-size: 1rem;
+            }
+            
+            .faq-container {
+                padding: 25px;
+            }
+            
+            .faq-question {
+                font-size: 1.1rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            header {
+                padding: 30px 0;
+            }
+            
+            h1 {
+                font-size: 1.8rem;
+            }
+            
+            .faq-container {
+                padding: 20px;
+            }
+            
+            .faq-question {
+                font-size: 1rem;
+                align-items: flex-start;
+            }
+            
+            .faq-icon {
+                margin-top: 3px;
+            }
+            
+            .faq-answer {
+                margin-left: 0;
+                padding-left: 45px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>Frequently Asked Questions</h1>
+            <p class="subtitle">Find answers to common questions about buying and selling train tickets on SwapTicket</p>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="faq-container">
+            <div class="faq-item">
+                <div class="faq-question">
+                    <div class="faq-icon"><i class="fas fa-question"></i></div>
+                    What is SwapTicket?
+                </div>
+                <div class="faq-answer">
+                    <p>SwapTicket is a peer-to-peer platform that allows users to safely sell or buy IRCTC train tickets. We aim to reduce scams by providing verified listings and secure payments.</p>
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question">
+                    <div class="faq-icon"><i class="fas fa-ticket-alt"></i></div>
+                    How do I sell my train ticket?
+                </div>
+                <div class="faq-answer">
+                    <ul>
+                        <li>Log in or register</li>
+                        <li>Go to Sell Ticket</li>
+                        <li>Fill in ticket and passenger details</li>
+                        <li>Upload ticket image or document</li>
+                        <li>Set your price and submit</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question">
+                    <div class="faq-icon"><i class="fas fa-shopping-cart"></i></div>
+                    How do I buy a ticket?
+                </div>
+                <div class="faq-answer">
+                    <ul>
+                        <li>Visit the Buy Tickets page</li>
+                        <li>Use filters to find suitable tickets</li>
+                        <li>Click Buy, make the payment via Razorpay</li>
+                        <li>After payment, full ticket details (passenger info & documents) are shown</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question">
+                    <div class="faq-icon"><i class="fas fa-lock"></i></div>
+                    Is payment secure?
+                </div>
+                <div class="faq-answer">
+                    <p>Yes. Payments are handled through Razorpay, a secure and trusted payment gateway. Your card or UPI details are never stored by SwapTicket.</p>
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question">
+                    <div class="faq-icon"><i class="fas fa-money-bill-wave"></i></div>
+                    What is the service/booking fee?
+                </div>
+                <div class="faq-answer">
+                    <p>We charge a small booking fee (e.g., ₹20) on top of the ticket price. This fee helps run and maintain the platform and is shown clearly before payment.</p>
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question">
+                    <div class="faq-icon"><i class="fas fa-wallet"></i></div>
+                    When does the seller receive the money?
+                </div>
+                <div class="faq-answer">
+                    <p>Once a buyer successfully completes the payment, the ticket price is credited to the seller's wallet instantly. Sellers can withdraw funds at any time (if withdrawal is implemented).</p>
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question">
+                    <div class="faq-icon"><i class="fas fa-calendar-times"></i></div>
+                    What happens after the journey date?
+                </div>
+                <div class="faq-answer">
+                    <p>Tickets are automatically removed from the platform 2 days after the journey date to keep the listings fresh and relevant.</p>
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question">
+                    <div class="faq-icon"><i class="fas fa-eye"></i></div>
+                    Can I see who bought my ticket?
+                </div>
+                <div class="faq-answer">
+                    <p>Yes. Go to My Tickets in your dashboard to view all your sold tickets and the buyer's email.</p>
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question">
+                    <div class="faq-icon"><i class="fas fa-headset"></i></div>
+                    What if I face any issue?
+                </div>
+                <div class="faq-answer">
+                    <div class="highlight">
+                        <p>You can contact our support team via the Contact Us section or reach us at <a href="mailto:support@swapticket.com" class="contact-email">support@swapticket.com</a></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2025 SwapTicket. All rights reserved.</p>
+        </div>
+    </footer>
+</body>
+</html>

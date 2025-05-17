@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>How It Works - SwapTicket</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #4361ee;
+            --primary-dark: #3a0ca3;
+            --secondary: #f8f9fa;
+            --cta: #f72585;
+            --dark-text: #212529;
+            --light-text: #6c757d;
+            --border-color: #e0e0e0;
+            --success-color: #28a745;
+            --seller-color: #4cc9f0;
+            --buyer-color: #7209b7;
+            --payment-color: #f8961e;
+            --admin-color: #43aa8b;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            line-height: 1.6;
+            color: var(--dark-text);
+            background-color: #f9f9f9;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        header {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white;
+            padding: 60px 0;
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        h1 {
+            font-size: 2.8rem;
+            margin-bottom: 15px;
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            max-width: 700px;
+            margin: 0 auto;
+            opacity: 0.9;
+        }
+
+        .intro {
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            padding: 30px;
+            margin-bottom: 30px;
+            text-align: center;
+            font-size: 1.1rem;
+            color: var(--light-text);
+        }
+
+        .process-section {
+            margin-bottom: 50px;
+        }
+
+        .section-title {
+            display: flex;
+            align-items: center;
+            margin-bottom: 25px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid;
+            font-size: 1.5rem;
+        }
+
+        .seller-title {
+            color: var(--seller-color);
+            border-color: var(--seller-color);
+        }
+
+        .buyer-title {
+            color: var(--buyer-color);
+            border-color: var(--buyer-color);
+        }
+
+        .payment-title {
+            color: var(--payment-color);
+            border-color: var(--payment-color);
+        }
+
+        .admin-title {
+            color: var(--admin-color);
+            border-color: var(--admin-color);
+        }
+
+        .process-steps {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+        }
+
+        .step-card {
+            background-color: white;
+            border-radius: 8px;
+            padding: 25px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.05);
+            position: relative;
+            border-top: 4px solid;
+            transition: transform 0.3s ease;
+        }
+
+        .step-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .seller-card {
+            border-top-color: var(--seller-color);
+        }
+
+        .buyer-card {
+            border-top-color: var(--buyer-color);
+        }
+
+        .payment-card {
+            border-top-color: var(--payment-color);
+        }
+
+        .admin-card {
+            border-top-color: var(--admin-color);
+        }
+
+        .step-number {
+            position: absolute;
+            top: -15px;
+            left: 20px;
+            background-color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .seller-number {
+            color: var(--seller-color);
+            border: 2px solid var(--seller-color);
+        }
+
+        .buyer-number {
+            color: var(--buyer-color);
+            border: 2px solid var(--buyer-color);
+        }
+
+        .payment-number {
+            color: var(--payment-color);
+            border: 2px solid var(--payment-color);
+        }
+
+        .admin-number {
+            color: var(--admin-color);
+            border: 2px solid var(--admin-color);
+        }
+
+        .step-content h3 {
+            margin-bottom: 15px;
+            font-size: 1.2rem;
+        }
+
+        .step-content ul {
+            padding-left: 20px;
+        }
+
+        .step-content li {
+            margin-bottom: 8px;
+            color: var(--light-text);
+        }
+
+        .step-content li::before {
+            content: "•";
+            color: inherit;
+            font-weight: bold;
+            display: inline-block;
+            width: 1em;
+            margin-left: -1em;
+        }
+
+        .visual-flow {
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            padding: 30px;
+            margin: 40px 0;
+            text-align: center;
+        }
+
+        .flow-steps {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 30px;
+            flex-wrap: wrap;
+        }
+
+        .flow-step {
+            flex: 1;
+            min-width: 150px;
+            margin: 10px;
+            position: relative;
+        }
+
+        .flow-icon {
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 15px;
+            font-size: 1.5rem;
+            color: white;
+        }
+
+        .seller-icon {
+            background-color: var(--seller-color);
+        }
+
+        .buyer-icon {
+            background-color: var(--buyer-color);
+        }
+
+        .payment-icon {
+            background-color: var(--payment-color);
+        }
+
+        .admin-icon {
+            background-color: var(--admin-color);
+        }
+
+        .flow-arrow {
+            font-size: 1.5rem;
+            color: var(--light-text);
+            margin: 0 10px;
+        }
+
+        footer {
+            text-align: center;
+            padding: 30px 20px;
+            color: var(--light-text);
+            font-size: 0.9rem;
+            margin-top: 40px;
+            border-top: 1px solid var(--border-color);
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .container {
+                padding: 15px;
+            }
+            
+            header {
+                padding: 40px 0;
+            }
+            
+            h1 {
+                font-size: 2.2rem;
+            }
+            
+            .subtitle {
+                font-size: 1rem;
+            }
+            
+            .process-steps {
+                grid-template-columns: 1fr;
+            }
+            
+            .flow-steps {
+                flex-direction: column;
+            }
+            
+            .flow-step {
+                margin-bottom: 30px;
+            }
+            
+            .flow-arrow {
+                transform: rotate(90deg);
+                margin: 10px 0;
+            }
+        }
+
+        @media (max-width: 480px) {
+            header {
+                padding: 30px 0;
+            }
+            
+            h1 {
+                font-size: 1.8rem;
+            }
+            
+            .section-title {
+                font-size: 1.3rem;
+            }
+            
+            .step-card {
+                padding: 20px 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>How It Works</h1>
+            <p class="subtitle">Simple, secure train ticket exchanges on SwapTicket</p>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="intro">
+            SwapTicket is designed to make the process of selling and buying train tickets simple, secure, and scam-free. Here's how it works:
+        </div>
+
+        <div class="process-section">
+            <div class="section-title seller-title">
+                <i class="fas fa-ticket-alt" style="margin-right: 10px;"></i> For Sellers – Sell Your Unused Ticket
+            </div>
+            <div class="process-steps">
+                <div class="step-card seller-card">
+                    <div class="step-number seller-number">1</div>
+                    <div class="step-content">
+                        <h3>Register & Access</h3>
+                        <ul>
+                            <li>Register/Login to your account</li>
+                            <li>Go to Sell Ticket section</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="step-card seller-card">
+                    <div class="step-number seller-number">2</div>
+                    <div class="step-content">
+                        <h3>Enter Ticket Details</h3>
+                        <ul>
+                            <li>Train details (From, To, Date)</li>
+                            <li>Train Number and Class</li>
+                            <li>PNR number</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="step-card seller-card">
+                    <div class="step-number seller-number">3</div>
+                    <div class="step-content">
+                        <h3>Passenger Information</h3>
+                        <ul>
+                            <li>Passenger names, ages, genders</li>
+                            <li>Seat numbers</li>
+                            <li>Upload ticket proof/documents</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="step-card seller-card">
+                    <div class="step-number seller-number">4</div>
+                    <div class="step-content">
+                        <h3>Pricing & Submission</h3>
+                        <ul>
+                            <li>Set your desired price</li>
+                            <li>Submit the ticket</li>
+                            <li>It will be listed for buyers</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="step-card seller-card">
+                    <div class="step-number seller-number">5</div>
+                    <div class="step-content">
+                        <h3>Receive Payment</h3>
+                        <ul>
+                            <li>When sold, amount is transferred to your wallet</li>
+                            <li>(Excluding small service fee)</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="process-section">
+            <div class="section-title buyer-title">
+                <i class="fas fa-shopping-cart" style="margin-right: 10px;"></i> For Buyers – Buy a Ticket
+            </div>
+            <div class="process-steps">
+                <div class="step-card buyer-card">
+                    <div class="step-number buyer-number">1</div>
+                    <div class="step-content">
+                        <h3>Browse Tickets</h3>
+                        <ul>
+                            <li>Visit the Buy Tickets page</li>
+                            <li>Use filters to find tickets</li>
+                            <li>(From, To, Date, Train Number)</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="step-card buyer-card">
+                    <div class="step-number buyer-number">2</div>
+                    <div class="step-content">
+                        <h3>Select & Purchase</h3>
+                        <ul>
+                            <li>Click Buy next to available seat</li>
+                            <li>Pay securely via Razorpay</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="step-card buyer-card">
+                    <div class="step-number buyer-number">3</div>
+                    <div class="step-content">
+                        <h3>Access Ticket Details</h3>
+                        <ul>
+                            <li>After payment, full details are revealed</li>
+                            <li>Passenger names, documents, seat</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="step-card buyer-card">
+                    <div class="step-number buyer-number">4</div>
+                    <div class="step-content">
+                        <h3>Board the Train</h3>
+                        <ul>
+                            <li>Use the purchased ticket</li>
+                            <li>Present documents if required</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="visual-flow">
+            <div class="section-title payment-title">
+                <i class="fas fa-lock" style="margin-right: 10px;"></i> Secure Payment Flow
+            </div>
+            <div class="flow-steps">
+                <div class="flow-step">
+                    <div class="flow-icon seller-icon">
+                        <i class="fas fa-user-tie"></i>
+                    </div>
+                    <p>Seller lists ticket</p>
+                </div>
+                <div class="flow-arrow">
+                    <i class="fas fa-arrow-right"></i>
+                </div>
+                <div class="flow-step">
+                    <div class="flow-icon buyer-icon">
+                        <i class="fas fa-user"></i>
+                    </div>
+                    <p>Buyer pays (price + fee) via Razorpay</p>
+                </div>
+                <div class="flow-arrow">
+                    <i class="fas fa-arrow-right"></i>
+                </div>
+                <div class="flow-step">
+                    <div class="flow-icon payment-icon">
+                        <i class="fas fa-wallet"></i>
+                    </div>
+                    <p>Admin wallet receives total amount</p>
+                </div>
+                <div class="flow-arrow">
+                    <i class="fas fa-arrow-right"></i>
+                </div>
+                <div class="flow-step">
+                    <div class="flow-icon admin-icon">
+                        <i class="fas fa-money-bill-wave"></i>
+                    </div>
+                    <p>Seller gets price, SwapTicket keeps fee</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="process-section">
+            <div class="section-title admin-title">
+                <i class="fas fa-chart-line" style="margin-right: 10px;"></i> Admin Dashboard
+            </div>
+            <div class="process-steps">
+                <div class="step-card admin-card">
+                    <div class="step-number admin-number">1</div>
+                    <div class="step-content">
+                        <h3>Platform Overview</h3>
+                        <ul>
+                            <li>View total users</li>
+                            <li>See active tickets</li>
+                            <li>Monitor total revenue</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="step-card admin-card">
+                    <div class="step-number admin-number">2</div>
+                    <div class="step-content">
+                        <h3>Transaction Management</h3>
+                        <ul>
+                            <li>Track all transactions</li>
+                            <li>Manage platform fees</li>
+                            <li>Monitor wallet balances</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="step-card admin-card">
+                    <div class="step-number admin-number">3</div>
+                    <div class="step-content">
+                        <h3>Ticket Validity</h3>
+                        <ul>
+                            <li>Tickets auto-remove 2 days after journey</li>
+                            <li>Only valid tickets shown to buyers</li>
+                            <li>Ensure listings stay current</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2025 SwapTicket. All rights reserved.</p>
+        </div>
+    </footer>
+</body>
+</html>

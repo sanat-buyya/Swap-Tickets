@@ -34,6 +34,7 @@
             padding: 15px;
             max-width: 1200px;
             margin: 0 auto;
+            background-image: url('https://www.transparenttextures.com/patterns/cubes.png');
         }
 
         h1, h2, h3, h4 {
@@ -356,6 +357,14 @@
         <input type="date" name="journeyDate" th:value="${journeyDate}">
     </div>
     
+    <select name="gender" class="form-control">
+    <option value="">All Genders</option>
+    <option value="Male" th:selected="${gender == 'Male'}">Male</option>
+    <option value="Female" th:selected="${gender == 'Female'}">Female</option>
+    <option value="Other" th:selected="${gender == 'Other'}">Other</option>
+</select>
+
+    
     <div class="form-group">
         <label for="filter">Status:</label>
         <select name="filter">
@@ -418,26 +427,26 @@
                 
                 <div class="passenger-details">
                     <div class="detail-item">
-                        <strong>Name:</strong>
+                        <i class="fas fa-user"></i><strong> Name:</strong>
                         <span th:if="${passenger.sold}">SOLD</span>
                         <span th:unless="${passenger.sold}">Buy to view</span>
                     </div>
                     <div class="detail-item">
-                        <strong>Age:</strong> <span th:text="${passenger.age}"></span>
+                        <i class="fas fa-birthday-cake"></i><strong> Age:</strong> <span th:text="${passenger.age}"></span>
                     </div>
                     <div class="detail-item">
-                        <strong>Gender:</strong> <span th:text="${passenger.gender}"></span>
+                        <i class="fas fa-venus-mars"></i><strong> Gender:</strong> <span th:text="${passenger.gender}"></span>
                     </div>
                     <div class="detail-item">
-                        <strong>Coach:</strong> <span th:text="${passenger.coach}"></span>
+                        <i class="fas fa-train"></i><strong> Coach:</strong> <span th:text="${passenger.coach}"></span>
                     </div>
                     <div class="detail-item">
-                        <strong>Seat No:</strong>
+                        <i class="fas fa-chair"></i><strong> Seat No:</strong>
                         <span th:if="${passenger.sold}">SOLD</span>
                         <span th:unless="${passenger.sold}">Buy to view</span>
                     </div>
                     <div class="detail-item">
-                        <strong>Price:</strong> ₹<span th:text="${passenger.price + passenger.adminFee}"></span>
+                        <i class="fas fa-rupee-sign"></i><strong> Price:</strong> ₹<span th:text="${passenger.price + adminFee}"></span>
                     </div>
                     <div class="detail-item">
                         <strong>Document:</strong>
@@ -449,8 +458,8 @@
                 <!-- 💳 Razorpay -->
                 <div th:unless="${passenger.sold}">
                     <button type="button" class="btn btn-buy"
-                            th:onclick="'startPayment(' + ${passenger.id} + ',' + (${passenger.price + passenger.adminFee}) + ')'">
-                        <i class="fas fa-shopping-cart"></i> Buy (₹<span th:text="${passenger.price + passenger.adminFee}"></span>)
+                            th:onclick="'startPayment(' + ${passenger.id} + ',' + (${passenger.price +adminFee}) + ')'">
+                        <i class="fas fa-shopping-cart"></i> Buy (₹<span th:text="${passenger.price +adminFee}"></span>)
                     </button>
                 </div>
 

@@ -1,9 +1,13 @@
 package com.example.SwapTicket.controller;
 
 import com.example.SwapTicket.model.PNR;
+import com.example.SwapTicket.model.Passenger;
+import com.example.SwapTicket.model.TransactionHistory;
 import com.example.SwapTicket.model.User;
 import com.example.SwapTicket.model.Wallet;
 import com.example.SwapTicket.repository.PNRRepository;
+import com.example.SwapTicket.repository.PassengerRepository;
+import com.example.SwapTicket.repository.TransactionHistoryRepository;
 import com.example.SwapTicket.repository.WalletRepository;
 import com.example.SwapTicket.service.UserService;
 import com.example.SwapTicket.helper.EmailSender;
@@ -36,9 +40,15 @@ public class UserController {
     @Autowired
     private PNRRepository pnrRepository;
 
+    @Autowired
+    private PassengerRepository passengerRepository;
     
     @Autowired
     private UserService userService;
+    
+    @Autowired
+    private TransactionHistoryRepository transactionHistoryRepository;
+
     
     @Autowired
 	EmailSender emailSender;
@@ -220,5 +230,49 @@ public class UserController {
         model.addAttribute("pnrs", pnrs);
         return "myListedTickets"; // Name of the template
     }
+    
+    @GetMapping("/user/transactions")
+    public String viewMyTransaction(HttpSession session, Model model) {
+        String email = (String) session.getAttribute("loggedInUserEmail"); // or "email" if that's what you store
+        if (email == null) return "redirect:/login";
+
+        List<TransactionHistory> list = transactionHistoryRepository.findByUserEmailOrderByDateDesc(email);
+        model.addAttribute("transactions", list);
+        return "myTransactions"; // this maps to myTransaction.html
+    }
+
+
+    
+    @GetMapping("/privacy")
+    public String privacy() {
+    	return "privacy";
+    }
+    
+    @GetMapping("/terms")
+    public String terms() {
+    	return "terms";
+    }
+    
+    @GetMapping("/about")
+    public String aboutUs() {
+    	return "aboutUs";
+    }
+    
+    @GetMapping("/how-it-works")
+    public String howTtWorks() {
+    	return "howItWorks";
+    }
+    
+    @GetMapping("/faq")
+    public String faq() {
+    	return "faq";
+    }
+    
+    @GetMapping("/maskedAadhar")
+    public String maskedAadhar() {
+    	return "maskedAadhar";
+    }
+    
+    
 
 }

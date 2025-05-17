@@ -32,6 +32,7 @@
             padding: 20px;
             max-width: 800px;
             margin: 0 auto;
+            background-image: url('https://www.transparenttextures.com/patterns/cubes.png');
         }
 
         h1, h2, h3 {
@@ -48,6 +49,15 @@
             justify-content: center;
             gap: 10px;
         }
+        .steps-link {
+  color: #4285f4;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+.steps-link:hover {
+  text-decoration: underline;
+}
 
         .form-container {
             background: white;
@@ -345,11 +355,11 @@
             
             <!-- Number of Tickets Field -->
             <div class="form-group">
-                <label for="numberOfTickets">Number of Tickets</label>
+                <label for="numberOfTickets">Number of Passengers</label>
                 <div class="ticket-count-container">
                     <input type="number" id="numberOfTickets" name="numberOfTickets" 
                            min="1" max="6" value="1" class="ticket-count-input" required>
-                    <span class="note">(Max 6 tickets per PNR)</span>
+                    
                 </div>
             </div>
         </div>
@@ -397,7 +407,7 @@
         <!-- Terms and Submit -->
         <div class="terms-checkbox">
             <input type="checkbox" id="acceptTerms" name="acceptTerms" required>
-            <label for="acceptTerms">I accept the <a href="/docs/terms.pdf" target="_blank">Terms and Conditions</a></label>
+            <label for="acceptTerms">I accept the <a href="/terms">Terms and Conditions</a></label>
         </div>
         
         <p class="note"><i class="fas fa-info-circle"></i> Check your ticket status in My Tickets. Payment will be transferred after journey completion.</p>
@@ -418,18 +428,31 @@
     </a>
 </div>
 
+
 <script>
     let passengerCount = 0;
 
     function addPassenger() {
         const container = document.getElementById('passenger-container');
+        const ticketCountInput = document.getElementById('numberOfTickets');
+        const maxTickets = parseInt(ticketCountInput.max);
+        
+        // Check if we've reached maximum tickets
+        if (passengerCount >= maxTickets) {
+            alert(`Maximum ${maxTickets} tickets allowed per PNR`);
+            return;
+        }
+        
         const index = passengerCount++;
+        
+        // Increment the ticket count
+        ticketCountInput.value = passengerCount;
 
         const block = document.createElement('div');
         block.className = 'passenger-block';
 
         block.innerHTML = `
-            <button type="button" class="remove-passenger" onclick="this.parentNode.remove()">
+            <button type="button" class="remove-passenger" onclick="removePassenger(this)">
                 <i class="fas fa-times"></i>
             </button>
             <div class="form-group">
@@ -450,22 +473,26 @@
                 <input type="number" name="ages[${index}]" min="1" max="120" required>
             </div>
             <div class="form-group">
-                <label>Coach Class</label>
-                <select name="coaches[${index}]" required>
-                    <option value="">-- Select Class --</option>
-                    <option value="SL">Sleeper (SL)</option>
-                    <option value="3A">AC 3 Tier (3A)</option>
-                    <option value="2A">AC 2 Tier (2A)</option>
-                    <option value="1A">AC First Class (1A)</option>
-                </select>
-            </div>
-            <div class="form-group">
-                <label>Seat Number</label>
-                <input type="text" name="seats[${index}]" placeholder="e.g., B2/72" required>
-            </div>
+            <label>Coach Class</label>
+            <select name="coaches[${index}]" class="coach-select" data-index="${index}" required onchange="updateSeatOptions(this)">
+                <option value="">-- Select Class --</option>
+                <option value="SL">Sleeper (SL)</option>
+                <option value="3A">AC 3 Tier (3A)</option>
+                <option value="2A">AC 2 Tier (2A)</option>
+                <option value="1A">AC First Class (1A)</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label>Seat Number</label>
+            <select name="seats[${index}]" class="seat-number" id="seat-${index}" required>
+                <option value="">-- Seat Format --</option>
+            </select>
+        	</div>
             <div class="form-group">
                 <label>Price (₹)</label>
-                <input type="number" step="0.01" name="prices[${index}]" placeholder="Enter exact IRCTC ticket price" required>
+                <input type="number" step="0.01" name="prices[${index}]" placeholder="Enter IRCTC ticket price for each passenger" required>
+                <div class="note">Enter the price for each passenger ticket (SINGPLE PASSENGER).</div>
             </div>
             <div class="form-group">
                 <label>ID Proof Document</label>
@@ -475,12 +502,41 @@
                         <span>Upload ID Proof</span>
                     </div>
                     <input type="file" name="documentUrls" accept=".jpg,.jpeg,.png" required onchange="showPassengerFileName(this, ${index})">
+                    
                 </div>
+                <div class="note">
+                Can be upload a masked document (e.g., Aadhaar with last 4 digits visible) for each Passenger 
+                <a href="/maskedAadhar">Steps</a>
+              </div>
                 <div class="file-name" id="passengerFile${index}"></div>
             </div>
         `;
 
         container.appendChild(block);
+    }
+
+    function removePassenger(button) {
+        const container = document.getElementById('passenger-container');
+        const block = button.parentNode;
+        container.removeChild(block);
+        passengerCount--;
+        
+        // Update the ticket count
+        document.getElementById('numberOfTickets').value = passengerCount;
+        
+        // Reindex remaining passengers
+        const passengerBlocks = container.getElementsByClassName('passenger-block');
+        for (let i = 0; i < passengerBlocks.length; i++) {
+            const inputs = passengerBlocks[i].querySelectorAll('input, select');
+            inputs.forEach(input => {
+                const name = input.name.replace(/\[\d+\]/, `[${i}]`);
+                input.name = name;
+            });
+            const fileInput = passengerBlocks[i].querySelector('input[type="file"]');
+            if (fileInput) {
+                fileInput.setAttribute('onchange', `showPassengerFileName(this, ${i})`);
+            }
+        }
     }
 
     function showFileName(input) {
@@ -500,8 +556,61 @@
     }
 
     // Add first passenger by default
-    window.onload = addPassenger;
+    window.onload = function() {
+        addPassenger();
+        
+        // Link number of tickets to passenger count
+        document.getElementById('numberOfTickets').addEventListener('change', function() {
+            const ticketCount = parseInt(this.value);
+            const passengerContainer = document.getElementById('passenger-container');
+            const currentPassengers = passengerContainer.children.length;
+            
+            if (ticketCount > currentPassengers) {
+                // Add missing passengers
+                for (let i = currentPassengers; i < ticketCount; i++) {
+                    addPassenger();
+                }
+            } else if (ticketCount < currentPassengers) {
+                // Remove extra passengers
+                while (passengerContainer.children.length > ticketCount) {
+                    passengerContainer.removeChild(passengerContainer.lastChild);
+                    passengerCount--;
+                }
+            }
+        });
+    };
+</script>
+<script>
+    function updateSeatOptions(selectElement) {
+        const index = selectElement.dataset.index;
+        const seatSelect = document.getElementById('seat-' + index);
+        const selectedCoach = selectElement.value;
+
+        seatSelect.innerHTML = '<option value="">-- Seat Format --</option>';
+
+        if (selectedCoach === 'SL') {
+            generateBerthOptions(seatSelect, 'S', 1, 12, 80);
+        } else if (selectedCoach === '3A') {
+            generateBerthOptions(seatSelect, 'B', 1, 9, 72);
+        } else if (selectedCoach === '2A') {
+            generateBerthOptions(seatSelect, 'A', 1, 3, 54);
+        } else if (selectedCoach === '1A') {
+            generateBerthOptions(seatSelect, 'H', 1, 2, 30);
+        }
+    }
+
+    function generateBerthOptions(selectElement, prefix, coachStart, coachEnd, maxBerthsPerCoach) {
+        for (let i = coachStart; i <= coachEnd; i++) {
+            for (let b = 1; b <= maxBerthsPerCoach; b++) {
+                const code = `${prefix}${i}/${b}`;
+                const option = document.createElement('option');
+                option.value = code;
+                option.textContent = code;
+                selectElement.appendChild(option);
+            }
+        }
+    }
 </script>
 
 </body>
-</html>	
+</html>

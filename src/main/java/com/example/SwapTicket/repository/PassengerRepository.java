@@ -25,6 +25,8 @@ public interface PassengerRepository extends JpaRepository<Passenger, Long> {
 
 	Page<Passenger> findBySoldTrue(Pageable pageable);
 
+	List<Passenger> findBySoldTrueAndBuyerEmail(String buyerEmail);
+
 
 }
 

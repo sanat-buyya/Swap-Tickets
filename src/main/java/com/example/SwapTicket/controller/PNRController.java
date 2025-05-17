@@ -5,10 +5,13 @@ import com.cloudinary.utils.ObjectUtils;
 import com.example.SwapTicket.model.AdminConfig;
 import com.example.SwapTicket.model.PNR;
 import com.example.SwapTicket.model.Passenger;
+import com.example.SwapTicket.model.TransactionHistory;
+import com.example.SwapTicket.model.TransactionType;
 import com.example.SwapTicket.model.Wallet;
 import com.example.SwapTicket.repository.AdminConfigRepository;
 import com.example.SwapTicket.repository.PNRRepository;
 import com.example.SwapTicket.repository.PassengerRepository;
+import com.example.SwapTicket.repository.TransactionHistoryRepository;
 import com.example.SwapTicket.repository.WalletRepository;
 import com.example.SwapTicket.helper.RazorPayHelper;
 import com.razorpay.Order;
@@ -48,6 +51,10 @@ public class PNRController {
 
     @Autowired
     private Cloudinary cloudinary;
+    
+    @Autowired
+    private TransactionHistoryRepository transactionHistoryRepository;
+
     
     @Autowired
     private AdminConfigRepository adminConfigRepository;
@@ -142,6 +149,7 @@ public class PNRController {
             @RequestParam(required = false) String toStation,
             @RequestParam(required = false) String trainNumber,
             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate journeyDate,
+            @RequestParam(required = false) String gender,
             Model model) {
 
         List<PNR> pnrs;
@@ -149,7 +157,7 @@ public class PNRController {
         if (trainNumber != null && !trainNumber.isEmpty()) {
             pnrs = pnrRepository.findByTrainNumber(trainNumber);
         } else if (fromStation != null && toStation != null && !fromStation.isEmpty() && !toStation.isEmpty()) {
-            pnrs = pnrRepository.findByFromStationIgnoreCaseAndToStationIgnoreCase(fromStation, toStation);
+            pnrs = pnrRepository.findByFromStationLikeAndToStationLike(fromStation, toStation);
         } else if (journeyDate != null) {
             pnrs = pnrRepository.findByJourneyDate(journeyDate);
         } else {
@@ -161,30 +169,34 @@ public class PNRController {
                 .filter(pnr -> !pnr.getJourneyDate().isBefore(LocalDate.now()))
                 .toList();
 
-        // Filter passengers based on 'sold' or 'available' flag
+        // Filter passengers based on sold/available and gender
         boolean filterSold = "sold".equalsIgnoreCase(filter);
-        if (filter != null) {
-            pnrs.forEach(pnr -> {
-                List<Passenger> filteredPassengers = pnr.getPassenger()
-                        .stream()
-                        .filter(p -> p.isSold() == filterSold)
-                        .toList();
-                pnr.setPassenger(filteredPassengers);
-            });
-
-            pnrs = pnrs.stream()
-                    .filter(pnr -> !pnr.getPassenger().isEmpty())
+        for (PNR pnr : pnrs) {
+            List<Passenger> filteredPassengers = pnr.getPassenger().stream()
+                    .filter(p -> (filter == null || p.isSold() == filterSold))
+                    .filter(p -> (gender == null || gender.isEmpty() || p.getGender().equalsIgnoreCase(gender)))
                     .toList();
+            pnr.setPassenger(filteredPassengers);
         }
+
+        // Remove PNRs with no matching passengers
+        pnrs = pnrs.stream()
+                .filter(pnr -> !pnr.getPassenger().isEmpty())
+                .toList();
         
+        double adminFee = adminConfigRepository.findById(1L).orElseThrow().getBookingFee();
+        model.addAttribute("adminFee", adminFee);
         model.addAttribute("pnrs", pnrs);
         model.addAttribute("filter", filter != null ? filter : "available");
         model.addAttribute("fromStation", fromStation);
         model.addAttribute("toStation", toStation);
         model.addAttribute("trainNumber", trainNumber);
-       
+        model.addAttribute("gender", gender);
+
         return "buyPNRTickets";
     }
+
+
     
     @PostMapping("/buy/{id}")
     @ResponseBody
@@ -279,6 +291,13 @@ public class PNRController {
         passengerRepository.save(passenger);
 
         redirectAttributes.addFlashAttribute("successMessage", "🎉 Payment successful. Ticket booked!");
+        TransactionHistory transaction = new TransactionHistory();
+        transaction.setUserEmail(buyerEmail);
+        transaction.setAmount(totalAmount);
+        transaction.setType(TransactionType.DEBITED);
+        transaction.setDate(LocalDate.now());
+
+        transactionHistoryRepository.save(transaction);
 
         return "redirect:/pnr/my-purchases";
     }

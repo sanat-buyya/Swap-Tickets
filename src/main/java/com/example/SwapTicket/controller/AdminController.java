@@ -2,10 +2,13 @@ package com.example.SwapTicket.controller;
 
 import com.example.SwapTicket.model.AdminConfig;
 import com.example.SwapTicket.model.Passenger;
+import com.example.SwapTicket.model.TransactionHistory;
+import com.example.SwapTicket.model.TransactionType;
 import com.example.SwapTicket.model.User;
 import com.example.SwapTicket.model.Wallet;
 import com.example.SwapTicket.repository.AdminConfigRepository;
 import com.example.SwapTicket.repository.PassengerRepository;
+import com.example.SwapTicket.repository.TransactionHistoryRepository;
 import com.example.SwapTicket.repository.UserRepository;
 import com.example.SwapTicket.repository.WalletRepository;
 import com.example.SwapTicket.service.PaymentService;
@@ -22,6 +25,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -44,6 +49,10 @@ import java.util.Optional;
         
         @Autowired
         private UserRepository userRepository;
+        
+        @Autowired
+        private TransactionHistoryRepository transactionHistoryRepository;
+
         
         @Autowired
         private AdminConfigRepository adminConfigRepository;
@@ -89,9 +98,19 @@ import java.util.Optional;
                 return "redirect:/admin/dashboard";
             }
 
+            // Record the credited transaction for the seller
+            TransactionHistory transaction = new TransactionHistory();
+            transaction.setUserEmail(passenger.getSellerEmail());
+            transaction.setAmount(passenger.getPrice());
+            transaction.setType(TransactionType.CREDITED);
+            transaction.setDate(LocalDate.now());
+
+            transactionHistoryRepository.save(transaction);
+
             redirectAttributes.addFlashAttribute("success", "Seller paid successfully!");
             return "redirect:/admin/dashboard";
         }
+
 
         @GetMapping("/fee")
         public String viewFeeSetting(Model model) {

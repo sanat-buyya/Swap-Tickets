@@ -35,7 +35,9 @@
     body {
       margin: 0;
       font-family: 'Poppins', sans-serif;
-      background-color: var(--main-bg);
+      background: linear-gradient(135deg, #f5f7fa 0%, #c3ecfa 100%);
+      background-image: url('https://www.transparenttextures.com/patterns/cubes.png');
+       background-repeat: repeat;
       color: var(--text);
       line-height: 1.6;
     }
@@ -235,6 +237,7 @@
       flex-direction: column;
       justify-content: space-between;
       border-top: 3px solid rgba(255, 255, 255, 0.3);
+      
     }
 
     .wallet-card::before {
@@ -244,9 +247,24 @@
       right: -50%;
       width: 200%;
       height: 200%;
-      background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0) 70%);
+      background: radial-gradient(circle, rgba(255,255,255,0.18) 0%, rgba(255,255,255,0) 80%);
       transform: rotate(30deg);
+      z-index: 1;
+  pointer-events: none;
     }
+    .wallet-card::after {
+  content: '';
+  position: absolute;
+  bottom: -50px;
+  right: -50px;
+  width: 160px;
+  height: 160px;
+  background: radial-gradient(circle, rgba(253,187,45,0.25) 0%, rgba(255,255,255,0.08) 70%, transparent 100%);
+  filter: blur(2px);
+  z-index: 1;
+  pointer-events: none;
+  animation: wallet-glow 3s ease-in-out infinite alternate;
+}
 
     .wallet-card i {
       font-size: 2.2rem;
@@ -557,9 +575,9 @@
           </a>
         </li>
         <li>
-          <a th:href="@{/wallet/withdraw}" class="menu-item">
+          <a th:href="@{/user/transactions}" class="menu-item">
             <i class="fas fa-wallet"></i>
-            <span>Wallet</span>
+            <span>Transactions History</span>
           </a>
         </li>
         <li>
@@ -593,8 +611,14 @@
         <i class="fas fa-wallet"></i>
         <div>
           <h3>Over all Amount</h3>
-          <p>SwapTicket sended to seller </p>
-          <div class="wallet-amount">₹<span th:text="${walletBalance}">0.00</span></div>
+          <p>Track SwapTicket transaction </p>
+          <!-- <div class="wallet-amount">₹<span th:text="${walletBalance}">0.00</span></div> -->
+          <form th:action="@{/user/transactions}" method="get">
+          <button class="button">
+            <i class="fas fa-history"></i>
+            <span>History</span>
+          </button>
+        </form>
         </div>       
       </div>
 
