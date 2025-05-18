@@ -10,6 +10,7 @@ import com.example.SwapTicket.repository.PassengerRepository;
 import com.example.SwapTicket.repository.TransactionHistoryRepository;
 import com.example.SwapTicket.repository.WalletRepository;
 import com.example.SwapTicket.service.UserService;
+import com.example.SwapTicket.helper.AES;
 import com.example.SwapTicket.helper.EmailSender;
 
 import jakarta.servlet.http.HttpSession;
@@ -48,7 +49,8 @@ public class UserController {
     
     @Autowired
     private TransactionHistoryRepository transactionHistoryRepository;
-
+    
+    
     
     @Autowired
 	EmailSender emailSender;
@@ -72,25 +74,32 @@ public class UserController {
                             @RequestParam String password,
                             Model model,
                             HttpSession session) {
-    	if (username.equals(adminEmail) && password.equals(adminPassword)) {
-    	    session.setAttribute("admin", true);
-    	    return "redirect:/admin/dashboard";
-    	}
+        if (username.equals(adminEmail) && password.equals(adminPassword)) {
+            session.setAttribute("admin", true);
+            return "redirect:/admin/dashboard";
+        }
 
         User user = userService.findByEmail(username);
-        
         if (user == null) {
             model.addAttribute("loginError", "Enter correct email");
             return "login";
-        } else if (!user.getPassword().equals(password)) {
-            model.addAttribute("loginError", "Enter correct password");
-            return "login";
-        } else {
-            session.setAttribute("loggedInUserEmail", user.getEmail());
-            session.setAttribute("loggedInUserName", user.getName());
-            model.addAttribute("message", "Welcome back, " + user.getName() + "!");
-            return "redirect:/user/home";
         }
+
+        try {
+            String decryptedPassword = AES.decrypt(user.getPassword());
+            if (decryptedPassword == null || !decryptedPassword.equals(password)) {
+                model.addAttribute("loginError", "Enter correct password");
+                return "login";
+            }
+        } catch (Exception e) {
+            model.addAttribute("loginError", "Error verifying password");
+            return "login";
+        }
+
+        session.setAttribute("loggedInUserEmail", user.getEmail());
+        session.setAttribute("loggedInUserName", user.getName());
+        model.addAttribute("message", "Welcome back, " + user.getName() + "!");
+        return "redirect:/user/home";
     }
 
     @GetMapping("/register")
@@ -128,6 +137,7 @@ public class UserController {
     public String showOtpPage() {
         return "otp";
     }
+
     @PostMapping("/otp")
     public String verifyOtp(@RequestParam("otp") int userOtp, HttpSession session, Model model) {
         Integer sessionOtp = (Integer) session.getAttribute("otp");
@@ -139,12 +149,23 @@ public class UserController {
         }
 
         if (userOtp == sessionOtp) {
-            userService.saveUser(user); 
+            String encryptedPassword = AES.encrypt(user.getPassword());
+            if (encryptedPassword == null) {
+                model.addAttribute("error", "Encryption error. Please try registering again.");
+                return "register";
+            }
+            user.setPassword(encryptedPassword);
+            user.setConfirmPassword(encryptedPassword); // Optional, to keep structure consistent
+
+            userService.saveUser(user);
+
+            // Create wallet
             Wallet wallet = new Wallet();
             wallet.setEmail(user.getEmail());
             wallet.setBalance(0.0);
-            walletRepository.save(wallet); 
-            
+            walletRepository.save(wallet);
+
+            // Clear session attributes
             session.removeAttribute("otp");
             session.removeAttribute("userDto");
 
@@ -154,7 +175,6 @@ public class UserController {
             return "otp";
         }
     }
-
 
 
     @GetMapping("/user/sell")

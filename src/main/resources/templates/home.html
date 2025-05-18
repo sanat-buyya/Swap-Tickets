@@ -57,7 +57,7 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 1rem 5%;
+            padding: 0 5%;
             position: sticky;
             top: 0;
             z-index: 1000;
@@ -65,11 +65,25 @@
             height: var(--navbar-height);
         }
 
+        .nav-container {
+            display: flex;
+            align-items: center;
+            width: 100%;
+            justify-content: space-between;
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
         .logo {
             display: flex;
             align-items: center;
             gap: 10px;
             transition: transform 0.3s ease;
+            text-decoration: none;
         }
 
         .logo:hover {
@@ -87,6 +101,24 @@
             background: linear-gradient(to right, #fff 0%, #ffd166 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
+            margin: 0;
+        }
+
+        .nav-img {
+            height: 71px;
+            width: auto;
+            object-fit: contain;
+            display: block;
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            
+        }
+
+        .auth-links {
+            display: flex;
+            align-items: center;
+            margin-left: auto;
         }
 
         .auth-links a {
@@ -125,8 +157,18 @@
             font-size: 0.9rem;
         }
 
+        .mobile-menu-btn {
+            display: none;
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 10px;
+        }
+
         .hero {
-            background: url('https://images.unsplash.com/photo-1506929562872-bb421503ef21?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80') no-repeat center center/cover;
+            background: url('https://images.pexels.com/photos/211052/pexels-photo-211052.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2') no-repeat center center/cover;
             padding: 4rem 1rem;
             text-align: center;
             position: relative;
@@ -520,7 +562,7 @@
             max-width: 1200px;
             margin: 0 auto;
         }
-
+        
         .floating-cta {
             position: fixed;
             bottom: 25px;
@@ -553,31 +595,6 @@
             animation: moveArrow 1s infinite;
         }
 
-        @keyframes moveArrow {
-            0% {
-                transform: translateX(0);
-            }
-            50% {
-                transform: translateX(5px);
-            }
-            100% {
-                transform: translateX(0);
-            }
-        }
-
-        @keyframes pulse {
-            0% {
-                box-shadow: 0 0 0 0 rgba(247, 37, 133, 0.7);
-            }
-            70% {
-                box-shadow: 0 0 0 15px rgba(247, 37, 133, 0);
-            }
-            100% {
-                box-shadow: 0 0 0 0 rgba(247, 37, 133, 0);
-            }
-        }
-
-        /* New features */
         .back-to-top {
             position: fixed;
             bottom: 90px;
@@ -608,6 +625,30 @@
             transform: translateY(-3px);
         }
 
+        @keyframes moveArrow {
+            0% {
+                transform: translateX(0);
+            }
+            50% {
+                transform: translateX(5px);
+            }
+            100% {
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes pulse {
+            0% {
+                box-shadow: 0 0 0 0 rgba(247, 37, 133, 0.7);
+            }
+            70% {
+                box-shadow: 0 0 0 15px rgba(247, 37, 133, 0);
+            }
+            100% {
+                box-shadow: 0 0 0 0 rgba(247, 37, 133, 0);
+            }
+        }
+
         /* Responsive adjustments */
         @media (max-width: 992px) {
             .hero h1 {
@@ -621,16 +662,43 @@
 
         @media (max-width: 768px) {
             .navbar {
-                padding: 0.8rem 5%;
+                padding: 0 5%;
             }
             
             .logo h3 {
                 font-size: 1.3rem;
             }
             
+            .nav-img {
+                display: none;
+            }
+            
+            .auth-links {
+                position: fixed;
+                top: var(--navbar-height);
+                left: -100%;
+                width: 80%;
+                height: calc(100vh - var(--navbar-height));
+                background: teal;
+                flex-direction: column;
+                align-items: center;
+                justify-content: flex-start;
+                padding-top: 2rem;
+                transition: left 0.3s ease;
+                z-index: 999;
+            }
+            
+            .auth-links.active {
+                left: 0;
+            }
+            
             .auth-links a {
-                margin-left: 1rem;
-                font-size: 0.95rem;
+                margin: 1rem 0;
+                font-size: 1.2rem;
+            }
+            
+            .mobile-menu-btn {
+                display: block;
             }
             
             .hero h1 {
@@ -693,54 +761,12 @@
         }
         
         @media (max-width: 576px) {
-            .navbar {
-                flex-direction: column;
-                height: auto;
-                padding: 1rem;
-            }
-            
-            .logo {
-                margin-bottom: 0.8rem;
-            }
-            
-            .auth-links {
-                display: flex;
-                justify-content: center;
-                width: 100%;
-            }
-            
-            .auth-links a {
-                margin: 0 0.8rem;
-            }
-            
-            .hero {
-                padding: 3rem 1rem;
-                min-height: 80vh;
-            }
-            
             .hero h1 {
                 font-size: 1.8rem;
             }
             
-            .hero p {
-                font-size: 0.95rem;
-            }
-            
-            .section-title {
-                font-size: 1.8rem;
-            }
-            
-            .icon-box {
-                max-width: 100%;
-            }
-            
-            .stat-box {
-                min-width: 100px;
-                padding: 1rem;
-            }
-            
-            .stat-number {
-                font-size: 1.8rem;
+            .logo h3 {
+                font-size: 1.2rem;
             }
             
             .footer-column {
@@ -764,22 +790,28 @@
                 font-size: 0.9rem;
             }
         }
-        
-        .navbar a {
-            text-decoration: none;
-            color: white;
-        }
     </style>
 </head>
 <body>
     <div class="navbar">
-        <a href="/"><div class="logo">
-            <img src="https://img.icons8.com/color/48/train.png" alt="Train Icon">
-            <h3>SwapTicket</h3>
-        </div></a>
-        <div class="auth-links">
-            <a href="/login"><i class="fas fa-sign-in-alt"></i> Login</a>
-            <a href="/register"><i class="fas fa-user-plus"></i> Register</a>
+        <div class="nav-container">
+            <div class="logo-container">
+                <a href="/" class="logo">
+                    <img src="https://img.icons8.com/color/48/train.png" alt="Train Icon">
+                    <h3>SwapTicket</h3>
+                </a>
+            </div>
+            
+			 <img src="./docs/boygirl.png" alt="Center Logo" class="nav-img">
+            
+            <div class="auth-links" id="authLinks">
+                <a href="/login"><i class="fas fa-sign-in-alt"></i> Login</a>
+                <a href="/register"><i class="fas fa-user-plus"></i> Register</a>
+            </div>
+            
+            <button class="mobile-menu-btn" id="mobileMenuBtn">
+                <i class="fas fa-bars"></i>
+            </button>
         </div>
     </div>
 
@@ -842,7 +874,7 @@
 
     <div class="testimonials">
         <h2 class="section-title" id="users-say">What Our Users Say</h2>
-        <p class="section-subtitle" id="users-des" >Don't just take our word for it - hear from our community</p>
+        <p class="section-subtitle" id="users-des">Don't just take our word for it - hear from our community</p>
         
         <div class="icon-row">
             <div class="testimonial-card">
@@ -945,6 +977,21 @@
     </div>
 
     <script>
+        // Mobile menu toggle
+        const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+        const authLinks = document.getElementById('authLinks');
+        
+        mobileMenuBtn.addEventListener('click', () => {
+            authLinks.classList.toggle('active');
+        });
+
+        // Close menu when clicking on a link (for mobile)
+        document.querySelectorAll('.auth-links a').forEach(link => {
+            link.addEventListener('click', () => {
+                authLinks.classList.remove('active');
+            });
+        });
+
         // Back to Top Button
         const backToTopButton = document.getElementById('backToTop');
         

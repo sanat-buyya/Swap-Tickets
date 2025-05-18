@@ -184,7 +184,8 @@ public class PNRController {
                 .filter(pnr -> !pnr.getPassenger().isEmpty())
                 .toList();
         
-        double adminFee = adminConfigRepository.findById(1L).orElseThrow().getBookingFee();
+        Optional<AdminConfig> configOpt = adminConfigRepository.findById(1L);
+        double adminFee = configOpt.map(AdminConfig::getBookingFee).orElse(0.0); // fallback value
         model.addAttribute("adminFee", adminFee);
         model.addAttribute("pnrs", pnrs);
         model.addAttribute("filter", filter != null ? filter : "available");
@@ -192,7 +193,6 @@ public class PNRController {
         model.addAttribute("toStation", toStation);
         model.addAttribute("trainNumber", trainNumber);
         model.addAttribute("gender", gender);
-
         return "buyPNRTickets";
     }
 
