@@ -28,6 +28,7 @@
             --light-text: #6c757d;
             --gradient: linear-gradient(135deg, #4361ee 0%, #3a0ca3 100%);
             --card-shadow: 0 15px 30px rgba(0,0,0,0.1);
+            --success-color: #38b000;
         }
 
         * {
@@ -37,9 +38,12 @@
         }
 
         body {
+             min-height: 100vh;
+            flex-direction: column;
+            background-color: var(--light);
+            color: var(--dark);
+            background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%234361ee' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
             font-family: 'Poppins', sans-serif;
-            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
-            min-height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -134,15 +138,15 @@
             font-size: 0.9rem;
         }
 
-       .form-control {
-    width: 100%;
-    padding: 12px 40px 12px 40px; /* Adjusted for both icons */
-    border: 1px solid #e0e0e0;
-    border-radius: 8px;
-    font-size: 0.95rem;
-    transition: all 0.3s;
-    background-color: #f8f9fa;
-}
+        .form-control {
+            width: 100%;
+            padding: 12px 40px 12px 40px;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            transition: all 0.3s;
+            background-color: #f8f9fa;
+        }
 
         .form-control:focus {
             outline: none;
@@ -151,22 +155,26 @@
             background-color: white;
         }
 
-.toggle-password {
-    position: absolute;
-    right: 40px;
-    top: 50%;
-    transform: translateY(-50%);
-    background: none;
-    border: none;
-    color: var(--light-text);
-    cursor: pointer;
-    font-size: 0.9rem;
-    padding: 8px;
-    z-index: 2;
-}
-		.toggle-password:hover {
-    color: var(--primary);
-}
+        .toggle-password {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            color: var(--light-text);
+            cursor: pointer;
+            font-size: 0.9rem;
+            padding: 8px;
+            z-index: 2;
+            padding-right: 30px;
+           
+        }
+
+        .toggle-password:hover {
+            color: var(--primary);
+        }
+
         .error-message {
             font-size: 0.8rem;
             color: var(--error);
@@ -177,6 +185,19 @@
         }
 
         .error-message i {
+            font-size: 0.9rem;
+        }
+
+        .success-message {
+            font-size: 0.8rem;
+            color: var(--success-color);
+            margin-top: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .success-message i {
             font-size: 0.9rem;
         }
 
@@ -248,8 +269,32 @@
         .strength-meter {
             height: 100%;
             width: 0%;
-            background: var(--error);
             transition: all 0.3s;
+        }
+
+        .password-strength-text {
+            font-size: 0.75rem;
+            margin-top: 0.25rem;
+            text-align: right;
+            font-weight: 500;
+        }
+
+        /* Password strength indicator colors */
+        .strength-weak {
+            background: var(--error);
+            width: 25%;
+        }
+        .strength-medium {
+            background: #ffbe0b;
+            width: 50%;
+        }
+        .strength-strong {
+            background: #4cc9f0;
+            width: 75%;
+        }
+        .strength-very-strong {
+            background: #38b000;
+            width: 100%;
         }
 
         @media (max-width: 576px) {
@@ -261,12 +306,6 @@
                 font-size: 1.5rem;
             }
         }
-
-        /* Password strength indicator colors */
-        .strength-weak { background: var(--error); width: 30%; }
-        .strength-medium { background: #ffbe0b; width: 60%; }
-        .strength-strong { background: #4cc9f0; width: 80%; }
-        .strength-very-strong { background: #38b000; width: 100%; }
     </style>
 </head>
 
@@ -340,14 +379,15 @@
                     </button>
                 </div>
                 <div class="password-strength">
-                    <div class="strength-meter" id="strength-meter"></div>
+                    <div class="strength-meter" id="password-strength"></div>
                 </div>
+                <div class="password-strength-text" id="passwordStrengthText"></div>
                 <span th:if="${#fields.hasErrors('password')}" class="error-message">
                     <i class="fas fa-exclamation-circle"></i>
                     <span th:errors="*{password}"></span>
                 </span>
             </div>
-
+          
             <div class="form-group">
                 <label for="confirmPassword">Confirm Password</label>
                 <div class="input-with-icon">
@@ -357,15 +397,17 @@
                         <i class="fas fa-eye"></i>
                     </button>
                 </div>
+                <div id="password-match-message"></div>
                 <span th:if="${#fields.hasErrors('confirmPassword')}" class="error-message">
                     <i class="fas fa-exclamation-circle"></i>
                     <span th:errors="*{confirmPassword}"></span>
                 </span>
             </div>
+            
 
             <button type="submit" class="register-btn">
-                <span>Register Now</span>
-                <i class="fas fa-arrow-right"></i>
+                <i class="fas fa-user-plus"></i><span>Register Now</span>
+                
             </button>
 
             <div class="login-link">
@@ -375,14 +417,14 @@
     </div>
 
     <script>
-        // Toggle password visibility
+        // Toggle password visibility for all password fields
         document.querySelectorAll('.toggle-password').forEach(button => {
             button.addEventListener('click', function() {
                 const input = this.parentElement.querySelector('input');
                 const icon = this.querySelector('i');
                 
                 if (input.type === 'password') {
-                    input.type = 'text';
+                                        input.type = 'text';
                     icon.classList.replace('fa-eye', 'fa-eye-slash');
                 } else {
                     input.type = 'password';
@@ -392,69 +434,81 @@
         });
 
         // Password strength indicator
-        const passwordInput = document.getElementById('password');
-        const strengthMeter = document.getElementById('strength-meter');
-        
-        passwordInput.addEventListener('input', function() {
-            const strength = checkPasswordStrength(this.value);
-            updateStrengthMeter(strength);
-        });
+        const passwordInput = document.getElementById("password");
+        const strengthBar = document.getElementById("password-strength");
+        const strengthText = document.getElementById("passwordStrengthText");
+        const confirmPassword = document.getElementById("confirmPassword");
+        const passwordMatchMessage = document.getElementById("password-match-message");
 
-        function checkPasswordStrength(password) {
-            // Check password length
-            if (password.length === 0) return 0;
-            if (password.length < 6) return 1;
-            
-            // Check for character variety
-            const hasLetters = /[a-zA-Z]/.test(password);
-            const hasNumbers = /[0-9]/.test(password);
-            const hasSpecial = /[^a-zA-Z0-9]/.test(password);
-            
+        passwordInput.addEventListener("input", function() {
+            const value = this.value;
             let strength = 0;
-            if (hasLetters) strength++;
-            if (hasNumbers) strength++;
-            if (hasSpecial) strength++;
             
-            // Adjust based on length
-            if (password.length > 8) strength++;
-            if (password.length > 16) strength++;
-            
-            return Math.min(strength, 4);
-        }
+            // Check password strength criteria
+            if (value.length >= 8) strength += 1;
+            if (value.match(/[A-Z]/)) strength += 1;
+            if (value.match(/[0-9]/)) strength += 1;
+            if (value.match(/[^A-Za-z0-9]/)) strength += 1;
 
-        function updateStrengthMeter(strength) {
-            strengthMeter.className = 'strength-meter';
-            
-            switch(strength) {
-                case 0:
-                    strengthMeter.style.width = '0%';
-                    break;
-                case 1:
-                    strengthMeter.classList.add('strength-weak');
-                    break;
-                case 2:
-                    strengthMeter.classList.add('strength-medium');
-                    break;
-                case 3:
-                    strengthMeter.classList.add('strength-strong');
-                    break;
-                case 4:
-                    strengthMeter.classList.add('strength-very-strong');
-                    break;
+            // Update strength meter
+            strengthBar.className = "strength-meter";
+            if (strength === 0) {
+                strengthBar.style.width = "0%";
+                strengthText.textContent = "";
+            } else {
+                strengthBar.style.width = `${strength * 25}%`;
+                if (strength === 1) {
+                    strengthBar.classList.add("strength-weak");
+                    strengthText.textContent = "Weak";
+                    strengthText.style.color = "var(--error)";
+                } else if (strength === 2) {
+                    strengthBar.classList.add("strength-medium");
+                    strengthText.textContent = "Medium";
+                    strengthText.style.color = "#ffbe0b";
+                } else if (strength === 3) {
+                    strengthBar.classList.add("strength-strong");
+                    strengthText.textContent = "Strong";
+                    strengthText.style.color = "#4cc9f0";
+                } else {
+                    strengthBar.classList.add("strength-very-strong");
+                    strengthText.textContent = "Very Strong";
+                    strengthText.style.color = "#38b000";
+                }
             }
-        }
+
+            // Validate password match if confirm password has value
+            if (confirmPassword.value) {
+                validatePasswordMatch();
+            }
+        });
 
         // Confirm password validation
-        const confirmPassword = document.querySelector('input[name="confirmPassword"]');
-        const password = document.querySelector('input[name="password"]');
-
-        confirmPassword.addEventListener('input', () => {
-            if (confirmPassword.value !== password.value) {
-                confirmPassword.setCustomValidity("Passwords do not match");
+        function validatePasswordMatch() {
+            if (passwordInput.value && confirmPassword.value) {
+                if (passwordInput.value !== confirmPassword.value) {
+                    confirmPassword.setCustomValidity("Passwords do not match");
+                    confirmPassword.style.borderColor = "var(--error)";
+                    
+                    // Show error message
+                    passwordMatchMessage.className = "error-message";
+                    passwordMatchMessage.innerHTML = '<i class="fas fa-exclamation-circle"></i> Passwords do not match';
+                } else {
+                    confirmPassword.setCustomValidity('');
+                    confirmPassword.style.borderColor = "var(--success-color)";
+                    
+                    // Show success message
+                    passwordMatchMessage.className = "success-message";
+                    passwordMatchMessage.innerHTML = '<i class="fas fa-check-circle"></i> Passwords match';
+                }
             } else {
-                confirmPassword.setCustomValidity('');
+                // Clear message if either field is empty
+                passwordMatchMessage.innerHTML = '';
+                confirmPassword.style.borderColor = "#e0e0e0";
             }
-        });
+        }
+
+        confirmPassword.addEventListener("input", validatePasswordMatch);
     </script>
 </body>
 </html>
+

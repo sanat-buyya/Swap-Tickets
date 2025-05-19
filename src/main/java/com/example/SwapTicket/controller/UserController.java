@@ -209,14 +209,15 @@ public class UserController {
             model.addAttribute("error", "Passwords do not match.");
             return "forgotPassword";
         }
-
+        
         User user = userService.findByEmail(email);
         if (user == null) {
             model.addAttribute("error", "No user found with this email.");
             return "forgotPassword";
         }
-
-        user.setPassword(newPassword);
+        
+        String encryptedPassword = AES.encrypt(newPassword);
+        user.setPassword(encryptedPassword);
         userService.saveUser(user);
         model.addAttribute("success", "Password reset successfully!");
         return "login";
