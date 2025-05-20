@@ -2,11 +2,13 @@ package com.example.SwapTicket.controller;
 
 import com.example.SwapTicket.model.PNR;
 import com.example.SwapTicket.model.Passenger;
+import com.example.SwapTicket.model.SupportMessage;
 import com.example.SwapTicket.model.TransactionHistory;
 import com.example.SwapTicket.model.User;
 import com.example.SwapTicket.model.Wallet;
 import com.example.SwapTicket.repository.PNRRepository;
 import com.example.SwapTicket.repository.PassengerRepository;
+import com.example.SwapTicket.repository.SupportMessageRepository;
 import com.example.SwapTicket.repository.TransactionHistoryRepository;
 import com.example.SwapTicket.repository.WalletRepository;
 import com.example.SwapTicket.service.UserService;
@@ -16,6 +18,7 @@ import com.example.SwapTicket.helper.EmailSender;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional; // Replace with your actual package
 import java.util.Random;
@@ -26,6 +29,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+
 @Controller
 public class UserController {
 	
@@ -50,7 +54,8 @@ public class UserController {
     @Autowired
     private TransactionHistoryRepository transactionHistoryRepository;
     
-    
+    @Autowired
+    private SupportMessageRepository supportRepo;
     
     @Autowired
 	EmailSender emailSender;
@@ -294,6 +299,29 @@ public class UserController {
     	return "maskedAadhar";
     }
     
-    
+    @GetMapping("/support/submit")
+    public String showSupportForm(Model model, HttpSession session) {
+        String email = (String) session.getAttribute("loggedInUserEmail");
+        model.addAttribute("supportMessage", new SupportMessage());
+
+        // ✅ Fetch messages in ascending order (oldest first like WhatsApp)
+        List<SupportMessage> messages = supportRepo.findByUserEmailOrderByTimestampAsc(email);
+        model.addAttribute("messages", messages);
+
+        return "userSupportForm";
+    }
+
+    @PostMapping("/support/submit")
+    public String submitSupportMessage(@ModelAttribute SupportMessage supportMessage, HttpSession session) {
+        String userEmail = (String) session.getAttribute("loggedInUserEmail");
+        supportMessage.setUserEmail(userEmail);
+        supportMessage.setTimestamp(LocalDateTime.now());
+        supportMessage.setResolved(false);
+        supportRepo.save(supportMessage);
+
+        return "redirect:/support/submit"; // Go back to chat page after message
+    }
+
+
 
 }

@@ -2,12 +2,14 @@ package com.example.SwapTicket.controller;
 
 import com.example.SwapTicket.model.AdminConfig;
 import com.example.SwapTicket.model.Passenger;
+import com.example.SwapTicket.model.SupportMessage;
 import com.example.SwapTicket.model.TransactionHistory;
 import com.example.SwapTicket.model.TransactionType;
 import com.example.SwapTicket.model.User;
 import com.example.SwapTicket.model.Wallet;
 import com.example.SwapTicket.repository.AdminConfigRepository;
 import com.example.SwapTicket.repository.PassengerRepository;
+import com.example.SwapTicket.repository.SupportMessageRepository;
 import com.example.SwapTicket.repository.TransactionHistoryRepository;
 import com.example.SwapTicket.repository.UserRepository;
 import com.example.SwapTicket.repository.WalletRepository;
@@ -53,6 +55,8 @@ import java.util.Optional;
         @Autowired
         private TransactionHistoryRepository transactionHistoryRepository;
 
+        @Autowired
+        private SupportMessageRepository supportRepo;
         
         @Autowired
         private AdminConfigRepository adminConfigRepository;
@@ -200,6 +204,32 @@ import java.util.Optional;
             return "adminTransactions";
         }
 
+        @GetMapping("/support/messages")
+        public String viewSupportUserList(Model model) {
+            List<String> userEmails = supportRepo.findDistinctUserEmails();
+            model.addAttribute("userEmails", userEmails);
+            return "adminSupportUserList"; 
+        }
+
+        @GetMapping("/support/chat")
+        public String viewUserChat(@RequestParam String email, Model model) {
+            List<SupportMessage> messages = supportRepo.findByUserEmailOrderByTimestampAsc(email);
+            model.addAttribute("messages", messages);
+            model.addAttribute("userEmail", email);
+            return "adminUserChat"; 
+        }
+
+        @PostMapping("/support/reply")
+        public String replyToSupport(@RequestParam String reply,
+                                     @RequestParam String email) {
+            SupportMessage msg = new SupportMessage();
+            msg.setUserEmail(email);
+            msg.setAdminReply(reply);
+            msg.setResolved(true);
+            msg.setTimestamp(LocalDateTime.now());
+            supportRepo.save(msg);
+            return "redirect:/admin/support/chat?email=" + email;
+        }
 
 
 
