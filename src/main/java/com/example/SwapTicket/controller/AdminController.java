@@ -20,6 +20,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
@@ -230,7 +231,13 @@ import java.util.Optional;
             supportRepo.save(msg);
             return "redirect:/admin/support/chat?email=" + email;
         }
-
+        
+        @Transactional
+        @GetMapping("/support/close")
+        public String closeConversation(@RequestParam String email) {
+            supportRepo.deleteByUserEmail(email);
+            return "redirect:/admin/support/messages"; // or wherever you want to redirect
+        }
 
 
 
