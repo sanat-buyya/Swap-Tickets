@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Your Ticket Has Been Sold</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f3f4f6;
+            padding: 20px;
+        }
+        .email-container {
+            background-color: #ffffff;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            max-width: 600px;
+            margin: auto;
+        }
+        h2 {
+            color: #1f2937;
+        }
+        .ticket-details {
+            margin-top: 20px;
+        }
+        .ticket-details p {
+            margin: 6px 0;
+        }
+        .footer {
+            margin-top: 30px;
+            font-size: 13px;
+            color: #6b7280;
+        }
+        .note {
+            background-color: #fff4e5;
+            color: #8a4b08;
+            padding: 10px;
+            border-left: 4px solid #f59e0b;
+            margin-top: 20px;
+            border-radius: 6px;
+        }
+    </style>
+</head>
+<body>
+    <div class="email-container">
+        <h2>Hello <span th:text="${name}">Seller</span>,</h2>
+
+        <p>Great news! One of your listed train ticket(s) has just been <strong>sold</strong> on SwapTicket.</p>
+
+        <div class="ticket-details">
+            <p><strong>PNR Number:</strong> <span th:text="${pnr}">1234567890</span></p>
+            <p><strong>Train Number:</strong> <span th:text="${train}">12345</span></p>
+            <p><strong>Date of Journey:</strong> <span th:text="${date}">2025-06-01</span></p>
+            <p><strong>Passenger(s) Sold:</strong></p>
+            <ul>
+                <li th:each="p : ${passengerNames}" th:text="${p}">Passenger Name</li>
+            </ul>
+        </div>
+
+        <div class="note">
+            💡 <strong>Note:</strong> The ticket amount will be credited to your Account <strong>after the train journey is completed</strong>.
+        </div>
+
+        <p>You can check the full details in your <a href="https://swapticket.example.com">SwapTicket dashboard</a>.</p>
+
+        <div class="footer">
+            <p>Thank you for using SwapTicket.</p>
+            <p>— SwapTicket Team</p>
+        </div>
+    </div>
+</body>
+</html>

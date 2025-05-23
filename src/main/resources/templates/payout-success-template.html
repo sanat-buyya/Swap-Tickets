@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Payout Successful</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f6f8;
+            padding: 20px;
+        }
+        .email-container {
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            max-width: 600px;
+            margin: auto;
+        }
+        h2 {
+            color: #333;
+        }
+        .details {
+            margin-top: 20px;
+            font-size: 15px;
+        }
+        .footer {
+            margin-top: 30px;
+            font-size: 13px;
+            color: #777;
+        }
+    </style>
+</head>
+<body>
+    <div class="email-container">
+        <h2>Hello <span th:text="${name}">Seller</span>,</h2>
+
+        <p>We’ve successfully credited your Account with the amount for the following sold ticket:</p>
+
+        <div class="details">
+            <p><strong>Passenger Name:</strong> <span th:text="${passengerName}">John Doe</span></p>
+            <p><strong>Amount Credited:</strong> ₹<span th:text="${amount}">500</span></p>
+        </div>
+
+        <p>Thank you for using SwapTicket. The amount is now available in your wallet balance.</p>
+
+        <div class="footer">
+            <p>— SwapTicket Team</p>
+        </div>
+    </div>
+</body>
+</html>

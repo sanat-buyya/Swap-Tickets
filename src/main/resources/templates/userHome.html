@@ -353,6 +353,28 @@
       margin-bottom: 0.5rem;
     }
 
+    .card img {
+  max-width: 100%;
+  height: 90px;
+  display: block;
+  margin: 0 auto 1rem;
+  transition: var(--transition);
+}
+
+
+    @media (max-width: 768px) {
+  .card img {
+    width: 150px;
+  }
+}
+
+@media (max-width: 576px) {
+  .card img {
+    width: 90px;
+  }
+}
+
+
     .card h3 {
       font-size: 1.1rem;
       margin-bottom: 0.5rem;
@@ -552,33 +574,39 @@
       
       <ul class="mobile-menu">
         <li>
-          <a th:href="@{/tickets/my-tickets}" class="menu-item">
-            <i class="fas fa-ticket-alt"></i>
-            <span>My Tickets</span>
-          </a>
-        </li>
-        <li>
-          <a th:href="@{/tickets/my-purchases}" class="menu-item">
-            <i class="fas fa-shopping-cart"></i>
-            <span>Purchases</span>
-          </a>
-        </li>
-        <li>
           <a th:href="@{/user/sell}" class="menu-item">
             <i class="fas fa-upload"></i>
             <span>Sell Ticket</span>
           </a>
         </li>
         <li>
-          <a th:href="@{/tickets/buy}" class="menu-item">
+          <a th:href="@{/pnr/buy}" class="menu-item">
             <i class="fas fa-search"></i>
             <span>Buy Ticket</span>
+          </a>
+        </li>
+        <li>
+          <a th:href="@{/my-listed-tickets}" class="menu-item">
+            <i class="fas fa-ticket-alt"></i>
+            <span>My Tickets</span>
+          </a>
+        </li>
+        <li>
+          <a th:href="@{/pnr/my-purchases}" class="menu-item">
+            <i class="fas fa-shopping-cart"></i>
+            <span>Purchased Tickets</span>
           </a>
         </li>
         <li>
           <a th:href="@{/user/transactions}" class="menu-item">
             <i class="fas fa-wallet"></i>
             <span>Transactions History</span>
+          </a>
+        </li>
+        <li>
+          <a th:href="@{/support/submit}" class="menu-item">
+            <i class="fas fa-headset"></i>
+            <span>Customer Support</span>
           </a>
         </li>
         <li>
@@ -623,33 +651,9 @@
         </form>
         </div>       
       </div>
-
-      <div class="card" data-aos="fade-up" data-aos-delay="150">
-        <i class="fas fa-ticket-alt"></i>
-        <h3>My Tickets</h3>
-        <p>View and manage your listed tickets</p>
-        <form th:action="@{/my-listed-tickets}" method="get">
-          <button class="button">
-            <i class="fas fa-eye"></i>
-            <span>View</span>
-          </button>
-        </form>
-      </div>
-
-      <div class="card" data-aos="fade-up" data-aos-delay="200">
-        <i class="fas fa-shopping-cart"></i>
-        <h3>Purchased Tickets</h3>
-        <p>View tickets you've purchased</p>
-        <form th:action="@{/pnr/my-purchases}" method="get">
-          <button class="button">
-            <i class="fas fa-receipt"></i>
-            <span>View</span>
-          </button>
-        </form>
-      </div>
-      
-      <div class="card" data-aos="fade-up" data-aos-delay="250">
-        <i class="fas fa-upload"></i>
+		
+		<div class="card" data-aos="fade-up" data-aos-delay="250">
+        <img src="/docs/SellTicket.png" alt="">
         <h3>Sell a Ticket</h3>
         <p>List your IRCTC ticket for sale</p>
         <form th:action="@{/user/sell}" method="get">
@@ -659,9 +663,9 @@
           </button>
         </form>
       </div>
-
+      
       <div class="card" data-aos="fade-up" data-aos-delay="300">
-        <i class="fas fa-search"></i>
+        <img src="/docs/buyticket.png" alt="butTicket">
         <h3>Buy a Ticket</h3>
         <p>Find available tickets to purchase</p>
         <form th:action="@{/pnr/buy}" method="get">
@@ -672,13 +676,37 @@
         </form>
       </div>
       
+      <div class="card" data-aos="fade-up" data-aos-delay="200">
+        <img src="/docs/purchase.png" alt="">
+        <h3>Purchased Tickets</h3>
+        <p>View tickets you've purchased</p>
+        <form th:action="@{/pnr/my-purchases}" method="get">
+          <button class="button">
+            <i class="fas fa-receipt"></i>
+            <span>View</span>
+          </button>
+        </form>
+      </div>
+      
+      <div class="card" data-aos="fade-up" data-aos-delay="150">
+        <img src="/docs/myListedTicket.png" alt="myListedTicket" >
+        <h3>My Tickets</h3>
+        <p>View and manage your listed tickets</p>
+        <form th:action="@{/my-listed-tickets}" method="get">
+          <button class="button">
+            <i class="fas fa-eye"></i>
+            <span>View</span>
+          </button>
+        </form>
+      </div>
+
       <div class="card" data-aos="fade-up" data-aos-delay="300">
-        <i class="fas fa-headset"></i>
+        <img src="/docs/Customercare.png" alt="CustomerCare">
         <h3>Customer Support</h3>
         <p>Need help? Type your question...</p>
         <form th:action="@{/support/submit}" method="get">
           <button class="button">
-            <i class="fas fa-search-dollar"></i>
+            <i class="fas fa-comments"></i>
             <span>Send Message</span>
           </button>
         </form>
@@ -731,7 +759,7 @@
       if (errorMessage) {
         setTimeout(function() {
           errorMessage.classList.add('hide');
-        }, 5000); // Keep error messages longer (5 seconds)
+        }, 5000); 
       }
     });
   </script>

@@ -190,8 +190,11 @@ public class UserController {
     @GetMapping("/user/home")
     public String userHome(Model model, HttpSession session) {
         String userEmail = (String) session.getAttribute("loggedInUserEmail");
+        if (userEmail == null) {
+            return "redirect:/login";
+        }
         model.addAttribute("userName", userEmail);
-
+        
         walletRepository.findByEmail(userEmail).ifPresent(wallet -> {
             model.addAttribute("walletBalance", wallet.getBalance());
         });
@@ -252,6 +255,9 @@ public class UserController {
     @GetMapping("/my-listed-tickets")
     public String getMyListedTickets(HttpSession session, Model model) {
         String sellerEmail = (String) session.getAttribute("loggedInUserEmail");
+        if (sellerEmail == null) {
+            return "redirect:/login";
+        }
         List<PNR> pnrs = pnrRepository.findBySellerEmailOrderByJourneyDateAsc(sellerEmail);
         model.addAttribute("pnrs", pnrs);
         return "myListedTickets"; // Name of the template
@@ -302,9 +308,11 @@ public class UserController {
     @GetMapping("/support/submit")
     public String showSupportForm(Model model, HttpSession session) {
         String email = (String) session.getAttribute("loggedInUserEmail");
-        model.addAttribute("supportMessage", new SupportMessage());
+        if (email == null) {
+            return "redirect:/login";
+        }
 
-        // ✅ Fetch messages in ascending order (oldest first like WhatsApp)
+        model.addAttribute("supportMessage", new SupportMessage());
         List<SupportMessage> messages = supportRepo.findByUserEmailOrderByTimestampAsc(email);
         model.addAttribute("messages", messages);
 
@@ -314,13 +322,19 @@ public class UserController {
     @PostMapping("/support/submit")
     public String submitSupportMessage(@ModelAttribute SupportMessage supportMessage, HttpSession session) {
         String userEmail = (String) session.getAttribute("loggedInUserEmail");
+        if (userEmail == null) {
+            return "redirect:/login";
+        }
+
         supportMessage.setUserEmail(userEmail);
         supportMessage.setTimestamp(LocalDateTime.now());
         supportMessage.setResolved(false);
         supportRepo.save(supportMessage);
 
-        return "redirect:/support/submit"; // Go back to chat page after message
+        return "redirect:/support/submit";
     }
+    
+    
 
 
 

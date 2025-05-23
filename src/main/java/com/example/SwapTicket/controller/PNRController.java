@@ -7,12 +7,15 @@ import com.example.SwapTicket.model.PNR;
 import com.example.SwapTicket.model.Passenger;
 import com.example.SwapTicket.model.TransactionHistory;
 import com.example.SwapTicket.model.TransactionType;
+import com.example.SwapTicket.model.User;
 import com.example.SwapTicket.model.Wallet;
 import com.example.SwapTicket.repository.AdminConfigRepository;
 import com.example.SwapTicket.repository.PNRRepository;
 import com.example.SwapTicket.repository.PassengerRepository;
 import com.example.SwapTicket.repository.TransactionHistoryRepository;
+import com.example.SwapTicket.repository.UserRepository;
 import com.example.SwapTicket.repository.WalletRepository;
+import com.example.SwapTicket.helper.EmailSender;
 import com.example.SwapTicket.helper.RazorPayHelper;
 import com.razorpay.Order;
 import com.razorpay.RazorpayClient;
@@ -35,6 +38,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/pnr")
@@ -45,7 +49,10 @@ public class PNRController {
 
     @Autowired
     private PassengerRepository passengerRepository;
-
+    
+    @Autowired
+    private UserRepository userRepository;
+    
     @Autowired
     private WalletRepository walletRepository;
 
@@ -54,7 +61,9 @@ public class PNRController {
     
     @Autowired
     private TransactionHistoryRepository transactionHistoryRepository;
-
+    
+    @Autowired
+    private EmailSender emailSender;
     
     @Autowired
     private AdminConfigRepository adminConfigRepository;
@@ -289,7 +298,14 @@ public class PNRController {
 
         // Save passenger as sold
         passengerRepository.save(passenger);
+        User seller = userRepository.findByEmail(pnr.getSellerEmail());
 
+        Passenger soldPassenger = passengerRepository.findById(passengerId).orElse(null);
+
+        if (soldPassenger != null) {
+            List<Passenger> soldPassengers = List.of(soldPassenger);
+            emailSender.sendSoldMessage(seller, pnr, soldPassengers);
+        }
         redirectAttributes.addFlashAttribute("successMessage", "🎉 Payment successful. Ticket booked!");
         TransactionHistory transaction = new TransactionHistory();
         transaction.setUserEmail(buyerEmail);

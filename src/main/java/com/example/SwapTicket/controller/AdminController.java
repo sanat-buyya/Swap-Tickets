@@ -1,5 +1,6 @@
 package com.example.SwapTicket.controller;
 
+import com.example.SwapTicket.helper.EmailSender;
 import com.example.SwapTicket.model.AdminConfig;
 import com.example.SwapTicket.model.Passenger;
 import com.example.SwapTicket.model.SupportMessage;
@@ -60,6 +61,9 @@ import java.util.Optional;
         private SupportMessageRepository supportRepo;
         
         @Autowired
+        private EmailSender emailSender;
+        
+        @Autowired
         private AdminConfigRepository adminConfigRepository;
 
         private static final String ADMIN_EMAIL = "admin@swapticket.com";
@@ -111,7 +115,12 @@ import java.util.Optional;
             transaction.setDate(LocalDate.now());
 
             transactionHistoryRepository.save(transaction);
-
+            
+            User seller = userRepository.findByEmail(passenger.getSellerEmail());
+            if (seller != null) {
+                emailSender.sendPayoutMessage(seller, passenger);
+            }
+            
             redirectAttributes.addFlashAttribute("success", "Seller paid successfully!");
             return "redirect:/admin/dashboard";
         }
