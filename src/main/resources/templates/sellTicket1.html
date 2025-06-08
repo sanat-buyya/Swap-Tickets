@@ -330,7 +330,6 @@
             <div class="form-group">
                 <label for="pnrNumber">PNR Number</label>
                 <input type="text" id="pnrNumber" name="pnrNumber" pattern="\d{10}" title="PNR must be exactly 10 digits" required>
-                <div class="note">10-digit PNR from your ticket</div>
             </div>
             
             <div class="form-group">
@@ -369,7 +368,7 @@
                         <i class="fas fa-cloud-upload-alt"></i>
                         <span>Click to upload ticket image</span>
                     </div>
-                    <input type="file" name="ticketImage" accept=".jpg,.jpeg,.png" required onchange="showFileName(this)">
+                    <input type="file" name="ticketImage" accept=".jpg,.jpeg,.png,.pdf" required onchange="showFileName(this)">
                 </div>
                 <div class="file-name" id="ticketFileName"></div>
             </div>
@@ -381,15 +380,18 @@
             
             <div class="form-group">
                 <label for="sellerMobile">Mobile Number</label>
-                <input type="tel" id="sellerMobile" name="sellerMobile" placeholder="9876543210" pattern="[0-9]{10}" required>
+                <input type="tel" id="sellerMobile" name="sellerMobile" placeholder="Enter Mobile Number" pattern="[0-9]{10}" required>
             </div>
             
             <div class="form-group">
                 <label for="upiId">UPI ID</label>
-                <input type="text" id="upiId" name="upiId" placeholder="yourname@upi" required>
+                <input type="text" id="upiId" name="upiId" placeholder="Enter Your UPI Id" required>
                 <div class="note">For receiving payment after journey completion</div>
             </div>
-            
+           <div class="terms-checkbox">
+            <input type="checkbox" id="acceptUpi" name="acceptUpi" required>
+            <label for="acceptUpi"> Confirm Your UPI Number</label>
+        </div> 
         </div>
 
         <!-- Passenger Details -->
@@ -505,7 +507,7 @@
                     
                 </div>
                 <div class="note">
-                Can be upload a masked document (e.g., Aadhaar with last 4 digits visible) for each Passenger 
+                Can be upload a masked document only in jpg, jpeg (e.g., Aadhaar with last 4 digits visible) for each Passenger 
                 <a href="/maskedAadhar">Steps</a>
               </div>
                 <div class="file-name" id="passengerFile${index}"></div>

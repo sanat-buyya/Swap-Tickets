@@ -16,16 +16,11 @@ import com.example.SwapTicket.repository.TransactionHistoryRepository;
 import com.example.SwapTicket.repository.UserRepository;
 import com.example.SwapTicket.repository.WalletRepository;
 import com.example.SwapTicket.helper.EmailSender;
-import com.example.SwapTicket.helper.RazorPayHelper;
-import com.razorpay.Order;
-import com.razorpay.RazorpayClient;
-import com.razorpay.RazorpayException;
 import org.springframework.format.annotation.DateTimeFormat;
 
 
 import jakarta.servlet.http.HttpSession;
 
-import org.cloudinary.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
@@ -38,7 +33,6 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/pnr")
@@ -110,8 +104,8 @@ public class PNRController {
 
         // Upload ticket image
         if (!ticketImage.isEmpty()) {
-            Map imageResult = cloudinary.uploader().upload(ticketImage.getBytes(), ObjectUtils.emptyMap());
-            pnr.setTicketImagePath((String) imageResult.get("secure_url"));
+            Map uploadResult = cloudinary.uploader().upload(ticketImage.getBytes(), ObjectUtils.emptyMap());
+            pnr.setTicketImagePath((String) uploadResult.get("secure_url"));
         }
 
         List<Passenger> passengerList = new ArrayList<>();
@@ -280,7 +274,9 @@ public class PNRController {
         passenger.setRazorpayOrderId(razorpayOrderId);
 
         double ticketPrice = passenger.getPrice();
-        double adminFee = adminConfigRepository.findById(1L).orElseThrow().getBookingFee();
+        double adminFee = adminConfigRepository.findById(1L)
+                .map(AdminConfig::getBookingFee)
+                .orElse(0.0);
         double totalAmount = ticketPrice + adminFee;
         passenger.setAdminFee(adminFee);
 
