@@ -5,47 +5,185 @@
     <title>Payout Successful</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
+            font-family: 'Poppins', Arial, sans-serif;
             background-color: #f4f6f8;
             padding: 20px;
+            margin: 0;
+            line-height: 1.6;
         }
+        
         .email-container {
             background-color: #fff;
             padding: 30px;
-            border-radius: 8px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            border-radius: 12px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
             max-width: 600px;
             margin: auto;
+            border: 1px solid rgba(67, 97, 238, 0.1);
         }
+        
+        /* Logo Container */
+        .logo-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            margin-bottom: 25px;
+            padding: 20px 0;
+            border-bottom: 2px solid #f8f9fa;
+        }
+        
+        .logo-img {
+            height: 50px;
+            width: auto;
+        }
+        
+        /* SwapTicket Text Logo - Same as reference */
+        .logo-text {
+            font-size: 24px;
+            font-weight: 700;
+            color: #4361ee; /* Fallback for email clients */
+            background: linear-gradient(to right, #4361ee 0%, #3a0ca3 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-fill-color: transparent;
+            margin: 0;
+            letter-spacing: 0.5px;
+        }
+        
         h2 {
-            color: #333;
+            color: #2b2d42;
+            font-size: 24px;
+            margin-bottom: 20px;
+            font-weight: 600;
         }
+        
+        p {
+            color: #4a5568;
+            font-size: 16px;
+            margin-bottom: 15px;
+        }
+        
+        .highlight-name {
+            font-weight: 600;
+            color: #3a0ca3;
+        }
+        
         .details {
-            margin-top: 20px;
+            margin: 25px 0;
             font-size: 15px;
+            background: linear-gradient(135deg, rgba(67, 97, 238, 0.05) 0%, rgba(72, 149, 239, 0.05) 100%);
+            padding: 20px;
+            border-radius: 8px;
+            border-left: 4px solid #4361ee;
         }
+        
+        .details p {
+            margin: 10px 0;
+            color: #2b2d42;
+        }
+        
+        .details strong {
+            color: #3a0ca3;
+            font-weight: 600;
+        }
+        
+        .amount-highlight {
+            color: #28a745;
+            font-weight: 700;
+            font-size: 18px;
+        }
+        
+        .success-message {
+            background: linear-gradient(135deg, rgba(40, 167, 69, 0.1) 0%, rgba(34, 139, 34, 0.1) 100%);
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 4px solid #28a745;
+            margin: 20px 0;
+        }
+        
+        .success-message p {
+            color: #155724;
+            margin: 0;
+            font-weight: 500;
+        }
+        
         .footer {
             margin-top: 30px;
-            font-size: 13px;
-            color: #777;
+            padding-top: 20px;
+            border-top: 1px solid rgba(67, 97, 238, 0.1);
+            font-size: 14px;
+            color: #6c757d;
+            text-align: center;
+        }
+        
+        .footer p {
+            margin: 5px 0;
+        }
+        
+        .team-signature {
+            color: #4361ee;
+            font-weight: 600;
+        }
+        
+        /* Responsive Design */
+        @media only screen and (max-width: 640px) {
+            .email-container {
+                padding: 20px;
+                margin: 10px;
+            }
+            
+            .logo-text {
+                font-size: 20px;
+            }
+            
+            .logo-img {
+                height: 40px;
+            }
+            
+            h2 {
+                font-size: 20px;
+            }
+            
+            .details {
+                padding: 15px;
+            }
+        }
+        
+        /* Email client compatibility */
+        .logo-text-fallback {
+            color: #4361ee !important;
+            background: none !important;
         }
     </style>
 </head>
 <body>
     <div class="email-container">
-        <h2>Hello <span th:text="${name}">Seller</span>,</h2>
-
-        <p>We’ve successfully credited your Account with the amount for the following sold ticket:</p>
-
+        <!-- Logo Container with SwapTicket Text -->
+        <div class="logo-container">
+            <img src="https://res.cloudinary.com/dgrxmavho/image/upload/v1749496815/swaplogo_zzganr.png" alt="SwapTicket Logo" class="logo-img">
+            <h1 class="logo-text">SwapTicket</h1>
+        </div>
+        
+        <h2>Hello <span class="highlight-name" th:text="${name}">Seller</span>,</h2>
+        
+        <p>We've successfully credited your account with the amount for the following sold ticket:</p>
+        
         <div class="details">
             <p><strong>Passenger Name:</strong> <span th:text="${passengerName}">John Doe</span></p>
-            <p><strong>Amount Credited:</strong> ₹<span th:text="${amount}">500</span></p>
+            <p><strong>Amount Credited:</strong> ₹<span class="amount-highlight" th:text="${amount}">500</span></p>
         </div>
-
-        <p>Thank you for using SwapTicket. The amount is now available in your wallet balance.</p>
-
+        
+        <div class="success-message">
+            <p>✅ Payment has been successfully processed and credited to your wallet!</p>
+        </div>
+        
+        <p>Thank you for using SwapTicket. The amount is now available in your wallet balance and you can withdraw it anytime from your dashboard.</p>
+        
         <div class="footer">
-            <p>— SwapTicket Team</p>
+            <p class="team-signature">— SwapTicket Team</p>
+            <p>© 2025 SwapTicket. All rights reserved.</p>
         </div>
     </div>
 </body>

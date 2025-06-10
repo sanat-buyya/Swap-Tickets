@@ -4,7 +4,7 @@
     <title>Home - SwapTicket</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="description" content="SwapTicket - Secure platform for buying and selling train tickets with guaranteed transactions">
-    <link rel="icon" href="https://img.icons8.com/color/48/train.png" type="image/png">
+    <link rel="icon" href="https://res.cloudinary.com/dgrxmavho/image/upload/v1749496815/swaplogo_zzganr.png" type="image/png">
 
     <!-- Preconnect to external domains -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -50,31 +50,33 @@
             line-height: 1.6;
             overflow-x: hidden;
         }
-		  #preloader {
-    position: fixed;
-    top: 0; left: 0;
-    width: 100vw; height: 100vh;
-    background: white;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 9999;
-  }
 
-  .loader {
-    width: 50px;
-    height: 50px;
-    border: 6px solid #ccc;
-    border-top-color: #4CAF50;
-    border-radius: 50%;
-    animation: spin 1s linear infinite;
-  }
+        #preloader {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100vw; height: 100vh;
+            background: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+        }
 
-  @keyframes spin {
-    to { transform: rotate(360deg); }
-  }
+        .loader {
+            width: 50px;
+            height: 50px;
+            border: 6px solid #ccc;
+            border-top-color: #4CAF50;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
         .navbar {
-            background: teal; 
+            background: linear-gradient(to right,rgb(128, 64, 64) 0%, #4a90e2 100%); 
             color: white;
             display: flex;
             justify-content: space-between;
@@ -113,8 +115,8 @@
         }
 
         .logo img {
-            width: 32px;
-            height: 32px;
+            padding-top: 15px;
+            height: 60px;
         }
 
         .logo h3 {
@@ -134,7 +136,6 @@
             position: absolute;
             left: 50%;
             transform: translateX(-50%);
-            
         }
 
         .auth-links {
@@ -281,10 +282,9 @@
 
         .about-section {
             padding: 5rem 1rem;
-            background-color:  #f8f9fa;
+            background-color: #f8f9fa;
             text-align: center;
-             background-image: url('data:image/svg+xml;charset=utf8,%3Csvg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"%3E%3Cpath fill="%232563eb" fill-opacity="0.03" d="M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM34 90c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm56-76c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM12 86c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm28-65c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm23-11c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-6 60c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm29 22c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 5zm-32-78c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm57 23c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-9-21c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zm-40 3c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM15 80c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zm32 12c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2z"%3E%3C/path%3E%3C/svg%3E');
-     
+            background-image: url('data:image/svg+xml;charset=utf8,%3Csvg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"%3E%3Cpath fill="%232563eb" fill-opacity="0.03" d="M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM34 90c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm56-76c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM12 86c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm28-65c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm23-11c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-6 60c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm29 22c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 5zm-32-78c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm57 23c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-9-21c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zm-40 3c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM15 80c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zm32 12c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895 2 2 2z"%3E%3C/path%3E%3C/svg%3E');
         }
 
         .section-title {
@@ -368,7 +368,6 @@
             text-align: center;
             position: relative;
             overflow: hidden;
-            
         }
 
         .stats-section::before {
@@ -411,9 +410,8 @@
         .testimonials {
             padding: 5rem 1rem;
             background-color: #f8f9fa;
-             background-image: url('data:image/svg+xml;charset=utf8,%3Csvg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"%3E%3Cpath fill="%232563eb" fill-opacity="0.03" d="M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM34 90c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm56-76c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM12 86c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm28-65c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm23-11c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-6 60c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm29 22c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 5zm-32-78c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm57 23c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-9-21c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zm-40 3c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM15 80c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zm32 12c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2z"%3E%3C/path%3E%3C/svg%3E');
-     
-            
+            background-image: url('data:image/svg+xml;charset=utf8,%3Csvg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"%3E%3Cpath fill="%232563eb" fill-opacity="0.03" d="M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM34 90c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm56-76c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM12 86c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm28-65c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm23-11c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-6 60c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm29 22c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 5zm-32-78c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm57 23c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-9-21c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zm-40 3c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM15 80c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zm32 12c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2z"%3E%3C/path%3E%3C/svg%3E');
+            text-align: center;
         }
 
         .testimonial-card {
@@ -424,7 +422,6 @@
             max-width: 380px;
             margin: 0 auto;
             transition: transform 0.3s ease;
-            
         }
 
         .testimonial-card:hover {
@@ -678,6 +675,17 @@
             }
         }
 
+        @keyframes slideInFromRight {
+            0% {
+                opacity: 0;
+                transform: translateX(50px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
         /* Responsive adjustments */
         @media (max-width: 992px) {
             .hero h1 {
@@ -705,25 +713,44 @@
             .auth-links {
                 position: fixed;
                 top: var(--navbar-height);
-                left: -100%;
+                right: -100%;
                 width: 80%;
                 height: calc(100vh - var(--navbar-height));
-                background: teal;
+                background: linear-gradient(to right,rgb(128, 64, 64) 0%, #4a90e2 100%);
                 flex-direction: column;
                 align-items: center;
                 justify-content: flex-start;
                 padding-top: 2rem;
-                transition: left 0.3s ease;
+                transition: right 0.6s ease;
                 z-index: 999;
+                box-shadow: -5px 0 15px rgba(0,0,0,0.1);
             }
             
             .auth-links.active {
-                left: 0;
+                right: 0;
             }
             
             .auth-links a {
                 margin: 1rem 0;
                 font-size: 1.2rem;
+                opacity: 0;
+                transform: translateX(0);
+                transition: all 0.8s ease;
+            }
+
+            /* Reset menu items when menu is not active */
+            .auth-links:not(.active) a {
+                opacity: 0;
+                transform: translateX(50px);
+            }
+            
+            /* Animation for menu items when menu is active */
+            .auth-links.active a:nth-child(1) {
+                animation: slideInFromRight 0.6s ease 0.2s forwards;
+            }
+            
+            .auth-links.active a:nth-child(2) {
+                animation: slideInFromRight 0.6s ease 0.4s forwards;
             }
             
             .mobile-menu-btn {
@@ -745,8 +772,7 @@
             .section-title {
                 font-size: 2rem;
             }
-            
-            .section-subtitle {
+                        .section-subtitle {
                 font-size: 1rem;
             }
             
@@ -819,6 +845,74 @@
                 font-size: 0.9rem;
             }
         }
+
+        /* Additional animations for better UX */
+        .animate-on-scroll {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.6s ease;
+        }
+
+        .animate-on-scroll.animated {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Loading animation improvements */
+        .fade-in {
+            animation: fadeIn 0.8s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Hover effects for better interactivity */
+        .navbar .logo img {
+            transition: transform 0.3s ease;
+        }
+
+        .navbar .logo:hover img {
+            transform: rotate(5deg) scale(1.1);
+        }
+
+        /* Enhanced mobile menu animation */
+        .mobile-menu-btn i {
+            transition: transform 0.4s ease;
+        }
+
+        .mobile-menu-btn.active i {
+            transform: rotate(90deg);
+        }
+
+        /* Improved scroll behavior */
+        @media (prefers-reduced-motion: reduce) {
+            html {
+                scroll-behavior: auto;
+            }
+            
+            .animate__animated {
+                animation: none !important;
+            }
+            
+            .btn::before {
+                display: none;
+            }
+        }
+        .logo-img {
+            height: 30px;
+            width: auto;
+            object-fit: contain;
+            margin-right: 10px;
+            padding-bottom: 9px;
+        }
     </style>
 </head>
 <body>
@@ -830,12 +924,12 @@
         <div class="nav-container">
             <div class="logo-container">
                 <a href="/" class="logo">
-                    <img src="https://img.icons8.com/color/48/train.png" alt="Train Icon">
+                    <img src="/docs/swaplogo.png" alt="SwapTicket Logo" class="logo-img">
                     <h3>SwapTicket</h3>
                 </a>
             </div>
             
-			 <img src="./docs/boygirl.png" alt="Center Logo" class="nav-img">
+            <img src="./docs/boygirl.png" alt="Center Logo" class="nav-img">
             
             <div class="auth-links" id="authLinks">
                 <a href="/login"><i class="fas fa-sign-in-alt"></i> Login</a>
@@ -859,21 +953,21 @@
     </div>
 
     <div class="about-section">
-        <h2 class="section-title">Why Choose SwapTicket?</h2>
-        <p class="section-subtitle">Our platform makes ticket transfers secure and hassle-free with industry-leading protection and instant verification.</p>
+        <h2 class="section-title animate-on-scroll">Why Choose SwapTicket?</h2>
+        <p class="section-subtitle animate-on-scroll">Our platform makes ticket transfers secure and hassle-free with industry-leading protection and instant verification.</p>
         
         <div class="icon-row">
-            <div class="icon-box animate__animated animate__fadeInLeft">
+            <div class="icon-box animate-on-scroll">
                 <i class="fas fa-shield-alt"></i>
                 <h3>Secure Transactions</h3>
                 <p>Bank-level encryption and escrow protection for all your transactions</p>
             </div>
-            <div class="icon-box animate__animated animate__fadeInUp">
+            <div class="icon-box animate-on-scroll">
                 <i class="fas fa-bolt"></i>
                 <h3>Instant Transfer</h3>
                 <p>Receive your tickets immediately after payment confirmation</p>
             </div>
-            <div class="icon-box animate__animated animate__fadeInRight">
+            <div class="icon-box animate-on-scroll">
                 <i class="fas fa-headset"></i>
                 <h3>24/7 Support</h3>
                 <p>Our customer service team is always ready to assist you</p>
@@ -882,66 +976,66 @@
     </div>
 
     <div class="stats-section">
-        <h2 class="section-title" style="color: white; -webkit-text-fill-color: unset;">Trusted by Thousands</h2>
-        <p class="section-subtitle" style="color: rgba(255,255,255,0.9);">Join our growing community of satisfied users</p>
+        <h2 class="section-title animate-on-scroll" style="color: white; -webkit-text-fill-color: unset;">Trusted by Thousands</h2>
+        <p class="section-subtitle animate-on-scroll" style="color: rgba(255,255,255,0.9);">Join our growing community of satisfied users</p>
         
         <div class="stats-container">
-            <div class="stat-box">
-                <div class="stat-number">10,000+</div>
+            <div class="stat-box animate-on-scroll">
+                <div class="stat-number" data-count="10000">0</div>
                 <div class="stat-label">Tickets Exchanged</div>
             </div>
-            <div class="stat-box">
-                <div class="stat-number">99.7%</div>
+            <div class="stat-box animate-on-scroll">
+                <div class="stat-number" data-count="99.7">0</div>
                 <div class="stat-label">Success Rate</div>
             </div>
-            <div class="stat-box">
+            <div class="stat-box animate-on-scroll">
                 <div class="stat-number">24/7</div>
                 <div class="stat-label">Customer Support</div>
             </div>
-            <div class="stat-box">
-                <div class="stat-number">50+</div>
+            <div class="stat-box animate-on-scroll">
+                <div class="stat-number" data-count="50">0</div>
                 <div class="stat-label">Routes Covered</div>
             </div>
         </div>
     </div>
 
     <div class="testimonials">
-        <h2 class="section-title" id="users-say">What Our Users Say</h2>
-        <p class="section-subtitle" id="users-des">Don't just take our word for it - hear from our community</p>
+        <h2 class="section-title animate-on-scroll">What Our Users Say</h2>
+        <p class="section-subtitle animate-on-scroll">Don't just take our word for it - hear from our community</p>
         
         <div class="icon-row">
-            <div class="testimonial-card">
+            <div class="testimonial-card animate-on-scroll">
                 <div class="testimonial-text">
                     "I was able to sell my ticket within minutes when my plans changed. The process was so simple and secure!"
                 </div>
                 <div class="testimonial-author">
-                    <img src="https://randomuser.me/api/portraits/women/32.jpg" alt="Sarah J." class="author-avatar">
+                    <img src="https://randomuser.me/api/portraits/women/32.jpg" alt="Sandya" class="author-avatar">
                     <div class="author-info">
-                        <h4>Sandya .</h4>
+                        <h4>Sandya K.</h4>
                         <p>Frequent Traveler</p>
                     </div>
                 </div>
             </div>
             
-            <div class="testimonial-card">
+            <div class="testimonial-card animate-on-scroll">
                 <div class="testimonial-text">
                     "Found a last-minute ticket for half price when I thought all hope was lost. Lifesaver!"
                 </div>
                 <div class="testimonial-author">
-                    <img src="https://randomuser.me/api/portraits/men/45.jpg" alt="Michael T." class="author-avatar">
+                    <img src="https://randomuser.me/api/portraits/men/45.jpg" alt="Vaman Patil" class="author-avatar">
                     <div class="author-info">
-                        <h4>Vaman Patil .</h4>
+                        <h4>Vaman Patil</h4>
                         <p>Business Commuter</p>
                     </div>
                 </div>
             </div>
 
-            <div class="testimonial-card">
+            <div class="testimonial-card animate-on-scroll">
                 <div class="testimonial-text">
                     "The customer support team resolved my issue in less than 10 minutes. Amazing service!"
                 </div>
                 <div class="testimonial-author">
-                    <img src="https://randomuser.me/api/portraits/women/68.jpg" alt="Priya K." class="author-avatar">
+                    <img src="https://randomuser.me/api/portraits/women/68.jpg" alt="Priya K" class="author-avatar">
                     <div class="author-info">
                         <h4>Priya K.</h4>
                         <p>Student Traveler</p>
@@ -957,10 +1051,10 @@
                 <h3>SwapTicket</h3>
                 <p>Making train travel flexible and accessible for everyone through our secure ticket exchange platform.</p>
                 <div class="social-links">
-                    <a href="#"><i class="fab fa-facebook-f"></i></a>
-                    <a href="#"><i class="fab fa-twitter"></i></a>
-                    <a href="https://www.instagram.com/sanat_buyya/"><i class="fab fa-instagram"></i></a>
-                    <a href="#"><i class="fab fa-linkedin-in"></i></a>
+                    <a href="#" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+                    <a href="https://www.instagram.com/sanat_buyya/" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                    <a href="#" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
                 </div>
             </div>
             
@@ -1000,64 +1094,422 @@
     </div>
 
     <!-- Floating CTA -->
-    <button class="floating-cta" onclick="window.location.href='/login'">
+    <button class="floating-cta" onclick="window.location.href='/login'" aria-label="Sell Ticket">
         <i class="fas fa-ticket-alt"></i> Sell Ticket
     </button>
 
     <!-- Back to Top Button -->
-    <div class="back-to-top" id="backToTop">
+    <div class="back-to-top" id="backToTop" aria-label="Back to top">
         <i class="fas fa-arrow-up"></i>
     </div>
 </div>
+
 <script>
-  window.addEventListener("load", function () {
-    document.getElementById("preloader").style.display = "none";
-    document.getElementById("main-content").style.display = "block";
-  });
-</script>
-    <script>
-        // Mobile menu toggle
-        const mobileMenuBtn = document.getElementById('mobileMenuBtn');
-        const authLinks = document.getElementById('authLinks');
+    // Preloader
+    window.addEventListener("load", function () {
+        document.getElementById("preloader").style.display = "none";
+        document.getElementById("main-content").style.display = "block";
         
-        mobileMenuBtn.addEventListener('click', () => {
-            authLinks.classList.toggle('active');
-        });
+        // Initialize scroll animations after content is loaded
+        initScrollAnimations();
+        initCounterAnimations();
+    });
 
-        // Close menu when clicking on a link (for mobile)
-        document.querySelectorAll('.auth-links a').forEach(link => {
-            link.addEventListener('click', () => {
+    // Mobile menu toggle with slower animation
+    const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+    const authLinks = document.getElementById('authLinks');
+    
+    mobileMenuBtn.addEventListener('click', () => {
+        authLinks.classList.toggle('active');
+        mobileMenuBtn.classList.toggle('active');
+    });
+
+    // Close menu when clicking outside
+    document.addEventListener('click', (e) => {
+        if (!mobileMenuBtn.contains(e.target) && !authLinks.contains(e.target)) {
+            authLinks.classList.remove('active');
+            mobileMenuBtn.classList.remove('active');
+        }
+    });
+
+    // Close menu when clicking on a link (for mobile) - with slower animation
+    document.querySelectorAll('.auth-links a').forEach(link => {
+        link.addEventListener('click', () => {
+            // Add a small delay before closing to see the click effect
+            setTimeout(() => {
                 authLinks.classList.remove('active');
+                mobileMenuBtn.classList.remove('active');
+            }, 150);
+        });
+    });
+
+    // Back to Top Button
+    const backToTopButton = document.getElementById('backToTop');
+    
+    window.addEventListener('scroll', () => {
+        if (window.pageYOffset > 300) {
+            backToTopButton.classList.add('active');
+        } else {
+            backToTopButton.classList.remove('active');
+        }
+    });
+    
+    backToTopButton.addEventListener('click', () => {
+        window.scrollTo({
+            top: 0,
+            behavior: 'smooth'
+        });
+    });
+
+    // Scroll animations
+    function initScrollAnimations() {
+        const animateElements = document.querySelectorAll('.animate-on-scroll');
+        
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('animated');
+                }
             });
+        }, {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
         });
 
-        // Back to Top Button
-        const backToTopButton = document.getElementById('backToTop');
+        animateElements.forEach(element => {
+            observer.observe(element);
+        });
+    }
+
+    // Counter animations for statistics
+    function initCounterAnimations() {
+        const counters = document.querySelectorAll('.stat-number[data-count]');
         
-        window.addEventListener('scroll', () => {
-            if (window.pageYOffset > 300) {
-                backToTopButton.classList.add('active');
-            } else {
-                backToTopButton.classList.remove('active');
+        const counterObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const counter = entry.target;
+                    const target = parseFloat(counter.getAttribute('data-count'));
+                    const increment = target / 100;
+                    let current = 0;
+                    
+                    const updateCounter = () => {
+                        if (current < target) {
+                            current += increment;
+                            if (target === 99.7) {
+                                counter.textContent = current.toFixed(1) + '%';
+                            } else if (target >= 1000) {
+                                counter.textContent = Math.floor(current).toLocaleString() + '+';
+                            } else {
+                                counter.textContent = Math.floor(current) + '+';
+                            }
+                            requestAnimationFrame(updateCounter);
+                        } else {
+                            if (target === 99.7) {
+                                counter.textContent = target + '%';
+                            } else if (target >= 1000) {
+                                counter.textContent = target.toLocaleString() + '+';
+                            } else {
+                                counter.textContent = target + '+';
+                            }
+                        }
+                    };
+                    
+                    updateCounter();
+                    counterObserver.unobserve(counter);
+                }
+            });
+        }, {
+            threshold: 0.5
+        });
+
+        counters.forEach(counter => {
+            counterObserver.observe(counter);
+        });
+    }
+
+    // Smooth scrolling for all anchor links
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function(e) {
+            e.preventDefault();
+            const target = document.querySelector(this.getAttribute('href'));
+            if (target) {
+                target.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'start'
+                });
             }
         });
-        
-        backToTopButton.addEventListener('click', () => {
-            window.scrollTo({
-                top: 0,
-                behavior: 'smooth'
-            });
-        });
+    });
 
-        // Smooth scrolling for all anchor links
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function(e) {
-                e.preventDefault();
-                document.querySelector(this.getAttribute('href')).scrollIntoView({
-                    behavior: 'smooth'
-                });
-            });
+    // Enhanced keyboard navigation
+    document.addEventListener('keydown', (e) => {
+        // ESC key closes mobile menu
+        if (e.key === 'Escape' && authLinks.classList.contains('active')) {
+            authLinks.classList.remove('active');
+            mobileMenuBtn.classList.remove('active');
+        }
+        
+        // Enter key on back to top button
+        if (e.key === 'Enter' && document.activeElement === backToTopButton) {
+            backToTopButton.click();
+        }
+    });
+
+    // Add focus management for accessibility - with slower timing
+    mobileMenuBtn.addEventListener('click', () => {
+        if (authLinks.classList.contains('active')) {
+            // Focus first link when menu opens - increased delay
+            setTimeout(() => {
+                const firstLink = authLinks.querySelector('a');
+                if (firstLink) firstLink.focus();
+            }, 300);
+        }
+    });
+
+    // Performance optimization: Lazy load background images
+    const observerOptions = {
+        root: null,
+        rootMargin: '50px',
+        threshold: 0.1
+    };
+
+    const imageObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                const element = entry.target;
+                if (element.dataset.bg) {
+                    element.style.backgroundImage = `url(${element.dataset.bg})`;
+                    imageObserver.unobserve(element);
+                }
+            }
         });
-    </script>
+    }, observerOptions);
+
+    // Error handling for images
+    document.querySelectorAll('img').forEach(img => {
+        img.addEventListener('error', function() {
+            this.style.display = 'none';
+            console.warn('Failed to load image:', this.src);
+        });
+    });
+
+    // Add loading states for better UX
+    document.querySelectorAll('a[href^="/"]').forEach(link => {
+        link.addEventListener('click', function(e) {
+            // Add loading state for internal navigation
+            if (!this.classList.contains('no-loading')) {
+                this.style.opacity = '0.7';
+                this.style.pointerEvents = 'none';
+                
+                // Reset after a short delay if navigation fails
+                setTimeout(() => {
+                    this.style.opacity = '';
+                    this.style.pointerEvents = '';
+                }, 3000);
+            }
+        });
+    });
+
+    // Add subtle parallax effect to hero section
+    let ticking = false;
+    
+    function updateParallax() {
+        const scrolled = window.pageYOffset;
+        const hero = document.querySelector('.hero');
+        const rate = scrolled * -0.5;
+        
+        if (hero && scrolled < hero.offsetHeight) {
+            hero.style.transform = `translateY(${rate}px)`;
+        }
+        
+        ticking = false;
+    }
+
+    function requestParallaxUpdate() {
+        if (!ticking) {
+            requestAnimationFrame(updateParallax);
+            ticking = true;
+        }
+    }
+
+    // Only add parallax on larger screens to avoid performance issues
+    if (window.innerWidth > 768) {
+        window.addEventListener('scroll', requestParallaxUpdate);
+    }
+
+    // Add intersection observer for testimonial cards stagger animation
+    const testimonialCards = document.querySelectorAll('.testimonial-card');
+    const testimonialObserver = new IntersectionObserver((entries) => {
+        entries.forEach((entry, index) => {
+            if (entry.isIntersecting) {
+                setTimeout(() => {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }, index * 200);
+                testimonialObserver.unobserve(entry.target);
+            }
+        });
+    }, {
+        threshold: 0.1
+    });
+
+    testimonialCards.forEach(card => {
+        card.style.opacity = '0';
+        card.style.transform = 'translateY(30px)';
+        card.style.transition = 'all 0.6s ease';
+        testimonialObserver.observe(card);
+    });
+
+    // Add service worker for better caching (if available)
+    if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+            navigator.serviceWorker.register('/sw.js')
+                .then(registration => {
+                    console.log('SW registered: ', registration);
+                })
+                .catch(registrationError => {
+                    console.log('SW registration failed: ', registrationError);
+                });
+        });
+    }
+
+    // Add error boundary for JavaScript errors
+    window.addEventListener('error', (e) => {
+        console.error('JavaScript error:', e.error);
+        // Could send error to analytics service here
+    });
+
+    // Add unhandled promise rejection handler
+    window.addEventListener('unhandledrejection', (e) => {
+        console.error('Unhandled promise rejection:', e.reason);
+        e.preventDefault();
+    });
+
+    // Optimize scroll performance with throttling
+    let scrollTimeout;
+    const originalScrollHandler = window.onscroll;
+    
+    window.addEventListener('scroll', () => {
+        if (scrollTimeout) {
+            clearTimeout(scrollTimeout);
+        }
+        
+        scrollTimeout = setTimeout(() => {
+            // Execute scroll-dependent functions here
+            if (typeof originalScrollHandler === 'function') {
+                originalScrollHandler();
+            }
+        }, 16); // ~60fps
+    }, { passive: true });
+
+    // Add focus trap for mobile menu accessibility
+    function trapFocus(element) {
+        const focusableElements = element.querySelectorAll(
+            'a[href], button, textarea, input[type="text"], input[type="radio"], input[type="checkbox"], select'
+        );
+        const firstFocusableElement = focusableElements[0];
+        const lastFocusableElement = focusableElements[focusableElements.length - 1];
+
+        element.addEventListener('keydown', (e) => {
+            if (e.key === 'Tab') {
+                if (e.shiftKey) {
+                    if (document.activeElement === firstFocusableElement) {
+                        lastFocusableElement.focus();
+                        e.preventDefault();
+                    }
+                } else {
+                    if (document.activeElement === lastFocusableElement) {
+                        firstFocusableElement.focus();
+                        e.preventDefault();
+                    }
+                }
+            }
+        });
+    }
+
+    // Apply focus trap to mobile menu when active
+    const authLinksElement = document.getElementById('authLinks');
+    if (authLinksElement) {
+        trapFocus(authLinksElement);
+    }
+
+    // Add reduced motion support
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+    
+    if (prefersReducedMotion.matches) {
+        // Disable animations for users who prefer reduced motion
+        document.documentElement.style.setProperty('--animation-duration', '0s');
+        document.documentElement.style.setProperty('--transition-duration', '0s');
+    }
+
+    // Monitor reduced motion preference changes
+    prefersReducedMotion.addEventListener('change', () => {
+        if (prefersReducedMotion.matches) {
+            document.documentElement.style.setProperty('--animation-duration', '0s');
+            document.documentElement.style.setProperty('--transition-duration', '0s');
+        } else {
+            document.documentElement.style.removeProperty('--animation-duration');
+            document.documentElement.style.removeProperty('--transition-duration');
+        }
+    });
+
+    // Add connection-aware loading
+    if ('connection' in navigator) {
+        const connection = navigator.connection;
+        
+        if (connection.effectiveType === 'slow-2g' || connection.effectiveType === '2g') {
+            // Reduce animations and effects for slow connections
+            document.body.classList.add('slow-connection');
+        }
+    }
+
+    console.log('SwapTicket homepage loaded successfully');
+</script>
+
+
+<!-- Schema.org structured data for SEO -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  "name": "SwapTicket",
+  "description": "Secure platform for buying and selling train tickets with guaranteed transactions",
+  "url": "https://swapticket.com",
+  "potentialAction": {
+    "@type": "SearchAction",
+    "target": "https://swapticket.com/search?q={search_term_string}",
+    "query-input": "required name=search_term_string"
+  },
+  "sameAs": [
+    "https://www.instagram.com/sanat_buyya/"
+  ]
+}
+</script>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  "name": "SwapTicket",
+  "description": "Making train travel flexible and accessible for everyone through our secure ticket exchange platform",
+  "url": "https://swapticket.com",
+  "logo": "https://swapticket.com/docs/swaplogo.png",
+  "contactPoint": {
+    "@type": "ContactPoint",
+    "telephone": "+91-555-123-4567",
+    "contactType": "customer service",
+    "email": "support@swapticket.com"
+  },
+  "address": {
+    "@type": "PostalAddress",
+    "addressLocality": "Bengaluru",
+    "addressRegion": "Karnataka",
+    "postalCode": "560010",
+    "addressCountry": "IN"
+  }
+}
+</script>
+
 </body>
 </html>
