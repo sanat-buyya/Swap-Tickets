@@ -300,6 +300,11 @@ public class UserController {
     	return "faq";
     }
     
+    @GetMapping("/refund")
+    public String refund() {
+    	return "refundpolicy";
+    }
+    
     @GetMapping("/maskedAadhar")
     public String maskedAadhar() {
     	return "maskedAadhar";

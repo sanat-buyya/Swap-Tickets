@@ -52,28 +52,32 @@
         }
 
         #preloader {
-            position: fixed;
-            top: 0; left: 0;
-            width: 100vw; height: 100vh;
-            background: white;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 9999;
-        }
+    position: fixed;
+    top: 0; left: 0;
+    width: 100vw; height: 100vh;
+    background: linear-gradient(to right,rgb(128, 64, 64) 0%, #4a90e2 100%); 
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+}
 
-        .loader {
-            width: 50px;
-            height: 50px;
-            border: 6px solid #ccc;
-            border-top-color: #4CAF50;
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-        }
+.loader {
+    width: 100px;
+    height: 100px;
+    animation: bounce 1s ease-in-out infinite;
+}
 
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
+.loader img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+@keyframes bounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-20px); }
+}
 
         .navbar {
             background: linear-gradient(to right,rgb(128, 64, 64) 0%, #4a90e2 100%); 
@@ -572,11 +576,13 @@
             justify-content: center;
             transition: all 0.3s;
             font-size: 1rem;
+            text-decoration: none;
         }
 
         .social-links a:hover {
             background: var(--cta);
             transform: translateY(-3px);
+            text-decoration: none;
         }
 
         .copyright {
@@ -836,6 +842,7 @@
             
             .social-links {
                 justify-content: center;
+                text-decoration: none;
             }
             
             .floating-cta {
@@ -917,7 +924,9 @@
 </head>
 <body>
 <div id="preloader">
-  <div class="loader"></div>
+    <div class="loader">
+        <img src="/docs/swaplogo.png" alt="Loading...">
+    </div>
 </div>
 <div id="main-content" style="display: none;">
     <div class="navbar">
@@ -1051,10 +1060,10 @@
                 <h3>SwapTicket</h3>
                 <p>Making train travel flexible and accessible for everyone through our secure ticket exchange platform.</p>
                 <div class="social-links">
-                    <a href="#" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
-                    <a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+                    <a href="https://www.facebook.com/profile.php?id=100039713322909" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+                    <a href="https://x.com/SanatBuyya" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
                     <a href="https://www.instagram.com/sanat_buyya/" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
-                    <a href="#" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+                    <a href="https://www.linkedin.com/in/sanat-buyya-a32b9b282/" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
                 </div>
             </div>
             
@@ -1065,8 +1074,7 @@
                     <li><a href="/about"><i class="fas fa-info-circle"></i> About Us</a></li>
                     <li><a href="/how-it-works"><i class="fas fa-question-circle"></i> How It Works</a></li>
                     <li><a href="/faq"><i class="fas fa-comments"></i> FAQ</a></li>
-                    <li><a href="/contact"><i class="fas fa-envelope"></i> Contact</a></li>
-                </ul>
+                    </ul>
             </div>
             
             <div class="footer-column">
@@ -1105,15 +1113,15 @@
 </div>
 
 <script>
-    // Preloader
-    window.addEventListener("load", function () {
-        document.getElementById("preloader").style.display = "none";
-        document.getElementById("main-content").style.display = "block";
-        
-        // Initialize scroll animations after content is loaded
-        initScrollAnimations();
-        initCounterAnimations();
-    });
+  // Preloader
+window.addEventListener("load", function () {
+    document.getElementById("preloader").style.display = "none";
+    document.getElementById("main-content").style.display = "block";
+    
+    // Initialize scroll animations after content is loaded
+    initScrollAnimations();
+    initCounterAnimations();
+});
 
     // Mobile menu toggle with slower animation
     const mobileMenuBtn = document.getElementById('mobileMenuBtn');

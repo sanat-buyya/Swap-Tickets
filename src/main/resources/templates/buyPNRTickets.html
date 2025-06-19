@@ -447,7 +447,7 @@
                         <span th:unless="${passenger.sold}">Buy to view</span>
                     </div>
                     <div class="detail-item">
-                        <i class="fas fa-rupee-sign"></i><strong> Price:</strong> ₹<span th:text="${passenger.price + adminFee}"></span>
+                        <i class="fas fa-rupee-sign"></i><strong> Price:</strong> ₹<span th:text="${passenger.price}"></span>
                     </div>
                     <div class="detail-item">
                         <strong>Document:</strong>
@@ -458,11 +458,11 @@
 
                 <!-- 💳 Razorpay -->
                 <div th:unless="${passenger.sold}">
-                    <button type="button" class="btn btn-buy"
-                            th:onclick="'startPayment(' + ${passenger.id} + ',' + (${passenger.price +adminFee}) + ')'">
-                        <i class="fas fa-shopping-cart"></i> Buy (₹<span th:text="${passenger.price +adminFee}"></span>)
-                    </button>
-                </div>
+                   <a th:href="@{/pnr/preview-amount(passengerId=${passenger.id})}">
+    <button type="button" class="btn btn-buy">Buy</button>
+</a>
+
+</div>
 
                 <div th:if="${passenger.sold}">
                     <button class="btn btn-disabled" disabled>

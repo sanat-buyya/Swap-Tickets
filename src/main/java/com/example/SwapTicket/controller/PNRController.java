@@ -198,7 +198,26 @@ public class PNRController {
         model.addAttribute("gender", gender);
         return "buyPNRTickets";
     }
+    
+    @GetMapping("/preview-amount")
+    public String previewAmount(@RequestParam("passengerId") Long passengerId, Model model) {
+        Passenger passenger = passengerRepository.getPassengerById(passengerId);
+        double basePrice = passenger.getPrice();
+        
+        double adminFee = adminConfigRepository.findById(1L).orElseThrow().getBookingFee();
 
+        double handlingCharge = adminFee;
+        double gst = basePrice * 0.18;
+        double totalAmount = basePrice + handlingCharge + gst;
+
+        model.addAttribute("passenger", passenger);
+        model.addAttribute("basePrice", basePrice);
+        model.addAttribute("handlingCharge", handlingCharge);
+        model.addAttribute("gst", gst);
+        model.addAttribute("totalAmount", totalAmount);
+
+        return "previewAmount";
+    }
 
     
     @PostMapping("/buy/{id}")
@@ -226,9 +245,7 @@ public class PNRController {
             return ResponseEntity.badRequest().body(Map.of("error", "Passenger ticket already sold."));
         }
         
-        double adminFee = adminConfigRepository.findById(1L).orElseThrow().getBookingFee();
-
-        double amountToPay = passenger.getPrice() + adminFee; 
+        double amountToPay = passenger.getPrice(); 
 
         String razorpayOrderId = razorPayHelper.createPayment(amountToPay);
         if (razorpayOrderId == null) {
@@ -237,7 +254,7 @@ public class PNRController {
 
         Map<String, Object> response = new HashMap<>();
         response.put("orderId", razorpayOrderId);
-        response.put("amount", (int)(amountToPay * 100));  // in paisa
+        response.put("amount", (int)(amountToPay * 100));
         response.put("currency", "INR");
         response.put("key", razorPayHelper.getKey());
         response.put("passengerId", passenger.getId());

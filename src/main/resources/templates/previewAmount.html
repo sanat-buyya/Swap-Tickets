@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Preview Amount</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        * {
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f7fa;
+            color: #333;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 600px;
+            margin: 30px auto;
+            padding: 25px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        h2 {
+            color: #2c3e50;
+            text-align: center;
+            margin-bottom: 25px;
+            font-size: 24px;
+        }
+        
+        .price-details {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        
+        .price-details tr {
+            border-bottom: 1px solid #e0e0e0;
+        }
+        
+        .price-details tr:last-child {
+            border-bottom: none;
+        }
+        
+        .price-details td {
+            padding: 12px 10px;
+        }
+        
+        .price-details td:first-child {
+            font-weight: 500;
+        }
+        
+        .price-details td:last-child {
+            text-align: right;
+        }
+        
+        .total-row {
+            font-weight: bold;
+            background-color: #f8f9fa;
+        }
+        
+        .gst-row {
+            color: #666;
+            font-size: 0.9em;
+        }
+        
+        .payment-methods {
+            margin: 25px 0;
+            padding: 15px;
+            background-color: #f9f9f9;
+            border-radius: 8px;
+            border: 1px solid #e0e0e0;
+        }
+        
+        .methods-title {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 500;
+            color: #2c3e50;
+            margin-bottom: 15px;
+            font-size: 16px;
+        }
+        
+        .methods-title i {
+            color: #28a745;
+        }
+        
+        .methods-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+        }
+        
+        .payment-method {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+            padding: 8px;
+            background: white;
+            border-radius: 5px;
+            border: 1px solid #e0e0e0;
+        }
+        
+        .payment-method i {
+            color: #3399cc;
+            font-size: 18px;
+        }
+        
+        .security-info {
+            font-size: 12px;
+            color: #666;
+            text-align: center;
+            margin: 20px 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+        }
+        
+        .security-info i {
+            color: #28a745;
+        }
+        
+        .error-message {
+            display: none;
+            padding: 10px;
+            background-color: #f8d7da;
+            color: #721c24;
+            border-radius: 5px;
+            margin: 15px 0;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+        }
+        
+        .error-message i {
+            color: #dc3545;
+        }
+        
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            width: 100%;
+            margin-bottom: 15px;
+            gap: 8px;
+            position: relative;
+        }
+        
+        .btn-buy {
+            background-color: #3399cc;
+            color: white;
+        }
+        
+        .btn-buy:hover {
+            background-color: #2a7ba7;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        .btn-buy .loading {
+            display: none;
+            width: 16px;
+            height: 16px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 1s ease-in-out infinite;
+        }
+        
+        .btn-buy.processing .btn-text {
+            visibility: hidden;
+        }
+        
+        .btn-buy.processing .loading {
+            display: block;
+            position: absolute;
+        }
+        
+        .back-button {
+            background-color: #f1f1f1;
+            color: #333;
+        }
+        
+        .back-button:hover {
+            background-color: #e0e0e0;
+        }
+        
+        .action-buttons {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        @media (max-width: 480px) {
+            .container {
+                padding: 15px;
+                margin: 15px auto;
+            }
+            
+            h2 {
+                font-size: 20px;
+            }
+            
+            .price-details td {
+                padding: 10px 5px;
+                font-size: 14px;
+            }
+            
+            .btn {
+                padding: 10px 15px;
+                font-size: 14px;
+            }
+            
+            .methods-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Ticket Price Preview</h2>
+        
+        <table class="price-details">
+            <tr>
+                <td>Base Price:</td>
+                <td>₹<span th:text="${basePrice}"></span></td>
+            </tr>
+            <tr>
+                <td>Handling Charge:</td>
+                <td>₹<span th:text="${handlingCharge}"></span></td>
+            </tr>
+            <tr class="gst-row">
+                <td>GST (18%):</td>
+                <td>₹<span th:text="${gst}"></span></td>
+            </tr>
+            <tr class="total-row">
+                <td><strong>Total Amount:</strong></td>
+                <td><strong>₹<span th:text="${totalAmount}"></span></strong></td>
+            </tr>
+        </table>
+        
+        <div class="payment-methods">
+            <div class="methods-title">
+                <i class="fas fa-shield-alt"></i>
+                Secure Payment Options
+            </div>
+            <div class="methods-grid">
+                <div class="payment-method">
+                    <i class="fab fa-cc-visa"></i>
+                    <span>Visa</span>
+                </div>
+                <div class="payment-method">
+                    <i class="fab fa-cc-mastercard"></i>
+                    <span>Mastercard</span>
+                </div>
+                <div class="payment-method">
+                    <i class="fas fa-university"></i>
+                    <span>Net Banking</span>
+                </div>
+                <div class="payment-method">
+                    <i class="fas fa-mobile-alt"></i>
+                    <span>UPI</span>
+                </div>
+                <div class="payment-method">
+                    <i class="fas fa-wallet"></i>
+                    <span>Wallets</span>
+                </div>
+                <div class="payment-method">
+                    <i class="fas fa-qrcode"></i>
+                    <span>QR Code</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="action-buttons">
+            <button type="button" 
+                    th:onclick="'startPayment(' + ${passenger.id} + ',' + ${totalAmount} + ')'"
+                    class="btn btn-buy" 
+                    id="paymentBtn">
+                <i class="fas fa-lock"></i>
+                <span class="btn-text">Proceed to Secure Payment</span>
+                <div class="loading"></div>
+            </button>
+            
+            <a th:href="@{/user/home}" class="btn back-button">
+                    <path fill-rule="evenodd" d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8z"/>
+                </svg>
+                <span>Back to Home</span>
+            </a>
+        </div>
+
+        <div class="security-info">
+            <i class="fas fa-shield-alt"></i>
+            <span>Your payment is secured with 256-bit SSL encryption</span>
+        </div>
+
+        <div class="error-message" id="errorMessage">
+            <i class="fas fa-exclamation-triangle"></i>
+            <span id="errorText">Payment failed. Please try again.</span>
+        </div>
+    </div>
+
+    <script>
+    function startPayment(passengerId, price) {
+        const paymentBtn = document.getElementById('paymentBtn');
+        const errorMessage = document.getElementById('errorMessage');
+        
+        // Show loading state
+        paymentBtn.classList.add('processing');
+        errorMessage.style.display = 'none';
+        
+        var options = {
+            "key": "rzp_test_HkFY3rSv7zcCnX",
+            "amount": price * 100, // in paise
+            "currency": "INR",
+            "name": "SwapTicket",
+            "description": "Ticket Purchase",
+            "handler": function (response) {
+                const form = document.createElement('form');
+                form.method = 'POST';
+                form.action = `/pnr/confirm/${passengerId}`;
+
+                const paymentIdInput = document.createElement('input');
+                paymentIdInput.type = 'hidden';
+                paymentIdInput.name = 'razorpay_payment_id';
+                paymentIdInput.value = response.razorpay_payment_id;
+                form.appendChild(paymentIdInput);
+
+                const orderIdInput = document.createElement('input');
+                orderIdInput.type = 'hidden';
+                orderIdInput.name = 'razorpay_order_id';
+                orderIdInput.value = response.razorpay_order_id || '';
+                form.appendChild(orderIdInput);
+
+                document.body.appendChild(form);
+                form.submit();
+            },
+            "prefill": {
+                "email": "[[${session.loggedInUserEmail}]]"
+            },
+            "theme": {
+                "color": "#3399cc"
+            },
+            "modal": {
+                "ondismiss": function() {
+                    paymentBtn.classList.remove('processing');
+                }
+            }
+        };
+
+        var rzp = new Razorpay(options);
+        
+        rzp.on('payment.failed', function(response) {
+            paymentBtn.classList.remove('processing');
+            document.getElementById('errorText').textContent = 
+                response.error.description || 'Payment failed. Please try again.';
+            errorMessage.style.display = 'flex';
+        });
+        
+        rzp.open();
+    }
+    </script>
+</body>
+</html>
