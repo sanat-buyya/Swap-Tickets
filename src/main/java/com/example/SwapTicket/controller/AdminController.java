@@ -15,6 +15,8 @@ import com.example.SwapTicket.repository.TransactionHistoryRepository;
 import com.example.SwapTicket.repository.UserRepository;
 import com.example.SwapTicket.repository.WalletRepository;
 import com.example.SwapTicket.service.PaymentService;
+import com.example.SwapTicket.service.UserService;
+
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 
@@ -50,6 +52,9 @@ import java.util.Optional;
 
         @Autowired
         private PaymentService paymentService;
+
+        @Autowired
+        private UserService userService;
         
         @Autowired
         private UserRepository userRepository;
@@ -169,7 +174,7 @@ import java.util.Optional;
                 Model model) {
 
             Page<User> userPage = userRepository.findAll(PageRequest.of(page, size));
-            
+
             List<Map<String, Object>> userData = new ArrayList<>();
             for (User user : userPage.getContent()) {
                 Map<String, Object> data = new HashMap<>();
@@ -177,7 +182,15 @@ import java.util.Optional;
 
                 walletRepository.findByEmail(user.getEmail())
                     .ifPresent(wallet -> data.put("walletBalance", wallet.getBalance()));
-                
+
+                int referralCount = userRepository.findAllByReferredBy(user.getReferralCode()).size();
+                data.put("referralCount", referralCount);
+
+                // 👇 Add status to display block/unblock buttons
+                data.put("status", user.getStatus());
+                data.put("blockUrl", "/admin/blockUser/" + user.getId());
+                data.put("unblockUrl", "/admin/unblockUser/" + user.getId());
+
                 userData.add(data);
             }
 
@@ -189,6 +202,27 @@ import java.util.Optional;
             return "adminViewUsers";
         }
         
+        @GetMapping("/blockUser/{id}")
+        public String blockUser(@PathVariable Long id) {
+            User user = userService.findById(id);
+            if (user != null) {
+                user.setStatus("BLOCKED");
+                userService.saveUser(user);
+            }
+            return "redirect:/admin/users";
+        }
+
+        @GetMapping("/unblockUser/{id}")
+        public String unblockUser(@PathVariable Long id) {
+            User user = userService.findById(id);
+            if (user != null) {
+                user.setStatus("ACTIVE");
+                userService.saveUser(user);
+            }
+            return "redirect:/admin/users";
+        }
+
+
         @GetMapping("/transactions")
         public String showTransactions(Model model,
                 @RequestParam(defaultValue = "0") int page,

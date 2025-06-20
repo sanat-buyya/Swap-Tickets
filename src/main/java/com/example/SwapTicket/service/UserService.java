@@ -33,6 +33,10 @@ public class UserService {
 	public List<User> findAllByReferredBy(String referredBy) {
 	    return userRepository.findAllByReferredBy(referredBy);
 	}
+	
+	public User findById(Long id) {
+	    return userRepository.findById(id).orElse(null);
+	}
 
     
 }

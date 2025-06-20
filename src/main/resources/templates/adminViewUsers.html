@@ -94,6 +94,25 @@
             color: #28a745;
         }
         
+        /* Status indicators */
+        .status-active {
+            color: var(--success-color);
+            font-weight: 600;
+        }
+        
+        .status-inactive {
+            color: #dc3545;
+            font-weight: 600;
+        }
+        
+        /* Action buttons */
+        .action-btn {
+            padding: 0.25rem 0.5rem;
+            font-size: 0.875rem;
+            border-radius: 0.2rem;
+            margin: 0.1rem;
+        }
+        
         /* Pagination Styles */
         .pagination {
             display: flex;
@@ -139,17 +158,6 @@
             margin-top: 1rem;
             padding: 0.5rem 1.5rem;
             border-radius: 0.35rem;
-        }
-        
-        /* Status indicators */
-        .status-active {
-            color: var(--success-color);
-            font-weight: 600;
-        }
-        
-        .status-inactive {
-            color: #dc3545;
-            font-weight: 600;
         }
         
         @media (max-width: 992px) {
@@ -239,7 +247,10 @@
                     <th>Full Name</th>
                     <th>Email</th>
                     <th>Mobile</th>
+                    <th>No. of Referrals</th>
                     <th>Wallet Balance</th>
+                    <th>Status</th>
+                    <th>Actions</th>
                 </tr>
             </thead>
             <tbody>
@@ -248,8 +259,46 @@
                     <td th:text="${entry.user.name}">Name</td>
                     <td th:text="${entry.user.email}">email@example.com</td>
                     <td th:text="${entry.user.mobile}">1234567890</td>
-                    <td class="wallet-balance" th:text="${entry.walletBalance != null ? '₹' + entry.walletBalance : '₹0.00'}">₹0.00</td>
-                    
+                    <td th:text="${entry.referralCount}">0</td>
+                    <td th:text="${entry.walletBalance != null ? '₹' + entry.walletBalance : '₹0.00'}">₹0.00</td>
+                    <td>
+                        <span th:class="${entry.status == 'ACTIVE'} ? 'status-active' : 'status-inactive'"
+                              th:text="${entry.status}">ACTIVE</span>
+                    </td>
+                    <td>
+                       	
+                            
+    <div class="d-flex gap-1">
+        <!-- Show both Block and Unblock for ACTIVE -->
+        <a th:if="${entry.status == 'ACTIVE'}"
+           th:href="@{'/admin/blockUser/' + ${entry.user.id}}"
+           class="btn btn-danger btn-sm">
+            <i class="fas fa-ban"></i> Block
+        </a>
+
+        <a th:if="${entry.status == 'ACTIVE'}"
+           th:href="@{'/admin/unblockUser/' + ${entry.user.id}}"
+           class="btn btn-success btn-sm">
+            <i class="fas fa-check-circle"></i> Unblock
+        </a>
+
+        <!-- Show only Unblock for BLOCKED -->
+        <a th:if="${entry.status == 'BLOCKED'}"
+           th:href="@{'/admin/unblockUser/' + ${entry.user.id}}"
+           class="btn btn-success btn-sm">
+            <i class="fas fa-check-circle"></i> Unblock
+        </a>
+
+        <!-- Show only Block for UNBLOCKED -->
+        <a th:if="${entry.status == 'UNBLOCKED'}"
+           th:href="@{'/admin/blockUser/' + ${entry.user.id}}"
+           class="btn btn-danger btn-sm">
+            <i class="fas fa-ban"></i> Block
+        </a>
+    </div>
+</td>
+
+                       
                 </tr>
             </tbody>
         </table>

@@ -51,6 +51,8 @@ public class User {
     private String referralCode;
 
     private String referredBy;
+    @Column(nullable = false)
+    private String status = "ACTIVE";
 
 	public Long getId() {
 		return id;
@@ -122,6 +124,14 @@ public class User {
 
 	public void setReferredBy(String referredBy) {
 		this.referredBy = referredBy;
+	}
+	
+	public String getStatus() {
+		return status;
+	}
+
+	public void setStatus(String status) {
+		this.status = status;
 	}
 
 	@Override

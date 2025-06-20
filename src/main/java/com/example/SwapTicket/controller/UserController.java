@@ -31,6 +31,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
 public class UserController {
@@ -219,8 +220,21 @@ public class UserController {
     }
 
     @GetMapping("/user/sell")
-    public String sellTicket() {
-        return "sellTicket1"; 
+    public String sellTicket(HttpSession session, RedirectAttributes redirectAttributes) {
+        String email = (String) session.getAttribute("loggedInUserEmail");
+
+        if (email == null) {
+            return "redirect:/login";
+        }
+
+        User user = userService.findByEmail(email);
+
+        if (user == null || "BLOCKED".equalsIgnoreCase(user.getStatus())) {
+            redirectAttributes.addFlashAttribute("error", "Access denied. Your account is blocked.");
+            return "redirect:/user/home";
+        }
+
+        return "sellTicket1";
     }
 
     @GetMapping("/user/home")
