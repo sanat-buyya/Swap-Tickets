@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Refer A Friend</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        * {
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f7fa;
+            color: #333;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+        
+        h2 {
+            color: #2c3e50;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        h3 {
+            color: #2c3e50;
+            margin-top: 30px;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 10px;
+        }
+        
+        .referral-box {
+            padding: 25px;
+            background-color: #f8f9fa;
+            border-radius: 10px;
+            margin-top: 20px;
+            border: 1px solid #e9ecef;
+        }
+        
+        .referral-code {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .referral-code .code {
+            font-size: 18px;
+            font-weight: bold;
+            color: #007bff;
+            background-color: #e7f1ff;
+            padding: 10px 15px;
+            border-radius: 5px;
+            flex-grow: 1;
+            text-align: center;
+        }
+        
+        .referral-link-container {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        
+        @media (min-width: 768px) {
+            .referral-link-container {
+                flex-direction: row;
+                align-items: center;
+            }
+        }
+        
+        #refLink {
+            flex-grow: 1;
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+            background-color: #f8f9fa;
+        }
+        
+        .btn {
+            padding: 12px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            border: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        
+        .btn-primary {
+            background-color: #007bff;
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background-color: #0069d9;
+        }
+        
+        .btn-secondary {
+            background-color: #6c757d;
+            color: white;
+        }
+        
+        .btn-secondary:hover {
+            background-color: #5a6268;
+        }
+        
+        .btn-success {
+            background-color: #28a745;
+            color: white;
+        }
+        
+        .btn-success:hover {
+            background-color: #218838;
+        }
+        
+        .share-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .share-dropdown {
+            position: relative;
+            display: inline-block;
+        }
+        
+        .share-dropdown-content {
+            display: none;
+            position: absolute;
+            background-color: white;
+            min-width: 200px;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+            border-radius: 8px;
+            padding: 10px;
+            z-index: 1;
+            bottom: 100%;
+            left: 0;
+        }
+        
+        .share-dropdown:hover .share-dropdown-content {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        
+        .share-option {
+            padding: 8px 12px;
+            border-radius: 5px;
+            background-color: #f8f9fa;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: background-color 0.2s;
+        }
+        
+        .share-option:hover {
+            background-color: #e9ecef;
+        }
+        
+        .referred-users {
+            list-style-type: none;
+            padding: 0;
+        }
+        
+        .referred-users li {
+            padding: 12px 15px;
+            background-color: #f8f9fa;
+            margin-bottom: 8px;
+            border-radius: 5px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .referred-users li:before {
+            content: "✓";
+            color: #28a745;
+            margin-right: 10px;
+            font-weight: bold;
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 30px;
+            color: #6c757d;
+            background-color: #f8f9fa;
+            border-radius: 10px;
+        }
+        
+        .empty-state i {
+            font-size: 40px;
+            margin-bottom: 15px;
+            color: #adb5bd;
+        }
+        
+        .reward-info {
+            margin-top: 30px;
+            padding: 20px;
+            background-color: #e7f8f0;
+            border-radius: 10px;
+            border-left: 4px solid #28a745;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h2>Refer A Friend</h2>
+    
+    <p>Invite your friends and earn rewards when they sign up using your referral link!</p>
+    
+    <div class="referral-box">
+        <div class="referral-code">
+            <span style="margin-right: 15px;">Your Code:</span>
+            <div class="code" th:text="${referralCode}"></div>
+        </div>
+        
+        <div class="referral-link-container">
+            <input type="text" id="refLink" th:value="${referralLink}" readonly>
+            <button class="btn btn-primary" onclick="copyReferralLink()">
+                <i class="fas fa-copy"></i> Copy
+            </button>
+        </div>
+        
+        <div class="share-dropdown">
+            <button class="btn btn-success" onclick="nativeShare()">
+                <i class="fas fa-share-alt"></i> Share
+            </button>
+            <div class="share-dropdown-content">
+                <div class="share-option" onclick="shareOnWhatsApp()">
+                    <i class="fab fa-whatsapp" style="color: #25D366;"></i> WhatsApp
+                </div>
+                <div class="share-option" onclick="shareOnFacebook()">
+                    <i class="fab fa-facebook" style="color: #1877F2;"></i> Facebook
+                </div>
+                <div class="share-option" onclick="shareOnTwitter()">
+                    <i class="fab fa-twitter" style="color: #1DA1F2;"></i> Twitter
+                </div>
+                <div class="share-option" onclick="shareOnInstagram()">
+                    <i class="fab fa-instagram" style="color: #E4405F;"></i> Instagram
+                </div>
+                <div class="share-option" onclick="shareViaEmail()">
+                    <i class="fas fa-envelope" style="color: #EA4335;"></i> Email
+                </div>
+                <div class="share-option" onclick="shareViaSMS()">
+                    <i class="fas fa-sms" style="color: #34B7F1;"></i> SMS
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="reward-info">
+        <h3><i class="fas fa-gift"></i> Your Rewards</h3>
+        <p>For every friend who joins using your link, you'll earn <strong>100 points</strong> when they complete their first transaction!</p>
+    </div>
+
+    <div th:if="${#lists.isEmpty(referredUsers)}">
+        <div class="empty-state">
+            <i class="fas fa-users"></i>
+            <h3>No friends referred yet</h3>
+            <p>Share your referral link to invite friends and start earning rewards!</p>
+        </div>
+    </div>
+    <div th:if="${not #lists.isEmpty(referredUsers)}">
+        <h3>Friends you referred:</h3>
+        <ul class="referred-users">
+            <li th:each="u : ${referredUsers}" th:text="${u.email}"></li>
+        </ul>
+    </div>
+</div>
+
+<script>
+    function copyReferralLink() {
+        const refInput = document.getElementById("refLink");
+        refInput.select();
+        refInput.setSelectionRange(0, 99999);
+        document.execCommand("copy");
+        
+        // Change button text temporarily
+        const copyBtn = event.currentTarget;
+        const originalText = copyBtn.innerHTML;
+        copyBtn.innerHTML = '<i class="fas fa-check"></i> Copied!';
+        
+        setTimeout(() => {
+            copyBtn.innerHTML = originalText;
+        }, 2000);
+    }
+    
+    function shareOnWhatsApp() {
+        const link = document.getElementById("refLink").value;
+        const message = `Hello! 👋
+        	I wanted to share this great platform called SwapTicket where you can buy or sell train tickets securely.
+        	Use my referral link to join: ${link}`;
+        window.open(`https://wa.me/?text=${encodeURIComponent(message)}`);
+    }
+    
+    function shareOnFacebook() {
+        const link = document.getElementById("refLink").value;
+        window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(link)}`);
+    }
+    
+    function shareOnTwitter() {
+        const link = document.getElementById("refLink").value;
+        const message = `Hello! 👋
+        	I wanted to share this great platform called SwapTicket where you can buy or sell train tickets securely.
+        	Use my referral link to join: ${link}`;
+        window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(message)}`);
+    }
+    
+    function shareOnInstagram() {
+        const link = document.getElementById("refLink").value;
+        alert("Copy this link to share on Instagram: " + link);
+    }
+    
+    function shareViaEmail() {
+        const link = document.getElementById("refLink").value;
+        const subject = "Join me on this platform";
+        const body = `Hello! 👋,%0D%0A%0D%0AI wanted to share this great platform called SwapTicket where you can buy or sell train tickets securely. Use my referral link to join: ${link}%0D%0A%0D%0ABest regards,`;
+        window.location.href = `mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+    }
+    
+    function shareViaSMS() {
+        const link = document.getElementById("refLink").value;
+        const message = `Hello! 👋 I wanted to share this great platform called SwapTicket where you can buy or sell train tickets securely.
+        	Use my referral link to join: ${link}`;
+        if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
+            window.location.href = `sms:?body=${encodeURIComponent(message)}`;
+        } else {
+            alert("SMS sharing is available on mobile devices only. Here's your link to copy: " + link);
+        }
+    }
+    
+    // Primary share function that uses native share dialog when available
+    function nativeShare() {
+        const link = document.getElementById("refLink").value;
+        const shareData = {
+            title: 'Join me on this platform',
+            text: 'Hello! 👋 I wanted to share this great platform called SwapTicket where you can buy or sell train tickets securely. Use my referral link to sign up 👉',
+            url: link,
+        };
+        
+        try {
+            if (navigator.share) {
+                // Use native share dialog on mobile devices
+                navigator.share(shareData)
+                    .then(() => console.log('Successful share'))
+                    .catch(error => {
+                        console.log('Error sharing:', error);
+                        // Fallback to dropdown if native share fails
+                        toggleShareDropdown();
+                    });
+            } else {
+                // Fallback to dropdown on desktop
+                toggleShareDropdown();
+            }
+        } catch (e) {
+            console.log('Error with share API:', e);
+            // Fallback to dropdown if any error occurs
+            toggleShareDropdown();
+        }
+    }
+    
+    // Helper function to toggle the share dropdown
+    function toggleShareDropdown() {
+        const dropdown = document.querySelector('.share-dropdown-content');
+        if (dropdown.style.display === 'flex') {
+            dropdown.style.display = 'none';
+        } else {
+            dropdown.style.display = 'flex';
+        }
+    }
+</script>
+</body>
+</html>

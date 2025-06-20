@@ -405,6 +405,26 @@
                 </span>
             </div>
             
+            <div class="form-group">
+    <label for="referredBy">Referral Code (Optional)</label>
+    <div class="input-with-icon">
+        <i class="fas fa-user"></i>
+        <input type="text" id="referredBy" th:value="${user.referredBy}" th:field="*{referredBy}" class="form-control" placeholder="Enter your referral code" />
+    </div>
+
+    <!-- Show field binding errors -->
+    <span th:if="${#fields.hasErrors('referredBy')}" class="error-message">
+        <i class="fas fa-exclamation-circle"></i>
+        <span th:errors="*{referredBy}"></span>
+    </span>
+
+    <!-- Show custom referral error from controller -->
+    <span th:if="${referralError}" class="error-message">
+        <i class="fas fa-exclamation-circle"></i>
+        <span th:text="${referralError}"></span>
+    </span>
+</div>
+
 
             <button type="submit" class="register-btn">
                 <i class="fas fa-user-plus"></i><span>Register Now</span>

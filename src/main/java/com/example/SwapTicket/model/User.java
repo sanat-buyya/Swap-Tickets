@@ -46,6 +46,11 @@ public class User {
         message = "* Confirm password must match password rules"
     )
     private String confirmPassword;
+    
+    @Column(unique = true)
+    private String referralCode;
+
+    private String referredBy;
 
 	public Long getId() {
 		return id;
@@ -103,10 +108,27 @@ public class User {
 		this.confirmPassword = confirmPassword;
 	}
 
+	public String getReferralCode() {
+		return referralCode;
+	}
+
+	public void setReferralCode(String referralCode) {
+		this.referralCode = referralCode;
+	}
+
+	public String getReferredBy() {
+		return referredBy;
+	}
+
+	public void setReferredBy(String referredBy) {
+		this.referredBy = referredBy;
+	}
+
 	@Override
 	public String toString() {
 		return "User [id=" + id + ", name=" + name + ", email=" + email + ", mobile=" + mobile + ", dob=" + dob
-				+ ", password=" + password + ", confirmPassword=" + confirmPassword + "]";
+				+ ", password=" + password + ", confirmPassword=" + confirmPassword + ", referralCode=" + referralCode
+				+ ", referredBy=" + referredBy + "]";
 	}
     
     

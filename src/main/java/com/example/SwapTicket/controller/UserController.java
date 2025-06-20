@@ -10,6 +10,7 @@ import com.example.SwapTicket.repository.PNRRepository;
 import com.example.SwapTicket.repository.PassengerRepository;
 import com.example.SwapTicket.repository.SupportMessageRepository;
 import com.example.SwapTicket.repository.TransactionHistoryRepository;
+import com.example.SwapTicket.repository.UserRepository;
 import com.example.SwapTicket.repository.WalletRepository;
 import com.example.SwapTicket.service.UserService;
 import com.example.SwapTicket.helper.AES;
@@ -22,6 +23,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional; // Replace with your actual package
 import java.util.Random;
+import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -41,6 +43,9 @@ public class UserController {
 
     @Autowired
     private WalletRepository walletRepository;
+    
+    @Autowired
+    private UserRepository userRepository;
     
     @Autowired
     private PNRRepository pnrRepository;
@@ -108,36 +113,62 @@ public class UserController {
     }
 
     @GetMapping("/register")
-    public String registerPage(Model model) {
-        model.addAttribute("user", new User());
+    public String showRegisterPage(@RequestParam(value = "ref", required = false) String referralCode,
+                                   Model model) {
+        User user = new User();
+
+        if (referralCode != null && !referralCode.isBlank()) {
+            user.setReferredBy(referralCode.trim());
+        }
+
+        model.addAttribute("user", user);
         return "register";
     }
 
     @PostMapping("/register")
     public String registerUser(@Valid @ModelAttribute("user") User user,
                                BindingResult result,
-                               Model model,HttpSession session) {
-    	if (userService.existsByEmail(user.getEmail())) {
+                               Model model,
+                               HttpSession session,
+                               @RequestParam(value = "referredBy", required = false) String referredBy) {
+
+        if (userService.existsByEmail(user.getEmail())) {
             model.addAttribute("email", "Email is already registered");
             result.rejectValue("email", "error.email", "* Email Already Exists");
             return "register";
-        } 
+        }
+
         if (!user.getPassword().equals(user.getConfirmPassword())) {
             model.addAttribute("passwordError", "Passwords do not match");
             return "register";
         }
+
         if (result.hasErrors()) {
             return "register";
         }
+
+        // ✅ Validate referral code, if provided
+        if (referredBy != null && !referredBy.trim().isBlank()) {
+            User referrer = userService.findByReferralCode(referredBy.trim());
+            if (referrer == null) {
+                model.addAttribute("referralError", "Invalid referral code");
+                return "register";
+            }
+            user.setReferredBy(referredBy.trim()); 
+        } else {
+            user.setReferredBy(null); 
+        }
+
         int otp = new Random().nextInt(100000, 1000000);
         emailSender.sendEmail(user, otp);
 
         session.setAttribute("otp", otp);
-        session.setAttribute("userDto", user); // Store temporarily before OTP verify
+        session.setAttribute("userDto", user); 
         session.setAttribute("pass", "Otp Sent Success");
 
         return "redirect:/otp";
     }
+
     @GetMapping("/otp")
     public String showOtpPage() {
         return "otp";
@@ -159,10 +190,16 @@ public class UserController {
                 model.addAttribute("error", "Encryption error. Please try registering again.");
                 return "register";
             }
-            user.setPassword(encryptedPassword);
-            user.setConfirmPassword(encryptedPassword); // Optional, to keep structure consistent
 
-            userService.saveUser(user);
+            user.setPassword(encryptedPassword);
+            user.setConfirmPassword(encryptedPassword);
+
+            // ✅ Generate unique referral code
+            String referralCode = user.getEmail().substring(0, 4).toUpperCase()
+                    + UUID.randomUUID().toString().substring(0, 4).toUpperCase();
+            user.setReferralCode(referralCode);
+
+            userService.saveUser(user); // includes referredBy if valid
 
             // Create wallet
             Wallet wallet = new Wallet();
@@ -170,7 +207,7 @@ public class UserController {
             wallet.setBalance(0.0);
             walletRepository.save(wallet);
 
-            // Clear session attributes
+            // Clear session
             session.removeAttribute("otp");
             session.removeAttribute("userDto");
 
@@ -180,7 +217,6 @@ public class UserController {
             return "otp";
         }
     }
-
 
     @GetMapping("/user/sell")
     public String sellTicket() {
@@ -201,8 +237,7 @@ public class UserController {
 
         return "userHome";
     }
-
-
+    
     @GetMapping("/forgot-password")
     public String forgotPasswordPage() {
         return "forgotPassword";
@@ -339,6 +374,33 @@ public class UserController {
         return "redirect:/support/submit";
     }
     
+    public String generateReferralCode(String nameOrEmail) {
+        return nameOrEmail.substring(0, 4).toUpperCase() + UUID.randomUUID().toString().substring(0, 4).toUpperCase();
+    }
+    
+    @GetMapping("/user/refer")
+    public String referPage(Model model, HttpSession session) {
+        String userEmail = (String) session.getAttribute("loggedInUserEmail");
+        if (userEmail == null) {
+            return "redirect:/login";
+        }
+
+        User user = userRepository.findByEmail(userEmail);
+        String referralCode = user.getReferralCode();
+
+        String baseUrl = "http://localhost:8085/register"; 
+        String referralLink = baseUrl + "?ref=" + referralCode;
+
+        model.addAttribute("referralCode", referralCode);
+        model.addAttribute("referralLink", referralLink);
+
+        // Optional: show referred users
+        List<User> referredUsers = userRepository.findAllByReferredBy(referralCode);
+        model.addAttribute("referredUsers", referredUsers);
+
+        return "refer";
+    }
+
     
 
 

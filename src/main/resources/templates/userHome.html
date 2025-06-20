@@ -374,6 +374,7 @@
       margin: 0 auto;
     }
     .button i {
+      padding-top: 8px;
       font-size: 0.8rem;
       -webkit-text-fill-color: white;
     }
@@ -471,6 +472,9 @@
       }
       .navbar-right.active .mobile-menu li:nth-child(7) {
         transition-delay: 1.5s;
+      }
+      .navbar-right.active .mobile-menu li:nth-child(8) {
+        transition-delay: 1.7s;
       }
       .user-info, .logout-btn {
         display: none;
@@ -590,6 +594,12 @@
           </a>
         </li>
         <li>
+          <a th:href="@{/user/refer}" class="menu-item">
+            <i class="fas fa-user-plus"></i>
+            <span>Refer A Friend</span>
+          </a>
+        </li>
+        <li>
           <a th:href="@{/support/submit}" class="menu-item">
             <i class="fas fa-headset"></i>
             <span>Customer Support</span>
@@ -672,7 +682,7 @@
       
       <div class="card" data-aos="fade-up" data-aos-delay="150">
         <img src="/docs/myListedTicket.png" alt="myListedTicket" >
-        <h3>My Tickets</h3>
+        <h3>My Sold Tickets</h3>
         <p>View and manage your listed tickets</p>
         <form th:action="@{/my-listed-tickets}" method="get">
           <button class="button">
@@ -681,6 +691,20 @@
           </button>
         </form>
       </div>
+      
+      <div class="card" data-aos="fade-up" data-aos-delay="150">
+        <img src="/docs/refer.png" alt="myListedTicket" >
+        <h3>Refer A Friend</h3>
+        <p>Invite friends and earn bonuses when they join</p>
+        <form th:action="@{/user/refer}" method="get">
+          <button class="button">
+            <i class="fas fa-user-plus"></i>
+            <span>Invite Now</span>
+            <i class="fas fa-chevron-right arrow-icon"></i>
+          </button>
+        </form>
+      </div>
+      
       <div class="card" data-aos="fade-up" data-aos-delay="300">
         <img src="/docs/Customercare.png" alt="CustomerCare">
         <h3>Customer Support</h3>
