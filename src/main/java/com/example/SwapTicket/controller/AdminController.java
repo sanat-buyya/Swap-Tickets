@@ -22,6 +22,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
@@ -70,9 +71,10 @@ import java.util.Optional;
         
         @Autowired
         private AdminConfigRepository adminConfigRepository;
-
-        private static final String ADMIN_EMAIL = "admin@swapticket.com";
-
+        
+        @Value("${admin.email}")
+    	String ADMIN_EMAIL;
+       
         @GetMapping("/dashboard")
         public String adminDashboard(Model model, HttpSession session) {
             if (session.getAttribute("admin") == null) {

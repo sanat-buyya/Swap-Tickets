@@ -18,7 +18,6 @@ import com.example.SwapTicket.repository.WalletRepository;
 import com.example.SwapTicket.helper.EmailSender;
 import org.springframework.format.annotation.DateTimeFormat;
 
-
 import jakarta.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -66,6 +65,9 @@ public class PNRController {
 	com.example.SwapTicket.helper.RazorPayHelper razorPayHelper;
 	@Value("${razor-pay.api.key}")
 	String key;
+	
+	@Value("${admin.email}")
+	String adminEmail;
 
     @PostMapping("/sell")
     public String sellPNRTicket(
@@ -137,9 +139,8 @@ public class PNRController {
             passengerList.add(p);
         }
 
-
         pnr.setPassenger(passengerList);
-        pnrRepository.save(pnr); // Cascade saves all passengers
+        pnrRepository.save(pnr);
 
         redirectAttributes.addFlashAttribute("successMessage", "🎉 Ticket with PNR added successfully!");
         return "redirect:/user/home";
@@ -200,26 +201,95 @@ public class PNRController {
     }
     
     @GetMapping("/preview-amount")
-    public String previewAmount(@RequestParam("passengerId") Long passengerId, Model model) {
+    public String previewAmount(@RequestParam("passengerId") Long passengerId, HttpSession session, Model model) {
         Passenger passenger = passengerRepository.getPassengerById(passengerId);
         double basePrice = passenger.getPrice();
-        
-        double adminFee = adminConfigRepository.findById(1L).orElseThrow().getBookingFee();
-
+        double adminFee = adminConfigRepository.findById(1L)
+                .map(AdminConfig::getBookingFee)
+                .orElse(0.0);
         double handlingCharge = adminFee;
         double gst = basePrice * 0.18;
-        double totalAmount = basePrice + handlingCharge + gst;
 
+        String loggedInUserEmail = (String) session.getAttribute("loggedInUserEmail");
+        User user = userRepository.findByEmail(loggedInUserEmail);
+
+        // 1. Get all users referred by this user
+        List<User> referredUsers = userRepository.findAllByReferredBy(user.getReferralCode());
+
+        // 2. Count how many of those referred users made at least one purchase
+        int successfulReferrals = 0;
+        for (User referredUser : referredUsers) {
+            boolean hasPurchased = passengerRepository.existsByBuyerEmailAndSoldTrue(referredUser.getEmail());
+            if (hasPurchased) {
+                successfulReferrals++;
+            }
+        }
+
+        // 3. Determine next applicable milestone (5, 10, 20, 50)
+        int[] milestones = {5, 10, 20, 50};
+        int currentMilestone = 0;
+        boolean eligibleForDiscount = false;
+        int referralsLeft = 0;
+
+        for (int m : milestones) {
+            if (successfulReferrals >= m && !user.getUsedReferralDiscounts().contains(m)) {
+                currentMilestone = m;
+                eligibleForDiscount = true;
+                break; // only one discount at a time
+            }
+        }
+
+        // 4. Calculate referrals left for next milestone if not eligible
+        if (!eligibleForDiscount) {
+            for (int m : milestones) {
+                if (successfulReferrals < m && !user.getUsedReferralDiscounts().contains(m)) {
+                    referralsLeft = m - successfulReferrals;
+                    break;
+                }
+            }
+        }
+
+        // 5. Apply ₹100 discount if eligible and not used before
+        double discount = eligibleForDiscount ? 100.0 : 0.0;
+        double totalAmount = basePrice + handlingCharge + gst - discount;
+
+        // Add all attributes to model
         model.addAttribute("passenger", passenger);
         model.addAttribute("basePrice", basePrice);
         model.addAttribute("handlingCharge", handlingCharge);
         model.addAttribute("gst", gst);
+        model.addAttribute("discount", discount);
         model.addAttribute("totalAmount", totalAmount);
+        model.addAttribute("successfulReferrals", successfulReferrals);
+        model.addAttribute("eligibleForDiscount", eligibleForDiscount);
+        model.addAttribute("currentMilestone", currentMilestone);
+        model.addAttribute("referralsLeft", referralsLeft);
+        model.addAttribute("key", key);
 
         return "previewAmount";
     }
 
-    
+
+    public int getEligibleReferralDiscount(User user) {
+        String referralCode = user.getReferralCode();
+        List<User> referredUsers = userRepository.findAllByReferredBy(referralCode);
+
+        // Filter to only those who bought tickets
+        long successfulReferrals = referredUsers.stream()
+        	    .filter(u -> passengerRepository.existsByBuyerEmailAndSoldTrue(u.getEmail()))
+        	    .count();
+
+        List<Integer> milestones = List.of(5, 10, 20, 50);
+        for (int milestone : milestones) {
+            if (successfulReferrals >= milestone && !user.getUsedReferralDiscounts().contains(milestone)) {
+                return milestone; // Eligible for ₹100 off
+            }
+        }
+
+        return 0; // Not eligible
+    }
+
+ 
     @PostMapping("/buy/{id}")
     @ResponseBody
     public ResponseEntity<Map<String, Object>> buyTicket(@PathVariable Long id, HttpSession session) {
@@ -227,7 +297,7 @@ public class PNRController {
         String buyerEmail = (String) session.getAttribute("loggedInUserEmail");
 
         Optional<Passenger> passengerOpt = passengerRepository.findById(id);
-        Optional<Wallet> adminWalletOpt = walletRepository.findByEmail("admin@swapticket.com");
+        Optional<Wallet> adminWalletOpt = walletRepository.findByEmail(adminEmail);
 
         if (passengerOpt.isEmpty() || adminWalletOpt.isEmpty()) {
             return ResponseEntity.badRequest().body(Map.of("error", "Transaction failed: Passenger or Wallet not found"));
@@ -294,14 +364,40 @@ public class PNRController {
         double adminFee = adminConfigRepository.findById(1L)
                 .map(AdminConfig::getBookingFee)
                 .orElse(0.0);
-        double totalAmount = ticketPrice + adminFee;
         passenger.setAdminFee(adminFee);
 
-        // Admin wallet update: Add total amount
-        Optional<Wallet> adminWalletOpt = walletRepository.findByEmail("admin@swapticket.com");
+        // ----- REFERRAL DISCOUNT LOGIC -----
+        double discount = 0.0;
+        int[] milestones = {5, 10, 20, 50};
+
+        User user = userRepository.findByEmail(buyerEmail);
+        List<User> referredUsers = userRepository.findAllByReferredBy(user.getReferralCode());
+
+        int successfulReferrals = 0;
+        for (User referredUser : referredUsers) {
+            boolean hasPurchased = passengerRepository.existsByBuyerEmailAndSoldTrue(referredUser.getEmail());
+            if (hasPurchased) {
+                successfulReferrals++;
+            }
+        }
+
+        for (int m : milestones) {
+            if (successfulReferrals >= m && !user.getUsedReferralDiscounts().contains(m)) {
+                discount = 100.0;
+                user.getUsedReferralDiscounts().add(m);
+                userRepository.save(user);
+                break;
+            }
+        }
+
+        // Apply discount
+        double totalAmount = ticketPrice + adminFee - discount;
+
+        // ----- UPDATE ADMIN WALLET -----
+        Optional<Wallet> adminWalletOpt = walletRepository.findByEmail(adminEmail);
         Wallet adminWallet = adminWalletOpt.orElseGet(() -> {
             Wallet newWallet = new Wallet();
-            newWallet.setEmail("admin@swapticket.com");
+            newWallet.setEmail(adminEmail);
             newWallet.setBalance(0.0);
             return newWallet;
         });
@@ -309,28 +405,29 @@ public class PNRController {
         adminWallet.setBalance(adminWallet.getBalance() + totalAmount);
         walletRepository.save(adminWallet);
 
-        // Save passenger as sold
+        // Save sold passenger
         passengerRepository.save(passenger);
+
+        // Send email to seller
         User seller = userRepository.findByEmail(pnr.getSellerEmail());
-
         Passenger soldPassenger = passengerRepository.findById(passengerId).orElse(null);
-
         if (soldPassenger != null) {
             List<Passenger> soldPassengers = List.of(soldPassenger);
             emailSender.sendSoldMessage(seller, pnr, soldPassengers);
         }
-        redirectAttributes.addFlashAttribute("successMessage", "🎉 Payment successful. Ticket booked!");
+
+        // Save buyer's transaction
         TransactionHistory transaction = new TransactionHistory();
         transaction.setUserEmail(buyerEmail);
         transaction.setAmount(totalAmount);
         transaction.setType(TransactionType.DEBITED);
         transaction.setDate(LocalDate.now());
-
         transactionHistoryRepository.save(transaction);
+
+        redirectAttributes.addFlashAttribute("successMessage", "🎉 Payment successful. Ticket booked!");
 
         return "redirect:/pnr/my-purchases";
     }
-
 
     @GetMapping("/my-purchases")
     public String viewMyPurchasedTickets(HttpSession session, Model model) {

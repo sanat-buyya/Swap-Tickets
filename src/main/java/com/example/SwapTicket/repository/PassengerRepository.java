@@ -28,7 +28,8 @@ public interface PassengerRepository extends JpaRepository<Passenger, Long> {
 	List<Passenger> findBySoldTrueAndBuyerEmail(String buyerEmail);
 
 	Passenger getPassengerById(Long passengerId);
-
+	
+	boolean existsByBuyerEmailAndSoldTrue(String email);
 
 }
 

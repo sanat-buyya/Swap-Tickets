@@ -6,6 +6,9 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDate;
+import jakarta.persistence.ElementCollection;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Table(name = "users")
@@ -53,6 +56,9 @@ public class User {
     private String referredBy;
     @Column(nullable = false)
     private String status = "ACTIVE";
+    
+    @ElementCollection
+    private Set<Integer> usedReferralDiscounts = new HashSet<>();
 
 	public Long getId() {
 		return id;
@@ -132,6 +138,14 @@ public class User {
 
 	public void setStatus(String status) {
 		this.status = status;
+	}
+	
+	public Set<Integer> getUsedReferralDiscounts() {
+		return usedReferralDiscounts;
+	}
+
+	public void setUsedReferralDiscounts(Set<Integer> usedReferralDiscounts) {
+		this.usedReferralDiscounts = usedReferralDiscounts;
 	}
 
 	@Override

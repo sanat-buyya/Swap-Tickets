@@ -1,49 +1,81 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>Preview Amount</title>
+    <title>Ticket Payment Preview</title>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+    <link rel="icon" href="https://res.cloudinary.com/dgrxmavho/image/upload/v1749496815/swaplogo_zzganr.png" type="image/png">
+	<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
+        :root {
+            --primary: #3399cc;
+            --primary-hover: #2a7ba7;
+            --success: #28a745;
+            --danger: #dc3545;
+            --warning: #ffc107;
+            --dark: #2c3e50;
+            --light: #f8f9fa;
+            --gray: #6c757d;
+            --border: #e0e0e0;
+            --white: #ffffff;
+            --shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+        }
+        
         * {
             box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
         }
         
         body {
-            margin: 0;
-            padding: 20px;
             background-color: #f5f7fa;
-            color: #333;
+            color: var(--dark);
             line-height: 1.6;
+            padding: 20px;
+            min-height: 100vh;
         }
         
         .container {
             max-width: 600px;
-            margin: 30px auto;
-            padding: 25px;
-            background: white;
-            border-radius: 10px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            margin: 20px auto;
+            background: var(--white);
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+            padding: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: linear-gradient(90deg, var(--primary), var(--success));
         }
         
         h2 {
-            color: #2c3e50;
+            color: var(--dark);
             text-align: center;
             margin-bottom: 25px;
-            font-size: 24px;
+            font-size: 1.75rem;
+            font-weight: 600;
         }
         
+        /* Price Breakdown */
         .price-details {
             width: 100%;
             border-collapse: collapse;
-            margin-bottom: 20px;
+            margin-bottom: 25px;
         }
         
         .price-details tr {
-            border-bottom: 1px solid #e0e0e0;
+            border-bottom: 1px solid var(--border);
         }
         
         .price-details tr:last-child {
@@ -51,263 +83,533 @@
         }
         
         .price-details td {
-            padding: 12px 10px;
+            padding: 14px 10px;
+            vertical-align: top;
         }
         
         .price-details td:first-child {
             font-weight: 500;
+            color: var(--dark);
         }
         
         .price-details td:last-child {
             text-align: right;
+            font-weight: 500;
         }
         
         .total-row {
-            font-weight: bold;
-            background-color: #f8f9fa;
+            font-weight: 600;
+            background-color: var(--light);
         }
         
         .gst-row {
-            color: #666;
-            font-size: 0.9em;
+            color: var(--gray);
+            font-size: 0.95em;
         }
         
-        .payment-methods {
-            margin: 25px 0;
+        .discount-row {
+            color: var(--success);
+            font-weight: 600;
+            display: none;
+        }
+        
+        .discount-row.show {
+            display: table-row;
+        }
+        
+        /* Discount Checkbox */
+        .discount-checkbox-container {
+            margin: 20px 0;
             padding: 15px;
-            background-color: #f9f9f9;
-            border-radius: 8px;
-            border: 1px solid #e0e0e0;
+            background-color: #e8f5e8;
+            border-radius: 10px;
+            border: 2px solid var(--success);
+            display: none;
         }
         
-        .methods-title {
+        .discount-checkbox-container.show {
+            display: block;
+        }
+        
+        .discount-checkbox {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            cursor: pointer;
+            user-select: none;
+        }
+        
+        .discount-checkbox input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+            accent-color: var(--success);
+        }
+        
+        .discount-checkbox label {
+            font-weight: 500;
+            color: var(--success);
+            cursor: pointer;
             display: flex;
             align-items: center;
             gap: 8px;
+        }
+        
+        .discount-checkbox label i {
+            font-size: 1.2rem;
+        }
+        
+        /* Payment Options */
+        .payment-options {
+            margin: 25px 0;
+            padding: 20px;
+            background-color: var(--light);
+            border-radius: 10px;
+            border: 1px solid var(--border);
+        }
+        
+        .options-title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
             font-weight: 500;
-            color: #2c3e50;
-            margin-bottom: 15px;
-            font-size: 16px;
+            color: var(--dark);
+            margin-bottom: 18px;
+            font-size: 1.1rem;
         }
         
-        .methods-title i {
-            color: #28a745;
+        .options-title i {
+            color: var(--success);
+            font-size: 1.2rem;
         }
         
-        .methods-grid {
+        .options-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
-            gap: 15px;
+            gap: 12px;
         }
         
-        .payment-method {
+        .payment-option {
             display: flex;
-            align-items: center;
-            gap: 8px;
-            font-size: 14px;
-            padding: 8px;
-            background: white;
-            border-radius: 5px;
-            border: 1px solid #e0e0e0;
-        }
-        
-        .payment-method i {
-            color: #3399cc;
-            font-size: 18px;
-        }
-        
-        .security-info {
-            font-size: 12px;
-            color: #666;
-            text-align: center;
-            margin: 20px 0;
-            display: flex;
+            flex-direction: column;
             align-items: center;
             justify-content: center;
-            gap: 5px;
+            font-size: 0.9rem;
+            padding: 12px 8px;
+            background: var(--white);
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            text-align: center;
+            min-height: 70px;
+            transition: all 0.3s ease;
         }
         
-        .security-info i {
-            color: #28a745;
+        .payment-option:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border-color: var(--primary);
         }
         
-        .error-message {
-            display: none;
-            padding: 10px;
-            background-color: #f8d7da;
-            color: #721c24;
-            border-radius: 5px;
-            margin: 15px 0;
+        .payment-option i {
+            color: var(--primary);
+            font-size: 1.5rem;
+            margin-bottom: 8px;
+        }
+        
+        /* Referral Benefits */
+        .referral-benefits {
+            margin: 25px 0;
+            padding: 20px;
+            background-color: #f0f8ff;
+            border-radius: 10px;
+            border-left: 4px solid var(--primary);
+        }
+        
+        .benefits-header {
+            display: flex;
             align-items: center;
-            gap: 8px;
-            font-size: 14px;
+            gap: 10px;
+            margin-bottom: 15px;
         }
         
-        .error-message i {
-            color: #dc3545;
+        .benefits-header i {
+            color: var(--primary);
+            font-size: 1.3rem;
+        }
+        
+        .benefits-header h3 {
+            color: var(--dark);
+            font-size: 1.2rem;
+            margin: 0;
+        }
+        
+        .benefit-item {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 10px;
+        }
+        
+        .benefit-item i {
+            color: var(--success);
+            margin-right: 10px;
+            margin-top: 3px;
+        }
+        
+        .discount-status {
+            display: inline-flex;
+            align-items: center;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            margin-left: 8px;
+        }
+        
+        .eligible {
+            background-color: #e6f7ee;
+            color: var(--success);
+        }
+        
+        .not-eligible {
+            background-color: #fce8e8;
+            color: var(--danger);
+        }
+        
+        .progress-container {
+            margin-top: 15px;
+            background-color: #e9ecef;
+            border-radius: 10px;
+            height: 8px;
+            overflow: hidden;
+        }
+        
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary), #6e8efb);
+            border-radius: 10px;
+            transition: width 0.5s ease;
+        }
+        
+        .progress-text {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 5px;
+            font-size: 0.85rem;
+            color: var(--gray);
+        }
+        
+        /* Action Buttons */
+        .action-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-top: 25px;
         }
         
         .btn {
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            padding: 12px 24px;
+            padding: 15px 25px;
             border: none;
-            border-radius: 5px;
+            border-radius: 8px;
             cursor: pointer;
-            font-size: 16px;
+            font-size: 1rem;
             font-weight: 500;
             transition: all 0.3s ease;
             text-decoration: none;
             width: 100%;
-            margin-bottom: 15px;
-            gap: 8px;
+            gap: 10px;
             position: relative;
+            overflow: hidden;
         }
         
-        .btn-buy {
-            background-color: #3399cc;
+        .btn::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            transition: 0.5s;
+        }
+        
+        .btn:hover::after {
+            left: 100%;
+        }
+        
+        .btn-primary {
+            background-color: var(--primary);
             color: white;
+            box-shadow: 0 4px 15px rgba(51, 153, 204, 0.3);
         }
         
-        .btn-buy:hover {
-            background-color: #2a7ba7;
+        .btn-primary:hover {
+            background-color: var(--primary-hover);
             transform: translateY(-2px);
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 6px 20px rgba(51, 153, 204, 0.4);
         }
         
-        .btn-buy .loading {
+        .btn-secondary {
+            background-color: var(--light);
+            color: var(--dark);
+            border: 1px solid var(--border);
+        }
+        
+        .btn-secondary:hover {
+            background-color: #e9ecef;
+        }
+        
+        .btn .loading {
             display: none;
-            width: 16px;
-            height: 16px;
-            border: 2px solid rgba(255, 255, 255, 0.3);
+            width: 18px;
+            height: 18px;
+            border: 3px solid rgba(255, 255, 255, 0.3);
             border-radius: 50%;
             border-top-color: white;
-            animation: spin 1s ease-in-out infinite;
+            animation: spin 1s linear infinite;
         }
         
-        .btn-buy.processing .btn-text {
+        .btn.processing .btn-text {
             visibility: hidden;
         }
         
-        .btn-buy.processing .loading {
+        .btn.processing .loading {
             display: block;
             position: absolute;
         }
         
-        .back-button {
-            background-color: #f1f1f1;
-            color: #333;
-        }
-        
-        .back-button:hover {
-            background-color: #e0e0e0;
-        }
-        
-        .action-buttons {
+        /* Security Info */
+        .security-info {
             display: flex;
-            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            margin: 25px 0 10px;
+            font-size: 0.9rem;
+            color: var(--gray);
         }
         
+        .security-info i {
+            color: var(--success);
+        }
+        
+        /* Error Message */
+        .error-message {
+            padding: 12px 15px;
+            background-color: #f8d7da;
+            color: #721c24;
+            border-radius: 8px;
+            margin: 15px 0;
+            display: none;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .error-message i {
+            color: var(--danger);
+        }
+        
+        /* Animations */
         @keyframes spin {
             to { transform: rotate(360deg); }
         }
         
-        @media (max-width: 480px) {
+        /* Responsive Design */
+        @media (max-width: 768px) {
             .container {
-                padding: 15px;
-                margin: 15px auto;
+                padding: 25px 20px;
             }
             
             h2 {
-                font-size: 20px;
+                font-size: 1.5rem;
             }
             
-            .price-details td {
-                padding: 10px 5px;
-                font-size: 14px;
+            .options-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .payment-option {
+                min-height: 60px;
             }
             
             .btn {
-                padding: 10px 15px;
-                font-size: 14px;
+                padding: 14px 20px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            body {
+                padding: 15px;
             }
             
-            .methods-grid {
-                grid-template-columns: repeat(2, 1fr);
+            .container {
+                padding: 20px 15px;
+                margin: 10px auto;
+            }
+            
+            .price-details td {
+                padding: 12px 8px;
+                font-size: 0.95rem;
+            }
+            
+            .options-grid {
+                grid-template-columns: 1fr 1fr;
+                gap: 8px;
+            }
+            
+            .payment-option {
+                font-size: 0.85rem;
+                padding: 10px 5px;
+            }
+            
+            .payment-option i {
+                font-size: 1.3rem;
+            }
+            
+            .referral-benefits {
+                padding: 15px;
             }
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h2>Ticket Price Preview</h2>
+        <h2>Ticket Payment Preview</h2>
         
         <table class="price-details">
             <tr>
                 <td>Base Price:</td>
-                <td>₹<span th:text="${basePrice}"></span></td>
+                <td>₹<span th:text="${#numbers.formatDecimal(basePrice, 0, 2)}"></span></td>
             </tr>
             <tr>
                 <td>Handling Charge:</td>
-                <td>₹<span th:text="${handlingCharge}"></span></td>
+                <td>₹<span th:text="${#numbers.formatDecimal(handlingCharge, 0, 2)}"></span></td>
             </tr>
             <tr class="gst-row">
                 <td>GST (18%):</td>
-                <td>₹<span th:text="${gst}"></span></td>
+                <td>₹<span th:text="${#numbers.formatDecimal(gst, 0, 2)}"></span></td>
+            </tr>
+            <tr class="discount-row" id="discountRow">
+                <td>Referral Discount:</td>
+                <td>-₹<span id="discountAmount">100.00</span></td>
             </tr>
             <tr class="total-row">
                 <td><strong>Total Amount:</strong></td>
-                <td><strong>₹<span th:text="${totalAmount}"></span></strong></td>
+                <td><strong>₹<span id="totalAmount" th:text="${#numbers.formatDecimal(totalAmount, 0, 2)}"></span></strong></td>
             </tr>
         </table>
         
-        <div class="payment-methods">
-            <div class="methods-title">
+        <div class="payment-options">
+            <div class="options-title">
                 <i class="fas fa-shield-alt"></i>
-                Secure Payment Options
+                <span>Secure Payment Options</span>
             </div>
-            <div class="methods-grid">
-                <div class="payment-method">
+            <div class="options-grid">
+                <div class="payment-option">
                     <i class="fab fa-cc-visa"></i>
                     <span>Visa</span>
                 </div>
-                <div class="payment-method">
+                <div class="payment-option">
                     <i class="fab fa-cc-mastercard"></i>
                     <span>Mastercard</span>
                 </div>
-                <div class="payment-method">
+                <div class="payment-option">
                     <i class="fas fa-university"></i>
                     <span>Net Banking</span>
                 </div>
-                <div class="payment-method">
+                <div class="payment-option">
                     <i class="fas fa-mobile-alt"></i>
                     <span>UPI</span>
                 </div>
-                <div class="payment-method">
+                <div class="payment-option">
                     <i class="fas fa-wallet"></i>
                     <span>Wallets</span>
                 </div>
-                <div class="payment-method">
+                <div class="payment-option">
                     <i class="fas fa-qrcode"></i>
                     <span>QR Code</span>
                 </div>
             </div>
         </div>
 
+        <div class="referral-benefits">
+            <div class="benefits-header">
+                <i class="fas fa-gift"></i>
+                <h3>Your Referral Benefits</h3>
+            </div>
+            <div class="benefit-item">
+                <i class="fas fa-tag"></i>
+                <div>
+                    <span>Discount Status: </span>
+                    <span th:if="${eligibleForDiscount}" class="discount-status eligible">
+                        <i class="fas fa-check-circle"></i> Eligible for ₹100 discount
+                    </span>
+                    <span th:if="${!eligibleForDiscount}" class="discount-status not-eligible">
+                        <i class="fas fa-times-circle"></i> Not Eligible
+                    </span>
+                </div>
+            </div>
+            
+            <!-- Show progress only when not eligible and referrals left > 0 -->
+            <th:block th:if="${!eligibleForDiscount}">
+                <div th:if="${referralsLeft > 0}" class="benefit-item">
+                    <i class="fas fa-bullseye"></i>
+                    <div>
+                        <span>Refer <strong th:text="${referralsLeft}"></strong> more friends and referred users purchased at least one ticket to unlock your ₹100 discount</span>
+                    </div>
+                </div>
+                
+                <div th:if="${referralsLeft > 0}" class="progress-container">
+                    <div class="progress-bar" 
+                         th:style="'width:' + ${(successfulReferrals * 100.0) / (successfulReferrals + referralsLeft)} + '%'"></div>
+                    <div class="progress-text">
+                        <span>Your progress</span>
+                        <span th:text="${successfulReferrals} + '/' + ${successfulReferrals + referralsLeft}"></span>
+                    </div>
+                </div>
+                
+                <div th:if="${referralsLeft <= 0}" class="benefit-item">
+                    <i class="fas fa-info-circle"></i>
+                    <div>
+                        <span>You've used all available referral discounts or reached maximum milestones.</span>
+                    </div>
+                </div>
+            </th:block>
+            
+            <div th:if="${eligibleForDiscount}" class="benefit-item">
+                <i class="fas fa-star"></i>
+                <div>
+                    <span style="color: var(--success); font-weight: 600;">🎉 Congratulations! You can apply a ₹100 discount on this purchase!</span>
+                </div>
+            </div>
+        </div>
+
+		
+		<!-- Discount Checkbox (only show if eligible) -->
+        <div th:if="${eligibleForDiscount}" class="discount-checkbox-container show" id="discountCheckboxContainer">
+            <div class="discount-checkbox">
+                <input type="checkbox" id="applyDiscount" onchange="toggleDiscount()">
+                <label for="applyDiscount">
+                                        <i class="fas fa-gift"></i>
+                    Apply ₹100 referral discount to this purchase
+                </label>
+            </div>
+        </div>
+        
         <div class="action-buttons">
             <button type="button" 
-                    th:onclick="'startPayment(' + ${passenger.id} + ',' + ${totalAmount} + ')'"
-                    class="btn btn-buy" 
+                    onclick="processPayment()"
+                    class="btn btn-primary" 
                     id="paymentBtn">
                 <i class="fas fa-lock"></i>
                 <span class="btn-text">Proceed to Secure Payment</span>
                 <div class="loading"></div>
             </button>
             
-            <a th:href="@{/user/home}" class="btn back-button">
-                    <path fill-rule="evenodd" d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8z"/>
-                </svg>
+            <a th:href="@{/user/home}" class="btn btn-secondary">
+                <i class="fas fa-arrow-left"></i>
                 <span>Back to Home</span>
             </a>
         </div>
@@ -324,7 +626,58 @@
     </div>
 
     <script>
-    function startPayment(passengerId, price) {
+    // Store original values
+    const basePrice = [[${basePrice}]];
+    const handlingCharge = [[${handlingCharge}]];
+    const gst = [[${gst}]];
+    const originalTotal = basePrice + handlingCharge + gst;
+    const passengerId = [[${passenger.id}]];
+    const isEligibleForDiscount = [[${eligibleForDiscount}]];
+    const razorpayKey = "[[${key}]]";
+    
+    let currentTotal = originalTotal;
+    let discountApplied = false;
+    
+    function toggleDiscount() {
+        const checkbox = document.getElementById('applyDiscount');
+        const discountRow = document.getElementById('discountRow');
+        const totalAmountSpan = document.getElementById('totalAmount');
+        
+        if (checkbox.checked) {
+            // Apply discount
+            discountApplied = true;
+            currentTotal = originalTotal - 100;
+            discountRow.classList.add('show');
+            
+            // Add animation effect
+            discountRow.style.opacity = '0';
+            setTimeout(() => {
+                discountRow.style.opacity = '1';
+            }, 100);
+            
+        } else {
+            // Remove discount
+            discountApplied = false;
+            currentTotal = originalTotal;
+            discountRow.classList.remove('show');
+        }
+        
+        // Update total amount with animation
+        totalAmountSpan.style.transform = 'scale(1.1)';
+        totalAmountSpan.style.color = 'var(--primary)';
+        
+        setTimeout(() => {
+            totalAmountSpan.textContent = formatCurrency(currentTotal);
+            totalAmountSpan.style.transform = 'scale(1)';
+            totalAmountSpan.style.color = '';
+        }, 150);
+    }
+    
+    function formatCurrency(amount) {
+        return amount.toFixed(2);
+    }
+    
+    function processPayment() {
         const paymentBtn = document.getElementById('paymentBtn');
         const errorMessage = document.getElementById('errorMessage');
         
@@ -333,12 +686,14 @@
         errorMessage.style.display = 'none';
         
         var options = {
-            "key": "rzp_test_HkFY3rSv7zcCnX",
-            "amount": price * 100, // in paise
+        	"key": razorpayKey,
+            "amount": currentTotal * 100, // Razorpay expects amount in paise
             "currency": "INR",
             "name": "SwapTicket",
             "description": "Ticket Purchase",
+            "image": "https://res.cloudinary.com/dgrxmavho/image/upload/v1749496815/swaplogo_zzganr.png",
             "handler": function (response) {
+                // Create form to submit payment details
                 const form = document.createElement('form');
                 form.method = 'POST';
                 form.action = `/pnr/confirm/${passengerId}`;
@@ -355,11 +710,32 @@
                 orderIdInput.value = response.razorpay_order_id || '';
                 form.appendChild(orderIdInput);
 
+                const signatureInput = document.createElement('input');
+                signatureInput.type = 'hidden';
+                signatureInput.name = 'razorpay_signature';
+                signatureInput.value = response.razorpay_signature || '';
+                form.appendChild(signatureInput);
+
+                // Add discount applied flag
+                const discountInput = document.createElement('input');
+                discountInput.type = 'hidden';
+                discountInput.name = 'discount_applied';
+                discountInput.value = discountApplied;
+                form.appendChild(discountInput);
+
+                // Add discount amount
+                const discountAmountInput = document.createElement('input');
+                discountAmountInput.type = 'hidden';
+                discountAmountInput.name = 'discount_amount';
+                discountAmountInput.value = discountApplied ? 100 : 0;
+                form.appendChild(discountAmountInput);
+
                 document.body.appendChild(form);
                 form.submit();
             },
             "prefill": {
-                "email": "[[${session.loggedInUserEmail}]]"
+                "email": "[[${session.loggedInUserEmail}]]",
+                "contact": "[[${session.loggedInUserPhone}]]"
             },
             "theme": {
                 "color": "#3399cc"
@@ -382,6 +758,52 @@
         
         rzp.open();
     }
+    
+    // Add some interactive effects
+    document.addEventListener('DOMContentLoaded', function() {
+        // Animate progress bar on load
+        const progressBar = document.querySelector('.progress-bar');
+        if (progressBar) {
+            const width = progressBar.style.width;
+            progressBar.style.width = '0%';
+            setTimeout(() => {
+                progressBar.style.width = width;
+            }, 500);
+        }
+        
+        // Add hover effects to payment options
+        const paymentOptions = document.querySelectorAll('.payment-option');
+        paymentOptions.forEach(option => {
+            option.addEventListener('mouseenter', function() {
+                this.style.transform = 'translateY(-3px) scale(1.02)';
+            });
+            
+            option.addEventListener('mouseleave', function() {
+                this.style.transform = 'translateY(0) scale(1)';
+            });
+        });
+        
+        // Add smooth transitions to discount row
+        const discountRow = document.getElementById('discountRow');
+        if (discountRow) {
+            discountRow.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
+        }
+        
+        // Add checkbox change animation
+        const checkbox = document.getElementById('applyDiscount');
+        if (checkbox) {
+            checkbox.addEventListener('change', function() {
+                const container = document.getElementById('discountCheckboxContainer');
+                if (this.checked) {
+                    container.style.borderColor = 'var(--success)';
+                    container.style.backgroundColor = '#e8f5e8';
+                } else {
+                    container.style.borderColor = 'var(--border)';
+                    container.style.backgroundColor = '#f8f9fa';
+                }
+            });
+        }
+    });
     </script>
 </body>
 </html>

@@ -1,6 +1,7 @@
 package com.example.SwapTicket.service;
 
 import com.example.SwapTicket.model.User;
+import com.example.SwapTicket.repository.PassengerRepository;
 import com.example.SwapTicket.repository.UserRepository;
 
 import java.util.List;
@@ -37,6 +38,4 @@ public class UserService {
 	public User findById(Long id) {
 	    return userRepository.findById(id).orElse(null);
 	}
-
-    
 }
