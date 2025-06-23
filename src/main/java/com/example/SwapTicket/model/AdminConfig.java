@@ -8,7 +8,9 @@ public class AdminConfig {
     @Id
     private Long id = 1L;
 
-    private double bookingFee;  // Extra charge per passenger
+    private double bookingFee;  
+    
+    private Double referralDiscountAmount;
 
 	public Long getId() {
 		return id;
@@ -24,6 +26,14 @@ public class AdminConfig {
 
 	public void setBookingFee(double bookingFee) {
 		this.bookingFee = bookingFee;
+	}
+
+	public Double getReferralDiscountAmount() {
+		return referralDiscountAmount;
+	}
+
+	public void setReferralDiscountAmount(Double referralDiscountAmount) {
+		this.referralDiscountAmount = referralDiscountAmount;
 	}
     
     

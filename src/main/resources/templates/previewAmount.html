@@ -478,6 +478,59 @@
     <div class="container">
         <h2>Ticket Payment Preview</h2>
         
+          <div class="referral-benefits">
+            <div class="benefits-header">
+                <i class="fas fa-gift"></i>
+                <h3>Your Referral Benefits</h3>
+            </div>
+            <div class="benefit-item">
+                <i class="fas fa-tag"></i>
+                <div>
+                    <span>Discount Status: </span>
+                    <span th:if="${eligibleForDiscount}" class="discount-status eligible">
+    					<i class="fas fa-check-circle"></i> Eligible for ₹<span th:text="${referralDiscountAmount}"></span> discount
+					</span>
+
+                    <span th:if="${!eligibleForDiscount}" class="discount-status not-eligible">
+                        <i class="fas fa-times-circle"></i> Not Eligible
+                    </span>
+                </div>
+            </div>
+            
+            <!-- Show progress only when not eligible and referrals left > 0 -->
+            <th:block th:if="${!eligibleForDiscount}">
+                <div th:if="${referralsLeft > 0}" class="benefit-item">
+                    <i class="fas fa-bullseye"></i>
+                    <div>
+                       <span>Refer <strong th:text="${referralsLeft}"></strong> more friends and referred users purchased at least one ticket to unlock your ₹<span th:text="${referralDiscountAmount}"></span> discount</span>
+                    </div>
+                </div>
+                
+                <div th:if="${referralsLeft > 0}" class="progress-container">
+                    <div class="progress-bar" 
+                         th:style="'width:' + ${(successfulReferrals * 100.0) / (successfulReferrals + referralsLeft)} + '%'"></div>
+                    <div class="progress-text">
+                        <span>Your progress</span>
+                        <span th:text="${successfulReferrals} + '/' + ${successfulReferrals + referralsLeft}"></span>
+                    </div>
+                </div>
+                
+                <div th:if="${referralsLeft <= 0}" class="benefit-item">
+                    <i class="fas fa-info-circle"></i>
+                    <div>
+                        <span>You've used all available referral discounts or reached maximum milestones.</span>
+                    </div>
+                </div>
+            </th:block>
+            
+            <div th:if="${eligibleForDiscount}" class="benefit-item">
+                <i class="fas fa-star"></i>
+                <div>
+                    <span style="color: var(--success); font-weight: 600;">
+    🎉 Congratulations! You can apply a ₹<span th:text="${referralDiscountAmount}"></span> discount on this purchase!</span>                </div>
+            </div>
+        </div>
+        
         <table class="price-details">
             <tr>
                 <td>Base Price:</td>
@@ -493,7 +546,7 @@
             </tr>
             <tr class="discount-row" id="discountRow">
                 <td>Referral Discount:</td>
-                <td>-₹<span id="discountAmount">100.00</span></td>
+                <td>-₹<span id="discountAmount" th:text="${#numbers.formatDecimal(referralDiscountAmount, 0, 2)}"></span></td>
             </tr>
             <tr class="total-row">
                 <td><strong>Total Amount:</strong></td>
@@ -533,81 +586,38 @@
                 </div>
             </div>
         </div>
-
-        <div class="referral-benefits">
-            <div class="benefits-header">
-                <i class="fas fa-gift"></i>
-                <h3>Your Referral Benefits</h3>
-            </div>
-            <div class="benefit-item">
-                <i class="fas fa-tag"></i>
-                <div>
-                    <span>Discount Status: </span>
-                    <span th:if="${eligibleForDiscount}" class="discount-status eligible">
-                        <i class="fas fa-check-circle"></i> Eligible for ₹100 discount
-                    </span>
-                    <span th:if="${!eligibleForDiscount}" class="discount-status not-eligible">
-                        <i class="fas fa-times-circle"></i> Not Eligible
-                    </span>
-                </div>
-            </div>
-            
-            <!-- Show progress only when not eligible and referrals left > 0 -->
-            <th:block th:if="${!eligibleForDiscount}">
-                <div th:if="${referralsLeft > 0}" class="benefit-item">
-                    <i class="fas fa-bullseye"></i>
-                    <div>
-                        <span>Refer <strong th:text="${referralsLeft}"></strong> more friends and referred users purchased at least one ticket to unlock your ₹100 discount</span>
-                    </div>
-                </div>
-                
-                <div th:if="${referralsLeft > 0}" class="progress-container">
-                    <div class="progress-bar" 
-                         th:style="'width:' + ${(successfulReferrals * 100.0) / (successfulReferrals + referralsLeft)} + '%'"></div>
-                    <div class="progress-text">
-                        <span>Your progress</span>
-                        <span th:text="${successfulReferrals} + '/' + ${successfulReferrals + referralsLeft}"></span>
-                    </div>
-                </div>
-                
-                <div th:if="${referralsLeft <= 0}" class="benefit-item">
-                    <i class="fas fa-info-circle"></i>
-                    <div>
-                        <span>You've used all available referral discounts or reached maximum milestones.</span>
-                    </div>
-                </div>
-            </th:block>
-            
-            <div th:if="${eligibleForDiscount}" class="benefit-item">
-                <i class="fas fa-star"></i>
-                <div>
-                    <span style="color: var(--success); font-weight: 600;">🎉 Congratulations! You can apply a ₹100 discount on this purchase!</span>
-                </div>
-            </div>
-        </div>
-
 		
 		<!-- Discount Checkbox (only show if eligible) -->
         <div th:if="${eligibleForDiscount}" class="discount-checkbox-container show" id="discountCheckboxContainer">
             <div class="discount-checkbox">
                 <input type="checkbox" id="applyDiscount" onchange="toggleDiscount()">
                 <label for="applyDiscount">
-                                        <i class="fas fa-gift"></i>
-                    Apply ₹100 referral discount to this purchase
-                </label>
+    				<i class="fas fa-gift"></i>
+    				Apply ₹<span th:text="${referralDiscountAmount}"></span> referral discount to this purchase
+			</label>
             </div>
         </div>
         
-        <div class="action-buttons">
-            <button type="button" 
-                    onclick="processPayment()"
-                    class="btn btn-primary" 
-                    id="paymentBtn">
-                <i class="fas fa-lock"></i>
-                <span class="btn-text">Proceed to Secure Payment</span>
-                <div class="loading"></div>
-            </button>
-            
+        <div class="discount-checkbox-container show" id="discountCheckboxContainer">
+    <div class="discount-checkbox">
+        <input type="checkbox" id="conformticket" name="conformticket" required>
+        <label for="conformticket">
+            <span>*Confirm ticket using PNR before buying:</span>
+            <a href="https://www.indianrail.gov.in/enquiry/PNR/PnrEnquiry.html?locale=en" target="_blank">Click here</a>
+        </label>
+    </div>
+</div>
+
+<div class="action-buttons">
+    <button type="button" 
+            onclick="processPayment()"
+            class="btn btn-primary" 
+            id="paymentBtn">
+        <i class="fas fa-lock"></i>
+        <span class="btn-text">Proceed to Secure Payment</span>
+        <div class="loading"></div>
+    </button>
+      
             <a th:href="@{/user/home}" class="btn btn-secondary">
                 <i class="fas fa-arrow-left"></i>
                 <span>Back to Home</span>
@@ -633,6 +643,7 @@
     const originalTotal = basePrice + handlingCharge + gst;
     const passengerId = [[${passenger.id}]];
     const isEligibleForDiscount = [[${eligibleForDiscount}]];
+    const referralDiscount = [[${referralDiscountAmount}]];
     const razorpayKey = "[[${key}]]";
     
     let currentTotal = originalTotal;
@@ -646,7 +657,7 @@
         if (checkbox.checked) {
             // Apply discount
             discountApplied = true;
-            currentTotal = originalTotal - 100;
+            currentTotal = originalTotal - referralDiscount;
             discountRow.classList.add('show');
             
             // Add animation effect
@@ -680,55 +691,47 @@
     function processPayment() {
         const paymentBtn = document.getElementById('paymentBtn');
         const errorMessage = document.getElementById('errorMessage');
-        
-        // Show loading state
+        const confirmCheckbox = document.getElementById('conformticket');
+
+        // ✅ Step 1: Validate checkbox before continuing
+        if (!confirmCheckbox.checked) {
+            alert("Please confirm the ticket using PNR before proceeding.");
+            return; // Stop payment if checkbox not checked
+        }
+
+        // ✅ Step 2: Show loading state
         paymentBtn.classList.add('processing');
         errorMessage.style.display = 'none';
-        
+
+        // ✅ Step 3: Set up Razorpay options
         var options = {
-        	"key": razorpayKey,
-            "amount": currentTotal * 100, // Razorpay expects amount in paise
+            "key": razorpayKey,
+            "amount": currentTotal * 100, // amount in paise
             "currency": "INR",
             "name": "SwapTicket",
             "description": "Ticket Purchase",
             "image": "https://res.cloudinary.com/dgrxmavho/image/upload/v1749496815/swaplogo_zzganr.png",
             "handler": function (response) {
-                // Create form to submit payment details
+                // Form to POST payment result to server
                 const form = document.createElement('form');
                 form.method = 'POST';
                 form.action = `/pnr/confirm/${passengerId}`;
 
-                const paymentIdInput = document.createElement('input');
-                paymentIdInput.type = 'hidden';
-                paymentIdInput.name = 'razorpay_payment_id';
-                paymentIdInput.value = response.razorpay_payment_id;
-                form.appendChild(paymentIdInput);
+                const inputs = [
+                    { name: 'razorpay_payment_id', value: response.razorpay_payment_id },
+                    { name: 'razorpay_order_id', value: response.razorpay_order_id || '' },
+                    { name: 'razorpay_signature', value: response.razorpay_signature || '' },
+                    { name: 'discount_applied', value: discountApplied },
+                    { name: 'discount_amount', value: discountApplied ? referralDiscount : 0 }
+                ];
 
-                const orderIdInput = document.createElement('input');
-                orderIdInput.type = 'hidden';
-                orderIdInput.name = 'razorpay_order_id';
-                orderIdInput.value = response.razorpay_order_id || '';
-                form.appendChild(orderIdInput);
-
-                const signatureInput = document.createElement('input');
-                signatureInput.type = 'hidden';
-                signatureInput.name = 'razorpay_signature';
-                signatureInput.value = response.razorpay_signature || '';
-                form.appendChild(signatureInput);
-
-                // Add discount applied flag
-                const discountInput = document.createElement('input');
-                discountInput.type = 'hidden';
-                discountInput.name = 'discount_applied';
-                discountInput.value = discountApplied;
-                form.appendChild(discountInput);
-
-                // Add discount amount
-                const discountAmountInput = document.createElement('input');
-                discountAmountInput.type = 'hidden';
-                discountAmountInput.name = 'discount_amount';
-                discountAmountInput.value = discountApplied ? 100 : 0;
-                form.appendChild(discountAmountInput);
+                inputs.forEach(inputData => {
+                    const input = document.createElement('input');
+                    input.type = 'hidden';
+                    input.name = inputData.name;
+                    input.value = inputData.value;
+                    form.appendChild(input);
+                });
 
                 document.body.appendChild(form);
                 form.submit();
@@ -741,21 +744,21 @@
                 "color": "#3399cc"
             },
             "modal": {
-                "ondismiss": function() {
+                "ondismiss": function () {
                     paymentBtn.classList.remove('processing');
                 }
             }
         };
 
         var rzp = new Razorpay(options);
-        
-        rzp.on('payment.failed', function(response) {
+
+        rzp.on('payment.failed', function (response) {
             paymentBtn.classList.remove('processing');
-            document.getElementById('errorText').textContent = 
+            document.getElementById('errorText').textContent =
                 response.error.description || 'Payment failed. Please try again.';
             errorMessage.style.display = 'flex';
         });
-        
+
         rzp.open();
     }
     

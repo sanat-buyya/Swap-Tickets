@@ -139,18 +139,23 @@ import java.util.Optional;
                 .orElseGet(() -> {
                     AdminConfig newConfig = new AdminConfig();
                     newConfig.setBookingFee(20); // default
+                    newConfig.setReferralDiscountAmount(100.0); // default
                     return adminConfigRepository.save(newConfig);
                 });
 
             model.addAttribute("bookingFee", config.getBookingFee());
+            model.addAttribute("referralDiscount", config.getReferralDiscountAmount());
             return "adminFee";
         }
 
         @PostMapping("/fee")
-        public String updateFee(@RequestParam("fee") double fee) {
+        public String updateFee(@RequestParam("fee") double fee,
+                                @RequestParam("referralDiscount") double referralDiscount) {
             AdminConfig config = adminConfigRepository.findById(1L)
                 .orElseThrow(() -> new RuntimeException("Admin config not found"));
+            
             config.setBookingFee(fee);
+            config.setReferralDiscountAmount(referralDiscount);
             adminConfigRepository.save(config);
             return "redirect:/admin/fee?success";
         }

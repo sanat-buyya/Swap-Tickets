@@ -128,12 +128,21 @@
 <h2>Update Booking Fee</h2>
 
 <form th:action="@{/admin/fee}" method="post" class="mt-4">
+    <!-- Booking Fee Field -->
     <div class="mb-3">
         <label for="fee" class="form-label">Booking Fee (₹)</label>
         <input type="number" step="0.01" name="fee" class="form-control" th:value="${bookingFee}" required>
     </div>
+
+    <!-- Referral Discount Field -->
+    <div class="mb-3">
+        <label for="referralDiscount" class="form-label">Referral Discount (₹)</label>
+        <input type="number" step="0.01" name="referralDiscount" class="form-control" th:value="${referralDiscount}" required>
+    </div>
+
+    <!-- Submit Button -->
     <div class="d-flex flex-wrap align-items-center">
-        <button type="submit" class="btn btn-success me-2">Update Fee</button>
+        <button type="submit" class="btn btn-success me-2">Update Settings</button>
         <span th:if="${param.success}" class="text-success ms-3">Updated successfully!</span>
     </div>
 </form>

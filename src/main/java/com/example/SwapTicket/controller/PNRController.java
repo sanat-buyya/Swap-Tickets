@@ -63,7 +63,8 @@ public class PNRController {
     
     @Autowired
 	com.example.SwapTicket.helper.RazorPayHelper razorPayHelper;
-	@Value("${razor-pay.api.key}")
+	
+    @Value("${razor-pay.api.key}")
 	String key;
 	
 	@Value("${admin.email}")
@@ -202,12 +203,23 @@ public class PNRController {
     
     @GetMapping("/preview-amount")
     public String previewAmount(@RequestParam("passengerId") Long passengerId, HttpSession session, Model model) {
+    	String email = (String) session.getAttribute("loggedInUserEmail");
+        if (email == null) {
+            return "redirect:/login";
+        }
+        
         Passenger passenger = passengerRepository.getPassengerById(passengerId);
         double basePrice = passenger.getPrice();
-        double adminFee = adminConfigRepository.findById(1L)
-                .map(AdminConfig::getBookingFee)
-                .orElse(0.0);
-        double handlingCharge = adminFee;
+
+        // Fetch bookingFee and referralDiscountAmount using Optional
+        double handlingCharge = adminConfigRepository.findById(1L)
+            .map(AdminConfig::getBookingFee)
+            .orElse(0.0);
+
+        double referralDiscountAmount = adminConfigRepository.findById(1L)
+            .map(AdminConfig::getReferralDiscountAmount)
+            .orElse(0.0);
+
         double gst = basePrice * 0.18;
 
         String loggedInUserEmail = (String) session.getAttribute("loggedInUserEmail");
@@ -249,13 +261,14 @@ public class PNRController {
             }
         }
 
-        // 5. Apply ₹100 discount if eligible and not used before
-        double discount = eligibleForDiscount ? 100.0 : 0.0;
+        // 5. Apply admin-configured discount if eligible
+        double discount = eligibleForDiscount ? referralDiscountAmount : 0.0;
         double totalAmount = basePrice + handlingCharge + gst - discount;
 
-        // Add all attributes to model
+        // Add attributes to model
         model.addAttribute("passenger", passenger);
         model.addAttribute("basePrice", basePrice);
+        model.addAttribute("referralDiscountAmount", referralDiscountAmount);
         model.addAttribute("handlingCharge", handlingCharge);
         model.addAttribute("gst", gst);
         model.addAttribute("discount", discount);
@@ -268,7 +281,6 @@ public class PNRController {
 
         return "previewAmount";
     }
-
 
     public int getEligibleReferralDiscount(User user) {
         String referralCode = user.getReferralCode();
@@ -332,7 +344,7 @@ public class PNRController {
         return ResponseEntity.ok(response);
     }
 
-    @PostMapping("/confirm/{passengerId}")
+    @PostMapping("/confirm/{passengerId}") 
     public String confirmPayment(
             @PathVariable Long passengerId,
             @RequestParam("razorpay_payment_id") String razorpayPaymentId,
@@ -350,20 +362,29 @@ public class PNRController {
 
         Passenger passenger = passengerOpt.get();
         passenger.setBuyerEmail(buyerEmail);
+
         PNR pnr = passenger.getPnr();
         if (pnr != null) {
             passenger.setSellerEmail(pnr.getSellerEmail());
         } else {
             throw new RuntimeException("PNR not found for passenger ID: " + passenger.getId());
         }
+
         passenger.setSold(true);
         passenger.setRazorpayPaymentId(razorpayPaymentId);
         passenger.setRazorpayOrderId(razorpayOrderId);
 
         double ticketPrice = passenger.getPrice();
+
+        // Fetch admin-configured fees
         double adminFee = adminConfigRepository.findById(1L)
                 .map(AdminConfig::getBookingFee)
                 .orElse(0.0);
+
+        double referralDiscountAmount = adminConfigRepository.findById(1L)
+                .map(AdminConfig::getReferralDiscountAmount)
+                .orElse(0.0);
+
         passenger.setAdminFee(adminFee);
 
         // ----- REFERRAL DISCOUNT LOGIC -----
@@ -375,22 +396,20 @@ public class PNRController {
 
         int successfulReferrals = 0;
         for (User referredUser : referredUsers) {
-            boolean hasPurchased = passengerRepository.existsByBuyerEmailAndSoldTrue(referredUser.getEmail());
-            if (hasPurchased) {
+            if (passengerRepository.existsByBuyerEmailAndSoldTrue(referredUser.getEmail())) {
                 successfulReferrals++;
             }
         }
 
         for (int m : milestones) {
             if (successfulReferrals >= m && !user.getUsedReferralDiscounts().contains(m)) {
-                discount = 100.0;
+                discount = referralDiscountAmount;
                 user.getUsedReferralDiscounts().add(m);
                 userRepository.save(user);
-                break;
+                break; // Only apply one milestone
             }
         }
 
-        // Apply discount
         double totalAmount = ticketPrice + adminFee - discount;
 
         // ----- UPDATE ADMIN WALLET -----
@@ -405,18 +424,14 @@ public class PNRController {
         adminWallet.setBalance(adminWallet.getBalance() + totalAmount);
         walletRepository.save(adminWallet);
 
-        // Save sold passenger
+        // Save passenger
         passengerRepository.save(passenger);
 
-        // Send email to seller
+        // Notify seller via email
         User seller = userRepository.findByEmail(pnr.getSellerEmail());
-        Passenger soldPassenger = passengerRepository.findById(passengerId).orElse(null);
-        if (soldPassenger != null) {
-            List<Passenger> soldPassengers = List.of(soldPassenger);
-            emailSender.sendSoldMessage(seller, pnr, soldPassengers);
-        }
+        emailSender.sendSoldMessage(seller, pnr, List.of(passenger));
 
-        // Save buyer's transaction
+        // Log transaction
         TransactionHistory transaction = new TransactionHistory();
         transaction.setUserEmail(buyerEmail);
         transaction.setAmount(totalAmount);
@@ -425,7 +440,6 @@ public class PNRController {
         transactionHistoryRepository.save(transaction);
 
         redirectAttributes.addFlashAttribute("successMessage", "🎉 Payment successful. Ticket booked!");
-
         return "redirect:/pnr/my-purchases";
     }
 

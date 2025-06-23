@@ -1,814 +1,1091 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>SwapTicket | Dashboard</title>
-  <meta name="description" content="User dashboard for SwapTicket - Buy and sell IRCTC tickets easily." />
-  <link rel="icon" href="https://res.cloudinary.com/dgrxmavho/image/upload/v1749496815/swaplogo_zzganr.png" type="image/png">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
-  <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet" />
-  <style>
-    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
-    :root {
-      --primary: rgb(128, 64, 64);
-      --primary-dark: #009688;
-      --secondary: #4a90e2;
-      --accent: linear-gradient(135deg, var(--primary), var(--secondary));
-      --main-bg: #f5f7fa;
-      --card-bg: #ffffff;
-      --text: #2d3748;
-      --text-light: #718096;
-      --card-radius: 12px;
-      --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.1);
-      --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
-      --shadow-lg: 0 10px 25px rgba(0, 0, 0, 0.1);
-      --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
-    }
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
-    body {
-      margin: 0;
-      font-family: 'Poppins', sans-serif;
-      background: linear-gradient(135deg, #f5f7fa 0%, #c3ecfa 100%);
-      background-image: url('https://www.transparenttextures.com/patterns/cubes.png'); 
-      background-repeat: repeat;
-      color: var(--text);
-      line-height: 1.6;
-    }
-    /* Navbar Styles */
-    .navbar {
-      background: var(--accent);
-      color: #fff;
-      padding: 0.5rem 2.5rem;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      flex-wrap: wrap;
-      box-shadow: var(--shadow-md);
-      position: sticky;
-      top: 0;
-      z-index: 1000;
-      height: 70px;
-    }
-    .navbar h1 {
-      font-size: 1.75rem;
-      font-weight: 600;
-      background: linear-gradient(to right, #fff 0%, #ffd166 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      margin: 0;
-      margin: 0;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      z-index: 101;
-      font-style: bold;
-    }
-    .navbar a{
-      text-decoration: none;
-      color: var(--dark);
-    }
-    .navbar h1 i {
-      font-size: 1.5rem;
-    }
-    .menu-toggle {
-      display: none;
-      background: none;
-      border: none;
-      color: white;
-      font-size: 1.5rem;
-      cursor: pointer;
-      z-index: 101;
-      padding: 0.5rem;
-      transition: all 0.4s ease; /* Slower transition for menu button */
-    }
-    .navbar-right {
-      display: flex;
-      align-items: center;
-      gap: 20px;
-      flex-wrap: wrap;
-      transition: var(--transition);
-    }
-    .user-info {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
-    .user-avatar {
-      width: 42px;
-      height: 42px;
-      background-color: rgba(255, 255, 255, 0.2);
-      color: #fff;
-      border-radius: 50%;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      font-weight: bold;
-      font-size: 1.1rem;
-      transition: var(--transition);
-    }
-    .user-avatar:hover {
-      transform: scale(1.05);
-      background-color: rgba(255, 255, 255, 0.3);
-    }
-    .username {
-      font-weight: 500;
-    }
-    .logout-btn {
-      background-color: rgba(255, 255, 255, 0.2);
-      color: white;
-      border: none;
-      padding: 8px 18px;
-      border-radius: 30px;
-      cursor: pointer;
-      font-size: 0.9rem;
-      font-weight: 500;
-      transition: var(--transition);
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      text-decoration: none;
-    }
-    .logout-btn:hover {
-      background-color: rgba(255, 255, 255, 0.3);
-      transform: translateY(-1px);
-    }
-    .logout-btn i {
-      font-size: 0.9rem;
-    }
-    /* Mobile Menu Styles with Slower Animations */
-    .mobile-menu {
-      display: none;
-      list-style: none;
-      width: 100%;
-      padding: 0;
-      margin: 0;
-    }
-    .mobile-menu li {
-      width: 100%;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-      opacity: 0;
-      transform: translateX(50px);
-      transition: all 0.5s ease; /* Slower transition for menu items */
-    }
-    .mobile-menu li:last-child {
-      border-bottom: none;
-    }
-    .mobile-menu .menu-item {
-      display: flex;
-      align-items: center;
-      padding: 1rem 1.5rem;
-      color: white;
-      text-decoration: none;
-      transition: all 0.4s ease; /* Slower hover transition */
-      width: 100%;
-    }
-    .mobile-menu .menu-item:hover {
-      background-color: rgba(255, 255, 255, 0.1);
-      transform: translateX(5px);
-    }
-    .mobile-menu .menu-item i {
-      margin-right: 12px;
-      font-size: 1.1rem;
-      width: 24px;
-      text-align: center;
-      transition: transform 0.3s ease;
-    }
-    .mobile-menu .menu-item:hover i {
-      transform: scale(1.1);
-    }
-    /* Main Content Styles */
-    .container {
-      padding: 1.5rem;
-      max-width: 1400px;
-      margin: 0 auto;
-    }
-    .welcome-section {
-      margin-bottom: 1.5rem;
-      text-align: center;
-    }
-    .welcome-title {
-      font-size: 1.6rem;
-      font-weight: 600;
-      margin-bottom: 0.5rem;
-      color: var(--text);
-      background: var(--accent);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      display: inline-block;
-    }
-    .welcome-subtitle {
-      font-size: 0.95rem;
-      color: var(--text-light);
-      max-width: 600px;
-      margin: 0 auto;
-    }
-    .dashboard {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-      gap: 20px;
-    }
-    /* Updated Wallet Card Design */
-    .wallet-card {
-      background: linear-gradient(135deg, #1a2a6c, #b21f1f, #fdbb2d);
-      color: white;
-      border-radius: var(--card-radius);
-      padding: 1.5rem;
-      box-shadow: var(--shadow-md);
-      position: relative;
-      overflow: hidden;
-      min-height: 180px;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      border-top: 3px solid rgba(255, 255, 255, 0.3);
-    }
-    .wallet-card::before {
-      content: '';
-      position: absolute;
-      top: -50%;
-      right: -50%;
-      width: 200%;
-      height: 200%;
-      background: radial-gradient(circle, rgba(255,255,255,0.18) 0%, rgba(255,255,255,0) 80%);
-      transform: rotate(30deg);
-      z-index: 1;
-      pointer-events: none;
-    }
-    .wallet-card::after {
-      content: '';
-      position: absolute;
-      bottom: -50px;
-      right: -50px;
-      width: 160px;
-      height: 160px;
-      background: radial-gradient(circle, rgba(253,187,45,0.25) 0%, rgba(255,255,255,0.08) 70%, transparent 100%);
-      filter: blur(2px);
-      z-index: 1;
-      pointer-events: none;
-      animation: wallet-glow 3s ease-in-out infinite alternate;
-    }
-    .wallet-card i {
-      font-size: 2.2rem;
-      color: rgba(255, 255, 255, 0.8);
-      margin-bottom: 0.5rem;
-      align-self: flex-end;
-      text-shadow: 0 2px 4px rgba(0,0,0,0.2);
-    }
-    .wallet-card h3 {
-      font-size: 1rem;
-      font-weight: 500;
-      margin-bottom: 0.5rem;
-      color: rgba(255, 255, 255, 0.9);
-    }
-    .wallet-amount {
-      font-size: 2rem;
-      font-weight: 700;
-      margin: 0.5rem 0;
-      text-shadow: 0 2px 4px rgba(0,0,0,0.2);
-    }
-    .wallet-card .button {
-      background: rgba(255, 255, 255, 0.2);
-      backdrop-filter: blur(5px);
-      border: 1px solid rgba(255, 255, 255, 0.3);
-      align-self: flex-start;
-      margin-top: 0.5rem;
-      color: white;
-    }
-    .wallet-card .button:hover {
-      background: rgba(255, 255, 255, 0.3);
-    }
-    .swap-ticket-label {
-      position: absolute;
-      top: 10px;
-      left: 10px;
-      background: rgba(255, 255, 255, 0.2);
-      padding: 4px 8px;
-      border-radius: 4px;
-      font-size: 0.8rem;
-      font-weight: 500;
-      backdrop-filter: blur(2px);
-      color: white;
-    }
-    /* Standard Cards */
-    .card {
-      background-color: var(--card-bg);
-      border-radius: var(--card-radius);
-      padding: 1.5rem;
-      box-shadow: var(--shadow-sm);
-      text-align: center;
-      transition: var(--transition);
-      border: 1px solid rgba(0, 0, 0, 0.05);
-      min-height: 180px;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-    }
-    .card::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 4px;
-      background: var(--accent);
-    }
-    .card:hover {
-      transform: translateY(-5px);
-      box-shadow: var(--shadow-lg);
-    }
-    .card i {
-      font-size: 1.8rem;
-      background: var(--accent);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      margin-bottom: 0.5rem;
-    }
-    .card img {
-      max-width: 100%;
-      height: 90px;
-      display: block;
-      margin: 0 auto 1rem;
-      transition: var(--transition);
-    }
-    @media (max-width: 768px) {
-      .card img {
-        width: 150px;
-      }
-    }
-    @media (max-width: 576px) {
-      .card img {
-        width: 90px;
-      }
-    }
-    .card h3 {
-      font-size: 1.1rem;
-      margin-bottom: 0.5rem;
-      font-weight: 600;
-    }
-    .card p {
-      font-size: 0.85rem;
-      color: var(--text-light);
-      margin-bottom: 0.8rem;
-    }
-    /* Button Styles */
-    .button {
-      background: var(--accent);
-      border: none;
-      padding: 0.6rem 1.2rem;
-      color: #fff;
-      border-radius: 30px;
-      cursor: pointer;
-      font-size: 0.9rem;
-      font-weight: 500;
-      transition: var(--transition);
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 6px;
-      min-width: 120px;
-      margin: 0 auto;
-    }
-    .button i {
-      padding-top: 8px;
-      font-size: 0.8rem;
-      -webkit-text-fill-color: white;
-    }
-    .button:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 4px 12px rgba(0, 191, 166, 0.3);
-    }
-    /* Message Styles */
-    .message {
-      max-width: 800px;
-      margin: 1.5rem auto;
-      text-align: center;
-      padding: 1rem 1.5rem;
-      border-radius: var(--card-radius);
-      font-size: 0.95rem;
-      box-shadow: var(--shadow-sm);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 10px;
-      transition: opacity 0.5s ease;
-    }
-    .message.hide {
-      opacity: 0;
-      height: 0;
-      padding: 0;
-      margin: 0 auto;
-      overflow: hidden;
-    }
-        .message i {
-      font-size: 1.2rem;
-    }
-    .success {
-      background-color: #f0fff4;
-      color: #2f855a;
-      border-left: 4px solid #38a169;
-    }
-    .error {
-      background-color: #fff5f5;
-      color: #c53030;
-      border-left: 4px solid #e53e3e;
-    }
-    /* Responsive Styles */
-    @media (max-width: 992px) {
-      .navbar {
-        padding: 1rem 1.5rem;
-      }
-    }
-    @media (max-width: 768px) {
-      .menu-toggle {
-        display: block;
-      }
-      .navbar-right {
-        position: fixed;
-        top: 0;
-        right: -100%;
-        width: 70%;
-        max-width: 300px;
-        height: 100vh;
-        background: var(--accent);
-        flex-direction: column;
-        justify-content: flex-start;
-        padding: 5rem 0 2rem;
-        gap: 0;
-        box-shadow: -5px 0 15px rgba(0, 0, 0, 0.1);
-        transition: right 0.8s cubic-bezier(0.25, 0.8, 0.25, 1) 0.2s;
-      }
-      .navbar-right.active {
-        right: 0;
-        transition: right 0.6s cubic-bezier(0.25, 0.8, 0.25, 1);
-      }
-      /* Animate menu items when menu opens */
-      .navbar-right.active .mobile-menu li {
-        opacity: 1;
-        transform: translateX(0);
-      }
-      /* Staggered animation for menu items */
-      .navbar-right.active .mobile-menu li:nth-child(1) {
-        transition-delay: 0.1s;
-      }
-      .navbar-right.active .mobile-menu li:nth-child(2) {
-        transition-delay: 0.3s;
-      }
-      .navbar-right.active .mobile-menu li:nth-child(3) {
-        transition-delay: 0.5s;
-      }
-      .navbar-right.active .mobile-menu li:nth-child(4) {
-        transition-delay: 0.7s;
-      }
-      .navbar-right.active .mobile-menu li:nth-child(5) {
-        transition-delay: 1.1s;
-      }
-      .navbar-right.active .mobile-menu li:nth-child(6) {
-        transition-delay: 1.3s;
-      }
-      .navbar-right.active .mobile-menu li:nth-child(7) {
-        transition-delay: 1.5s;
-      }
-      .navbar-right.active .mobile-menu li:nth-child(8) {
-        transition-delay: 1.7s;
-      }
-      .user-info, .logout-btn {
-        display: none;
-      }
-      .mobile-menu {
-        display: block;
-      }
-      .mobile-user-info {
-        display: flex;
-        align-items: center;
-        padding: 1.5rem;
-        border-bottom: 1px solid rgba(255, 255, 255, 0.2);
-      }
-      .mobile-user-avatar {
-        width: 42px;
-        height: 42px;
-        background-color: rgba(255, 255, 255, 0.2);
-        color: #fff;
-        border-radius: 50%;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        font-weight: bold;
-        font-size: 1.1rem;
-        margin-right: 12px;
-      }
-      .mobile-username {
-        font-weight: 500;
-        font-size: 1rem;
-      }
-      .dashboard {
-        grid-template-columns: 1fr 1fr;
-        gap: 15px;
-      }
-      .welcome-title {
-        font-size: 1.4rem;
-      }
-    }
-    @media (max-width: 576px) {
-      .dashboard {
-        grid-template-columns: 1fr;
-      }
-      .card, .wallet-card {
-        min-height: 160px;
-        padding: 1.2rem;
-      }
-      .wallet-amount {
-        font-size: 1.8rem;
-      }
-      .navbar h1 {
-        font-size: 1.4rem;
-      }
-      .navbar-right {
-        width: 80%;
-      }
-    }
-    
-    /* Keyframes for wallet glow animation */
-    @keyframes wallet-glow {
-      0% {
-        opacity: 0.3;
-        transform: scale(1);
-      }
-      100% {
-        opacity: 0.6;
-        transform: scale(1.05);
-      }
-    }
-  </style>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>SwapTicket | Dashboard</title>
+<meta name="description" content="User dashboard for SwapTicket - Buy and sell IRCTC tickets easily." />
+<link rel="icon" href="https://res.cloudinary.com/dgrxmavho/image/upload/v1749496815/swaplogo_zzganr.png" type="image/png">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+<link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet" />
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+:root {
+--primary: rgb(128, 64, 64);
+--primary-dark: #009688;
+--secondary: #4a90e2;
+--accent: linear-gradient(135deg, var(--primary), var(--secondary));
+--main-bg: #f5f7fa;
+--card-bg: #ffffff;
+--text: #2d3748;
+--text-light: #718096;
+--card-radius: 12px;
+--shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.1);
+--shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
+--shadow-lg: 0 10px 25px rgba(0, 0, 0, 0.1);
+--transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+* {
+box-sizing: border-box;
+margin: 0;
+padding: 0;
+}
+
+body {
+margin: 0;
+font-family: 'Poppins', sans-serif;
+background: linear-gradient(135deg, #f5f7fa 0%, #c3ecfa 100%);
+background-image: url('https://www.transparenttextures.com/patterns/cubes.png');
+background-repeat: repeat;
+color: var(--text);
+line-height: 1.6;
+}
+
+/* Navbar Styles */
+.navbar {
+background: var(--accent);
+color: #fff;
+padding: 0.5rem 2.5rem;
+display: flex;
+justify-content: space-between;
+align-items: center;
+flex-wrap: wrap;
+box-shadow: var(--shadow-md);
+position: sticky;
+top: 0;
+z-index: 1000;
+height: 70px;
+}
+
+.navbar h1 {
+font-size: 1.75rem;
+font-weight: 600;
+background: linear-gradient(to right, #fff 0%, #ffd166 100%);
+-webkit-background-clip: text;
+-webkit-text-fill-color: transparent;
+margin: 0;
+display: flex;
+align-items: center;
+gap: 10px;
+z-index: 101;
+font-style: bold;
+}
+
+.navbar a{
+text-decoration: none;
+color: var(--dark);
+}
+
+.navbar h1 i {
+font-size: 1.5rem;
+}
+
+.menu-toggle {
+display: none;
+background: none;
+border: none;
+color: white;
+font-size: 1.5rem;
+cursor: pointer;
+z-index: 101;
+padding: 0.5rem;
+transition: all 0.4s ease;
+}
+
+.navbar-right {
+display: flex;
+align-items: center;
+gap: 20px;
+flex-wrap: wrap;
+transition: var(--transition);
+}
+
+.user-info {
+display: flex;
+align-items: center;
+gap: 12px;
+}
+
+.user-avatar {
+width: 42px;
+height: 42px;
+background-color: rgba(255, 255, 255, 0.2);
+color: #fff;
+border-radius: 50%;
+display: flex;
+justify-content: center;
+align-items: center;
+font-weight: bold;
+font-size: 1.1rem;
+transition: var(--transition);
+}
+
+.user-avatar:hover {
+transform: scale(1.05);
+background-color: rgba(255, 255, 255, 0.3);
+}
+
+.username {
+font-weight: 500;
+}
+
+.logout-btn {
+background-color: rgba(255, 255, 255, 0.2);
+color: white;
+border: none;
+padding: 8px 18px;
+border-radius: 30px;
+cursor: pointer;
+font-size: 0.9rem;
+font-weight: 500;
+transition: var(--transition);
+display: flex;
+align-items: center;
+gap: 6px;
+text-decoration: none;
+}
+
+.logout-btn:hover {
+background-color: rgba(255, 255, 255, 0.3);
+transform: translateY(-1px);
+}
+
+.logout-btn i {
+font-size: 0.9rem;
+}
+
+/* Mobile Menu Styles */
+.mobile-menu {
+display: none;
+list-style: none;
+width: 100%;
+padding: 0;
+margin: 0;
+}
+
+.mobile-menu li {
+width: 100%;
+border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+opacity: 0;
+transform: translateX(50px);
+transition: all 0.5s ease;
+}
+
+.mobile-menu li:last-child {
+border-bottom: none;
+}
+
+.mobile-menu .menu-item {
+display: flex;
+align-items: center;
+padding: 1rem 1.5rem;
+color: white;
+text-decoration: none;
+transition: all 0.4s ease;
+width: 100%;
+}
+
+.mobile-menu .menu-item:hover {
+background-color: rgba(255, 255, 255, 0.1);
+transform: translateX(5px);
+}
+
+.mobile-menu .menu-item i {
+margin-right: 12px;
+font-size: 1.1rem;
+width: 24px;
+text-align: center;
+transition: transform 0.3s ease;
+}
+
+.mobile-menu .menu-item:hover i {
+transform: scale(1.1);
+}
+
+/* Main Content Styles */
+.container {
+padding: 1.5rem;
+max-width: 1400px;
+margin: 0 auto;
+}
+
+.welcome-section {
+margin-bottom: 1.5rem;
+text-align: center;
+}
+
+.welcome-title {
+font-size: 1.6rem;
+font-weight: 600;
+margin-bottom: 0.5rem;
+color: var(--text);
+background: var(--accent);
+-webkit-background-clip: text;
+-webkit-text-fill-color: transparent;
+display: inline-block;
+}
+
+.welcome-subtitle {
+font-size: 0.95rem;
+color: var(--text-light);
+max-width: 600px;
+margin: 0 auto;
+}
+
+.dashboard {
+display: grid;
+grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+gap: 20px;
+}
+
+/* Updated Wallet Card Design */
+.wallet-card {
+background: linear-gradient(135deg, #1a2a6c, #b21f1f, #fdbb2d);
+color: white;
+border-radius: var(--card-radius);
+padding: 1.5rem;
+box-shadow: var(--shadow-md);
+position: relative;
+overflow: hidden;
+min-height: 180px;
+display: flex;
+flex-direction: column;
+justify-content: space-between;
+border-top: 3px solid rgba(255, 255, 255, 0.3);
+}
+
+.wallet-card::before {
+content: '';
+position: absolute;
+top: -50%;
+right: -50%;
+width: 200%;
+height: 200%;
+background: radial-gradient(circle, rgba(255,255,255,0.18) 0%, rgba(255,255,255,0) 80%);
+transform: rotate(30deg);
+z-index: 1;
+pointer-events: none;
+}
+
+.wallet-card::after {
+content: '';
+position: absolute;
+bottom: -50px;
+right: -50px;
+width: 160px;
+height: 160px;
+background: radial-gradient(circle, rgba(253,187,45,0.25) 0%, rgba(255,255,255,0.08) 70%, transparent 100%);
+filter: blur(2px);
+z-index: 1;
+pointer-events: none;
+animation: wallet-glow 3s ease-in-out infinite alternate;
+}
+
+.wallet-card i {
+font-size: 2.2rem;
+color: rgba(255, 255, 255, 0.8);
+margin-bottom: 0.5rem;
+align-self: flex-end;
+text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
+.wallet-card h3 {
+font-size: 1rem;
+font-weight: 500;
+margin-bottom: 0.5rem;
+color: rgba(255, 255, 255, 0.9);
+}
+
+.wallet-amount {
+font-size: 2rem;
+font-weight: 700;
+margin: 0.5rem 0;
+text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
+.wallet-card .button {
+background: rgba(255, 255, 255, 0.2);
+backdrop-filter: blur(5px);
+border: 1px solid rgba(255, 255, 255, 0.3);
+align-self: flex-start;
+margin-top: 0.5rem;
+color: white;
+}
+
+.wallet-card .button:hover {
+background: rgba(255, 255, 255, 0.3);
+}
+
+.swap-ticket-label {
+position: absolute;
+top: 10px;
+left: 10px;
+background: rgba(255, 255, 255, 0.2);
+padding: 4px 8px;
+border-radius: 4px;
+font-size: 0.8rem;
+font-weight: 500;
+backdrop-filter: blur(2px);
+color: white;
+}
+
+/* Standard Cards */
+.card {
+background-color: var(--card-bg);
+border-radius: var(--card-radius);
+padding: 1.5rem;
+box-shadow: var(--shadow-sm);
+text-align: center;
+transition: var(--transition);
+border: 1px solid rgba(0, 0, 0, 0.05);
+min-height: 180px;
+display: flex;
+flex-direction: column;
+justify-content: space-between;
+}
+
+.card::before {
+content: '';
+position: absolute;
+top: 0;
+left: 0;
+width: 100%;
+height: 4px;
+background: var(--accent);
+}
+
+.card:hover {
+transform: translateY(-5px);
+box-shadow: var(--shadow-lg);
+}
+
+.card i {
+font-size: 1.8rem;
+background: var(--accent);
+-webkit-background-clip: text;
+-webkit-text-fill-color: transparent;
+margin-bottom: 0.5rem;
+}
+
+.card img {
+max-width: 100%;
+height: 90px;
+display: block;
+margin: 0 auto 1rem;
+transition: var(--transition);
+}
+
+@media (max-width: 768px) {
+.card img {
+width: 150px;
+}
+}
+
+@media (max-width: 576px) {
+.card img {
+width: 90px;
+}
+}
+
+.card h3 {
+font-size: 1.1rem;
+margin-bottom: 0.5rem;
+font-weight: 600;
+}
+
+.card p {
+font-size: 0.85rem;
+color: var(--text-light);
+margin-bottom: 0.8rem;
+}
+
+/* Enhanced Button Styles with Pulsing Dots Loader */
+.button {
+background: var(--accent);
+border: none;
+padding: 0.6rem 1.2rem;
+color: #fff;
+border-radius: 30px;
+cursor: pointer;
+font-size: 0.9rem;
+font-weight: 500;
+transition: var(--transition);
+display: inline-flex;
+align-items: center;
+justify-content: center;
+gap: 6px;
+min-width: 120px;
+margin: 0 auto;
+position: relative;
+overflow: hidden;
+}
+
+.button i {
+padding-top: 8px;
+font-size: 0.8rem;
+-webkit-text-fill-color: white;
+transition: all 0.3s ease;
+}
+
+.button:hover {
+transform: translateY(-2px);
+box-shadow: 0 4px 12px rgba(0, 191, 166, 0.3);
+}
+
+.button:active {
+transform: translateY(-1px) scale(0.98);
+}
+
+/* Pulsing Dots Loader */
+.button .loader-dots {
+display: none;
+align-items: center;
+gap: 3px;
+}
+
+.button .loader-dots span {
+width: 4px;
+height: 4px;
+background-color: white;
+border-radius: 50%;
+animation: pulse-dots 1.4s infinite ease-in-out both;
+}
+
+.button .loader-dots span:nth-child(1) { 
+animation-delay: -0.32s; 
+}
+
+.button .loader-dots span:nth-child(2) { 
+animation-delay: -0.16s; 
+}
+
+.button .loader-dots span:nth-child(3) { 
+animation-delay: 0s; 
+}
+
+@keyframes pulse-dots {
+0%, 80%, 100% { 
+transform: scale(0.8);
+opacity: 0.5;
+}
+40% { 
+transform: scale(1.2);
+opacity: 1;
+}
+}
+
+/* Loading State */
+.button.loading {
+pointer-events: none;
+opacity: 0.8;
+}
+
+.button.loading .button-text {
+opacity: 0;
+transform: translateX(-10px);
+}
+
+.button.loading .button-icon {
+opacity: 0;
+transform: scale(0);
+}
+
+.button.loading .loader-dots {
+display: flex;
+position: absolute;
+}
+
+/* Ripple Effect */
+.button::after {
+content: '';
+position: absolute;
+top: 50%;
+left: 50%;
+width: 0;
+height: 0;
+border-radius: 50%;
+background: rgba(255, 255, 255, 0.3);
+transform: translate(-50%, -50%);
+transition: width 0.6s, height 0.6s;
+}
+
+.button.clicked::after {
+width: 300px;
+height: 300px;
+}
+
+/* Message Styles */
+.message {
+max-width: 800px;
+margin: 1.5rem auto;
+text-align: center;
+padding: 1rem 1.5rem;
+border-radius: var(--card-radius);
+font-size: 0.95rem;
+box-shadow: var(--shadow-sm);
+display: flex;
+align-items: center;
+justify-content: center;
+gap: 10px;
+transition: opacity 0.5s ease;
+}
+
+.message.hide {
+opacity: 0;
+height: 0;
+padding: 0;
+margin: 0 auto;
+overflow: hidden;
+}
+
+.message i {
+font-size: 1.2rem;
+}
+
+.success {
+background-color: #f0fff4;
+color: #2f855a;
+border-left: 4px solid #38a169;
+}
+
+.error {
+background-color: #fff5f5;
+color: #c53030;
+border-left: 4px solid #e53e3e;
+}
+
+/* Responsive Styles */
+@media (max-width: 992px) {
+.navbar {
+padding: 1rem 1.5rem;
+}
+}
+
+@media (max-width: 768px) {
+.menu-toggle {
+display: block;
+}
+
+.navbar-right {
+position: fixed;
+top: 0;
+right: -100%;
+width: 70%;
+max-width: 300px;
+height: 100vh;
+background: var(--accent);
+flex-direction: column;
+justify-content: flex-start;
+padding: 5rem 0 2rem;
+gap: 0;
+box-shadow: -5px 0 15px rgba(0, 0, 0, 0.1);
+transition: right 0.8s cubic-bezier(0.25, 0.8, 0.25, 1) 0.2s;
+}
+
+.navbar-right.active {
+right: 0;
+transition: right 0.6s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+/* Animate menu items when menu opens */
+.navbar-right.active .mobile-menu li {
+opacity: 1;
+transform: translateX(0);
+}
+
+/* Staggered animation for menu items */
+.navbar-right.active .mobile-menu li:nth-child(1) {
+transition-delay: 0.1s;
+}
+
+.navbar-right.active .mobile-menu li:nth-child(2) {
+transition-delay: 0.3s;
+}
+
+.navbar-right.active .mobile-menu li:nth-child(3) {
+transition-delay: 0.5s;
+}
+
+.navbar-right.active .mobile-menu li:nth-child(4) {
+transition-delay: 0.7s;
+}
+
+.navbar-right.active .mobile-menu li:nth-child(5) {
+transition-delay: 1.1s;
+}
+
+.navbar-right.active .mobile-menu li:nth-child(6) {
+transition-delay: 1.3s;
+}
+
+.navbar-right.active .mobile-menu li:nth-child(7) {
+transition-delay: 1.5s;
+}
+
+.navbar-right.active .mobile-menu li:nth-child(8) {
+transition-delay: 1.7s;
+}
+
+.user-info, .logout-btn {
+display: none;
+}
+
+.mobile-menu {
+display: block;
+}
+
+.mobile-user-info {
+display: flex;
+align-items: center;
+padding: 1.5rem;
+border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.mobile-user-avatar {
+width: 42px;
+height: 42px;
+background-color: rgba(255, 255, 255, 0.2);
+color: #fff;
+border-radius: 50%;
+display: flex;
+justify-content: center;
+align-items: center;
+font-weight: bold;
+font-size: 1.1rem;
+margin-right: 12px;
+}
+
+.mobile-username {
+font-weight: 500;
+font-size: 1rem;
+}
+
+.dashboard {
+grid-template-columns: 1fr 1fr;
+gap: 15px;
+}
+
+.welcome-title {
+font-size: 1.4rem;
+}
+}
+
+@media (max-width: 576px) {
+.dashboard {
+grid-template-columns: 1fr;
+}
+
+.card, .wallet-card {
+min-height: 160px;
+padding: 1.2rem;
+}
+
+.wallet-amount {
+font-size: 1.8rem;
+}
+
+.navbar h1 {
+font-size: 1.4rem;
+}
+
+.navbar-right {
+width: 80%;
+}
+}
+
+/* Keyframes for wallet glow animation */
+@keyframes wallet-glow {
+0% {
+opacity: 0.3;
+transform: scale(1);
+}
+100% {
+opacity: 0.6;
+transform: scale(1.05);
+}
+}
+</style>
 </head>
+
 <body>
-  <div class="navbar">
-    <a href="/"><h1><img src="/docs/swaplogo.png" alt="logo" height="50px"> <b>SwapTicket</b></h1></a>
-    <button class="menu-toggle" id="menuToggle">
-      <i class="fas fa-bars"></i>
-    </button>
-    <div class="navbar-right" id="navbarRight">
-      <!-- Desktop version -->
-      <div class="user-info">
-        <div class="user-avatar" th:text="${userName.substring(0,1).toUpperCase()}">U</div>
-        <span class="username" th:text="${userName}">User</span>
-      </div>
-      <a th:href="@{/logout}" class="logout-btn">
-        <i class="fas fa-sign-out-alt"></i>
-        <span>Logout</span>
-      </a>
-      
-      <ul class="mobile-menu">
-        <li>
-          <a th:href="@{/user/sell}" class="menu-item">
-            <i class="fas fa-upload"></i>
-            <span>Sell Ticket</span>
-          </a>
-        </li>
-        <li>
-          <a th:href="@{/pnr/buy}" class="menu-item">
-            <i class="fas fa-search"></i>
-            <span>Buy Ticket</span>
-          </a>
-        </li>
-        <li>
-          <a th:href="@{/my-listed-tickets}" class="menu-item">
-            <i class="fas fa-ticket-alt"></i>
-            <span>My Tickets</span>
-          </a>
-        </li>
-        <li>
-          <a th:href="@{/pnr/my-purchases}" class="menu-item">
-            <i class="fas fa-shopping-cart"></i>
-            <span>Purchased Tickets</span>
-          </a>
-        </li>
-        <li>
-          <a th:href="@{/user/transactions}" class="menu-item">
-            <i class="fas fa-wallet"></i>
-            <span>Transactions History</span>
-          </a>
-        </li>
-        <li>
-          <a th:href="@{/user/refer}" class="menu-item">
-            <i class="fas fa-users"></i>
-            <span>Refer A Friend</span>
-          </a>
-        </li>
-        <li>
-          <a th:href="@{/support/submit}" class="menu-item">
-            <i class="fas fa-headset"></i>
-            <span>Customer Support</span>
-          </a>
-        </li>
-        <li>
-          <a th:href="@{/logout}" class="menu-item">
-            <i class="fas fa-sign-out-alt"></i>
-            <span>Logout</span>
-          </a>
-        </li>
-      </ul>
-    </div>
-  </div>
-  <div class="container">
-    <div class="welcome-section" data-aos="fade-up">
-      <h1 class="welcome-title">Welcome Back!</h1>
-      <p class="welcome-subtitle">Manage your tickets, wallet, and transactions all in one place</p>
-    </div>
-    <div class="message success" th:if="${successMessage}" id="successMessage">
-      <i class="fas fa-check-circle"></i>
-      <p th:text="${successMessage}"></p>
-    </div>
-    <div class="message error" th:if="${error}" id="errorMessage">
-      <i class="fas fa-exclamation-circle"></i>
-      <p th:text="${error}"></p>
-    </div>
-    <main class="dashboard">
-      <div class="card wallet-card" data-aos="fade-up" data-aos-delay="100">
-        <div class="swap-ticket-label">SwapTicket Wallet</div>
-        <i class="fas fa-wallet"></i>
-        <div>
-          <h3>Over all Amount</h3>
-          <p>Track SwapTicket transaction </p>
-          <!-- <div class="wallet-amount">₹<span th:text="${walletBalance}">0.00</span></div> -->
-          <form th:action="@{/user/transactions}" method="get">
-          <button class="button">
-            <i class="fas fa-history"></i>
-            <span>History</span>
-          </button>
-        </form>
-        </div>
-      </div>
-      
-      <div class="card" data-aos="fade-up" data-aos-delay="250">
-        <img src="/docs/SellTicket.png" alt="SellTicket">
-        <h3>Sell a Ticket</h3>
-        <p>List your IRCTC ticket for sale</p>
-        <form th:action="@{/user/sell}" method="get">
-          <button class="button">
-            <i class="fas fa-plus-circle"></i>
-            <span>Sell</span>
-          </button>
-        </form>
-      </div>
-      
-      <div class="card" data-aos="fade-up" data-aos-delay="300">
-        <img src="/docs/buyticket.png" alt="butTicket">
-        <h3>Buy a Ticket</h3>
-        <p>Find available tickets to purchase</p>
-        <form th:action="@{/pnr/buy}" method="get">
-          <button class="button">
-            <i class="fas fa-search-dollar"></i>
-            <span>Browse</span>
-          </button>
-        </form>
-      </div>
-      
-      <div class="card" data-aos="fade-up" data-aos-delay="200">
-        <img src="/docs/purchase.png" alt="purchaseTicket">
-        <h3>Purchased Tickets</h3>
-        <p>View tickets you've purchased</p>
-        <form th:action="@{/pnr/my-purchases}" method="get">
-          <button class="button">
-            <i class="fas fa-receipt"></i>
-            <span>View</span>
-          </button>
-        </form>
-      </div>
-      
-      <div class="card" data-aos="fade-up" data-aos-delay="150">
-        <img src="/docs/myListedTicket.png" alt="myListedTicket" >
-        <h3>My Sold Tickets</h3>
-        <p>View and manage your listed tickets</p>
-        <form th:action="@{/my-listed-tickets}" method="get">
-          <button class="button">
-            <i class="fas fa-eye"></i>
-            <span>View</span>
-          </button>
-        </form>
-      </div>
-      
-      <div class="card" data-aos="fade-up" data-aos-delay="150">
-        <img src="/docs/refer.png" alt="myListedTicket" >
-        <h3>Refer A Friend</h3>
-        <p>Invite friends and earn bonuses when they join</p>
-        <form th:action="@{/user/refer}" method="get">
-          <button class="button">
-            <i class="fas fa-users"></i>
-            <span>Invite Now</span>
-            <i class="fas fa-chevron-right arrow-icon"></i>
-          </button>
-        </form>
-      </div>
-      
-      <div class="card" data-aos="fade-up" data-aos-delay="300">
-        <img src="/docs/Customercare.png" alt="CustomerCare">
-        <h3>Customer Support</h3>
-        <p>Need help? Type your question...</p>
-        <form th:action="@{/support/submit}" method="get">
-          <button class="button">
-            <i class="fas fa-comments"></i>
-            <span>Send Message</span>
-          </button>
-        </form>
-      </div>
-    </main>
-  </div>
-  <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
-  <script>
-    // Initialize animations
-    AOS.init({
-      duration: 800,
-      once: true
-    });
-    
-    // Mobile menu toggle functionality with slower animations
-    const menuToggle = document.getElementById('menuToggle');
-    const navbarRight = document.getElementById('navbarRight');
-    
-    menuToggle.addEventListener('click', (e) => {
-      e.stopPropagation();
-      navbarRight.classList.toggle('active');
-      
-      // Slower icon transition
-      setTimeout(() => {
-        menuToggle.innerHTML = navbarRight.classList.contains('active')
-          ? '<i class="fas fa-times"></i>'
-          : '<i class="fas fa-bars"></i>';
-      }, 200);
-    });
-    
-    // Close menu when clicking outside on mobile with slower animation
-    document.addEventListener('click', (e) => {
-      if (window.innerWidth <= 768) {
-        if (!navbarRight.contains(e.target) && e.target !== menuToggle) {
-          navbarRight.classList.remove('active');
-          
-          // Slower icon transition back
-          setTimeout(() => {
-            menuToggle.innerHTML = '<i class="fas fa-bars"></i>';
-          }, 300);
-        }
-      }
-    });
-    
-    // Close menu when clicking on menu items with delay
-    document.querySelectorAll('.mobile-menu .menu-item').forEach(item => {
-      item.addEventListener('click', () => {
-        // Add delay before closing menu
-        setTimeout(() => {
-          navbarRight.classList.remove('active');
-          setTimeout(() => {
-            menuToggle.innerHTML = '<i class="fas fa-bars"></i>';
-          }, 200);
-        }, 150);
-      });
-    });
-    
-    // Auto-hide success message after 3 seconds
-    document.addEventListener('DOMContentLoaded', function() {
-      const successMessage = document.getElementById('successMessage');
-      const errorMessage = document.getElementById('errorMessage');
-      
-      if (successMessage) {
-        setTimeout(function() {
-          successMessage.classList.add('hide');
-        }, 3000);
-      }
-      
-      if (errorMessage) {
-        setTimeout(function() {
-          errorMessage.classList.add('hide');
-        }, 5000);
-      }
-    });
-  </script>
-  
-  <!-- Show live chat only for logged-in users -->
-  <!-- <th:block th:if="${userName != null}">
-    <script type="text/javascript">
-      var Tawk_API = Tawk_API || {};
-      Tawk_API.visitor = {
-        name: [[${userName}]],
-        email: [[${userEmail}]]
-      };
-    </script>
-    <script type="text/javascript">
-      var Tawk_LoadStart = new Date();
-      (function () {
-        var s1 = document.createElement("script"),
-            s0 = document.getElementsByTagName("script")[0];
-        s1.async = true;
-        s1.src = 'https://embed.tawk.to/682c7169de0d8619101f2cae/1irmpm1oi';
-        s1.charset = 'UTF-8';
-        s1.setAttribute('crossorigin', '*');
-        s0.parentNode.insertBefore(s1, s0);
-      })();
-    </script>
-  </th:block> -->
+<div class="navbar">
+<a href="/">
+<h1>
+<img src="/docs/swaplogo.png" alt="logo" height="50px"> 
+<b>SwapTicket</b>
+</h1>
+</a>
+<button class="menu-toggle" id="menuToggle">
+<i class="fas fa-bars"></i>
+</button>
+<div class="navbar-right" id="navbarRight">
+<!-- Desktop version -->
+<div class="user-info">
+<div class="user-avatar" th:text="${userName.substring(0,1).toUpperCase()}">U</div>
+<span class="username" th:text="${userName}">User</span>
+</div>
+<a th:href="@{/logout}" class="logout-btn">
+<i class="fas fa-sign-out-alt"></i>
+<span>Logout</span>
+</a>
+<ul class="mobile-menu">
+<li>
+<a th:href="@{/user/sell}" class="menu-item">
+<i class="fas fa-upload"></i>
+<span>Sell Ticket</span>
+</a>
+</li>
+<li>
+<a th:href="@{/pnr/buy}" class="menu-item">
+<i class="fas fa-search"></i>
+<span>Buy Ticket</span>
+</a>
+</li>
+<li>
+<a th:href="@{/my-listed-tickets}" class="menu-item">
+<i class="fas fa-ticket-alt"></i>
+<span>My Tickets</span>
+</a>
+</li>
+<li>
+<a th:href="@{/pnr/my-purchases}" class="menu-item">
+<i class="fas fa-shopping-cart"></i>
+<span>Purchased Tickets</span>
+</a>
+</li>
+<li>
+<a th:href="@{/user/transactions}" class="menu-item">
+<i class="fas fa-wallet"></i>
+<span>Transactions History</span>
+</a>
+</li>
+<li>
+<a th:href="@{/user/refer}" class="menu-item">
+<i class="fas fa-users"></i>
+<span>Refer A Friend</span>
+</a>
+</li>
+<li>
+<a th:href="@{/support/submit}" class="menu-item">
+<i class="fas fa-headset"></i>
+<span>Customer Support</span>
+</a>
+</li>
+<li>
+<a th:href="@{/logout}" class="menu-item">
+<i class="fas fa-sign-out-alt"></i>
+<span>Logout</span>
+</a>
+</li>
+</ul>
+</div>
+</div>
+
+<div class="container">
+<div class="welcome-section" data-aos="fade-up">
+<h1 class="welcome-title">Welcome Back!</h1>
+<p class="welcome-subtitle">Manage your tickets, wallet, and transactions all in one place</p>
+</div>
+
+<div class="message success" th:if="${successMessage}" id="successMessage">
+<i class="fas fa-check-circle"></i>
+<p th:text="${successMessage}"></p>
+</div>
+
+<div class="message error" th:if="${error}" id="errorMessage">
+<i class="fas fa-exclamation-circle"></i>
+<p th:text="${error}"></p>
+</div>
+
+<main class="dashboard">
+<div class="card wallet-card" data-aos="fade-up" data-aos-delay="100">
+<div class="swap-ticket-label">SwapTicket Wallet</div>
+<i class="fas fa-wallet"></i>
+<div>
+<h3>Over all Amount</h3>
+<p>Track SwapTicket transaction</p>
+<form th:action="@{/user/transactions}" method="get">
+<button class="button" type="submit">
+<i class="fas fa-history button-icon"></i>
+<span class="button-text">History</span>
+<div class="loader-dots">
+<span></span>
+<span></span>
+<span></span>
+</div>
+</button>
+</form>
+</div>
+</div>
+
+<div class="card" data-aos="fade-up" data-aos-delay="250">
+<img src="/docs/SellTicket.png" alt="SellTicket">
+<h3>Sell a Ticket</h3>
+<p>List your IRCTC ticket for sale</p>
+<form th:action="@{/user/sell}" method="get">
+<button class="button" type="submit">
+<i class="fas fa-plus-circle button-icon"></i>
+<span class="button-text">Sell</span>
+<div class="loader-dots">
+<span></span>
+<span></span>
+<span></span>
+</div>
+</button>
+</form>
+</div>
+
+<div class="card" data-aos="fade-up" data-aos-delay="300">
+<img src="/docs/buyticket.png" alt="butTicket">
+<h3>Buy a Ticket</h3>
+<p>Find available tickets to purchase</p>
+<form th:action="@{/pnr/buy}" method="get">
+<button class="button" type="submit">
+<i class="fas fa-search-dollar button-icon"></i>
+<span class="button-text">Browse</span>
+<div class="loader-dots">
+<span></span>
+<span></span>
+<span></span>
+</div>
+</button>
+</form>
+</div>
+
+<div class="card" data-aos="fade-up" data-aos-delay="200">
+<img src="/docs/purchase.png" alt="purchaseTicket">
+<h3>Purchased Tickets</h3>
+<p>View tickets you've purchased</p>
+<form th:action="@{/pnr/my-purchases}" method="get">
+<button class="button" type="submit">
+<i class="fas fa-receipt button-icon"></i>
+<span class="button-text">View</span>
+<div class="loader-dots">
+<span></span>
+<span></span>
+<span></span>
+</div>
+</button>
+</form>
+</div>
+
+<div class="card" data-aos="fade-up" data-aos-delay="150">
+<img src="/docs/myListedTicket.png" alt="myListedTicket">
+<h3>My Sold Tickets</h3>
+<p>View and manage your listed tickets</p>
+<form th:action="@{/my-listed-tickets}" method="get">
+<button class="button" type="submit">
+<i class="fas fa-eye button-icon"></i>
+<span class="button-text">View</span>
+<div class="loader-dots">
+<span></span>
+<span></span>
+<span></span>
+</div>
+</button>
+</form>
+</div>
+
+<div class="card" data-aos="fade-up" data-aos-delay="150">
+<img src="/docs/refer.png" alt="myListedTicket">
+<h3>Refer A Friend</h3>
+<p>Invite friends and earn bonuses when they join</p>
+<form th:action="@{/user/refer}" method="get">
+<button class="button" type="submit">
+<i class="fas fa-users button-icon"></i>
+<span class="button-text">Invite Now</span>
+<div class="loader-dots">
+<span></span>
+<span></span>
+<span></span>
+</div>
+</button>
+</form>
+</div>
+
+<div class="card" data-aos="fade-up" data-aos-delay="300">
+<img src="/docs/Customercare.png" alt="CustomerCare">
+<h3>Customer Support</h3>
+<p>Need help? Type your question...</p>
+<form th:action="@{/support/submit}" method="get">
+<button class="button" type="submit">
+<i class="fas fa-comments button-icon"></i>
+<span class="button-text">Send Message</span>
+<div class="loader-dots">
+<span></span>
+<span></span>
+<span></span>
+</div>
+</button>
+</form>
+</div>
+</main>
+</div>
+
+<script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+<script>
+// Initialize animations
+AOS.init({
+duration: 800,
+once: true
+});
+
+// Enhanced Button Loading Functionality with Pulsing Dots
+function addButtonLoaders() {
+const buttons = document.querySelectorAll('.button');
+
+buttons.forEach(button => {
+button.addEventListener('click', function(e) {
+// Add ripple effect
+this.classList.add('clicked');
+setTimeout(() => {
+this.classList.remove('clicked');
+}, 600);
+
+// Add loading state
+this.classList.add('loading');
+
+// Prevent multiple clicks
+this.style.pointerEvents = 'none';
+
+// Optional: Remove loading state after a timeout (fallback)
+setTimeout(() => {
+this.classList.remove('loading');
+this.style.pointerEvents = 'auto';
+}, 5000); // 5 second fallback
+});
+});
+}
+
+// Initialize button loaders when DOM is loaded
+document.addEventListener('DOMContentLoaded', addButtonLoaders);
+
+// Mobile menu toggle functionality with slower animations
+const menuToggle = document.getElementById('menuToggle');
+const navbarRight = document.getElementById('navbarRight');
+
+menuToggle.addEventListener('click', (e) => {
+e.stopPropagation();
+navbarRight.classList.toggle('active');
+
+// Slower icon transition
+setTimeout(() => {
+menuToggle.innerHTML = navbarRight.classList.contains('active')
+? '<i class="fas fa-times"></i>'
+: '<i class="fas fa-bars"></i>';
+}, 200);
+});
+
+// Close menu when clicking outside on mobile with slower animation
+document.addEventListener('click', (e) => {
+if (window.innerWidth <= 768) {
+if (!navbarRight.contains(e.target) && e.target !== menuToggle) {
+navbarRight.classList.remove('active');
+
+// Slower icon transition back
+setTimeout(() => {
+menuToggle.innerHTML = '<i class="fas fa-bars"></i>';
+}, 300);
+}
+}
+});
+
+// Close menu when clicking on menu items with delay
+document.querySelectorAll('.mobile-menu .menu-item').forEach(item => {
+item.addEventListener('click', () => {
+// Add delay before closing menu
+setTimeout(() => {
+navbarRight.classList.remove('active');
+setTimeout(() => {
+menuToggle.innerHTML = '<i class="fas fa-bars"></i>';
+}, 200);
+}, 150);
+});
+});
+
+// Auto-hide success message after 3 seconds
+document.addEventListener('DOMContentLoaded', function() {
+const successMessage= document.getElementById('successMessage');
+const errorMessage = document.getElementById('errorMessage');
+
+if (successMessage) {
+setTimeout(function() {
+successMessage.classList.add('hide');
+}, 3000);
+}
+
+if (errorMessage) {
+setTimeout(function() {
+errorMessage.classList.add('hide');
+}, 5000);
+}
+});
+
+// Handle page visibility change to reset button states
+document.addEventListener('visibilitychange', function() {
+if (document.visibilityState === 'visible') {
+// Reset all button states when page becomes visible again
+const buttons = document.querySelectorAll('.button.loading');
+buttons.forEach(button => {
+button.classList.remove('loading');
+button.style.pointerEvents = 'auto';
+});
+}
+});
+
+// Handle browser back button to reset button states
+window.addEventListener('pageshow', function(event) {
+if (event.persisted) {
+// Reset all button states when page is restored from cache
+const buttons = document.querySelectorAll('.button.loading');
+buttons.forEach(button => {
+button.classList.remove('loading');
+button.style.pointerEvents = 'auto';
+});
+}
+});
+
+// Add form submission handling to ensure loader shows
+document.addEventListener('DOMContentLoaded', function() {
+const forms = document.querySelectorAll('form');
+
+forms.forEach(form => {
+form.addEventListener('submit', function(e) {
+const button = this.querySelector('.button');
+if (button && !button.classList.contains('loading')) {
+button.classList.add('loading');
+button.style.pointerEvents = 'none';
+}
+});
+});
+});
+</script>
+
+<!-- Show live chat only for logged-in users -->
+<!-- <th:block th:if="${userName != null}">
+<script type="text/javascript">
+var Tawk_API = Tawk_API || {};
+Tawk_API.visitor = {
+name: [[${userName}]],
+email: [[${userEmail}]]
+};
+</script>
+<script type="text/javascript">
+var Tawk_LoadStart = new Date();
+(function () {
+var s1 = document.createElement("script"),
+s0 = document.getElementsByTagName("script")[0];
+s1.async = true;
+s1.src = 'https://embed.tawk.to/682c7169de0d8619101f2cae/1irmpm1oi';
+s1.charset = 'UTF-8';
+s1.setAttribute('crossorigin', '*');
+s0.parentNode.insertBefore(s1, s0);
+})();
+</script>
+</th:block> -->
+
 </body>
 </html>
+
