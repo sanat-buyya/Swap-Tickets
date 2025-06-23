@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" href="https://res.cloudinary.com/dgrxmavho/image/upload/v1749496815/swaplogo_zzganr.png" type="image/png">
-	<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         :root {
@@ -21,14 +21,14 @@
             --white: #ffffff;
             --shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
         }
-        
+
         * {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
             font-family: 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
         }
-        
+
         body {
             background-color: #f5f7fa;
             color: var(--dark);
@@ -36,7 +36,7 @@
             padding: 20px;
             min-height: 100vh;
         }
-        
+
         .container {
             max-width: 600px;
             width: 100%;
@@ -48,7 +48,7 @@
             position: relative;
             overflow: hidden;
         }
-        
+
         .container::before {
             content: '';
             position: absolute;
@@ -58,7 +58,7 @@
             height: 5px;
             background: linear-gradient(90deg, var(--primary), var(--success));
         }
-        
+
         h2 {
             color: var(--dark);
             text-align: center;
@@ -66,57 +66,61 @@
             font-size: 1.75rem;
             font-weight: 600;
         }
-        
+
         /* Price Breakdown */
         .price-details {
             width: 100%;
             border-collapse: collapse;
             margin-bottom: 25px;
         }
-        
+
         .price-details tr {
             border-bottom: 1px solid var(--border);
         }
-        
+
         .price-details tr:last-child {
             border-bottom: none;
         }
-        
+
         .price-details td {
             padding: 14px 10px;
             vertical-align: top;
         }
-        
+
         .price-details td:first-child {
             font-weight: 500;
             color: var(--dark);
         }
-        
+
         .price-details td:last-child {
             text-align: right;
             font-weight: 500;
         }
-        
+
         .total-row {
             font-weight: 600;
             background-color: var(--light);
         }
-        
+
         .gst-row {
             color: var(--gray);
             font-size: 0.95em;
         }
-        
-        .discount-row {
+
+        .discount-row, .tip-row {
             color: var(--success);
             font-weight: 600;
             display: none;
         }
-        
-        .discount-row.show {
+
+        .discount-row.show, .tip-row.show {
             display: table-row;
         }
-        
+
+        .tip-row {
+            color: var(--primary);
+        }
+
         /* Discount Checkbox */
         .discount-checkbox-container {
             margin: 20px 0;
@@ -126,11 +130,11 @@
             border: 2px solid var(--success);
             display: none;
         }
-        
+
         .discount-checkbox-container.show {
             display: block;
         }
-        
+
         .discount-checkbox {
             display: flex;
             align-items: center;
@@ -138,14 +142,14 @@
             cursor: pointer;
             user-select: none;
         }
-        
+
         .discount-checkbox input[type="checkbox"] {
             width: 20px;
             height: 20px;
             cursor: pointer;
             accent-color: var(--success);
         }
-        
+
         .discount-checkbox label {
             font-weight: 500;
             color: var(--success);
@@ -154,11 +158,11 @@
             align-items: center;
             gap: 8px;
         }
-        
+
         .discount-checkbox label i {
             font-size: 1.2rem;
         }
-        
+
         /* Payment Options */
         .payment-options {
             margin: 25px 0;
@@ -167,7 +171,7 @@
             border-radius: 10px;
             border: 1px solid var(--border);
         }
-        
+
         .options-title {
             display: flex;
             align-items: center;
@@ -177,18 +181,18 @@
             margin-bottom: 18px;
             font-size: 1.1rem;
         }
-        
+
         .options-title i {
             color: var(--success);
             font-size: 1.2rem;
         }
-        
+
         .options-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
             gap: 12px;
         }
-        
+
         .payment-option {
             display: flex;
             flex-direction: column;
@@ -203,19 +207,111 @@
             min-height: 70px;
             transition: all 0.3s ease;
         }
-        
+
         .payment-option:hover {
             transform: translateY(-3px);
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
             border-color: var(--primary);
         }
-        
+
         .payment-option i {
             color: var(--primary);
             font-size: 1.5rem;
             margin-bottom: 8px;
         }
-        
+
+        /* Tip Section */
+        .tip-section {
+            margin: 25px 0;
+            padding: 20px;
+            background-color: #fff8e1;
+            border-radius: 10px;
+            border: 1px solid #ffcc02;
+        }
+
+        .tip-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .tip-header i {
+            color: #ff9800;
+            font-size: 1.3rem;
+        }
+
+        .tip-header h3 {
+            color: var(--dark);
+            font-size: 1.1rem;
+            margin: 0;
+        }
+
+        .tip-subtitle {
+            color: var(--gray);
+            font-size: 0.9rem;
+            margin-bottom: 15px;
+        }
+
+        .tip-options {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .tip-option {
+            padding: 12px 8px;
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: var(--white);
+            font-weight: 500;
+        }
+
+        .tip-option:hover {
+            border-color: var(--primary);
+            background-color: #f0f8ff;
+        }
+
+        .tip-option.selected {
+            border-color: var(--primary);
+            background-color: var(--primary);
+            color: white;
+        }
+
+        .tip-option.custom {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+        }
+
+        .custom-tip-input {
+            display: none;
+            margin-top: 10px;
+        }
+
+        .custom-tip-input.show {
+            display: block;
+        }
+
+        .custom-tip-input input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            font-size: 1rem;
+        }
+
+        .custom-tip-input input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(51, 153, 204, 0.1);
+        }
+
         /* Referral Benefits */
         .referral-benefits {
             margin: 25px 0;
@@ -224,37 +320,37 @@
             border-radius: 10px;
             border-left: 4px solid var(--primary);
         }
-        
+
         .benefits-header {
             display: flex;
             align-items: center;
             gap: 10px;
             margin-bottom: 15px;
         }
-        
+
         .benefits-header i {
             color: var(--primary);
             font-size: 1.3rem;
         }
-        
+
         .benefits-header h3 {
             color: var(--dark);
             font-size: 1.2rem;
             margin: 0;
         }
-        
+
         .benefit-item {
             display: flex;
             align-items: flex-start;
             margin-bottom: 10px;
         }
-        
+
         .benefit-item i {
             color: var(--success);
             margin-right: 10px;
             margin-top: 3px;
         }
-        
+
         .discount-status {
             display: inline-flex;
             align-items: center;
@@ -264,17 +360,17 @@
             font-weight: 500;
             margin-left: 8px;
         }
-        
+
         .eligible {
             background-color: #e6f7ee;
             color: var(--success);
         }
-        
+
         .not-eligible {
             background-color: #fce8e8;
             color: var(--danger);
         }
-        
+
         .progress-container {
             margin-top: 15px;
             background-color: #e9ecef;
@@ -282,14 +378,14 @@
             height: 8px;
             overflow: hidden;
         }
-        
+
         .progress-bar {
             height: 100%;
             background: linear-gradient(90deg, var(--primary), #6e8efb);
             border-radius: 10px;
             transition: width 0.5s ease;
         }
-        
+
         .progress-text {
             display: flex;
             justify-content: space-between;
@@ -297,7 +393,7 @@
             font-size: 0.85rem;
             color: var(--gray);
         }
-        
+
         /* Action Buttons */
         .action-buttons {
             display: flex;
@@ -305,7 +401,7 @@
             gap: 15px;
             margin-top: 25px;
         }
-        
+
         .btn {
             display: inline-flex;
             align-items: center;
@@ -323,7 +419,7 @@
             position: relative;
             overflow: hidden;
         }
-        
+
         .btn::after {
             content: '';
             position: absolute;
@@ -334,33 +430,33 @@
             background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
             transition: 0.5s;
         }
-        
+
         .btn:hover::after {
             left: 100%;
         }
-        
+
         .btn-primary {
             background-color: var(--primary);
             color: white;
             box-shadow: 0 4px 15px rgba(51, 153, 204, 0.3);
         }
-        
+
         .btn-primary:hover {
             background-color: var(--primary-hover);
             transform: translateY(-2px);
             box-shadow: 0 6px 20px rgba(51, 153, 204, 0.4);
         }
-        
+
         .btn-secondary {
             background-color: var(--light);
             color: var(--dark);
             border: 1px solid var(--border);
         }
-        
+
         .btn-secondary:hover {
             background-color: #e9ecef;
         }
-        
+
         .btn .loading {
             display: none;
             width: 18px;
@@ -370,16 +466,16 @@
             border-top-color: white;
             animation: spin 1s linear infinite;
         }
-        
+
         .btn.processing .btn-text {
             visibility: hidden;
         }
-        
+
         .btn.processing .loading {
             display: block;
             position: absolute;
         }
-        
+
         /* Security Info */
         .security-info {
             display: flex;
@@ -390,11 +486,11 @@
             font-size: 0.9rem;
             color: var(--gray);
         }
-        
+
         .security-info i {
             color: var(--success);
         }
-        
+
         /* Error Message */
         .error-message {
             padding: 12px 15px;
@@ -406,115 +502,130 @@
             align-items: center;
             gap: 10px;
         }
-        
+
         .error-message i {
             color: var(--danger);
         }
-        
+
         /* Animations */
         @keyframes spin {
             to { transform: rotate(360deg); }
         }
-        
+
         /* Responsive Design */
         @media (max-width: 768px) {
             .container {
                 padding: 25px 20px;
             }
-            
+
             h2 {
                 font-size: 1.5rem;
             }
-            
+
             .options-grid {
                 grid-template-columns: repeat(2, 1fr);
             }
-            
+
             .payment-option {
                 min-height: 60px;
             }
-            
+
             .btn {
                 padding: 14px 20px;
             }
+
+            .tip-options {
+                grid-template-columns: repeat(2, 1fr);
+            }
         }
-        
-        @media (max-width: 480px) {
+
+                @media (max-width: 480px) {
             body {
                 padding: 15px;
             }
-            
+
             .container {
                 padding: 20px 15px;
                 margin: 10px auto;
             }
-            
+
             .price-details td {
                 padding: 12px 8px;
                 font-size: 0.95rem;
             }
-            
+
             .options-grid {
                 grid-template-columns: 1fr 1fr;
                 gap: 8px;
             }
-            
+
             .payment-option {
                 font-size: 0.85rem;
                 padding: 10px 5px;
             }
-            
+
             .payment-option i {
                 font-size: 1.3rem;
             }
-            
+
             .referral-benefits {
                 padding: 15px;
+            }
+
+            .tip-options {
+                grid-template-columns: 1fr 1fr;
+                gap: 8px;
+            }
+
+            .tip-option {
+                padding: 10px 6px;
+                font-size: 0.9rem;
             }
         }
     </style>
 </head>
+
 <body>
     <div class="container">
         <h2>Ticket Payment Preview</h2>
-        
-          <div class="referral-benefits">
+
+        <div class="referral-benefits">
             <div class="benefits-header">
                 <i class="fas fa-gift"></i>
                 <h3>Your Referral Benefits</h3>
             </div>
+
             <div class="benefit-item">
                 <i class="fas fa-tag"></i>
                 <div>
                     <span>Discount Status: </span>
                     <span th:if="${eligibleForDiscount}" class="discount-status eligible">
-    					<i class="fas fa-check-circle"></i> Eligible for ₹<span th:text="${referralDiscountAmount}"></span> discount
-					</span>
-
+                        <i class="fas fa-check-circle"></i> 
+                        Eligible for ₹<span th:text="${referralDiscountAmount}"></span> discount
+                    </span>
                     <span th:if="${!eligibleForDiscount}" class="discount-status not-eligible">
                         <i class="fas fa-times-circle"></i> Not Eligible
                     </span>
                 </div>
             </div>
-            
+
             <!-- Show progress only when not eligible and referrals left > 0 -->
             <th:block th:if="${!eligibleForDiscount}">
                 <div th:if="${referralsLeft > 0}" class="benefit-item">
                     <i class="fas fa-bullseye"></i>
                     <div>
-                       <span>Refer <strong th:text="${referralsLeft}"></strong> more friends and referred users purchased at least one ticket to unlock your ₹<span th:text="${referralDiscountAmount}"></span> discount</span>
+                        <span>Refer <strong th:text="${referralsLeft}"></strong> more friends and referred users purchased at least one ticket to unlock your ₹<span th:text="${referralDiscountAmount}"></span> discount</span>
                     </div>
                 </div>
-                
+
                 <div th:if="${referralsLeft > 0}" class="progress-container">
-                    <div class="progress-bar" 
-                         th:style="'width:' + ${(successfulReferrals * 100.0) / (successfulReferrals + referralsLeft)} + '%'"></div>
+                    <div class="progress-bar" th:style="'width:' + ${(successfulReferrals * 100.0) / (successfulReferrals + referralsLeft)} + '%'"></div>
                     <div class="progress-text">
                         <span>Your progress</span>
                         <span th:text="${successfulReferrals} + '/' + ${successfulReferrals + referralsLeft}"></span>
                     </div>
                 </div>
-                
+
                 <div th:if="${referralsLeft <= 0}" class="benefit-item">
                     <i class="fas fa-info-circle"></i>
                     <div>
@@ -522,15 +633,17 @@
                     </div>
                 </div>
             </th:block>
-            
+
             <div th:if="${eligibleForDiscount}" class="benefit-item">
                 <i class="fas fa-star"></i>
                 <div>
                     <span style="color: var(--success); font-weight: 600;">
-    🎉 Congratulations! You can apply a ₹<span th:text="${referralDiscountAmount}"></span> discount on this purchase!</span>                </div>
+                        🎉 Congratulations! You can apply a ₹<span th:text="${referralDiscountAmount}"></span> discount on this purchase!
+                    </span>
+                </div>
             </div>
         </div>
-        
+
         <table class="price-details">
             <tr>
                 <td>Base Price:</td>
@@ -548,12 +661,16 @@
                 <td>Referral Discount:</td>
                 <td>-₹<span id="discountAmount" th:text="${#numbers.formatDecimal(referralDiscountAmount, 0, 2)}"></span></td>
             </tr>
+            <tr class="tip-row" id="tipRow">
+                <td>Tip for Platform:</td>
+                <td>+₹<span id="tipAmount">0.00</span></td>
+            </tr>
             <tr class="total-row">
                 <td><strong>Total Amount:</strong></td>
                 <td><strong>₹<span id="totalAmount" th:text="${#numbers.formatDecimal(totalAmount, 0, 2)}"></span></strong></td>
             </tr>
         </table>
-        
+
         <div class="payment-options">
             <div class="options-title">
                 <i class="fas fa-shield-alt"></i>
@@ -586,38 +703,63 @@
                 </div>
             </div>
         </div>
-		
-		<!-- Discount Checkbox (only show if eligible) -->
+
+        <!-- Tip Section -->
+        <div class="tip-section">
+            <div class="tip-header">
+                <i class="fas fa-heart"></i>
+                <h3>Support Our Platform</h3>
+            </div>
+            <p class="tip-subtitle">Your tip helps us maintain and improve SwapTicket for everyone. Thank you for your support!</p>
+            
+            <div class="tip-options">
+                <div class="tip-option" data-tip="10" onclick="selectTip(10)">
+                    <div>₹10</div>
+                </div>
+                <div class="tip-option" data-tip="20" onclick="selectTip(20)">
+                    <div>₹20</div>
+                </div>
+                <div class="tip-option" data-tip="30" onclick="selectTip(30)">
+                    <div>₹30</div>
+                </div>
+                <div class="tip-option custom" onclick="selectCustomTip()">
+                    <i class="fas fa-edit"></i>
+                    <span>Custom</span>
+                </div>
+            </div>
+
+            <div class="custom-tip-input" id="customTipInput">
+                <input type="number" id="customTipAmount" placeholder="Enter custom tip amount" min="1" max="1000" onchange="applyCustomTip()">
+            </div>
+        </div>
+
+        <!-- Discount Checkbox (only show if eligible) -->
         <div th:if="${eligibleForDiscount}" class="discount-checkbox-container show" id="discountCheckboxContainer">
             <div class="discount-checkbox">
                 <input type="checkbox" id="applyDiscount" onchange="toggleDiscount()">
                 <label for="applyDiscount">
-    				<i class="fas fa-gift"></i>
-    				Apply ₹<span th:text="${referralDiscountAmount}"></span> referral discount to this purchase
-			</label>
+                    <i class="fas fa-gift"></i>
+                    Apply₹<span th:text="${referralDiscountAmount}"></span> referral discount to this purchase
+                </label>
             </div>
         </div>
-        
-        <div class="discount-checkbox-container show" id="discountCheckboxContainer">
-    <div class="discount-checkbox">
-        <input type="checkbox" id="conformticket" name="conformticket" required>
-        <label for="conformticket">
-            <span>*Confirm ticket using PNR before buying:</span>
-            <a href="https://www.indianrail.gov.in/enquiry/PNR/PnrEnquiry.html?locale=en" target="_blank">Click here</a>
-        </label>
-    </div>
-</div>
 
-<div class="action-buttons">
-    <button type="button" 
-            onclick="processPayment()"
-            class="btn btn-primary" 
-            id="paymentBtn">
-        <i class="fas fa-lock"></i>
-        <span class="btn-text">Proceed to Secure Payment</span>
-        <div class="loading"></div>
-    </button>
-      
+        <div class="discount-checkbox-container show" id="discountCheckboxContainer">
+            <div class="discount-checkbox">
+                <input type="checkbox" id="conformticket" name="conformticket" required>
+                <label for="conformticket">
+                    <span>*Confirm ticket using PNR before buying:</span>
+                    <a href="https://www.indianrail.gov.in/enquiry/PNR/PnrEnquiry.html?locale=en" target="_blank">Click here</a>
+                </label>
+            </div>
+        </div>
+
+        <div class="action-buttons">
+            <button type="button" onclick="processPayment()" class="btn btn-primary" id="paymentBtn">
+                <i class="fas fa-lock"></i>
+                <span class="btn-text">Proceed to Secure Payment</span>
+                <div class="loading"></div>
+            </button>
             <a th:href="@{/user/home}" class="btn btn-secondary">
                 <i class="fas fa-arrow-left"></i>
                 <span>Back to Home</span>
@@ -636,177 +778,391 @@
     </div>
 
     <script>
-    // Store original values
-    const basePrice = [[${basePrice}]];
-    const handlingCharge = [[${handlingCharge}]];
-    const gst = [[${gst}]];
-    const originalTotal = basePrice + handlingCharge + gst;
-    const passengerId = [[${passenger.id}]];
-    const isEligibleForDiscount = [[${eligibleForDiscount}]];
-    const referralDiscount = [[${referralDiscountAmount}]];
-    const razorpayKey = "[[${key}]]";
-    
-    let currentTotal = originalTotal;
-    let discountApplied = false;
-    
-    function toggleDiscount() {
-        const checkbox = document.getElementById('applyDiscount');
-        const discountRow = document.getElementById('discountRow');
-        const totalAmountSpan = document.getElementById('totalAmount');
-        
-        if (checkbox.checked) {
-            // Apply discount
-            discountApplied = true;
-            currentTotal = originalTotal - referralDiscount;
-            discountRow.classList.add('show');
+        // Store original values
+        const basePrice = [[${basePrice}]];
+        const handlingCharge = [[${handlingCharge}]];
+        const gst = [[${gst}]];
+        const originalTotal = basePrice + handlingCharge + gst;
+        const passengerId = [[${passenger.id}]];
+        const isEligibleForDiscount = [[${eligibleForDiscount}]];
+        const referralDiscount = [[${referralDiscountAmount}]];
+        const razorpayKey = "[[${key}]]";
+
+        let currentTotal = originalTotal;
+        let discountApplied = false;
+        let tipAmount = 0;
+        let selectedTipOption = null;
+
+        // Tip functionality
+        function selectTip(amount) {
+            // Remove previous selection
+            document.querySelectorAll('.tip-option').forEach(option => {
+                option.classList.remove('selected');
+            });
+
+            // Select current option
+            const selectedOption = document.querySelector(`[data-tip="${amount}"]`);
+            selectedOption.classList.add('selected');
             
-            // Add animation effect
-            discountRow.style.opacity = '0';
+            // Hide custom input
+            document.getElementById('customTipInput').classList.remove('show');
+            document.getElementById('customTipAmount').value = '';
+
+            // Apply tip
+            tipAmount = amount;
+            selectedTipOption = amount;
+            updateTipDisplay();
+            updateTotal();
+        }
+
+        function selectCustomTip() {
+            // Remove previous selection
+            document.querySelectorAll('.tip-option').forEach(option => {
+                option.classList.remove('selected');
+            });
+
+            // Select custom option
+            document.querySelector('.tip-option.custom').classList.add('selected');
+            
+            // Show custom input
+            document.getElementById('customTipInput').classList.add('show');
+            document.getElementById('customTipAmount').focus();
+
+            selectedTipOption = 'custom';
+        }
+
+        function applyCustomTip() {
+            const customAmount = parseFloat(document.getElementById('customTipAmount').value) || 0;
+            
+            if (customAmount < 0) {
+                alert('Tip amount cannot be negative');
+                document.getElementById('customTipAmount').value = '';
+                return;
+            }
+
+            if (customAmount > 1000) {
+                alert('Tip amount cannot exceed ₹1000');
+                document.getElementById('customTipAmount').value = '1000';
+                return;
+            }
+
+            tipAmount = customAmount;
+            updateTipDisplay();
+            updateTotal();
+        }
+
+        function updateTipDisplay() {
+            const tipRow = document.getElementById('tipRow');
+            const tipAmountSpan = document.getElementById('tipAmount');
+            
+            if (tipAmount > 0) {
+                tipRow.classList.add('show');
+                tipAmountSpan.textContent = formatCurrency(tipAmount);
+                
+                // Add animation effect
+                tipRow.style.opacity = '0';
+                setTimeout(() => {
+                    tipRow.style.opacity = '1';
+                }, 100);
+            } else {
+                tipRow.classList.remove('show');
+            }
+        }
+
+        function toggleDiscount() {
+            const checkbox = document.getElementById('applyDiscount');
+            const discountRow = document.getElementById('discountRow');
+            
+            if (checkbox.checked) {
+                discountApplied = true;
+                discountRow.classList.add('show');
+                
+                // Add animation effect
+                discountRow.style.opacity = '0';
+                setTimeout(() => {
+                    discountRow.style.opacity = '1';
+                }, 100);
+            } else {
+                discountApplied = false;
+                discountRow.classList.remove('show');
+            }
+            
+            updateTotal();
+        }
+
+        function updateTotal() {
+            let newTotal = originalTotal;
+            
+            // Apply discount if selected
+            if (discountApplied) {
+                newTotal -= referralDiscount;
+            }
+            
+            // Add tip if selected
+            newTotal += tipAmount;
+            
+            currentTotal = newTotal;
+            
+            // Update total amount with animation
+            const totalAmountSpan = document.getElementById('totalAmount');
+            totalAmountSpan.style.transform = 'scale(1.1)';
+            totalAmountSpan.style.color = 'var(--primary)';
+            
             setTimeout(() => {
-                discountRow.style.opacity = '1';
-            }, 100);
-            
-        } else {
-            // Remove discount
-            discountApplied = false;
-            currentTotal = originalTotal;
-            discountRow.classList.remove('show');
-        }
-        
-        // Update total amount with animation
-        totalAmountSpan.style.transform = 'scale(1.1)';
-        totalAmountSpan.style.color = 'var(--primary)';
-        
-        setTimeout(() => {
-            totalAmountSpan.textContent = formatCurrency(currentTotal);
-            totalAmountSpan.style.transform = 'scale(1)';
-            totalAmountSpan.style.color = '';
-        }, 150);
-    }
-    
-    function formatCurrency(amount) {
-        return amount.toFixed(2);
-    }
-    
-    function processPayment() {
-        const paymentBtn = document.getElementById('paymentBtn');
-        const errorMessage = document.getElementById('errorMessage');
-        const confirmCheckbox = document.getElementById('conformticket');
-
-        // ✅ Step 1: Validate checkbox before continuing
-        if (!confirmCheckbox.checked) {
-            alert("Please confirm the ticket using PNR before proceeding.");
-            return; // Stop payment if checkbox not checked
+                totalAmountSpan.textContent = formatCurrency(currentTotal);
+                totalAmountSpan.style.transform = 'scale(1)';
+                totalAmountSpan.style.color = '';
+            }, 150);
         }
 
-        // ✅ Step 2: Show loading state
-        paymentBtn.classList.add('processing');
-        errorMessage.style.display = 'none';
+        function formatCurrency(amount) {
+            return amount.toFixed(2);
+        }
 
-        // ✅ Step 3: Set up Razorpay options
-        var options = {
-            "key": razorpayKey,
-            "amount": currentTotal * 100, // amount in paise
-            "currency": "INR",
-            "name": "SwapTicket",
-            "description": "Ticket Purchase",
-            "image": "https://res.cloudinary.com/dgrxmavho/image/upload/v1749496815/swaplogo_zzganr.png",
-            "handler": function (response) {
-                // Form to POST payment result to server
-                const form = document.createElement('form');
-                form.method = 'POST';
-                form.action = `/pnr/confirm/${passengerId}`;
+        function processPayment() {
+            const paymentBtn = document.getElementById('paymentBtn');
+            const errorMessage = document.getElementById('errorMessage');
+            const confirmCheckbox = document.getElementById('conformticket');
 
-                const inputs = [
-                    { name: 'razorpay_payment_id', value: response.razorpay_payment_id },
-                    { name: 'razorpay_order_id', value: response.razorpay_order_id || '' },
-                    { name: 'razorpay_signature', value: response.razorpay_signature || '' },
-                    { name: 'discount_applied', value: discountApplied },
-                    { name: 'discount_amount', value: discountApplied ? referralDiscount : 0 }
-                ];
+            // Validate checkbox before continuing
+            if (!confirmCheckbox.checked) {
+                alert("Please confirm the ticket using PNR before proceeding.");
+                return;
+            }
 
-                inputs.forEach(inputData => {
-                    const input = document.createElement('input');
-                    input.type = 'hidden';
-                    input.name = inputData.name;
-                    input.value = inputData.value;
-                    form.appendChild(input);
+            // Show loading state
+            paymentBtn.classList.add('processing');
+            errorMessage.style.display = 'none';
+
+            // Set up Razorpay options
+            var options = {
+                "key": razorpayKey,
+                "amount": currentTotal * 100, // amount in paise
+                "currency": "INR",
+                "name": "SwapTicket",
+                "description": "Ticket Purchase",
+                "image": "https://res.cloudinary.com/dgrxmavho/image/upload/v1749496815/swaplogo_zzganr.png",
+                "handler": function (response) {
+                    // Form to POST payment result to server
+                    const form = document.createElement('form');
+                    form.method = 'POST';
+                    form.action = `/pnr/confirm/${passengerId}`;
+
+                    const inputs = [
+                        { name: 'razorpay_payment_id', value: response.razorpay_payment_id },
+                        { name: 'razorpay_order_id', value: response.razorpay_order_id || '' },
+                        { name: 'razorpay_signature', value: response.razorpay_signature || '' },
+                        { name: 'discount_applied', value: discountApplied },
+                        { name: 'discount_amount', value: discountApplied ? referralDiscount : 0 },
+                        { name: 'tip_amount', value: tipAmount },
+                        { name: 'tip_type', value: selectedTipOption || 'none' }
+                    ];
+
+                    inputs.forEach(inputData => {
+                        const input = document.createElement('input');
+                        input.type = 'hidden';
+                        input.name = inputData.name;
+                        input.value = inputData.value;
+                        form.appendChild(input);
+                    });
+
+                    document.body.appendChild(form);
+                    form.submit();
+                },
+                "prefill": {
+                    "email": "[[${session.loggedInUserEmail}]]",
+                    "contact": "[[${session.loggedInUserPhone}]]"
+                },
+                "theme": {
+                    "color": "#3399cc"
+                },
+                "modal": {
+                    "ondismiss": function () {
+                        paymentBtn.classList.remove('processing');
+                    }
+                }
+            };
+
+            var rzp = new Razorpay(options);
+            rzp.on('payment.failed', function (response) {
+                paymentBtn.classList.remove('processing');
+                document.getElementById('errorText').textContent = 
+                    response.error.description || 'Payment failed. Please try again.';
+                errorMessage.style.display = 'flex';
+            });
+
+            rzp.open();
+        }
+
+        // Add some interactive effects
+        document.addEventListener('DOMContentLoaded', function() {
+            // Animate progress bar on load
+            const progressBar = document.querySelector('.progress-bar');
+            if (progressBar) {
+                const width = progressBar.style.width;
+                progressBar.style.width = '0%';
+                setTimeout(() => {
+                    progressBar.style.width = width;
+                }, 500);
+            }
+
+            // Add hover effects to payment options
+            const paymentOptions = document.querySelectorAll('.payment-option');
+            paymentOptions.forEach(option => {
+                option.addEventListener('mouseenter', function() {
+                    this.style.transform = 'translateY(-3px) scale(1.02)';
                 });
 
-                document.body.appendChild(form);
-                form.submit();
-            },
-            "prefill": {
-                "email": "[[${session.loggedInUserEmail}]]",
-                "contact": "[[${session.loggedInUserPhone}]]"
-            },
-            "theme": {
-                "color": "#3399cc"
-            },
-            "modal": {
-                "ondismiss": function () {
-                    paymentBtn.classList.remove('processing');
-                }
+                option.addEventListener('mouseleave', function() {
+                    this.style.transform = 'translateY(0) scale(1)';
+                });
+            });
+
+            // Add smooth transitions to discount and tip rows
+            const discountRow = document.getElementById('discountRow');
+            const tipRow = document.getElementById('tipRow');
+            
+            if (discountRow) {
+                discountRow.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
             }
-        };
+            
+            if (tipRow) {
+                tipRow.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
+            }
 
-        var rzp = new Razorpay(options);
+            // Add checkbox change animation
+            const checkbox = document.getElementById('applyDiscount');
+            if (checkbox) {
+                checkbox.addEventListener('change', function() {
+                    const container = document.getElementById('discountCheckboxContainer');
+                    if (this.checked) {
+                        container.style.borderColor = 'var(--success)';
+                        container.style.backgroundColor = '#e8f5e8';
+                    } else {
+                        container.style.borderColor = 'var(--border)';
+                        container.style.backgroundColor = '#f8f9fa';
+                    }
+                });
+            }
 
-        rzp.on('payment.failed', function (response) {
-            paymentBtn.classList.remove('processing');
-            document.getElementById('errorText').textContent =
-                response.error.description || 'Payment failed. Please try again.';
-            errorMessage.style.display = 'flex';
+            // Add tip option hover effects
+            const tipOptions = document.querySelectorAll('.tip-option');
+            tipOptions.forEach(option => {
+                option.addEventListener('mouseenter', function() {
+                    if (!this.classList.contains('selected')) {
+                        this.style.transform = 'translateY(-2px)';
+                        this.style.boxShadow = '0 4px 8px rgba(0, 0, 0, 0.1)';
+                    }
+                });
+
+                option.addEventListener('mouseleave', function() {
+                    if (!this.classList.contains('selected')) {
+                        this.style.transform = 'translateY(0)';
+                        this.style.boxShadow = 'none';
+                    }
+                });
+            });
+
+            // Custom tip input validation
+            const customTipInput = document.getElementById('customTipAmount');
+            if (customTipInput) {
+                customTipInput.addEventListener('input', function() {
+                    const value = parseFloat(this.value);
+                    if (value < 0) {
+                        this.value = '';
+                    } else if (value > 1000) {
+                        this.value = '1000';
+                    }
+                });
+
+                // Apply tip on Enter key
+                customTipInput.addEventListener('keypress', function(e) {
+                    if (e.key === 'Enter') {
+                        applyCustomTip();
+                    }
+                });
+
+                // Clear tip when input is empty
+                customTipInput.addEventListener('blur', function() {
+                    if (!this.value || parseFloat(this.value) === 0) {
+                        // Remove selection if no tip amount
+                        document.querySelectorAll('.tip-option').forEach(option => {
+                            option.classList.remove('selected');
+                        });
+                        tipAmount = 0;
+                        selectedTipOption = null;
+                        updateTipDisplay();
+                        updateTotal();
+                    }
+                });
+            }
+
+            // Add tip section animation on scroll
+            const tipSection = document.querySelector('.tip-section');
+            if (tipSection) {
+                const observer = new IntersectionObserver((entries) => {
+                    entries.forEach(entry => {
+                        if (entry.isIntersecting) {
+                            entry.target.style.animation = 'fadeInUp 0.6s ease forwards';
+                        }
+                    });
+                });
+                observer.observe(tipSection);
+            }
+
+            // Add CSS animation for tip section
+            const style = document.createElement('style');
+            style.textContent = `
+                @keyframes fadeInUp {
+                    from {
+                        opacity: 0;
+                        transform: translateY(30px);
+                    }
+                    to {
+                        opacity: 1;
+                        transform: translateY(0);
+                    }
+                }
+            `;
+            document.head.appendChild(style);
         });
 
-        rzp.open();
-    }
-    
-    // Add some interactive effects
-    document.addEventListener('DOMContentLoaded', function() {
-        // Animate progress bar on load
-        const progressBar = document.querySelector('.progress-bar');
-        if (progressBar) {
-            const width = progressBar.style.width;
-            progressBar.style.width = '0%';
-            setTimeout(() => {
-                progressBar.style.width = width;
-            }, 500);
-        }
-        
-        // Add hover effects to payment options
-        const paymentOptions = document.querySelectorAll('.payment-option');
-        paymentOptions.forEach(option => {
-            option.addEventListener('mouseenter', function() {
-                this.style.transform = 'translateY(-3px) scale(1.02)';
+        // Add function to clear all tips
+        function clearTip() {
+            document.querySelectorAll('.tip-option').forEach(option => {
+                option.classList.remove('selected');
             });
             
-            option.addEventListener('mouseleave', function() {
-                this.style.transform = 'translateY(0) scale(1)';
-            });
+            document.getElementById('customTipInput').classList.remove('show');
+            document.getElementById('customTipAmount').value = '';
+            
+            tipAmount = 0;
+            selectedTipOption = null;
+            updateTipDisplay();
+            updateTotal();
+        }
+
+        // Add double-click to clear tip functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const tipSection = document.querySelector('.tip-section');
+            if (tipSection) {
+                let clickCount = 0;
+                tipSection.addEventListener('click', function(e) {
+                    // Only trigger on tip section background, not on tip options
+                    if (e.target === this || e.target.classList.contains('tip-header') || 
+                        e.target.classList.contains('tip-subtitle')) {
+                        clickCount++;
+                        setTimeout(() => {
+                            if (clickCount === 2) {
+                                clearTip();
+                            }
+                            clickCount = 0;
+                        }, 300);
+                    }
+                });
+            }
         });
-        
-        // Add smooth transitions to discount row
-        const discountRow = document.getElementById('discountRow');
-        if (discountRow) {
-            discountRow.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
-        }
-        
-        // Add checkbox change animation
-        const checkbox = document.getElementById('applyDiscount');
-        if (checkbox) {
-            checkbox.addEventListener('change', function() {
-                const container = document.getElementById('discountCheckboxContainer');
-                if (this.checked) {
-                    container.style.borderColor = 'var(--success)';
-                    container.style.backgroundColor = '#e8f5e8';
-                } else {
-                    container.style.borderColor = 'var(--border)';
-                    container.style.backgroundColor = '#f8f9fa';
-                }
-            });
-        }
-    });
     </script>
 </body>
 </html>
+

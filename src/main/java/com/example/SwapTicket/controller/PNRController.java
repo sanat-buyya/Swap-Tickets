@@ -263,7 +263,7 @@ public class PNRController {
 
         // 5. Apply admin-configured discount if eligible
         double discount = eligibleForDiscount ? referralDiscountAmount : 0.0;
-        double totalAmount = basePrice + handlingCharge + gst - discount;
+        double totalAmount = basePrice + handlingCharge + gst;
 
         // Add attributes to model
         model.addAttribute("passenger", passenger);
