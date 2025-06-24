@@ -35,7 +35,26 @@ public interface PNRRepository extends JpaRepository<PNR, String> {
 	
 	List<PNR> findByJourneyDateBefore(LocalDate date);
 
-	
+	@Query("SELECT p FROM PNR p WHERE p.journeyDate >= CURRENT_DATE AND p.isSold = false")
+    List<PNR> findAllAvailableTickets();
 
-
-}
+	 @Query("SELECT p FROM PNR p WHERE " +
+	           "(LOWER(p.fromStation) LIKE LOWER(CONCAT('%', :fromCode, '%')) OR " +
+	           "LOWER(p.fromStation) LIKE LOWER(CONCAT('%', :fromName, '%'))) AND " +
+	           "(LOWER(p.toStation) LIKE LOWER(CONCAT('%', :toCode, '%')) OR " +
+	           "LOWER(p.toStation) LIKE LOWER(CONCAT('%', :toName, '%')))")
+	    List<PNR> findByStationCodesAndNames(
+	        @Param("fromCode") String fromCode, 
+	        @Param("fromName") String fromName,
+	        @Param("toCode") String toCode, 
+	        @Param("toName") String toName);
+	 
+	 @Query("SELECT p FROM PNR p WHERE " +
+	           "(LOWER(p.fromStation) LIKE LOWER(CONCAT('%', :fromStation, '%')) OR " +
+	           "LOWER(:fromStation) LIKE LOWER(CONCAT('%', p.fromStation, '%'))) AND " +
+	           "(LOWER(p.toStation) LIKE LOWER(CONCAT('%', :toStation, '%')) OR " +
+	           "LOWER(:toStation) LIKE LOWER(CONCAT('%', p.toStation, '%')))")
+	    List<PNR> findByFromStationContainingIgnoreCaseAndToStationContainingIgnoreCase(
+	        @Param("fromStation") String fromStation, 
+	        @Param("toStation") String toStation);
+	 }

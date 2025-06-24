@@ -156,17 +156,18 @@ public class PNRController {
             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate journeyDate,
             @RequestParam(required = false) String gender,
             Model model) {
-
+        
         List<PNR> pnrs;
-
+        
         if (trainNumber != null && !trainNumber.isEmpty()) {
             pnrs = pnrRepository.findByTrainNumber(trainNumber);
         } else if (fromStation != null && toStation != null && !fromStation.isEmpty() && !toStation.isEmpty()) {
-            pnrs = pnrRepository.findByFromStationLikeAndToStationLike(fromStation, toStation);
+            // Try multiple approaches for station matching
+            pnrs = findPNRsByStationsFlexible(fromStation, toStation);
         } else if (journeyDate != null) {
             pnrs = pnrRepository.findByJourneyDate(journeyDate);
         } else {
-            pnrs = pnrRepository.findAll();
+            pnrs = pnrRepository.findAllAvailableTickets(); 
         }
 
         // Remove PNRs with past journey dates
@@ -188,9 +189,10 @@ public class PNRController {
         pnrs = pnrs.stream()
                 .filter(pnr -> !pnr.getPassenger().isEmpty())
                 .toList();
-        
+
         Optional<AdminConfig> configOpt = adminConfigRepository.findById(1L);
-        double adminFee = configOpt.map(AdminConfig::getBookingFee).orElse(0.0); // fallback value
+        double adminFee = configOpt.map(AdminConfig::getBookingFee).orElse(0.0);
+
         model.addAttribute("adminFee", adminFee);
         model.addAttribute("pnrs", pnrs);
         model.addAttribute("filter", filter != null ? filter : "available");
@@ -198,9 +200,97 @@ public class PNRController {
         model.addAttribute("toStation", toStation);
         model.addAttribute("trainNumber", trainNumber);
         model.addAttribute("gender", gender);
+        
         return "buyPNRTickets";
     }
-    
+
+    /**
+     * Flexible station matching that tries multiple approaches
+     */
+    private List<PNR> findPNRsByStationsFlexible(String fromStation, String toStation) {
+        // Extract station information
+        StationInfo fromInfo = extractStationInfo(fromStation);
+        StationInfo toInfo = extractStationInfo(toStation);
+        
+        // Try the most specific match first
+        List<PNR> results = pnrRepository.findByStationCodesAndNames(
+            fromInfo.code, fromInfo.name, toInfo.code, toInfo.name);
+        
+        if (!results.isEmpty()) {
+            return results;
+        }
+        
+        // Try the flexible containing match
+        results = pnrRepository.findByFromStationContainingIgnoreCaseAndToStationContainingIgnoreCase(
+            fromInfo.searchTerm, toInfo.searchTerm);
+        
+        if (!results.isEmpty()) {
+            return results;
+        }
+        
+        // Fallback to original method
+        return pnrRepository.findByFromStationLikeAndToStationLike(fromStation, toStation);
+    }
+
+    /**
+     * Helper class to hold station information
+     */
+    private static class StationInfo {
+        String code = "";
+        String name = "";
+        String searchTerm = "";
+        
+        StationInfo(String code, String name, String searchTerm) {
+            this.code = code != null ? code : "";
+            this.name = name != null ? name : "";
+            this.searchTerm = searchTerm != null ? searchTerm : "";
+        }
+    }
+
+    /**
+     * Extract station information from formatted string
+     */
+    private StationInfo extractStationInfo(String stationInput) {
+        if (stationInput == null || stationInput.trim().isEmpty()) {
+            return new StationInfo("", "", "");
+        }
+        
+        String station = stationInput.trim();
+        String code = "";
+        String name = "";
+        
+        // Handle format: "Station Name (CODE)"
+        if (station.contains("(") && station.contains(")")) {
+            name = station.substring(0, station.indexOf("(")).trim();
+            code = station.substring(station.indexOf("(") + 1, station.indexOf(")")).trim();
+            return new StationInfo(code, name, name + " " + code);
+        }
+        
+        // Handle format: "CODE - Station Name"
+        if (station.contains(" - ")) {
+            String[] parts = station.split(" - ", 2);
+            if (parts[0].length() <= 5 && parts[0].toUpperCase().equals(parts[0])) {
+                // First part looks like a code
+                code = parts[0].trim();
+                name = parts[1].trim();
+            } else {
+                // First part looks like a name
+                name = parts[0].trim();
+                code = parts[1].trim();
+            }
+            return new StationInfo(code, name, name + " " + code);
+        }
+        
+        // Plain station name or code
+        if (station.length() <= 5 && station.toUpperCase().equals(station)) {
+            // Looks like a code
+            return new StationInfo(station, "", station);
+        } else {
+            // Looks like a name
+            return new StationInfo("", station, station);
+        }
+    }
+
     @GetMapping("/preview-amount")
     public String previewAmount(@RequestParam("passengerId") Long passengerId, HttpSession session, Model model) {
     	String email = (String) session.getAttribute("loggedInUserEmail");
