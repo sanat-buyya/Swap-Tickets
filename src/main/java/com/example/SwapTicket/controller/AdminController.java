@@ -131,6 +131,36 @@ import java.util.Optional;
             redirectAttributes.addFlashAttribute("success", "Seller paid successfully!");
             return "redirect:/admin/dashboard";
         }
+        
+        @PostMapping("/cancel-payment/{passengerId}")
+        public String cancelPayment(@PathVariable Long passengerId, RedirectAttributes redirectAttributes, HttpSession session) {
+            if (session.getAttribute("admin") == null) {
+                return "redirect:/login";
+            }
+
+            Optional<Passenger> optionalPassenger = passengerRepository.findById(passengerId);
+            if (optionalPassenger.isEmpty()) {
+                redirectAttributes.addFlashAttribute("error", "Passenger not found");
+                return "redirect:/admin/dashboard";
+            }
+
+            Passenger passenger = optionalPassenger.get();
+
+            // Save cancelled transaction
+            TransactionHistory cancelledTxn = new TransactionHistory();
+            cancelledTxn.setUserEmail(passenger.getSellerEmail());
+            cancelledTxn.setAmount(passenger.getPrice());
+            cancelledTxn.setType(TransactionType.Cancelled);
+            cancelledTxn.setDate(LocalDate.now());
+
+            transactionHistoryRepository.save(cancelledTxn);
+
+            passenger.setSellerPaid(true);
+            passengerRepository.save(passenger);
+
+            redirectAttributes.addFlashAttribute("success", "Payment marked as cancelled.");
+            return "redirect:/admin/dashboard";
+        }
 
 
         @GetMapping("/fee")
@@ -140,22 +170,26 @@ import java.util.Optional;
                     AdminConfig newConfig = new AdminConfig();
                     newConfig.setBookingFee(20); // default
                     newConfig.setReferralDiscountAmount(100.0); // default
+                    newConfig.setExtraFee(10.0); // default
                     return adminConfigRepository.save(newConfig);
                 });
 
             model.addAttribute("bookingFee", config.getBookingFee());
             model.addAttribute("referralDiscount", config.getReferralDiscountAmount());
+            model.addAttribute("extraFee", config.getExtraFee());
             return "adminFee";
         }
 
         @PostMapping("/fee")
         public String updateFee(@RequestParam("fee") double fee,
-                                @RequestParam("referralDiscount") double referralDiscount) {
+                                @RequestParam("referralDiscount") double referralDiscount,
+                                @RequestParam("extraFee") double extraFee) {
             AdminConfig config = adminConfigRepository.findById(1L)
                 .orElseThrow(() -> new RuntimeException("Admin config not found"));
             
             config.setBookingFee(fee);
             config.setReferralDiscountAmount(referralDiscount);
+            config.setExtraFee(extraFee);
             adminConfigRepository.save(config);
             return "redirect:/admin/fee?success";
         }

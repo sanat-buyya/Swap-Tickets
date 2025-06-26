@@ -46,6 +46,8 @@ public class Passenger {
     private boolean paid;
     
     private double adminFee;
+    
+    private double buyerPaid;
 
     // Getters and setters
     public Long getId() {
@@ -182,6 +184,14 @@ public class Passenger {
 
 	public void setAdminFee(double adminFee) {
 	    this.adminFee = adminFee;
+	}
+
+	public double getBuyerPaid() {
+		return buyerPaid;
+	}
+
+	public void setBuyerPaid(double buyerPaid) {
+		this.buyerPaid = buyerPaid;
 	}
 
     

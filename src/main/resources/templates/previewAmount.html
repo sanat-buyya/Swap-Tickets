@@ -647,7 +647,7 @@
         <table class="price-details">
             <tr>
                 <td>Base Price:</td>
-                <td>₹<span th:text="${#numbers.formatDecimal(basePrice, 0, 2)}"></span></td>
+                <td>₹<span th:text="${#numbers.formatDecimal(extraBasePrice, 0, 2)}"></span></td>
             </tr>
             <tr>
                 <td>Handling Charge:</td>
@@ -782,7 +782,8 @@
         const basePrice = [[${basePrice}]];
         const handlingCharge = [[${handlingCharge}]];
         const gst = [[${gst}]];
-        const originalTotal = basePrice + handlingCharge + gst;
+        const extraFee = [[${extraFee}]];
+        const originalTotal = basePrice + handlingCharge + gst +extraFee;
         const passengerId = [[${passenger.id}]];
         const isEligibleForDiscount = [[${eligibleForDiscount}]];
         const referralDiscount = [[${referralDiscountAmount}]];
@@ -937,7 +938,7 @@
             // Set up Razorpay options
             var options = {
                 "key": razorpayKey,
-                "amount": currentTotal * 100, // amount in paise
+                "amount": (currentTotal) * 100, // amount in paise
                 "currency": "INR",
                 "name": "SwapTicket",
                 "description": "Ticket Purchase",

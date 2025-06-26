@@ -11,6 +11,8 @@ public class AdminConfig {
     private double bookingFee;  
     
     private Double referralDiscountAmount;
+    
+    private Double extraFee;
 
 	public Long getId() {
 		return id;
@@ -34,6 +36,14 @@ public class AdminConfig {
 
 	public void setReferralDiscountAmount(Double referralDiscountAmount) {
 		this.referralDiscountAmount = referralDiscountAmount;
+	}
+
+	public double getExtraFee() {
+		return extraFee;
+	}
+
+	public void setExtraFee(double extraFee) {
+		this.extraFee = extraFee;
 	}
     
     

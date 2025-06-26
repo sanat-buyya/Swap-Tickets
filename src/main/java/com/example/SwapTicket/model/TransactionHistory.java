@@ -3,6 +3,7 @@ package com.example.SwapTicket.model;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -21,8 +22,9 @@ public class TransactionHistory {
  private String userEmail;
 
  private double amount;
-
+ 
  @Enumerated(EnumType.STRING)
+ @Column(length = 20)
  private TransactionType type;
 
  private LocalDate date;

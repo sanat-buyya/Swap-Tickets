@@ -192,8 +192,13 @@ public class PNRController {
 
         Optional<AdminConfig> configOpt = adminConfigRepository.findById(1L);
         double adminFee = configOpt.map(AdminConfig::getBookingFee).orElse(0.0);
-
+        
+        double extraFee = adminConfigRepository.findById(1L)
+                .map(AdminConfig::getExtraFee)
+                .orElse(0.0);
+        
         model.addAttribute("adminFee", adminFee);
+        model.addAttribute("extraFee", extraFee);
         model.addAttribute("pnrs", pnrs);
         model.addAttribute("filter", filter != null ? filter : "available");
         model.addAttribute("fromStation", fromStation);
@@ -204,9 +209,6 @@ public class PNRController {
         return "buyPNRTickets";
     }
 
-    /**
-     * Flexible station matching that tries multiple approaches
-     */
     private List<PNR> findPNRsByStationsFlexible(String fromStation, String toStation) {
         // Extract station information
         StationInfo fromInfo = extractStationInfo(fromStation);
@@ -232,9 +234,6 @@ public class PNRController {
         return pnrRepository.findByFromStationLikeAndToStationLike(fromStation, toStation);
     }
 
-    /**
-     * Helper class to hold station information
-     */
     private static class StationInfo {
         String code = "";
         String name = "";
@@ -247,9 +246,6 @@ public class PNRController {
         }
     }
 
-    /**
-     * Extract station information from formatted string
-     */
     private StationInfo extractStationInfo(String stationInput) {
         if (stationInput == null || stationInput.trim().isEmpty()) {
             return new StationInfo("", "", "");
@@ -298,8 +294,13 @@ public class PNRController {
             return "redirect:/login";
         }
         
+        double extraFee = adminConfigRepository.findById(1L)
+                .map(AdminConfig::getExtraFee)
+                .orElse(0.0);
+        
         Passenger passenger = passengerRepository.getPassengerById(passengerId);
         double basePrice = passenger.getPrice();
+        double extraBasePrice = basePrice +extraFee;
 
         // Fetch bookingFee and referralDiscountAmount using Optional
         double handlingCharge = adminConfigRepository.findById(1L)
@@ -309,7 +310,7 @@ public class PNRController {
         double referralDiscountAmount = adminConfigRepository.findById(1L)
             .map(AdminConfig::getReferralDiscountAmount)
             .orElse(0.0);
-
+        
         double gst = basePrice * 0.18;
 
         String loggedInUserEmail = (String) session.getAttribute("loggedInUserEmail");
@@ -351,12 +352,13 @@ public class PNRController {
             }
         }
 
-        // 5. Apply admin-configured discount if eligible
         double discount = eligibleForDiscount ? referralDiscountAmount : 0.0;
-        double totalAmount = basePrice + handlingCharge + gst;
+        double totalAmount = basePrice + handlingCharge + gst + extraFee;
 
         // Add attributes to model
         model.addAttribute("passenger", passenger);
+        model.addAttribute("extraFee", extraFee);
+        model.addAttribute("extraBasePrice", extraBasePrice);
         model.addAttribute("basePrice", basePrice);
         model.addAttribute("referralDiscountAmount", referralDiscountAmount);
         model.addAttribute("handlingCharge", handlingCharge);
@@ -434,11 +436,15 @@ public class PNRController {
         return ResponseEntity.ok(response);
     }
 
-    @PostMapping("/confirm/{passengerId}") 
+    @PostMapping("/confirm/{passengerId}")
     public String confirmPayment(
             @PathVariable Long passengerId,
             @RequestParam("razorpay_payment_id") String razorpayPaymentId,
             @RequestParam("razorpay_order_id") String razorpayOrderId,
+            @RequestParam(value = "discount_applied", defaultValue = "false") boolean discountApplied,
+            @RequestParam(value = "discount_amount", defaultValue = "0") double discountAmount,
+            @RequestParam(value = "tip_amount", defaultValue = "0") double tipAmount,
+            @RequestParam(value = "tip_type", defaultValue = "none") String tipType,
             HttpSession session,
             RedirectAttributes redirectAttributes) {
 
@@ -464,10 +470,14 @@ public class PNRController {
         passenger.setRazorpayPaymentId(razorpayPaymentId);
         passenger.setRazorpayOrderId(razorpayOrderId);
 
-        double ticketPrice = passenger.getPrice();
+        // Calculate amounts exactly like in previewAmount
+        double extraFee = adminConfigRepository.findById(1L)
+                .map(AdminConfig::getExtraFee)
+                .orElse(0.0);
 
-        // Fetch admin-configured fees
-        double adminFee = adminConfigRepository.findById(1L)
+        double basePrice = passenger.getPrice();
+        double extraBasePrice= basePrice+extraFee;
+        double handlingCharge = adminConfigRepository.findById(1L)
                 .map(AdminConfig::getBookingFee)
                 .orElse(0.0);
 
@@ -475,44 +485,52 @@ public class PNRController {
                 .map(AdminConfig::getReferralDiscountAmount)
                 .orElse(0.0);
 
-        passenger.setAdminFee(adminFee);
+        
+        double gst = basePrice * 0.18;
+
+        passenger.setAdminFee(handlingCharge);
 
         // ----- REFERRAL DISCOUNT LOGIC -----
         double discount = 0.0;
-        int[] milestones = {5, 10, 20, 50};
-
         User user = userRepository.findByEmail(buyerEmail);
-        List<User> referredUsers = userRepository.findAllByReferredBy(user.getReferralCode());
 
-        int successfulReferrals = 0;
-        for (User referredUser : referredUsers) {
-            if (passengerRepository.existsByBuyerEmailAndSoldTrue(referredUser.getEmail())) {
-                successfulReferrals++;
+        if (discountApplied) {
+            int[] milestones = {5, 10, 20, 50};
+            List<User> referredUsers = userRepository.findAllByReferredBy(user.getReferralCode());
+            
+            int successfulReferrals = 0;
+            for (User referredUser : referredUsers) {
+                if (passengerRepository.existsByBuyerEmailAndSoldTrue(referredUser.getEmail())) {
+                    successfulReferrals++;
+                }
+            }
+
+            for (int m : milestones) {
+                if (successfulReferrals >= m && !user.getUsedReferralDiscounts().contains(m)) {
+                    discount = referralDiscountAmount;
+                    user.getUsedReferralDiscounts().add(m);
+                    userRepository.save(user);
+                    break; // Only apply one milestone
+                }
             }
         }
 
-        for (int m : milestones) {
-            if (successfulReferrals >= m && !user.getUsedReferralDiscounts().contains(m)) {
-                discount = referralDiscountAmount;
-                user.getUsedReferralDiscounts().add(m);
-                userRepository.save(user);
-                break; // Only apply one milestone
-            }
-        }
-
-        double totalAmount = ticketPrice + adminFee - discount;
-
+        // Calculate total amount exactly like in previewAmount
+        double totalAmount = extraBasePrice + handlingCharge + gst - discount + tipAmount;
+        
+       
         // ----- UPDATE ADMIN WALLET -----
         Optional<Wallet> adminWalletOpt = walletRepository.findByEmail(adminEmail);
         Wallet adminWallet = adminWalletOpt.orElseGet(() -> {
             Wallet newWallet = new Wallet();
             newWallet.setEmail(adminEmail);
-            newWallet.setBalance(0.0);
+            newWallet.setBalance(10000.0);
             return newWallet;
         });
 
         adminWallet.setBalance(adminWallet.getBalance() + totalAmount);
         walletRepository.save(adminWallet);
+        passenger.setBuyerPaid(totalAmount);
 
         // Save passenger
         passengerRepository.save(passenger);
@@ -538,7 +556,7 @@ public class PNRController {
         String currentUserEmail = (String) session.getAttribute("loggedInUserEmail");
 
         List<Passenger> purchasedPassengers = passengerRepository.findByBuyerEmail(currentUserEmail);
-
+        
         model.addAttribute("purchasedPassengers", purchasedPassengers);
        
         return "myPurchasedTickets1";

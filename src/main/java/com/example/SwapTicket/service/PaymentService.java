@@ -8,6 +8,7 @@ import com.example.SwapTicket.repository.WalletRepository;
 import jakarta.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -20,11 +21,14 @@ public class PaymentService {
 
     @Autowired
     private PassengerRepository passengerRepository;
-
+    
+    @Value("${admin.email}")
+	String ADMIN_EMAIL;
+    
     public boolean paySeller(Passenger passenger) {
         Wallet sellerWallet = walletRepository.findByEmail(passenger.getSellerEmail())
                 .orElseThrow(() -> new RuntimeException("Seller wallet not found"));
-        Wallet adminWallet = walletRepository.findByEmail("admin@swapticket.com")
+        Wallet adminWallet = walletRepository.findByEmail(ADMIN_EMAIL)
                 .orElseThrow(() -> new RuntimeException("Admin wallet not found"));
 
         double ticketPrice = passenger.getPrice();
