@@ -14,7 +14,7 @@
             color: #2b2d42;
             line-height: 1.6;
         }
-        
+
         /* Main Container */
         .email-container {
             max-width: 100%;
@@ -22,7 +22,7 @@
             background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
             padding: 40px 20px;
         }
-        
+
         /* Content Box */
         .content-box {
             width: 100%;
@@ -34,46 +34,58 @@
             overflow: hidden;
             border: 1px solid rgba(67, 97, 238, 0.1);
         }
-        
+
         /* Header */
         .email-header {
-            background: linear-gradient(to right,rgb(128, 64, 64) 0%, #4a90e2 100%);
+            background: linear-gradient(to right, rgb(128, 64, 64) 0%, #4a90e2 100%);
             padding: 30px;
             text-align: center;
             color: white;
         }
-        
+
         /* Logo Styles */
         .logo-container {
             display: inline-flex;
             align-items: center;
-            gap: 12px;
+            gap: 15px;
             margin-bottom: 15px;
+            justify-content: center;
         }
-        
+
         .logo-img {
             height: 48px;
             width: 48px;
         }
-        
+
         .logo-text {
-            font-size: 24px;
-    		font-weight: 700;
-    		margin: 0;
-    		padding: 0;
-    		background: linear-gradient(to right, #fff 0%, #ffd166 100%);
-    		-webkit-background-clip: text;
-     		-webkit-text-fill-color: transparent;
-    		letter-spacing: 0.5px;
-    		font-family: Arial, sans-serif;
+            font-size: 28px;
+            font-weight: 800;
+            margin: 0;
+            padding: 0;
+            color: #ffffff;
+            letter-spacing: 1px;
+            font-family: 'Arial Black', Arial, sans-serif;
+            background: linear-gradient(45deg, #ffffff 0%, #ffd166 50%, #ffffff 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            position: relative;
         }
-        
+
+        /* Fallback for browsers that don't support background-clip */
+        .logo-text-fallback {
+            color: #ffffff;
+            text-shadow: 
+                0 2px 4px rgba(0, 0, 0, 0.3),
+                0 0 20px rgba(255, 209, 102, 0.8);
+        }
+
         /* Inner Content */
         .inner-content {
             padding: 40px;
             text-align: center;
         }
-        
+
         /* Typography */
         h1 {
             color: #2b2d42;
@@ -81,23 +93,23 @@
             font-size: 28px;
             font-weight: 700;
         }
-        
+
         p {
             color: #4a5568;
             font-size: 16px;
             margin: 0 0 20px;
         }
-        
+
         .highlight-name {
             font-weight: 600;
             color: #3a0ca3;
         }
-        
+
         /* OTP Box */
         .otp-container {
             margin: 30px 0;
         }
-        
+
         .otp-box {
             background: linear-gradient(135deg, rgba(67, 97, 238, 0.1) 0%, rgba(72, 149, 239, 0.1) 100%);
             border: 2px solid rgba(67, 97, 238, 0.2);
@@ -107,7 +119,7 @@
             display: inline-block;
             backdrop-filter: blur(5px);
         }
-        
+
         .otp-code {
             color: #4361ee;
             margin: 0;
@@ -116,7 +128,7 @@
             font-weight: 800;
             text-shadow: 0 2px 4px rgba(67, 97, 238, 0.1);
         }
-        
+
         /* Button Styles */
         .verify-btn {
             display: inline-block;
@@ -133,32 +145,32 @@
             cursor: pointer;
             font-size: 16px;
         }
-        
+
         .verify-btn:hover {
             transform: translateY(-3px);
             box-shadow: 0 8px 25px rgba(67, 97, 238, 0.4);
         }
-        
+
         /* Footer */
         .footer {
             margin-top: 30px;
             padding-top: 20px;
             border-top: 1px solid rgba(67, 97, 238, 0.1);
         }
-        
+
         .footer-text {
             color: #a0aec0;
             font-size: 12px;
             line-height: 1.5;
             margin: 0;
         }
-        
+
         .footer-link {
             color: #4361ee;
             text-decoration: none;
             font-weight: 500;
         }
-        
+
         /* Decorative Elements */
         .confetti {
             position: absolute;
@@ -168,7 +180,7 @@
             opacity: 0.6;
             border-radius: 50%;
         }
-        
+
         /* Responsive Adjustments */
         @media only screen and (max-width: 640px) {
             .inner-content {
@@ -195,8 +207,13 @@
             .email-header {
                 padding: 25px;
             }
+            
+            .logo-text {
+                font-size: 24px;
+                letter-spacing: 0.5px;
+            }
         }
-        
+
         @media only screen and (max-width: 480px) {
             .email-container {
                 padding: 20px 10px;
@@ -211,6 +228,11 @@
                 width: 40px;
             }
             
+            .logo-text {
+                font-size: 20px;
+                letter-spacing: 0px;
+            }
+            
             .otp-box {
                 padding: 20px 30px;
             }
@@ -218,6 +240,15 @@
             .otp-code {
                 font-size: 24px;
                 letter-spacing: 6px;
+            }
+        }
+
+        /* Email client compatibility */
+        @media screen and (-webkit-min-device-pixel-ratio: 0) {
+            .logo-text {
+                background: linear-gradient(45deg, #ffffff 0%, #ffd166 50%, #ffffff 100%);
+                -webkit-background-clip: text;
+                -webkit-text-fill-color: transparent;
             }
         }
     </style>
@@ -230,24 +261,22 @@
             <!-- Colorful Header -->
             <div class="email-header">
                 <div class="logo-container">
-                    <img src="https://res.cloudinary.com/dgrxmavho/image/upload/v1749496815/swaplogo_zzganr.png" alt="logo" height="50px">
+                    <img src="https://res.cloudinary.com/dgrxmavho/image/upload/v1749496815/swaplogo_zzganr.png" 
+                         alt="SwapTicket Logo" 
+                         class="logo-img">
                     <span class="logo-text">SwapTicket</span>
                 </div>
                 <h1 style="color: white; margin-bottom: 0;">Email Verification</h1>
             </div>
-            
+
             <!-- Main Content -->
             <div class="inner-content">
                 <!-- Greeting -->
-                <p style="font-size: 18px;">
-                    Hello <span class="highlight-name" th:text="${name}"></span>,
-                </p>
-                
+                <p style="font-size: 18px;">Hello <span class="highlight-name" th:text="${name}"></span>,</p>
+
                 <!-- Main Message -->
-                <p>
-                    Welcome to SwapTicket! We're excited to have you on board. To complete your registration and start swapping tickets, please verify your email address:
-                </p>
-                
+                <p>Welcome to SwapTicket! We're excited to have you on board. To complete your registration and start swapping tickets, please verify your email address:</p>
+
                 <!-- OTP Display -->
                 <div class="otp-container">
                     <div class="otp-box">
@@ -257,10 +286,7 @@
                         (This OTP expires in 15 minutes. If you didn't request this, please ignore this email)
                     </p>
                 </div>
-                
-                
-               
-                
+
                 <!-- Footer -->
                 <div class="footer">
                     <p class="footer-text">

@@ -144,6 +144,98 @@
             font-size: 1.1rem;
         }
 
+        /* Search and Filter Section */
+        .search-filter-container {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: var(--card-shadow);
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .search-filter-form {
+            display: flex;
+            gap: 1rem;
+            align-items: end;
+            flex-wrap: wrap;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .form-group label {
+            font-weight: 500;
+            color: var(--dark);
+            font-size: 0.9rem;
+        }
+
+        .form-control {
+            padding: 0.6rem 1rem;
+            border: 2px solid #e9ecef;
+            border-radius: 6px;
+            font-size: 0.95rem;
+            transition: var(--transition);
+            min-width: 200px;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.1);
+        }
+
+        .search-btn {
+            background-color: var(--primary);
+            color: white;
+            padding: 0.6rem 1.5rem;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: var(--transition);
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            height: fit-content;
+        }
+
+        .search-btn:hover {
+            background-color: var(--primary-dark);
+            transform: translateY(-2px);
+        }
+
+        .clear-btn {
+            background-color: var(--danger);
+            color: white;
+            padding: 0.6rem 1rem;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: var(--transition);
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            height: fit-content;
+        }
+
+        .clear-btn:hover {
+            background-color: #c82333;
+            transform: translateY(-2px);
+        }
+
+        .search-results-info {
+            margin-top: 1rem;
+            padding: 0.8rem;
+            background-color: var(--info);
+            color: white;
+            border-radius: 6px;
+            font-size: 0.9rem;
+        }
+
         /* Table Styling */
         .ticket-table-container {
             background-color: white;
@@ -196,8 +288,8 @@
             align-items: center;
             gap: 6px;
         }
-		
-		.cancel-button {
+
+        .cancel-button {
             background-color: red;
             color: white;
             padding: 0.5rem 1rem;
@@ -210,17 +302,15 @@
             align-items: center;
             gap: 6px;
         }
+
         .pay-button:hover {
             background-color: var(--success-hover);
             transform: translateY(-2px);
         }
-		
-		.cancel-button:hover {
+
+        .cancel-button:hover {
             background-color: var(--danger);
             transform: translateY(-2px);
-        }
-        .pay-button i .cancel-button {
-            font-size: 0.8rem;
         }
 
         /* Empty State */
@@ -273,6 +363,15 @@
                 flex-direction: column;
                 align-items: flex-start;
             }
+
+            .search-filter-form {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .form-control {
+                min-width: auto;
+            }
         }
 
         @media (max-width: 768px) {
@@ -282,7 +381,8 @@
                 font-size: 0.9rem;
             }
 
-            .pay-button .cancel-button {
+            .pay-button,
+            .cancel-button {
                 padding: 0.4rem 0.8rem;
                 font-size: 0.85rem;
             }
@@ -290,6 +390,10 @@
             .wallet-balance {
                 padding: 0.6rem 1rem;
                 font-size: 0.9rem;
+            }
+
+            .search-filter-container {
+                padding: 1rem;
             }
         }
 
@@ -307,7 +411,7 @@
                 padding: 0.5rem;
                 font-size: 0.85rem;
             }
-        }
+			        }
 
         /* Animation */
         @keyframes fadeIn {
@@ -318,103 +422,212 @@
         .fade-in {
             animation: fadeIn 0.5s ease forwards;
         }
+
+        /* Highlight search results */
+        .highlight {
+            background-color: #fff3cd;
+            padding: 2px 4px;
+            border-radius: 3px;
+            font-weight: 600;
+        }
     </style>
 </head>
 <body>
-<div class="admin-container">
-    <!-- Mobile Menu Toggle -->
-    <button class="mobile-menu-toggle" id="menuToggle">
-        <i class="fas fa-bars"></i>
-    </button>
+    <div class="admin-container">
+        <!-- Mobile Menu Toggle -->
+        <button class="mobile-menu-toggle" id="menuToggle">
+            <i class="fas fa-bars"></i>
+        </button>
 
-    <!-- Sidebar Navigation -->
-    <nav class="admin-nav" id="adminNav">
-        <h2><i class="fas fa-user-shield"></i> Admin Panel</h2>
-        <ul>
-            <li><a th:href="@{/admin/dashboard}" class="active"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
-            <li><a th:href="@{/admin/fee}"><i class="fas fa-wallet"></i> Admin Fee</a></li>
-            <li><a th:href="@{/admin/users}"><i class="fas fa-users"></i> Users</a></li>
-            <li><a th:href="@{/admin/view-tickets}"><i class="fas fa-ticket-alt"></i> Tickets</a></li>
-            <li><a th:href="@{/admin/transactions}"><i class="fas fa-exchange-alt"></i> Transactions</a></li>
-            <li><a th:href="@{/admin/support/messages}"><i class="fas fa-headset"></i> Support</a></li>
-            <li><a th:href="@{/logout}"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
-        </ul>
-    </nav>
+        <!-- Sidebar Navigation -->
+        <nav class="admin-nav" id="adminNav">
+            <h2><i class="fas fa-user-shield"></i> Admin Panel</h2>
+            <ul>
+                <li><a th:href="@{/admin/dashboard}" class="active"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
+                <li><a th:href="@{/admin/fee}"><i class="fas fa-wallet"></i> Admin Fee</a></li>
+                <li><a th:href="@{/admin/users}"><i class="fas fa-users"></i> Users</a></li>
+                <li><a th:href="@{/admin/view-tickets}"><i class="fas fa-ticket-alt"></i> Tickets</a></li>
+                <li><a th:href="@{/admin/transactions}"><i class="fas fa-exchange-alt"></i> Transactions</a></li>
+                <li><a th:href="@{/admin/support/messages}"><i class="fas fa-headset"></i> Support</a></li>
+                <li><a th:href="@{/logout}"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+            </ul>
+        </nav>
 
-    <!-- Main Content -->
-    <main class="admin-main">
-        <div class="dashboard-header">
-            <h3 class="fade-in">Pending Seller Payments</h3>
-            <div class="wallet-balance fade-in">
-                <i class="fas fa-coins"></i>
-                <span>Admin Wallet Balance: ₹</span>
-                <span th:text="${adminWallet}">0.00</span>
+        <!-- Main Content -->
+        <main class="admin-main">
+            <div class="dashboard-header">
+                <h3 class="fade-in">Pending Seller Payments</h3>
+                <div class="wallet-balance fade-in">
+                    <i class="fas fa-coins"></i>
+                    <span>Admin Wallet Balance: ₹</span>
+                    <span th:text="${adminWallet}">0.00</span>
+                </div>
             </div>
-        </div>
 
-        <div class="ticket-table-container fade-in">
-            <table class="ticket-table">
-                <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>Train</th>
-                    <th>Buyer Email</th>
-                    <th>Seller Mobile</th>
-                    <th>PNR</th>
-                    <th>Price</th>
-                    <th>UPI ID</th>
-                    <th>Action</th>
-                    <th>Remove</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr th:each="passenger, stat : ${passengers}">
-                    <td th:text="${stat.count}">1</td>
-                    <td th:text="${passenger.pnr.trainNumber}">12345</td>
-                    <td th:text="${passenger.buyerEmail}">buyer@example.com</td>
-                    <td th:text="${passenger.pnr.sellerMobile}">9876543210</td>
-                    <td th:text="${passenger.pnr.pnrNumber}">PNR12345</td>
-                    <td th:text="'₹' + ${#numbers.formatDecimal(passenger.price, 1, 2)}">₹500.00</td>
-                    <td th:text="${passenger.pnr.upiId}">upi@bank</td>
-                    <td>
-                        <form th:action="@{'/admin/pay-seller/' + ${passenger.id}}" method="post">
-                            <button class="pay-button" type="submit">
-                                <i class="fas fa-rupee-sign"></i> Pay Seller
-                            </button>
-                        </form>
-                    </td>
-                    <td>
-                        <form th:action="@{'/admin/cancel-payment/' + ${passenger.id}}" method="post">
-                            <button class="cancel-button" type="submit">
-                                 Cancel
-                            </button>
-                        </form>
-                    </td>
-                </tr>
-                <tr th:if="${#lists.isEmpty(passengers)}">
-                    <td colspan="8" class="empty-state">No pending payments to process</td>
-                </tr>
-                </tbody>
-            </table>
-        </div>
-    </main>
-</div>
+            <!-- Search and Filter Section -->
+            <div class="search-filter-container fade-in">
+                <form class="search-filter-form" th:action="@{/admin/dashboard}" method="get">
+                    <div class="form-group">
+                        <label for="search">Search</label>
+                        <input type="text" 
+                               id="search" 
+                               name="search" 
+                               class="form-control" 
+                               placeholder="Enter search term..."
+                               th:value="${currentSearch}">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="filterType">Filter By</label>
+                        <select id="filterType" name="filterType" class="form-control">
+                            <option value="all" th:selected="${currentFilter == 'all'}">All Fields</option>
+                            <option value="pnr" th:selected="${currentFilter == 'pnr'}">PNR Number</option>
+                            <option value="train" th:selected="${currentFilter == 'train'}">Train Number</option>
+                            <option value="buyer" th:selected="${currentFilter == 'buyer'}">Buyer Email</option>
+                            <option value="seller" th:selected="${currentFilter == 'seller'}">Seller Mobile</option>
+                        </select>
+                    </div>
+                    
+                    <button type="submit" class="search-btn">
+                        <i class="fas fa-search"></i>
+                        Search
+                    </button>
+                    
+                    <a th:href="@{/admin/dashboard}" class="clear-btn">
+                        <i class="fas fa-times"></i>
+                        Clear
+                    </a>
+                </form>
 
-<script>
-    // Mobile menu toggle functionality
-    document.getElementById('menuToggle').addEventListener('click', function() {
-        document.getElementById('adminNav').classList.toggle('active');
-    });
+                <!-- Search Results Info -->
+                <div th:if="${currentSearch != null and !currentSearch.isEmpty()}" class="search-results-info">
+                    <i class="fas fa-info-circle"></i>
+                    Showing results for "<strong th:text="${currentSearch}"></strong>" 
+                    in <strong th:text="${currentFilter == 'all' ? 'all fields' : currentFilter}"></strong>
+                    - Found <strong th:text="${#lists.size(passengers)}"></strong> result(s)
+                </div>
+            </div>
 
-    // Close menu when clicking outside on mobile
-    document.addEventListener('click', function(event) {
-        const nav = document.getElementById('adminNav');
-        const toggle = document.getElementById('menuToggle');
-        
-        if (window.innerWidth <= 992 && !nav.contains(event.target) && event.target !== toggle) {
-            nav.classList.remove('active');
+            <!-- Table Section -->
+            <div class="ticket-table-container fade-in">
+                <table class="ticket-table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Train</th>
+                            <th>Buyer Email</th>
+                            <th>Seller Mobile</th>
+                            <th>PNR</th>
+                            <th>Price</th>
+                            <th>UPI ID</th>
+                            <th>Action</th>
+                            <th>Remove</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="passenger, stat : ${passengers}">
+                            <td th:text="${stat.count}">1</td>
+                            <td th:text="${passenger.pnr.trainNumber}">12345</td>
+                            <td th:text="${passenger.buyerEmail}">buyer@example.com</td>
+                            <td th:text="${passenger.pnr.sellerMobile}">9876543210</td>
+                            <td th:text="${passenger.pnr.pnrNumber}">PNR12345</td>
+                            <td th:text="'₹' + ${#numbers.formatDecimal(passenger.price, 1, 2)}">₹500.00</td>
+                            <td th:text="${passenger.pnr.upiId}">upi@bank</td>
+                            <td>
+                                <form th:action="@{'/admin/pay-seller/' + ${passenger.id}}" method="post">
+                                    <button class="pay-button" type="submit">
+                                        <i class="fas fa-rupee-sign"></i> Pay Seller
+                                    </button>
+                                </form>
+                            </td>
+                            <td>
+                                <form th:action="@{'/admin/cancel-payment/' + ${passenger.id}}" method="post">
+                                    <button class="cancel-button" type="submit">
+                                        <i class="fas fa-times"></i> Cancel
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                        <tr th:if="${#lists.isEmpty(passengers)}">
+                            <td colspan="9" class="empty-state">
+                                <div th:if="${currentSearch != null and !currentSearch.isEmpty()}">
+                                    <i class="fas fa-search" style="font-size: 2rem; color: #ccc; margin-bottom: 1rem;"></i>
+                                    <p>No results found for your search criteria.</p>
+                                    <p>Try adjusting your search terms or filter options.</p>
+                                </div>
+                                <div th:unless="${currentSearch != null and !currentSearch.isEmpty()}">
+                                    <i class="fas fa-inbox" style="font-size: 2rem; color: #ccc; margin-bottom: 1rem;"></i>
+                                    <p>No pending payments to process</p>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // Mobile menu toggle functionality
+        document.getElementById('menuToggle').addEventListener('click', function() {
+            document.getElementById('adminNav').classList.toggle('active');
+        });
+
+        // Close menu when clicking outside on mobile
+        document.addEventListener('click', function(event) {
+            const nav = document.getElementById('adminNav');
+            const toggle = document.getElementById('menuToggle');
+            if (window.innerWidth <= 992 && !nav.contains(event.target) && event.target !== toggle) {
+                nav.classList.remove('active');
+            }
+        });
+
+        // Auto-focus search input when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            const searchInput = document.getElementById('search');
+            if (searchInput && !searchInput.value) {
+                searchInput.focus();
+            }
+        });
+
+        // Clear search on Escape key
+        document.getElementById('search').addEventListener('keydown', function(event) {
+            if (event.key === 'Escape') {
+                this.value = '';
+                this.form.submit();
+            }
+        });
+
+        // Submit form on Enter key
+        document.getElementById('search').addEventListener('keypress', function(event) {
+            if (event.key === 'Enter') {
+                event.preventDefault();
+                this.form.submit();
+            }
+        });
+
+        // Highlight search terms in table (optional enhancement)
+        function highlightSearchTerms() {
+            const searchTerm = document.getElementById('search').value.toLowerCase();
+            if (searchTerm) {
+                const tableRows = document.querySelectorAll('.ticket-table tbody tr');
+                tableRows.forEach(row => {
+                    const cells = row.querySelectorAll('td');
+                    cells.forEach(cell => {
+                        const text = cell.textContent.toLowerCase();
+                        if (text.includes(searchTerm)) {
+                            const originalText = cell.textContent;
+                            const regex = new RegExp(`(${searchTerm})`, 'gi');
+                            cell.innerHTML = originalText.replace(regex, '<span class="highlight">$1</span>');
+                        }
+                    });
+                });
+            }
         }
-    });
-</script>
+
+        // Call highlight function after page loads
+        document.addEventListener('DOMContentLoaded', highlightSearchTerms);
+    </script>
 </body>
 </html>
+			

@@ -76,17 +76,51 @@ import java.util.Optional;
     	String ADMIN_EMAIL;
        
         @GetMapping("/dashboard")
-        public String adminDashboard(Model model, HttpSession session) {
+        public String adminDashboard(
+                @RequestParam(value = "search", required = false) String search,
+                @RequestParam(value = "filterType", required = false, defaultValue = "all") String filterType,
+                Model model, 
+                HttpSession session) {
+            
             if (session.getAttribute("admin") == null) {
                 return "redirect:/login";
             }
-
-            List<Passenger> passengers = passengerRepository.findBySoldTrueAndSellerPaidFalse();
+            
+            List<Passenger> passengers;
+            
+            // Apply search and filter logic using repository methods
+            if (search != null && !search.trim().isEmpty()) {
+                String searchTerm = search.trim();
+                
+                switch (filterType.toLowerCase()) {
+                    case "pnr":
+                        passengers = passengerRepository.findBySoldTrueAndSellerPaidFalseAndPnrContaining(searchTerm);
+                        break;
+                    case "train":
+                        passengers = passengerRepository.findBySoldTrueAndSellerPaidFalseAndTrainContaining(searchTerm);
+                        break;
+                    case "buyer":
+                        passengers = passengerRepository.findBySoldTrueAndSellerPaidFalseAndBuyerEmailContaining(searchTerm);
+                        break;
+                    case "seller":
+                        passengers = passengerRepository.findBySoldTrueAndSellerPaidFalseAndSellerMobileContaining(searchTerm);
+                        break;
+                    case "all":
+                    default:
+                        passengers = passengerRepository.findBySoldTrueAndSellerPaidFalseAndSearchAll(searchTerm);
+                        break;
+                }
+            } else {
+                passengers = passengerRepository.findBySoldTrueAndSellerPaidFalse();
+            }
+            
             Wallet adminWallet = walletRepository.findByEmail(ADMIN_EMAIL).orElse(new Wallet());
-
+            
             model.addAttribute("passengers", passengers);
             model.addAttribute("adminWallet", adminWallet.getBalance());
-
+            model.addAttribute("currentSearch", search);
+            model.addAttribute("currentFilter", filterType);
+            
             return "adminDashboard";
         }
 
@@ -195,15 +229,119 @@ import java.util.Optional;
         }
         
         @GetMapping("/view-tickets")
-        public String viewTickets(Model model) {
-            long totalTickets = passengerRepository.count();
-            long soldTickets = passengerRepository.countBySoldTrue();
-            long availableTickets = passengerRepository.countBySoldFalse();
-
+        public String viewTickets(
+                @RequestParam(defaultValue = "0") int page,
+                @RequestParam(defaultValue = "50") int size,
+                @RequestParam(value = "search", required = false) String search,
+                @RequestParam(value = "searchType", required = false, defaultValue = "all") String searchType,
+                @RequestParam(value = "status", required = false, defaultValue = "all") String status,
+                Model model) {
+            
+            Page<Passenger> passengerPage;
+            
+            // Clean up search parameter
+            String cleanSearch = (search != null && !search.trim().isEmpty()) ? search.trim() : null;
+            String cleanStatus = (status != null && !status.equals("all")) ? status : null;
+            
+            // Convert status to boolean for database query
+            Boolean soldStatus = null;
+            if ("sold".equals(cleanStatus)) {
+                soldStatus = true;
+            } else if ("available".equals(cleanStatus)) {
+                soldStatus = false;
+            }
+            
+            // Apply search and status filter
+            if (cleanSearch != null && soldStatus != null) {
+                // Both search and status filter
+                switch (searchType) {
+                    case "pnr":
+                        passengerPage = passengerRepository.findByPnrPnrNumberContainingIgnoreCaseAndSold(
+                            cleanSearch, soldStatus, PageRequest.of(page, size));
+                        break;
+                    case "passenger":
+                        passengerPage = passengerRepository.findByNameContainingIgnoreCaseAndSold(
+                            cleanSearch, soldStatus, PageRequest.of(page, size));
+                        break;
+                    case "seller":
+                        passengerPage = passengerRepository.findBySellerEmailContainingIgnoreCaseAndSold(
+                            cleanSearch, soldStatus, PageRequest.of(page, size));
+                        break;
+                    default: // "all"
+                        passengerPage = passengerRepository.findBySearchAllAndSold(
+                            cleanSearch, soldStatus, PageRequest.of(page, size));
+                        break;
+                }
+            } else if (cleanSearch != null) {
+                // Only search filter
+                switch (searchType) {
+                    case "pnr":
+                        passengerPage = passengerRepository.findByPnrPnrNumberContainingIgnoreCase(
+                            cleanSearch, PageRequest.of(page, size));
+                        break;
+                    case "passenger":
+                        passengerPage = passengerRepository.findByNameContainingIgnoreCase(
+                            cleanSearch, PageRequest.of(page, size));
+                        break;
+                    case "seller":
+                        passengerPage = passengerRepository.findBySellerEmailContainingIgnoreCase(
+                            cleanSearch, PageRequest.of(page, size));
+                        break;
+                    default: // "all"
+                        passengerPage = passengerRepository.findBySearchAll(
+                            cleanSearch, PageRequest.of(page, size));
+                        break;
+                }
+            } else if (soldStatus != null) {
+                // Only status filter
+                passengerPage = passengerRepository.findBySold(soldStatus, PageRequest.of(page, size));
+            } else {
+                // No filters
+                passengerPage = passengerRepository.findAll(PageRequest.of(page, size));
+            }
+            
+            // Calculate statistics based on current filters
+            long totalTickets = passengerPage.getTotalElements();
+            long soldTickets;
+            long availableTickets;
+            
+            if (cleanSearch != null) {
+                // If there's a search, calculate filtered statistics
+                switch (searchType) {
+                    case "pnr":
+                        soldTickets = passengerRepository.countByPnrPnrNumberContainingIgnoreCaseAndSold(cleanSearch, true);
+                        availableTickets = passengerRepository.countByPnrPnrNumberContainingIgnoreCaseAndSold(cleanSearch, false);
+                        break;
+                    case "passenger":
+                        soldTickets = passengerRepository.countByNameContainingIgnoreCaseAndSold(cleanSearch, true);
+                        availableTickets = passengerRepository.countByNameContainingIgnoreCaseAndSold(cleanSearch, false);
+                        break;
+                    case "seller":
+                        soldTickets = passengerRepository.countBySellerEmailContainingIgnoreCaseAndSold(cleanSearch, true);
+                        availableTickets = passengerRepository.countBySellerEmailContainingIgnoreCaseAndSold(cleanSearch, false);
+                        break;
+                    default: // "all"
+                        soldTickets = passengerRepository.countBySearchAllAndSold(cleanSearch, true);
+                        availableTickets = passengerRepository.countBySearchAllAndSold(cleanSearch, false);
+                        break;
+                }
+            } else {
+                // No search, use global statistics
+                soldTickets = passengerRepository.countBySoldTrue();
+                availableTickets = passengerRepository.countBySoldFalse();
+            }
+            
+            // Add model attributes
+            model.addAttribute("passengers", passengerPage.getContent());
+            model.addAttribute("currentPage", page);
+            model.addAttribute("totalPages", passengerPage.getTotalPages());
+            model.addAttribute("currentSize", size);
             model.addAttribute("totalTickets", totalTickets);
             model.addAttribute("soldTickets", soldTickets);
             model.addAttribute("availableTickets", availableTickets);
-            model.addAttribute("passengers", passengerRepository.findAll());
+            model.addAttribute("currentSearch", search);
+            model.addAttribute("currentSearchType", searchType);
+            model.addAttribute("currentStatus", status);
             
             return "adminViewTickets";
         }
@@ -212,37 +350,97 @@ import java.util.Optional;
         public String viewAllUsers(
                 @RequestParam(defaultValue = "0") int page,
                 @RequestParam(defaultValue = "50") int size,
+                @RequestParam(value = "search", required = false) String search,
+                @RequestParam(value = "searchType", required = false, defaultValue = "email") String searchType,
+                @RequestParam(value = "status", required = false) String status,
                 Model model) {
-
-            Page<User> userPage = userRepository.findAll(PageRequest.of(page, size));
-
+            
+            Page<User> userPage;
+            
+            // Clean up search parameter
+            String cleanSearch = (search != null && !search.trim().isEmpty()) ? search.trim() : null;
+            String cleanStatus = (status != null && !status.equals("all")) ? status : null;
+            
+            // Apply search and status filter
+            if (cleanSearch != null && cleanStatus != null) {
+                // Both search and status filter
+                if ("all".equals(searchType)) {
+                    userPage = userRepository.findBySearchAllAndStatus(cleanSearch, cleanStatus, PageRequest.of(page, size));
+                } else {
+                    userPage = userRepository.findByEmailContainingIgnoreCaseAndStatus(cleanSearch, cleanStatus, PageRequest.of(page, size));
+                }
+            } else if (cleanSearch != null) {
+                // Only search filter
+                if ("all".equals(searchType)) {
+                    userPage = userRepository.findBySearchAll(cleanSearch, PageRequest.of(page, size));
+                } else {
+                    userPage = userRepository.findByEmailContainingIgnoreCase(cleanSearch, PageRequest.of(page, size));
+                }
+            } else if (cleanStatus != null) {
+                // Only status filter
+                userPage = userRepository.findByStatus(cleanStatus, PageRequest.of(page, size));
+            } else {
+                // No filters
+                userPage = userRepository.findAll(PageRequest.of(page, size));
+            }
+            
+            // Build user data with additional information
             List<Map<String, Object>> userData = new ArrayList<>();
             for (User user : userPage.getContent()) {
                 Map<String, Object> data = new HashMap<>();
                 data.put("user", user);
-
-                walletRepository.findByEmail(user.getEmail())
-                    .ifPresent(wallet -> data.put("walletBalance", wallet.getBalance()));
-
+                
+                // Get wallet balance
+                Optional<Wallet> wallet = walletRepository.findByEmail(user.getEmail());
+                data.put("walletBalance", wallet.map(Wallet::getBalance).orElse(0.0));
+                
+                // Get referral count
                 int referralCount = userRepository.findAllByReferredBy(user.getReferralCode()).size();
                 data.put("referralCount", referralCount);
-
-                // 👇 Add status to display block/unblock buttons
-                data.put("status", user.getStatus());
-                data.put("blockUrl", "/admin/blockUser/" + user.getId());
-                data.put("unblockUrl", "/admin/unblockUser/" + user.getId());
-
+                
+                // Set status
+                data.put("status", user.getStatus() != null ? user.getStatus() : "ACTIVE");
+                
                 userData.add(data);
             }
-
+            
+            // Add model attributes
             model.addAttribute("userData", userData);
             model.addAttribute("currentPage", page);
             model.addAttribute("totalPages", userPage.getTotalPages());
             model.addAttribute("totalUsers", userPage.getTotalElements());
-
+            model.addAttribute("currentSearch", search);
+            model.addAttribute("currentSearchType", searchType);
+            model.addAttribute("currentStatus", status);
+            
             return "adminViewUsers";
         }
-        
+
+        // Helper method to build redirect URL with preserved parameters (for use in existing block/unblock methods)
+        private String buildRedirectUrl(String baseUrl, String search, String searchType, String status, String page) {
+            StringBuilder url = new StringBuilder("redirect:" + baseUrl);
+            List<String> params = new ArrayList<>();
+            
+            if (search != null && !search.trim().isEmpty()) {
+                params.add("search=" + search);
+            }
+            if (searchType != null && !searchType.equals("email")) {
+                params.add("searchType=" + searchType);
+            }
+            if (status != null && !status.equals("all")) {
+                params.add("status=" + status);
+            }
+            if (page != null && !page.equals("0")) {
+                params.add("page=" + page);
+            }
+            
+            if (!params.isEmpty()) {
+                url.append("?").append(String.join("&", params));
+            }
+            
+            return url.toString();
+        }
+
         @GetMapping("/blockUser/{id}")
         public String blockUser(@PathVariable Long id) {
             User user = userService.findById(id);
@@ -263,29 +461,79 @@ import java.util.Optional;
             return "redirect:/admin/users";
         }
 
-
         @GetMapping("/transactions")
-        public String showTransactions(Model model,
+        public String showTransactions(
+                Model model,
                 @RequestParam(defaultValue = "0") int page,
-                @RequestParam(defaultValue = "50") int size) {
-            List<Passenger> soldPassengers = passengerRepository.findBySoldTrue();
-
-            AdminConfig config = adminConfigRepository.findById(1L).orElse(null);
-            double adminFee = config != null ? config.getBookingFee() : 20; // default fallback
-
-            double totalRevenue = soldPassengers.stream()
-            	    .mapToDouble(Passenger::getAdminFee) // assuming this exists
-            	    .sum();
-
-            Pageable pageable = PageRequest.of(page, size);
-            Page<Passenger> pageResult = passengerRepository.findBySoldTrue(pageable);
+                @RequestParam(defaultValue = "50") int size,
+                @RequestParam(value = "search", required = false) String search,
+                @RequestParam(value = "searchType", required = false, defaultValue = "all") String searchType) {
             
-            model.addAttribute("transactions", soldPassengers);
-            model.addAttribute("totalRevenue", totalRevenue);
-            model.addAttribute("adminFee", adminFee);
+            Page<Passenger> pageResult;
+            Double totalRevenue = 0.0;
+            
+            // Clean up search parameter
+            String cleanSearch = (search != null && !search.trim().isEmpty()) ? search.trim() : null;
+            
+            Pageable pageable = PageRequest.of(page, size);
+            
+            try {
+                // Apply search filter
+                if (cleanSearch != null) {
+                    switch (searchType) {
+                        case "passenger":
+                            pageResult = passengerRepository.findByNameContainingIgnoreCaseAndSold(
+                                cleanSearch, true, pageable);
+                            totalRevenue = passengerRepository.calculateRevenueByNameSearch(cleanSearch);
+                            break;
+                        case "buyer":
+                            pageResult = passengerRepository.findByBuyerEmailContainingIgnoreCaseAndSold(
+                                cleanSearch, true, pageable);
+                            totalRevenue = passengerRepository.calculateRevenueByBuyerEmailSearch(cleanSearch);
+                            break;
+                        case "seller":
+                            pageResult = passengerRepository.findBySellerEmailContainingIgnoreCaseAndSold(
+                                cleanSearch, true, pageable);
+                            totalRevenue = passengerRepository.calculateRevenueBySellerEmailSearch(cleanSearch);
+                            break;
+                        case "paymentId":
+                            pageResult = passengerRepository.findByRazorpayPaymentIdContainingIgnoreCaseAndSold(
+                                cleanSearch, true, pageable);
+                            totalRevenue = passengerRepository.calculateRevenueByPaymentIdSearch(cleanSearch);
+                            break;
+                        default: // "all"
+                            pageResult = passengerRepository.findBySoldTrueAndSearchAllTransactions(cleanSearch, pageable);
+                            totalRevenue = passengerRepository.calculateRevenueBySearchAllTransactions(cleanSearch);
+                            break;
+                    }
+                } else {
+                    // No search filter, get all sold passengers
+                    pageResult = passengerRepository.findBySoldTrue(pageable);
+                    totalRevenue = passengerRepository.calculateTotalRevenue();
+                }
+                
+                // Handle null revenue
+                if (totalRevenue == null) {
+                    totalRevenue = 0.0;
+                }
+                
+            } catch (Exception e) {
+                // Log error and provide fallback
+                System.err.println("Error in transaction search: " + e.getMessage());
+                pageResult = passengerRepository.findBySoldTrue(pageable);
+                totalRevenue = 0.0;
+            }
+            
+            // Add model attributes
             model.addAttribute("transactions", pageResult.getContent());
+            model.addAttribute("totalRevenue", totalRevenue);
             model.addAttribute("totalPages", pageResult.getTotalPages());
             model.addAttribute("currentPage", page);
+            model.addAttribute("currentSize", size);
+            model.addAttribute("totalTransactions", pageResult.getTotalElements());
+            model.addAttribute("currentSearch", search);
+            model.addAttribute("currentSearchType", searchType);
+            
             return "adminTransactions";
         }
 
@@ -320,7 +568,7 @@ import java.util.Optional;
         @GetMapping("/support/close")
         public String closeConversation(@RequestParam String email) {
             supportRepo.deleteByUserEmail(email);
-            return "redirect:/admin/support/messages"; // or wherever you want to redirect
+            return "redirect:/admin/support/messages";
         }
 
 

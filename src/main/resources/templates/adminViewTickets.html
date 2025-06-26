@@ -104,6 +104,111 @@
             color: #777;
         }
 
+        /* Search and Filter Styles */
+        .search-filter-container {
+            background-color: white;
+            padding: 25px;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            margin-bottom: 30px;
+        }
+
+        .search-form {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            align-items: end;
+        }
+
+        .form-group {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 500;
+            color: var(--dark-color);
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e9ecef;
+            border-radius: var(--border-radius);
+            font-size: 1rem;
+            transition: var(--transition);
+            background-color: #fff;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.1);
+        }
+
+        .search-btn {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: var(--border-radius);
+            font-weight: 500;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            white-space: nowrap;
+        }
+
+        .search-btn:hover {
+            background-color: var(--secondary-color);
+            transform: translateY(-2px);
+        }
+
+        .clear-btn {
+            background-color: #6c757d;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: var(--border-radius);
+            font-weight: 500;
+            cursor: pointer;
+            transition: var(--transition);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .clear-btn:hover {
+            background-color: #5a6268;
+            color: white;
+            text-decoration: none;
+        }
+
+        .search-info {
+            background-color: #e3f2fd;
+            border: 1px solid #bbdefb;
+            border-radius: var(--border-radius);
+            padding: 15px;
+            margin-bottom: 20px;
+            color: #1565c0;
+        }
+
+        .search-info i {
+            margin-right: 8px;
+        }
+
+        .highlight {
+            background-color: #fff3cd;
+            padding: 2px 4px;
+            border-radius: 3px;
+            font-weight: 600;
+        }
+
         .table-container {
             background-color: white;
             border-radius: var(--border-radius);
@@ -184,6 +289,8 @@
             background-color: var(--secondary-color);
             transform: translateY(-2px);
             box-shadow: 0 5px 15px rgba(67, 97, 238, 0.3);
+            color: white;
+            text-decoration: none;
         }
 
         .text-center {
@@ -196,16 +303,71 @@
             color: var(--secondary-color);
         }
 
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #6c757d;
+        }
+
+        .empty-state i {
+            font-size: 3rem;
+            margin-bottom: 20px;
+            color: #dee2e6;
+        }
+
+        .empty-state h5 {
+            margin-bottom: 10px;
+            color: #495057;
+        }
+
+        /* Pagination Styles */
+        .pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    margin: 30px 0;
+}
+
+.pagination div {
+    display: inline-block;
+}
+
+.pagination a, .pagination span {
+    display: inline-block;
+    padding: 10px 15px;
+    border: 1px solid #dee2e6;
+    border-radius: var(--border-radius);
+    color: var(--primary-color);
+    text-decoration: none;
+    transition: var(--transition);
+}
+
+.pagination a:hover {
+    background-color: var(--primary-color);
+    color: white;
+    border-color: var(--primary-color);
+}
+
+.pagination .active a, .pagination .active span {
+    background-color: var(--primary-color);
+    color: white;
+    border-color: var(--primary-color);
+}
+
+.pagination .disabled span {
+    color: #6c757d;
+    cursor: not-allowed;
+}
+
         /* Responsive adjustments */
         @media (max-width: 992px) {
             h1 {
                 font-size: 1.8rem;
             }
-            
             .stat-box strong {
                 font-size: 1.8rem;
             }
-            
             th, td {
                 padding: 12px 10px;
             }
@@ -216,27 +378,28 @@
                 font-size: 1.6rem;
                 padding-bottom: 10px;
             }
-            
             h1::after {
                 width: 60px;
                 height: 3px;
             }
-            
             .dashboard-stats {
                 grid-template-columns: 1fr;
             }
-            
             .stat-box {
                 padding: 20px;
             }
-            
             .stat-box strong {
                 font-size: 1.6rem;
             }
-            
             .btn {
                 padding: 8px 15px;
                 font-size: 0.9rem;
+            }
+            .search-form {
+                flex-direction: column;
+            }
+            .form-group {
+                min-width: 100%;
             }
         }
 
@@ -244,27 +407,25 @@
             body {
                 padding: 15px 10px;
             }
-            
             h1 {
                 font-size: 1.4rem;
                 margin: 10px 0 20px;
             }
-            
             .stat-box {
                 padding: 15px;
             }
-            
             .stat-box h4 {
                 font-size: 0.9rem;
                 margin-bottom: 10px;
             }
-            
             .stat-box strong {
                 font-size: 1.4rem;
             }
-            
             .table-container {
                 border-radius: 6px;
+            }
+            .search-filter-container {
+                padding: 20px;
             }
         }
     </style>
@@ -291,8 +452,84 @@
             </div>
         </div>
 
+        <!-- Search and Filter Section -->
+        <div class="search-filter-container">
+            <form class="search-form" method="get" action="/admin/view-tickets">
+                <div class="form-group">
+                    <label for="search">Search</label>
+                    <input type="text" 
+                           id="search" 
+                           name="search" 
+                           class="form-control" 
+                           placeholder="Search by PNR, passenger name, seller email..."
+                           th:value="${currentSearch}">
+                </div>
+                
+                <div class="form-group">
+                    <label for="searchType">Search In</label>
+                    <select id="searchType" name="searchType" class="form-control">
+                        <option value="all" th:selected="${currentSearchType == 'all'}">All Fields</option>
+                        <option value="pnr" th:selected="${currentSearchType == 'pnr'}">PNR Only</option>
+                        <option value="passenger" th:selected="${currentSearchType == 'passenger'}">Passenger Name</option>
+                        <option value="seller" th:selected="${currentSearchType == 'seller'}">Seller Email</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="status">Status</label>
+                    <select id="status" name="status" class="form-control">
+                        <option value="all" th:selected="${currentStatus == 'all'}">All Status</option>
+                        <option value="available" th:selected="${currentStatus == 'available'}">Available</option>
+						                        <option value="sold" th:selected="${currentStatus == 'sold'}">Sold</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="size">Show</label>
+                    <select id="size" name="size" class="form-control">
+                        <option value="25" th:selected="${currentSize == 25}">25 per page</option>
+                        <option value="50" th:selected="${currentSize == 50}">50 per page</option>
+                        <option value="100" th:selected="${currentSize == 100}">100 per page</option>
+                    </select>
+                </div>
+                
+                <div>
+                    <button type="submit" class="search-btn">
+                        <i class="fas fa-search"></i> Search
+                    </button>
+                </div>
+                
+                <div>
+                    <a href="/admin/view-tickets" class="clear-btn">
+                        <i class="fas fa-times"></i> Clear
+                    </a>
+                </div>
+            </form>
+        </div>
+
+        <!-- Search Results Info -->
+        <div th:if="${currentSearch != null and !currentSearch.isEmpty()}" class="search-info">
+            <i class="fas fa-info-circle"></i>
+            <span>Showing results for: <span class="highlight" th:text="${currentSearch}"></span></span>
+            <span th:if="${currentStatus != null and currentStatus != 'all'}"> 
+                | Status: <span class="highlight" th:text="${currentStatus}"></span>
+            </span>
+            <span> | Found <strong th:text="${totalTickets}">0</strong> tickets</span>
+        </div>
+
         <div class="table-container">
-            <table>
+            <div th:if="${passengers.isEmpty()}" class="empty-state">
+                <i class="fas fa-ticket-alt"></i>
+                <h5>No tickets found</h5>
+                <p th:if="${currentSearch != null and !currentSearch.isEmpty()}">
+                    Try adjusting your search criteria or clear the filters.
+                </p>
+                <p th:unless="${currentSearch != null and !currentSearch.isEmpty()}">
+                    No tickets have been added to the system yet.
+                </p>
+            </div>
+
+            <table th:unless="${passengers.isEmpty()}">
                 <thead>
                     <tr>
                         <th><span class="emoji">📄</span> PNR</th>
@@ -308,9 +545,9 @@
                     </tr>
                 </thead>
                 <tbody>
-                	<tr th:each="passenger : ${passengers}">
+                    <tr th:each="passenger : ${passengers}">
                         <td th:text="${passenger.pnr.pnrNumber}">PNR12345</td>
-                    	<td th:text="${passenger.name}">Name</td>
+                        <td th:text="${passenger.name}">Name</td>
                         <td th:text="${passenger.age}">Age</td>
                         <td th:text="${passenger.gender}">Gender</td>
                         <td th:text="${passenger.coach}">Coach</td>
@@ -319,17 +556,50 @@
                         <td th:text="${passenger.sellerEmail}">Seller</td>
                         <td th:text="${passenger.buyerEmail ?: 'N/A'}">Buyer</td>
                         <td>
-                            <span class="status-badge" 
+                            <span class="status-badge"
                                   th:classappend="${passenger.sold} ? 'sold' : 'available'"
-                                  th:text="${passenger.sold} ? 'Sold' : 'Available'">
-                                Status
-                            </span>
+                                  th:text="${passenger.sold} ? 'Sold' : 'Available'">Status</span>
                         </td>
                     </tr>
                 </tbody>
             </table>
         </div>
-        
+
+            <!-- Pagination -->
+<div th:if="${totalPages > 1}" class="pagination">
+    <!-- Previous Page -->
+    <div th:class="${currentPage == 0} ? 'disabled' : ''">
+        <a th:if="${currentPage > 0}" 
+           th:href="@{/admin/view-tickets(page=${currentPage - 1}, size=${currentSize}, search=${currentSearch}, searchType=${currentSearchType}, status=${currentStatus})}">
+            <i class="fas fa-chevron-left"></i> Previous
+        </a>
+        <span th:if="${currentPage == 0}">
+            <i class="fas fa-chevron-left"></i> Previous
+        </span>
+    </div>
+
+    <!-- Page Numbers -->
+    <div th:each="pageNum : ${#numbers.sequence(0, totalPages - 1)}" 
+         th:if="${pageNum >= currentPage - 2 and pageNum <= currentPage + 2}"
+         th:class="${pageNum == currentPage} ? 'active' : ''">
+        <a th:if="${pageNum != currentPage}"
+           th:href="@{/admin/view-tickets(page=${pageNum}, size=${currentSize}, search=${currentSearch}, searchType=${currentSearchType}, status=${currentStatus})}"
+           th:text="${pageNum + 1}">1</a>
+        <span th:if="${pageNum == currentPage}" th:text="${pageNum + 1}">1</span>
+    </div>
+
+    <!-- Next Page -->
+    <div th:class="${currentPage >= totalPages - 1} ? 'disabled' : ''">
+        <a th:if="${currentPage < totalPages - 1}"
+           th:href="@{/admin/view-tickets(page=${currentPage + 1}, size=${currentSize}, search=${currentSearch}, searchType=${currentSearchType}, status=${currentStatus})}">
+            Next <i class="fas fa-chevron-right"></i>
+        </a>
+        <span th:if="${currentPage >= totalPages - 1}">
+            Next <i class="fas fa-chevron-right"></i>
+        </span>
+    </div>
+</div>
+
         <div class="text-center">
             <a href="/admin/dashboard" class="btn btn-primary">
                 <i class="fas fa-arrow-left"></i> Back to Dashboard
@@ -338,3 +608,4 @@
     </div>
 </body>
 </html>
+						

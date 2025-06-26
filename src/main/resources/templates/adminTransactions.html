@@ -16,14 +16,14 @@
             --danger-color: #e74a3b;
             --text-color: #5a5c69;
         }
-        
+
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background-color: #f8f9fc;
             color: var(--text-color);
             padding: 20px;
         }
-        
+
         .container {
             max-width: 1200px;
             margin: 0 auto;
@@ -32,7 +32,7 @@
             box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15);
             padding: 2rem;
         }
-        
+
         h2 {
             color: var(--primary-color);
             margin-bottom: 1.5rem;
@@ -40,7 +40,7 @@
             padding-bottom: 0.5rem;
             border-bottom: 1px solid #e3e6f0;
         }
-        
+
         .revenue-summary {
             background-color: var(--secondary-color);
             padding: 1rem;
@@ -48,26 +48,120 @@
             margin-bottom: 2rem;
             font-size: 1.1rem;
         }
-        
+
         .revenue-summary strong {
             color: var(--primary-color);
             font-size: 1.2em;
         }
-        
+
+        /* Search Section Styles */
+        .search-section {
+            background-color: #f8f9fc;
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin-bottom: 2rem;
+            border: 1px solid #e3e6f0;
+        }
+
+        .search-form {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            align-items: end;
+        }
+
+        .form-group {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: var(--text-color);
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 0.5rem;
+            border: 1px solid #d1d3e2;
+            border-radius: 0.35rem;
+            font-size: 0.875rem;
+        }
+
+        .search-btn, .clear-btn {
+            padding: 0.5rem 1.5rem;
+            border: none;
+            border-radius: 0.35rem;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .search-btn {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .search-btn:hover {
+            background-color: #2e59d9;
+            color: white;
+        }
+
+        .clear-btn {
+            background-color: #6c757d;
+            color: white;
+        }
+
+        .clear-btn:hover {
+            background-color: #545b62;
+            color: white;
+        }
+
+        .search-info {
+            background-color: #d1ecf1;
+            color: #0c5460;
+            padding: 0.75rem 1rem;
+            border-radius: 0.35rem;
+            margin-bottom: 1rem;
+            border-left: 4px solid #bee5eb;
+        }
+
+        .search-info .highlight {
+            font-weight: 600;
+            color: #0a58ca;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 3rem 1rem;
+            color: #6c757d;
+        }
+
+        .empty-state i {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            color: #dee2e6;
+        }
+
         .table-container {
             overflow-x: auto;
             border-radius: 8px;
             box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
             margin-bottom: 2rem;
         }
-        
+
         table {
             width: 100%;
             border-collapse: collapse;
             background: white;
             min-width: 600px;
         }
-        
+
         th {
             background-color: var(--primary-color);
             color: white;
@@ -75,32 +169,32 @@
             padding: 1rem;
             text-align: left;
         }
-        
+
         td {
             padding: 0.75rem 1rem;
             border-bottom: 1px solid #e3e6f0;
         }
-        
+
         tr:hover {
             background-color: rgba(78, 115, 223, 0.05);
         }
-        
+
         .price {
             font-weight: 600;
             color: var(--success-color);
         }
-        
+
         .fee {
             font-weight: 600;
             color: var(--warning-color);
         }
-        
+
         .payment-id {
             font-family: monospace;
             font-size: 0.9em;
             color: var(--text-color);
         }
-        
+
         /* Pagination Styles */
         .pagination {
             display: flex;
@@ -109,11 +203,11 @@
             padding: 0;
             margin: 2rem 0;
         }
-        
+
         .pagination li {
             margin: 0 0.25rem;
         }
-        
+
         .pagination a, .pagination span {
             display: inline-block;
             padding: 0.5rem 1rem;
@@ -123,34 +217,42 @@
             text-decoration: none;
             transition: all 0.3s ease;
         }
-        
+
         .pagination a:hover {
             background-color: #e9ecef;
         }
-        
+
         .pagination .active a {
             background-color: var(--primary-color);
             color: white;
             border-color: var(--primary-color);
         }
-        
+
         .pagination .disabled a {
             color: #6c757d;
             pointer-events: none;
             background-color: #e9ecef;
             border-color: #dee2e6;
         }
-        
+
         .back-btn {
             display: inline-block;
             margin-top: 1rem;
             padding: 0.5rem 1.5rem;
             border-radius: 0.35rem;
         }
-        
+
         @media (max-width: 992px) {
             .container {
                 padding: 1.5rem;
+            }
+            
+            .search-form {
+                flex-direction: column;
+            }
+            
+            .form-group {
+                min-width: 100%;
             }
             
             table {
@@ -161,7 +263,7 @@
                 padding: 0.75rem;
             }
         }
-        
+
         @media (max-width: 768px) {
             .container {
                 padding: 1rem;
@@ -184,7 +286,7 @@
                 padding: 0.4rem 0.8rem;
             }
         }
-        
+
         @media (max-width: 576px) {
             body {
                 padding: 10px;
@@ -209,70 +311,139 @@
     </style>
 </head>
 <body>
-<div class="container">
+    <div class="container">
+        <h2><i class="fas fa-exchange-alt"></i> Transaction History</h2>
+        
+        <div class="revenue-summary">
+            <i class="fas fa-coins"></i> <strong>Total Admin Revenue:</strong> ₹<span th:text="${totalRevenue}">0</span>
+            <span class="float-end">Page <strong th:text="${currentPage + 1}">1</strong> of <strong th:text="${totalPages}">1</strong></span>
+        </div>
 
-    <h2><i class="fas fa-exchange-alt"></i> Transaction History</h2>
+        <!-- Search Section -->
+        <div class="search-section">
+            <form method="get" action="/admin/transactions" class="search-form">
+                <div class="form-group">
+                    <label for="search">Search</label>
+                    <input type="text" id="search" name="search" class="form-control" 
+                           th:value="${currentSearch}" placeholder="Enter search term...">
+                </div>
+                
+                <div class="form-group">
+                    <label for="searchType">Search By</label>
+                    <select id="searchType" name="searchType" class="form-control">
+                        <option value="all" th:selected="${currentSearchType == 'all'}">All Fields</option>
+                        <option value="passenger" th:selected="${currentSearchType == 'passenger'}">Passenger Name</option>
+                        <option value="buyer" th:selected="${currentSearchType == 'buyer'}">Buyer Email</option>
+                        <option value="seller" th:selected="${currentSearchType == 'seller'}">Seller Email</option>
+                        <option value="paymentId" th:selected="${currentSearchType == 'paymentId'}">Payment ID</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="size">Show</label>
+                    <select id="size" name="size" class="form-control">
+                        <option value="25" th:selected="${currentSize == 25}">25 per page</option>
+                        <option value="50" th:selected="${currentSize == 50}">50 per page</option>
+                        <option value="100" th:selected="${currentSize == 100}">100 per page</option>
+                    </select>
+                </div>
+                
+                <div>
+                    <button type="submit" class="search-btn">
+                        <i class="fas fa-search"></i> Search
+                    </button>
+                </div>
+                
+                <div>
+                    <a href="/admin/transactions" class="clear-btn">
+                        <i class="fas fa-times"></i> Clear
+                    </a>
+                </div>
+            </form>
+        </div>
 
-    <div class="revenue-summary">
-        <i class="fas fa-coins"></i> <strong>Total Admin Revenue:</strong> ₹<span th:text="${totalRevenue}">0</span>
-        <span class="float-end">Page <strong th:text="${currentPage + 1}">1</strong> of <strong th:text="${totalPages}">1</strong></span>
+        <!-- Search Results Info -->
+        <div th:if="${currentSearch != null and !currentSearch.isEmpty()}" class="search-info">
+            <i class="fas fa-info-circle"></i>
+            <span>Showing results for: <span class="highlight" th:text="${currentSearch}"></span></span>
+            <span> | Found <strong th:text="${totalTransactions}">0</strong> transactions</span>
+        </div>
+
+        <div class="table-container">
+            <div th:if="${transactions.isEmpty()}" class="empty-state">
+                <i class="fas fa-exchange-alt"></i>
+                <h5>No transactions found</h5>
+                <p th:if="${currentSearch != null and !currentSearch.isEmpty()}">
+                    Try adjusting your search criteria or clear the filters.
+                </p>
+                <p th:unless="${currentSearch != null and !currentSearch.isEmpty()}">
+                    No transactions have been completed yet.
+                </p>
+            </div>
+
+            <table th:unless="${transactions.isEmpty()}">
+                <thead>
+                    <tr>
+                        <th><i class="fas fa-user"></i> Passenger Name</th>
+                        <th><i class="fas fa-user-check"></i> Buyer Email</th>
+                        <th><i class="fas fa-user-tie"></i> Seller Email</th>
+                        <th><i class="fas fa-rupee-sign"></i> Price</th>
+                        <th><i class="fas fa-percentage"></i> Admin Fee</th>
+                        <th><i class="fas fa-credit-card"></i> Payment ID</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="txn : ${transactions}">
+                        <td th:text="${txn.name}">Name</td>
+                        <td th:text="${txn.buyerEmail}">Buyer</td>
+                        <td th:text="${txn.sellerEmail}">Seller</td>
+                        <td class="price">₹<span th:text="${txn.price}">0</span></td>
+                        <td class="fee">₹<span th:text="${txn.adminFee}">20</span></td>
+                        <td class="payment-id" th:text="${txn.razorpayPaymentId}">PAYID</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Pagination -->
+        <nav th:if="${totalPages > 1}">
+            <ul class="pagination">
+                <li th:class="${currentPage == 0} ? 'disabled'">
+                    <a th:href="@{/admin/transactions(page=${currentPage - 1}, size=${currentSize}, search=${currentSearch}, searchType=${currentSearchType})}" 
+                       th:unless="${currentPage == 0}">
+                        <i class="fas fa-chevron-left"></i> Previous
+                    </a>
+                    <span th:if="${currentPage == 0}">
+                        <i class="fas fa-chevron-left"></i> Previous
+                    </span>
+                </li>
+
+                <li th:each="i : ${#numbers.sequence(0, totalPages - 1)}"
+                    th:if="${i >= currentPage - 2 and i <= currentPage + 2}"
+                    th:class="${i == currentPage} ? 'active'">
+                    <a th:href="@{/admin/transactions(page=${i}, size=${currentSize}, search=${currentSearch}, searchType=${currentSearchType})}" 
+                       th:text="${i + 1}">1</a>
+                </li>
+
+                                <li th:class="${currentPage == totalPages - 1} ? 'disabled'">
+                    <a th:href="@{/admin/transactions(page=${currentPage + 1}, size=${currentSize}, search=${currentSearch}, searchType=${currentSearchType})}" 
+                       th:unless="${currentPage == totalPages - 1}">
+                        Next <i class="fas fa-chevron-right"></i>
+                    </a>
+                    <span th:if="${currentPage == totalPages - 1}">
+                        Next <i class="fas fa-chevron-right"></i>
+                    </span>
+                </li>
+            </ul>
+        </nav>
+
+        <div class="text-center">
+            <a href="/admin/dashboard" class="btn btn-primary back-btn">
+                <i class="fas fa-arrow-left"></i> Back to Dashboard
+            </a>
+        </div>
     </div>
 
-    <div class="table-container">
-        <table>
-            <thead>
-                <tr>
-                    <th>Passenger Name</th>
-                    <th>Buyer Email</th>
-                    <th>Seller Email</th>
-                    <th>Price</th>
-                    <th>Admin Fee</th>
-                    <th>Payment ID</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr th:each="txn : ${transactions}">
-                    <td th:text="${txn.name}">Name</td>
-                    <td th:text="${txn.buyerEmail}">Buyer</td>
-                    <td th:text="${txn.sellerEmail}">Seller</td>
-                    <td class="price">₹<span th:text="${txn.price}">0</span></td>
-                    <td class="fee">₹<span th:text="${txn.adminFee}">20</span></td>
-                    <td class="payment-id" th:text="${txn.razorpayPaymentId}">PAYID</td>
-                </tr>
-            </tbody>
-        </table>
-    </div>
-
-    <nav th:if="${totalPages > 1}">
-        <ul class="pagination">
-            <li th:class="${currentPage == 0} ? 'disabled'">
-                <a th:href="@{/admin/transactions(page=${currentPage - 1})}" th:unless="${currentPage == 0}">
-                    <i class="fas fa-chevron-left"></i> Previous
-                </a>
-                <span th:if="${currentPage == 0}"><i class="fas fa-chevron-left"></i> Previous</span>
-            </li>
-            
-            <li th:each="i : ${#numbers.sequence(0, totalPages - 1)}"
-                th:class="${i == currentPage} ? 'active'">
-                <a th:href="@{/admin/transactions(page=${i})}" th:text="${i + 1}">1</a>
-            </li>
-            
-            <li th:class="${currentPage == totalPages - 1} ? 'disabled'">
-                <a th:href="@{/admin/transactions(page=${currentPage + 1})}" th:unless="${currentPage == totalPages - 1}">
-                    Next <i class="fas fa-chevron-right"></i>
-                </a>
-                <span th:if="${currentPage == totalPages - 1}">Next <i class="fas fa-chevron-right"></i></span>
-            </li>
-        </ul>
-    </nav>
-
-    <div class="text-center">
-        <a href="/admin/dashboard" class="btn btn-primary back-btn">
-            <i class="fas fa-arrow-left"></i> Back to Dashboard
-        </a>
-    </div>
-</div>
-
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
