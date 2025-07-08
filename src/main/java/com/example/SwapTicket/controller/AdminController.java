@@ -31,6 +31,10 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.ResponseEntity;
+import org.springframework.messaging.handler.annotation.MessageMapping;
+import org.springframework.messaging.handler.annotation.Payload;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -71,6 +75,9 @@ import java.util.Optional;
         
         @Autowired
         private AdminConfigRepository adminConfigRepository;
+        
+        @Autowired
+        private SimpMessagingTemplate messagingTemplate;    
         
         @Value("${admin.email}")
     	String ADMIN_EMAIL;
@@ -541,7 +548,7 @@ import java.util.Optional;
         public String viewSupportUserList(Model model) {
             List<String> userEmails = supportRepo.findDistinctUserEmails();
             model.addAttribute("userEmails", userEmails);
-            return "adminSupportUserList"; 
+            return "adminSupportUserList";
         }
 
         @GetMapping("/support/chat")
@@ -549,29 +556,36 @@ import java.util.Optional;
             List<SupportMessage> messages = supportRepo.findByUserEmailOrderByTimestampAsc(email);
             model.addAttribute("messages", messages);
             model.addAttribute("userEmail", email);
-            return "adminUserChat"; 
+            return "adminUserChat";
         }
 
-        @PostMapping("/support/reply")
-        public String replyToSupport(@RequestParam String reply,
-                                     @RequestParam String email) {
-            SupportMessage msg = new SupportMessage();
-            msg.setUserEmail(email);
-            msg.setAdminReply(reply);
-            msg.setResolved(true);
-            msg.setTimestamp(LocalDateTime.now());
-            supportRepo.save(msg);
-            return "redirect:/admin/support/chat?email=" + email;
-        }
-        
+//        @PostMapping("/support/reply")
+//        @ResponseBody
+//        public ResponseEntity<String> replyToSupport(@RequestParam String reply,
+//                                                   @RequestParam String email) {
+//            SupportMessage msg = new SupportMessage();
+//            msg.setUserEmail(email);
+//            msg.setAdminReply(reply);
+//            msg.setResolved(true);
+//            msg.setTimestamp(LocalDateTime.now());
+//            
+//            SupportMessage savedMessage = supportRepo.save(msg);
+//            
+//            // Send WebSocket notification to user (updated channel)
+//            messagingTemplate.convertAndSend("/topic/user/" + email, savedMessage);
+//            
+//            // Also send to admin channel for real-time update
+//            messagingTemplate.convertAndSend("/topic/admin/" + email, savedMessage);
+//            
+//            return ResponseEntity.ok("Reply sent successfully");
+//        }
+
         @Transactional
         @GetMapping("/support/close")
         public String closeConversation(@RequestParam String email) {
             supportRepo.deleteByUserEmail(email);
             return "redirect:/admin/support/messages";
         }
-
-
 
 
 }

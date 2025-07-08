@@ -12,7 +12,6 @@ import org.springframework.data.domain.Pageable;
 
 public interface UserRepository extends JpaRepository<User, Long> {
     
-    // Existing methods
     User findByEmail(String email);
     boolean existsByEmail(String email);
     Page<User> findAll(Pageable pageable);

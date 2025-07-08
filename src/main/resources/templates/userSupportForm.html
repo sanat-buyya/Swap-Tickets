@@ -6,6 +6,11 @@
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap" rel="stylesheet">
     <link rel="icon" href="/docs/swaplogo.png" type="image/png">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    
+    <!-- WebSocket Dependencies -->
+    <script src="https://cdn.jsdelivr.net/npm/sockjs-client/dist/sockjs.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/stompjs/lib/stomp.min.js"></script>
+    
     <style>
         * {
             margin: 0;
@@ -23,7 +28,7 @@
             background-color: #e5ddd5;
             color: #4a4a4a;
             height: 100vh;
-            height: 100dvh; /* Dynamic viewport height for mobile */
+            height: 100dvh;
             display: flex;
             flex-direction: column;
             overflow: hidden;
@@ -39,7 +44,7 @@
             box-shadow: none;
             overflow: hidden;
             height: 100vh;
-            height: 100dvh; /* Dynamic viewport height */
+            height: 100dvh;
             display: flex;
             flex-direction: column;
             width: 100%;
@@ -71,7 +76,6 @@
             line-height: 1.2;
         }
 
-        /* Active status with icon */
         .active-status {
             display: flex;
             align-items: center;
@@ -90,49 +94,24 @@
             animation: pulse 2s infinite;
         }
 
+        .connection-status {
+            width: 8px;
+            height: 8px;
+            background-color: #e74c3c;
+            border-radius: 50%;
+            margin-right: 5px;
+            transition: background-color 0.3s;
+        }
+
+        .connection-status.connected {
+            background-color: #25d366;
+        }
+
         @keyframes pulse {
             0% { box-shadow: 0 0 6px rgba(37, 211, 102, 0.8); }
             50% { box-shadow: 0 0 12px rgba(37, 211, 102, 1); }
             100% { box-shadow: 0 0 6px rgba(37, 211, 102, 0.8); }
         }
-
-        .chat-box {
-            flex: 1;
-            padding: 15px;
-            overflow-y: auto;
-            overflow-x: hidden;
-            /* Updated background with light logo wallpaper */
-            background: 
-                linear-gradient(rgba(255, 255, 255, 0.85), rgba(255, 255, 255, 0.85)),
-                url('https://res.cloudinary.com/dgrxmavho/image/upload/v1751145067/swaplogo_j5aqzu.png');
-            background-size: 200px 200px;
-            background-position: center;
-            background-repeat: repeat;
-            background-attachment: local;
-            display: flex;
-            flex-direction: column;
-            min-height: 0;
-            -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
-            position: relative;
-        }
-
-        /* Alternative pattern background - uncomment if you prefer this */
-        /*
-        .chat-box::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background-image: url('https://res.cloudinary.com/dgrxmavho/image/upload/v1751144582/Train_Ticket_Journey_Logo_s3vjpy.png');
-            background-size: 150px 150px;
-            background-repeat: repeat;
-            opacity: 0.05;
-            pointer-events: none;
-            z-index: 0;
-        }
-        */
 
         .chat-header a {
             color: #fff;
@@ -149,6 +128,24 @@
         .chat-header a:focus {
             color: #ffd166;
             outline: none;
+        }
+
+        .chat-box {
+            flex: 1;
+            padding: 15px;
+            overflow-y: auto;
+            overflow-x: hidden;
+            background: linear-gradient(rgba(255, 255, 255, 0.85), rgba(255, 255, 255, 0.85)),
+                        url('https://res.cloudinary.com/dgrxmavho/image/upload/v1751145067/swaplogo_j5aqzu.png');
+            background-size: 200px 200px;
+            background-position: center;
+            background-repeat: repeat;
+            background-attachment: local;
+            display: flex;
+            flex-direction: column;
+            min-height: 0;
+            -webkit-overflow-scrolling: touch;
+            position: relative;
         }
 
         .message-container {
@@ -236,6 +233,13 @@
             font-weight: 400;
         }
 
+        .sender-name {
+            font-weight: 500;
+            margin-bottom: 3px;
+            color: #1a1a1a;
+            font-size: 0.85rem;
+        }
+
         .message-form {
             display: flex;
             padding: 12px 10px;
@@ -305,25 +309,18 @@
             transform: scale(0.95);
         }
 
-        .sender-name {
-            font-weight: 500;
-            margin-bottom: 3px;
-            color: #1a1a1a;
-            font-size: 0.85rem;
-        }
-
         /* Desktop styles */
         @media (min-width: 769px) {
             html {
                 overflow: auto;
             }
-
+            
             body {
                 position: static;
                 overflow: auto;
                 height: 100vh;
             }
-
+            
             .chat-container {
                 max-width: 520px;
                 margin: 20px auto;
@@ -331,11 +328,11 @@
                 box-shadow: 0 4px 24px rgba(44,62,80,0.07);
                 height: calc(100vh - 40px);
             }
-
+            
             .message-input {
                 font-size: 14px;
             }
-
+            
             .chat-box {
                 background-size: 180px 180px;
             }
@@ -347,7 +344,7 @@
                 height: 100%;
                 height: 100dvh;
             }
-
+            
             body {
                 height: 100vh;
                 height: 100dvh;
@@ -357,7 +354,7 @@
                 right: 0;
                 bottom: 0;
             }
-
+            
             .chat-container {
                 height: 100vh;
                 height: 100dvh;
@@ -367,16 +364,16 @@
                 border-radius: 0;
                 box-shadow: none;
             }
-
+            
             .message {
                 max-width: 80%;
             }
-
+            
             .chat-header {
                 padding: 12px 15px;
                 min-height: 65px;
             }
-
+            
             .message-form {
                 padding: 10px;
                 min-height: 60px;
@@ -384,13 +381,13 @@
                 bottom: 0;
                 background-color: #f0f0f0;
             }
-
+            
             .message-input {
                 font-size: 16px;
                 height: 42px;
                 padding: 13px 15px;
             }
-
+            
             .chat-box {
                 background-size: 160px 160px;
             }
@@ -400,7 +397,7 @@
             .message {
                 max-width: 85%;
             }
-
+            
             .chat-box {
                 background-size: 140px 140px;
             }
@@ -412,7 +409,7 @@
                 height: 100vh;
                 height: -webkit-fill-available;
             }
-
+            
             .chat-container {
                 height: 100vh;
                 height: -webkit-fill-available;
@@ -426,7 +423,7 @@
                 padding-top: 12px;
                 padding-bottom: 12px;
             }
-
+            
             .message-form {
                 position: -webkit-sticky;
                 position: sticky;
@@ -436,11 +433,11 @@
 
         /* Subtle animation for background */
         @keyframes subtleFloat {
-            0%, 100% { 
-                background-position: 0% 0%; 
+            0%, 100% {
+                background-position: 0% 0%;
             }
-            50% { 
-                background-position: 100% 100%; 
+            50% {
+                background-position: 100% 100%;
             }
         }
 
@@ -458,8 +455,8 @@
             <div class="header-content">
                 <h2>Customer Support</h2>
                 <div class="active-status">
-                    <div class="active-icon"></div>
-                    <span>Active</span>
+                    <div class="connection-status" id="connectionStatus"></div>
+                    <span id="statusText">Connecting...</span>
                 </div>
             </div>
         </div>
@@ -474,114 +471,245 @@
                         <div class="timestamp" th:text="${#temporals.format(msg.timestamp, 'HH:mm')}"></div>
                     </div>
                 </div>
-
+                
                 <!-- Show admin reply if available -->
                 <div class="message-container admin-container" th:if="${msg.adminReply != null}">
                     <div class="message admin">
                         <div class="sender-name">Support Team</div>
                         <p th:text="${msg.adminReply}"></p>
                         <div class="timestamp" th:text="${#temporals.format(msg.timestamp, 'HH:mm')}"></div>
-						                    </div>
+                    </div>
                 </div>
             </div>
         </div>
-
-        <!-- New Message Form -->
-        <form class="message-form" th:action="@{/support/submit}" th:object="${supportMessage}" method="post" id="messageForm">
-            <input type="text" class="message-input" th:field="*{message}" placeholder="Type a message..." required autocomplete="off" id="messageInput">
-            <button type="submit" class="send-button">
+		        <!-- New Message Form -->
+        <div class="message-form">
+            <input type="text" class="message-input" id="msgInput" placeholder="Type a message..." autocomplete="off">
+            <button class="send-button" id="sendBtn">
                 <i class="fas fa-paper-plane"></i>
             </button>
-        </form>
+        </div>
     </div>
 
     <script>
-        // Auto-scroll to bottom when page loads
-        function scrollToBottom() {
+        let stompClient = null;
+        const userEmail = /*[[${session.loggedInUserEmail}]]*/ '';
+        const connectionStatus = document.getElementById('connectionStatus');
+        const statusText = document.getElementById('statusText');
+
+        function connect() {
+            const socket = new SockJS('/ws');
+            stompClient = Stomp.over(socket);
+            
+            stompClient.connect({}, function (frame) {
+                console.log('User connected: ' + frame);
+                connectionStatus.classList.add('connected');
+                statusText.textContent = 'Active';
+                
+                // Subscribe to user channel for admin replies
+                stompClient.subscribe('/topic/user/' + userEmail, function (message) {
+                    const msg = JSON.parse(message.body);
+                    console.log('Received message:', msg);
+                    
+                    // Only display admin replies
+                    if (msg.adminReply && msg.adminReply.trim()) {
+                        displayMessage(msg, 'admin');
+                        playNotificationSound();
+                    }
+                });
+                
+            }, function(error) {
+                console.log('WebSocket connection error:', error);
+                connectionStatus.classList.remove('connected');
+                statusText.textContent = 'Reconnecting...';
+                setTimeout(connect, 3000); // Reconnect after 3 seconds
+            });
+        }
+
+        function sendMessage() {
+            const messageInput = document.getElementById('msgInput');
+            const messageContent = messageInput.value.trim();
+            
+            if (messageContent && stompClient && stompClient.connected) {
+                const message = {
+                    message: messageContent,
+                    userEmail: userEmail,
+                    timestamp: new Date().toISOString()
+                };
+                
+                // Send via WebSocket for real-time communication
+                stompClient.send("/app/support/user", {}, JSON.stringify(message));
+                
+                // Also send via REST API as backup
+                fetch('/support/submit', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(message)
+                }).then(response => {
+                    if (response.ok) {
+                        // Display user message immediately
+                        displayMessage(message, 'user');
+                        messageInput.value = '';
+                    } else {
+                        console.error('Failed to send message via REST API');
+                    }
+                }).catch(error => {
+                    console.error('Error sending message via REST API:', error);
+                });
+                
+            } else if (!stompClient || !stompClient.connected) {
+                // Fallback to REST API if WebSocket is not connected
+                sendMessageViaREST();
+            }
+        }
+
+        function sendMessageViaREST() {
+            const messageInput = document.getElementById('msgInput');
+            const messageContent = messageInput.value.trim();
+            
+            if (messageContent) {
+                const message = {
+                    message: messageContent,
+                    userEmail: userEmail
+                };
+                
+                fetch('/support/submit', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(message)
+                }).then(response => {
+                    if (response.ok) {
+                        // Display user message immediately
+                        displayMessage(message, 'user');
+                        messageInput.value = '';
+                    } else {
+                        console.error('Failed to send message');
+                    }
+                }).catch(error => {
+                    console.error('Error sending message:', error);
+                });
+            }
+        }
+
+        function displayMessage(message, type) {
             const chatBox = document.getElementById('chatBox');
-            if (chatBox) {
-                chatBox.scrollTop = chatBox.scrollHeight;
+            const messageContainer = document.createElement('div');
+            messageContainer.className = `message-container ${type}-container`;
+
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${type}`;
+
+            if (type === 'admin') {
+                const senderName = document.createElement('div');
+                senderName.className = 'sender-name';
+                senderName.textContent = 'Support Team';
+                messageDiv.appendChild(senderName);
+            }
+
+            const messageText = document.createElement('p');
+            messageText.textContent = type === 'admin' ? message.adminReply : message.message;
+
+            const timestamp = document.createElement('div');
+            timestamp.className = 'timestamp';
+            timestamp.textContent = formatTimestamp(message.timestamp || new Date());
+
+            messageDiv.appendChild(messageText);
+            messageDiv.appendChild(timestamp);
+            messageContainer.appendChild(messageDiv);
+            chatBox.appendChild(messageContainer);
+
+            // Smooth scroll to bottom
+            chatBox.scrollTop = chatBox.scrollHeight;
+        }
+
+        function formatTimestamp(timestamp) {
+            const date = new Date(timestamp);
+            return date.toLocaleTimeString('en-US', {
+                hour12: false,
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+        }
+
+        function playNotificationSound() {
+            try {
+                const audio = new Audio('data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2/LDciUFLIHO8tiJNwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAoUXrTp66hVFApGn+DyvmwhBSuBzvLZiTYIG2m98OScTgwOUarm7blmGgU7k9n1unEiBC13yO/eizEIHWq+8+OWT');
+                audio.play().catch(e => console.log('Audio play failed:', e));
+            } catch (e) {
+                console.log('Audio notification failed:', e);
             }
         }
 
-        // Initial scroll
-        window.addEventListener('load', scrollToBottom);
-
-        // Handle form submission
-        document.getElementById('messageForm').addEventListener('submit', function(e) {
-            setTimeout(scrollToBottom, 100);
-        });
-
-        // Handle viewport changes on mobile
-        let vh = window.innerHeight * 0.01;
-        document.documentElement.style.setProperty('--vh', `${vh}px`);
-
-        window.addEventListener('resize', () => {
-            let vh = window.innerHeight * 0.01;
-            document.documentElement.style.setProperty('--vh', `${vh}px`);
-            setTimeout(scrollToBottom, 100);
-        });
-
-        // Prevent zoom on input focus for iOS
-        document.getElementById('messageInput').addEventListener('focus', function() {
-            if (window.innerWidth < 768) {
-                document.querySelector('meta[name=viewport]').setAttribute('content', 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no');
+        // Event listeners
+        document.getElementById('sendBtn').addEventListener('click', sendMessage);
+        document.getElementById('msgInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                sendMessage();
             }
         });
 
-        document.getElementById('messageInput').addEventListener('blur', function() {
-            if (window.innerWidth < 768) {
-                document.querySelector('meta[name=viewport]').setAttribute('content', 'width=device-width, initial-scale=1.0, user-scalable=no');
+        // Auto-scroll to bottom when page loads
+        window.onload = function() {
+            const chatBox = document.getElementById("chatBox");
+            chatBox.scrollTop = chatBox.scrollHeight;
+            connect();
+        };
+
+        // Reconnect on page visibility change
+        document.addEventListener('visibilitychange', function() {
+            if (!document.hidden && (!stompClient || !stompClient.connected)) {
+                connect();
             }
         });
 
-        // Handle keyboard show/hide on mobile
-        if (window.innerWidth <= 768) {
-            let initialViewportHeight = window.visualViewport ? window.visualViewport.height : window.innerHeight;
-
-            function handleViewportChange() {
-                const currentHeight = window.visualViewport ? window.visualViewport.height : window.innerHeight;
-                const heightDifference = initialViewportHeight - currentHeight;
-
-                if (heightDifference > 150) { // Keyboard is likely open
-                    document.body.style.height = currentHeight + 'px';
-                    setTimeout(scrollToBottom, 100);
-                } else { // Keyboard is likely closed
-                    document.body.style.height = '100vh';
-                    document.body.style.height = '100dvh';
-                }
+        // Handle connection loss
+        window.addEventListener('beforeunload', function() {
+            if (stompClient && stompClient.connected) {
+                stompClient.disconnect();
             }
+        });
 
-            if (window.visualViewport) {
-                window.visualViewport.addEventListener('resize', handleViewportChange);
-            } else {
-                window.addEventListener('resize', handleViewportChange);
+        // Periodic connection check
+        setInterval(function() {
+            if (!stompClient || !stompClient.connected) {
+                connectionStatus.classList.remove('connected');
+                statusText.textContent = 'Reconnecting...';
+                connect();
             }
-        }
+        }, 30000); // Check every 30 seconds
 
-        // Add smooth fade-in animation for new messages
+        // Auto-scroll to bottom on new messages
+        const chatBox = document.getElementById('chatBox');
         const observer = new MutationObserver(function(mutations) {
             mutations.forEach(function(mutation) {
-                if (mutation.type === 'childList') {
-                    mutation.addedNodes.forEach(function(node) {
-                        if (node.nodeType === 1 && node.classList.contains('message-container')) {
-                            node.style.opacity = '0';
-                            node.style.transform = 'translateY(10px)';
-                            setTimeout(() => {
-                                node.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
-                                node.style.opacity = '1';
-                                node.style.transform = 'translateY(0)';
-                            }, 50);
-                        }
-                    });
+                if (mutation.type === 'childList' && mutation.addedNodes.length > 0) {
+                    chatBox.scrollTop = chatBox.scrollHeight;
                 }
             });
         });
 
-        observer.observe(document.getElementById('chatBox'), {
+        observer.observe(chatBox, {
             childList: true,
             subtree: true
+        });
+
+        // Handle input focus for mobile keyboards
+        const messageInput = document.getElementById('msgInput');
+        messageInput.addEventListener('focus', function() {
+            setTimeout(function() {
+                chatBox.scrollTop = chatBox.scrollHeight;
+            }, 300);
+        });
+
+        // Prevent zoom on input focus (iOS)
+        messageInput.addEventListener('touchstart', function(e) {
+            messageInput.style.fontSize = '16px';
         });
     </script>
 </body>
 </html>
+		

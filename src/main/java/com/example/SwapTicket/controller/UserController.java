@@ -20,6 +20,7 @@ import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional; // Replace with your actual package
 import java.util.Random;
@@ -27,6 +28,11 @@ import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.messaging.handler.annotation.MessageMapping;
+import org.springframework.messaging.handler.annotation.Payload;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -65,6 +71,9 @@ public class UserController {
     
     @Autowired
 	EmailSender emailSender;
+    
+    @Autowired
+    private SimpMessagingTemplate messagingTemplate;
     
     @GetMapping("/")
     public String defaultPage(HttpSession session) { 
@@ -359,35 +368,90 @@ public class UserController {
     	return "maskedAadhar";
     }
     
+ // Support-related methods
     @GetMapping("/support/submit")
     public String showSupportForm(Model model, HttpSession session) {
         String email = (String) session.getAttribute("loggedInUserEmail");
         if (email == null) {
             return "redirect:/login";
         }
-
         model.addAttribute("supportMessage", new SupportMessage());
         List<SupportMessage> messages = supportRepo.findByUserEmailOrderByTimestampAsc(email);
         model.addAttribute("messages", messages);
-
         return "userSupportForm";
     }
 
+    @GetMapping("/support/messages")
+    @ResponseBody
+    public List<SupportMessage> getMessages(HttpSession session) {
+        String email = (String) session.getAttribute("loggedInUserEmail");
+        if (email == null) {
+            return new ArrayList<>();
+        }
+        return supportRepo.findByUserEmailOrderByTimestampAsc(email);
+    }
+
     @PostMapping("/support/submit")
-    public String submitSupportMessage(@ModelAttribute SupportMessage supportMessage, HttpSession session) {
+    @ResponseBody
+    public ResponseEntity<Void> submitSupportMessage(@RequestBody SupportMessage supportMessage, HttpSession session) {
         String userEmail = (String) session.getAttribute("loggedInUserEmail");
         if (userEmail == null) {
-            return "redirect:/login";
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
-
+        
         supportMessage.setUserEmail(userEmail);
         supportMessage.setTimestamp(LocalDateTime.now());
         supportMessage.setResolved(false);
-        supportRepo.save(supportMessage);
-
-        return "redirect:/support/submit";
+        
+        SupportMessage savedMessage = supportRepo.save(supportMessage);
+        
+        // Broadcast to admin channel for this user
+        messagingTemplate.convertAndSend("/topic/admin/" + userEmail, savedMessage);
+        
+        return ResponseEntity.ok().build();
     }
-    
+
+//    // WebSocket message handlers
+//    @MessageMapping("/support/user")
+//    public void handleUserMessage(@Payload SupportMessage message) {
+//        // Set timestamp and save user message
+//        message.setTimestamp(LocalDateTime.now());
+//        message.setResolved(false);
+//        
+//        SupportMessage savedMessage = supportRepo.save(message);
+//        
+//        // Broadcast to admin channel for this user
+//        messagingTemplate.convertAndSend("/topic/admin/" + message.getUserEmail(), savedMessage);
+//    }
+
+    @MessageMapping("/support/admin")
+    public void handleAdminReply(@Payload SupportMessage message) {
+        
+    	message.setTimestamp(LocalDateTime.now());
+        message.setResolved(true);
+        
+        SupportMessage savedMessage = supportRepo.save(message);
+        
+        // Broadcast to user channel
+        messagingTemplate.convertAndSend("/topic/user/" + message.getUserEmail(), savedMessage);
+        
+        // Also broadcast to admin channel to update admin's view
+        messagingTemplate.convertAndSend("/topic/admin/" + message.getUserEmail(), savedMessage);
+    }
+
+    // Legacy WebSocket handler (keeping for compatibility)
+    @MessageMapping("/support")
+    public void handleSupportMessage(SupportMessage message) {
+        
+    	message.setTimestamp(LocalDateTime.now());
+        message.setResolved(false);
+        
+        SupportMessage savedMessage = supportRepo.save(message);
+        
+        // Broadcast to admin channel
+        messagingTemplate.convertAndSend("/topic/admin/" + message.getUserEmail(), savedMessage);
+    }
+
     public String generateReferralCode(String nameOrEmail) {
         return nameOrEmail.substring(0, 4).toUpperCase() + UUID.randomUUID().toString().substring(0, 4).toUpperCase();
     }
@@ -415,8 +479,6 @@ public class UserController {
         return "refer";
     }
 
-    
-
-
+   
 
 }
