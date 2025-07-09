@@ -388,6 +388,40 @@
             .suggestions {
                 max-height: 150px;
             }
+            .filter-form {
+            display: flex;
+            flex-direction: column;
+            gap: 10px !important;
+        }
+        .filter-row {
+            display: flex;
+            flex-direction: row;
+            gap: 8px;
+            align-items: flex-end;
+            width: 100%;
+        }
+        .filter-row .form-group,
+        .filter-row .swap-btn-mobile {
+            flex: 1 1 0;
+        }
+        .swap-btn-mobile {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding-bottom: 8px;
+            min-width: 40px;
+            max-width: 40px;
+        }
+        .filter-form select,
+        .filter-form input {
+            min-width: 0;
+        }
+        .filter-form .form-group {
+            width: 100%;
+        }
+        .filter-form .btn-search-mobile {
+            width: 100%;
+        }
         }
 
         @media (max-width: 480px) {
@@ -415,37 +449,48 @@
 
     <!-- 🔍 FILTER FORM -->
     <form method="get" action="/pnr/buy" class="filter-form">
-        <div class="form-group">
-            <label for="fromStation">From:</label>
-            <input type="text" id="fromStation" name="fromStation" th:value="${fromStation}" placeholder="Station" autocomplete="off">
+        <div class="filter-row">
+            <div class="form-group">
+                <label for="fromStation">From:</label>
+                <input type="text" id="fromStation" name="fromStation" th:value="${fromStation}" placeholder="Station" autocomplete="off">
+            </div>
+            <div class="swap-btn-mobile"></div>
+            <div class="form-group">
+                <label for="toStation">To:</label>
+                <input type="text" id="toStation" name="toStation" th:value="${toStation}" placeholder="Station" autocomplete="off">
+            </div>
         </div>
-        <div class="form-group">
-            <label for="toStation">To:</label>
-            <input type="text" id="toStation" name="toStation" th:value="${toStation}" placeholder="Station" autocomplete="off">
+        <div class="filter-row">
+            <div class="form-group">
+                <label for="trainNumber">Train No:</label>
+                <input type="text" name="trainNumber" th:value="${trainNumber}" placeholder="Train Number">
+            </div>
+            <div class="form-group">
+                <label for="journeyDate">Journey Date:</label>
+                <input type="date" name="journeyDate" th:value="${journeyDate}">
+            </div>
+        </div><div class="filter-row">
+            <div class="form-group" style="margin-bottom:0;">
+                <label for="gender">Gender:</label>
+                <select name="gender" class="form-control">
+                    <option value="">All Genders</option>
+                    <option value="Male" th:selected="${gender == 'Male'}">Male</option>
+                    <option value="Female" th:selected="${gender == 'Female'}">Female</option>
+                    <option value="Other" th:selected="${gender == 'Other'}">Other</option>
+                </select>
+            </div>
+            <div class="form-group" style="margin-bottom:0;">
+                <label for="filter">Status:</label>
+                <select name="filter">
+                    <option value="available" th:selected="${filter == 'available'}">Available</option>
+                    <option value="sold" th:selected="${filter == 'sold'}">Sold</option>
+                </select>
+            </div>
         </div>
-        <div class="form-group">
-            <label for="trainNumber">Train No:</label>
-            <input type="text" name="trainNumber" th:value="${trainNumber}" placeholder="Number">
-        </div>
-        <div class="form-group">
-            <label for="journeyDate">Journey Date:</label>
-            <input type="date" name="journeyDate" th:value="${journeyDate}">
-        </div>
-        <select name="gender" class="form-control">
-            <option value="">All Genders</option>
-            <option value="Male" th:selected="${gender == 'Male'}">Male</option>
-            <option value="Female" th:selected="${gender == 'Female'}">Female</option>
-            <option value="Other" th:selected="${gender == 'Other'}">Other</option>
-        </select>
-        <div class="form-group">
-            <label for="filter">Status:</label>
-            <select name="filter">
-                <option value="available" th:selected="${filter == 'available'}">Available</option>
-                <option value="sold" th:selected="${filter == 'sold'}">Sold</option>
-            </select>
-        </div>
-        <div class="form-group">
-            <button type="submit">Search</button>
+        <div class="filter-row">
+            <div class="form-group" style="width:100%;">
+                <button type="submit" class="btn-search-mobile">Search</button>
+            </div>
         </div>
     </form>
 
@@ -554,6 +599,10 @@
             </button>
         </a>
     </div>
+    
+    <button id="backToTopBtn" title="Back to Top">
+    <i class="fas fa-arrow-up"></i>
+</button>
 
     <script>
         // 🚂 COMPREHENSIVE INDIAN RAILWAY STATIONS DATABASE
@@ -992,7 +1041,45 @@
                 }
             });
         }
+            // Back to Top Button functionality
+            const backToTopBtn = document.createElement('style');
+            backToTopBtn.textContent = `
+                #backToTopBtn {
+                    display: none;
+                    position: fixed;
+                    bottom: 30px;
+                    right: 24px;
+                    z-index: 999;
+                    background: var(--primary-color);
+                    color: #fff;
+                    border: none;
+                    outline: none;
+                    padding: 12px 15px;
+                    border-radius: 50%;
+                    font-size: 20px;
+                    cursor: pointer;
+                    box-shadow: 0 2px 8px rgba(0,0,0,0.18);
+                    transition: background 0.2s;
+                }
+                #backToTopBtn:hover {
+                    background: #3a5bef;
+                }
+            `;
+            document.head.appendChild(backToTopBtn);
 
+            window.addEventListener('scroll', function() {
+                const btn = document.getElementById('backToTopBtn');
+                if (window.scrollY > 200) {
+                    btn.style.display = 'block';
+                } else {
+                    btn.style.display = 'none';
+                }
+            });
+
+            document.getElementById('backToTopBtn').onclick = function() {
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            };   
+        
         // 🎯 EVENT LISTENERS
         document.addEventListener('DOMContentLoaded', function() {
             const stationInputs = ['fromStation', 'toStation'];
@@ -1135,48 +1222,47 @@
 
         // 🔄 SWAP STATIONS FUNCTIONALITY
         function addSwapButton() {
-            const filterForm = document.querySelector('.filter-form');
-            const fromGroup = document.querySelector('#fromStation').parentElement;
-            const toGroup = document.querySelector('#toStation').parentElement;
-            
-            // Create swap button
-            const swapButton = document.createElement('button');
-            swapButton.type = 'button';
-            swapButton.className = 'btn';
-            swapButton.style.cssText = `
-                background: #17a2b8;
-                padding: 8px 12px;
-                margin: 0 5px;
-                border-radius: 50%;
-                width: 40px;
-                height: 40px;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-            `;
-            swapButton.innerHTML = '<i class="fas fa-exchange-alt"></i>';
-            swapButton.title = 'Swap From and To stations';
-            
-            swapButton.addEventListener('click', function() {
-                const fromInput = document.getElementById('fromStation');
-                const toInput = document.getElementById('toStation');
-                const temp = fromInput.value;
-                fromInput.value = toInput.value;
-                toInput.value = temp;
-                
-                // Add animation
-                this.style.transform = 'rotate(180deg)';
-                setTimeout(() => {
-                    this.style.transform = 'rotate(0deg)';
-                }, 200);
-            });
-            
-            // Insert swap button between from and to inputs
-            toGroup.parentNode.insertBefore(swapButton, toGroup);
-        }
+        const fromGroup = document.querySelector('#fromStation').parentElement;
+        const toGroup = document.querySelector('#toStation').parentElement;
+        const swapBtnContainer = document.querySelector('.swap-btn-mobile');
+        if (!swapBtnContainer) return;
 
-        // Initialize swap button
-        document.addEventListener('DOMContentLoaded', addSwapButton);
+        // Create swap button
+        const swapButton = document.createElement('button');
+        swapButton.type = 'button';
+        swapButton.className = 'btn';
+        swapButton.style.cssText = `
+            background: #17a2b8;
+            padding: 8px 12px;
+            margin: 0 5px;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        `;
+        swapButton.innerHTML = '<i class="fas fa-exchange-alt"></i>';
+        swapButton.title = 'Swap From and To stations';
+        
+        swapButton.addEventListener('click', function() {
+            const fromInput = document.getElementById('fromStation');
+            const toInput = document.getElementById('toStation');
+            const temp = fromInput.value;
+            fromInput.value = toInput.value;
+            toInput.value = temp;
+
+            // Add animation
+            this.style.transform = 'rotate(180deg)';
+            setTimeout(() => {
+                this.style.transform = 'rotate(0deg)';
+            }, 200);
+        });
+
+        swapBtnContainer.appendChild(swapButton);
+    }
+
+    document.addEventListener('DOMContentLoaded', addSwapButton);
     </script>
 </body>
 </html>

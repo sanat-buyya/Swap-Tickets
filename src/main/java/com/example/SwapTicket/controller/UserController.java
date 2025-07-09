@@ -288,11 +288,13 @@ public class UserController {
         model.addAttribute("success", "Password reset successfully!");
         return "login";
     }
+    
     @GetMapping("/logout")
     public String logout(HttpSession session) {
         session.invalidate(); // Clear session
         return "home";
     }
+    
     @GetMapping("/wallet/withdraw")
     public String showWithdrawForm(HttpSession session, Model model) {
     	String userEmail = (String) session.getAttribute("loggedInUserEmail");
@@ -330,8 +332,6 @@ public class UserController {
         model.addAttribute("transactions", list);
         return "myTransactions"; // this maps to myTransaction.html
     }
-
-
     
     @GetMapping("/privacy")
     public String privacy() {
@@ -368,7 +368,16 @@ public class UserController {
     	return "maskedAadhar";
     }
     
- // Support-related methods
+    @GetMapping("/support/faq")
+    public String showSupportFaq(HttpSession session) {
+    	String email = (String) session.getAttribute("loggedInUserEmail");
+        if (email == null) {
+            return "redirect:/login";
+        }
+    	return "supportFaq";
+    }
+ 
+    // Support-related methods
     @GetMapping("/support/submit")
     public String showSupportForm(Model model, HttpSession session) {
         String email = (String) session.getAttribute("loggedInUserEmail");
@@ -472,7 +481,6 @@ public class UserController {
         model.addAttribute("referralCode", referralCode);
         model.addAttribute("referralLink", referralLink);
 
-        // Optional: show referred users
         List<User> referredUsers = userRepository.findAllByReferredBy(referralCode);
         model.addAttribute("referredUsers", referredUsers);
 
