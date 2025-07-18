@@ -13,7 +13,7 @@ public class CloudinaryConfig {
 	private String cloudinary_key;
 	@Value("${cloudinary.api.secret}")
 	private String cloudinary_secret;
-	@Value("${cloudinary.api.cloud_name}")
+	@Value("${cloudinary.api.name}")
 	private String cloudinary_name;
 
 	@Bean

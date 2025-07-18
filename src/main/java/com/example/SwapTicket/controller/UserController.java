@@ -19,15 +19,24 @@ import com.example.SwapTicket.helper.EmailSender;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Optional; // Replace with your actual package
+import java.util.Map;
+import java.util.Optional;
 import java.util.Random;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.MessageMapping;
@@ -37,6 +46,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
@@ -486,7 +496,67 @@ public class UserController {
 
         return "refer";
     }
+    
+    private final String BASE_URL = "https://api.data.gov.in/resource/13051d52-05c2-4130-9e7b-891bdde84076";
+    private final String API_KEY = "579b464db66ec23bdd0000014639b061d7f4430f7e28a3efc8e894b3"; // Replace with your own if needed
 
-   
+    @GetMapping("/train-status")
+    public String showTrainStatusForm() {
+        return "trainStatus";
+    }
 
+    @PostMapping("/train-status")
+    public String getTrainStatus(
+            @RequestParam(required = false) String trainNo,
+            @RequestParam(required = false) String trainName,
+            @RequestParam(required = false) String sourceStation,
+            @RequestParam(required = false) String destinationStation,
+            @RequestParam(required = false) String limit,
+            Model model) {
+
+        RestTemplate restTemplate = new RestTemplate();       
+
+        trainNo = normalizeInput(trainNo);
+        trainName = normalizeInput(trainName);
+        sourceStation = normalizeInput(sourceStation);
+        destinationStation = normalizeInput(destinationStation);
+        
+        StringBuilder urlBuilder = new StringBuilder(BASE_URL);
+        urlBuilder.append("?api-key=").append(API_KEY);
+        urlBuilder.append("&format=json");
+
+        // Optional filters
+        if (limit != null && !limit.isEmpty()) urlBuilder.append("&limit=").append(limit);
+        if (trainNo != null && !trainNo.isEmpty()) urlBuilder.append("&filters[train_no]=").append(encode(trainNo));
+        if (trainName != null && !trainName.isEmpty()) urlBuilder.append("&filters[train_name]=").append(encode(trainName));
+        if (sourceStation != null && !sourceStation.isEmpty()) urlBuilder.append("&filters[source_station]=").append(encode(sourceStation));
+        if (destinationStation != null && !destinationStation.isEmpty()) urlBuilder.append("&filters[destination_station]=").append(encode(destinationStation));
+
+        try {
+            ResponseEntity<Map> response = restTemplate.getForEntity(urlBuilder.toString(), Map.class);
+            Map<String, Object> data = response.getBody();
+            
+            // Ensure data is not null
+            if (data != null) {
+                model.addAttribute("trainData", data);
+            } else {
+                model.addAttribute("error", "No data received from API");
+            }
+        } catch (Exception e) {
+            model.addAttribute("error", "API error: " + e.getMessage());
+        }
+
+        return "trainStatus";
+    }
+    
+    private String normalizeInput(String input) {
+        if (input == null || input.trim().isEmpty()) {
+            return null;
+        }
+        return input.trim().toUpperCase();
+    }
+
+    private String encode(String value) {
+        return URLEncoder.encode(value, StandardCharsets.UTF_8);
+    }
 }

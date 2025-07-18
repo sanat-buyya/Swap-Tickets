@@ -921,6 +921,25 @@ transform: scale(1.05);
 </button>
 </form>
 </div>
+
+<div class="card" data-aos="fade-up" data-aos-delay="300">
+<img src="/docs/track.png" alt="Track">
+<h3>Track Train</h3>
+<p>Get live train status, current location, and set station alerts</p>
+<form th:action="@{/train-status}" method="get">
+<button class="button" type="submit">
+<i class="fas fa-search-location"></i>
+<span class="button-text">Track Train</span>
+<div class="loader-dots">
+<span></span>
+<span></span>
+<span></span>
+</div>
+</button>
+</form>
+</div>
+
+
 </main>
 </div>
 
