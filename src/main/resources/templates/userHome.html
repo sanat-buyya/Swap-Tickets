@@ -888,14 +888,14 @@ transform: scale(1.05);
 </form>
 </div>
 
-<div class="card" data-aos="fade-up" data-aos-delay="150">
-<img src="/docs/refer.png" alt="myListedTicket">
-<h3>Refer A Friend</h3>
-<p>Invite friends and earn bonuses when they join</p>
-<form th:action="@{/user/refer}" method="get">
+<div class="card" data-aos="fade-up" data-aos-delay="300">
+<img src="/docs/track.png" alt="Track">
+<h3>Track Train</h3>
+<p>Get live train status, current location, and set station alerts</p>
+<form th:action="@{/train-status}" method="get">
 <button class="button" type="submit">
-<i class="fas fa-users button-icon"></i>
-<span class="button-text">Invite Now</span>
+<i class="fas fa-search-location"></i>
+<span class="button-text">Track Train</span>
 <div class="loader-dots">
 <span></span>
 <span></span>
@@ -922,14 +922,14 @@ transform: scale(1.05);
 </form>
 </div>
 
-<div class="card" data-aos="fade-up" data-aos-delay="300">
-<img src="/docs/track.png" alt="Track">
-<h3>Track Train</h3>
-<p>Get live train status, current location, and set station alerts</p>
-<form th:action="@{/train-status}" method="get">
+<div class="card" data-aos="fade-up" data-aos-delay="150">
+<img src="/docs/refer.png" alt="myListedTicket">
+<h3>Refer A Friend</h3>
+<p>Invite friends and earn bonuses when they join</p>
+<form th:action="@{/user/refer}" method="get">
 <button class="button" type="submit">
-<i class="fas fa-search-location"></i>
-<span class="button-text">Track Train</span>
+<i class="fas fa-users button-icon"></i>
+<span class="button-text">Invite Now</span>
 <div class="loader-dots">
 <span></span>
 <span></span>
@@ -938,7 +938,6 @@ transform: scale(1.05);
 </button>
 </form>
 </div>
-
 
 </main>
 </div>

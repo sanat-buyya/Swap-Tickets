@@ -21,6 +21,10 @@ import jakarta.validation.Valid;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
@@ -33,6 +37,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Random;
 import java.util.UUID;
+import java.util.HashMap;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -254,6 +259,30 @@ public class UserController {
         }
 
         return "sellTicket1";
+    }
+    
+    @GetMapping("/api/stations")
+    @ResponseBody
+    public List<Map<String, String>> getAllStations() {
+        List<Map<String, String>> stations = new ArrayList<>();
+        try {
+            Path path = Paths.get("src/main/resources/Train_details_22122017.csv");
+            List<String> lines = Files.readAllLines(path);
+            for (String line : lines.subList(1, lines.size())) {
+                String[] columns = line.split(",", -1);
+                if (columns.length >= 5) {
+                    String code = columns[3].trim().toUpperCase();
+                    String name = columns[4].trim().toUpperCase();
+                    Map<String, String> stationMap = new HashMap<>();
+                    stationMap.put("code", code);
+                    stationMap.put("name", name);
+                    stations.add(stationMap);
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return stations;
     }
 
     @GetMapping("/user/home")

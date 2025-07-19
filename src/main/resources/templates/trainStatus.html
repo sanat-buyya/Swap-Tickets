@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <link rel="icon" href="/docs/swaplogo.png" type="image/png">
-    <head>
+<head>
     <title>Train Status Lookup</title>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -56,24 +56,69 @@
         }
         
         .action-btn {
-    display: block;
-    margin: 30px auto 0 auto;
-    padding: 12px 32px;
-    background-color: #0d6efd;
-    color: #fff;
-    border: none;
-    border-radius: 6px;
-    font-size: 1.1em;
-    font-weight: 600;
-    cursor: pointer;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.08);
-    transition: background 0.2s;
-    text-align: center;
-}
-.action-btn:hover {
-    background-color: #084298;
-}
+            display: block;
+            margin: 30px auto 0 auto;
+            padding: 12px 32px;
+            background-color: #0d6efd;
+            color: #fff;
+            border: none;
+            border-radius: 6px;
+            font-size: 1.1em;
+            font-weight: 600;
+            cursor: pointer;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+            transition: background 0.2s;
+            text-align: center;
+        }
         
+        .action-btn:hover {
+            background-color: #084298;
+        }
+
+        /* Autocomplete Styles - Mobile Optimized */
+        .autocomplete-container {
+            position: relative;
+        }
+
+        .suggestions {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: white;
+            border: 1px solid #ddd;
+            border-top: none;
+            border-radius: 0 0 6px 6px;
+            max-height: 200px;
+            overflow-y: auto;
+            z-index: 9999;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .suggestion-item {
+            padding: 12px 15px;
+            cursor: pointer;
+            border-bottom: 1px solid #f0f0f0;
+            transition: background-color 0.2s ease;
+            font-size: 14px;
+        }
+
+        .suggestion-item:hover,
+        .suggestion-item.highlighted {
+            background-color: #f8f9fa;
+        }
+
+        .suggestion-item:last-child {
+            border-bottom: none;
+        }
+
+        .no-suggestions {
+            padding: 12px 15px;
+            color: #6c757d;
+            font-style: italic;
+            font-size: 14px;
+        }
+
         /* Mobile optimizations */
         @media (max-width: 768px) {
             body {
@@ -95,8 +140,9 @@
             }
             
             .form-control {
-                font-size: 0.9rem;
-                padding: 0.5rem;
+                font-size: 16px; /* Prevents zoom on iOS */
+                padding: 0.75rem 0.5rem;
+                height: auto;
             }
             
             .btn {
@@ -124,8 +170,30 @@
             .train-header p {
                 font-size: 0.9rem;
             }
+
+            /* Mobile-specific autocomplete adjustments */
+            .suggestions {
+                max-height: 150px;
+                border-radius: 0 0 4px 4px;
+            }
+
+            .suggestion-item {
+                padding: 10px 12px;
+                font-size: 14px;
+                line-height: 1.3;
+            }
+
+            .suggestion-item strong {
+                display: block;
+                font-size: 13px;
+            }
+
+            /* Ensure suggestions appear above other elements on mobile */
+            .autocomplete-container {
+                z-index: 1000;
+            }
         }
-        
+
         /* Compact form layout */
         .compact-form .row {
             margin-bottom: 0.5rem;
@@ -135,13 +203,20 @@
             font-weight: 600;
             color: #495057;
         }
+
+        /* Fix for mobile touch events */
+        @media (max-width: 768px) {
+            .suggestion-item {
+                -webkit-tap-highlight-color: rgba(0,0,0,0.1);
+                tap-highlight-color: rgba(0,0,0,0.1);
+            }
+        }
     </style>
 </head>
 <body>
     <div class="container-fluid">
         <div class="search-container">
             <h2 class="text-center mb-3">Train Time Table Lookup</h2>
-            
             <form method="post" action="/train-status" class="compact-form">
                 <!-- Row 1: Limit & Train No -->
                 <div class="row g-2 mb-2">
@@ -159,11 +234,15 @@
                 <div class="row g-2 mb-2">
                     <div class="col-6">
                         <label class="form-label">From</label>
-                        <input type="text" name="sourceStation" class="form-control" placeholder="Starting station code">
+                        <div class="autocomplete-container">
+                            <input type="text" id="sourceStation" name="sourceStation" class="form-control" placeholder="Starting station code" autocomplete="off">
+                        </div>
                     </div>
                     <div class="col-6">
-                        <label class="form-label">TO</label>
-                        <input type="text" name="destinationStation" class="form-control" placeholder="Ending station code">
+                        <label class="form-label">To</label>
+                        <div class="autocomplete-container">
+                            <input type="text" id="destinationStation" name="destinationStation" class="form-control" placeholder="Ending station code" autocomplete="off">
+                        </div>
                     </div>
                 </div>
                 
@@ -226,30 +305,185 @@
                     </table>
                 </div>
             </div>
-            
+
             <!-- No Records Message -->
             <div th:if="${#lists.isEmpty(trainData.records)}" class="alert alert-info">
                 <h4>No Results Found</h4>
                 <p>Try adjusting your search criteria and search again.</p>
             </div>
-            
-            <button onclick="location.href='/user/home'" class="action-btn">
-        Back to Dashboard
-    </button>
-    
+
+            <button onclick="location.href='/user/home'" class="action-btn">Back to Dashboard</button>
         </div>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        // Auto-uppercase for train number and station inputs
-        document.addEventListener('DOMContentLoaded', function() {
-            const uppercaseInputs = ['trainNo', 'sourceStation', 'destinationStation','trainName'];
-            
-            uppercaseInputs.forEach(inputName => {
-                const input = document.querySelector(`input[name="${inputName}"]`);
-                if (input) {
-                    input.addEventListener('input', function() {
+        let indianStations = [];
+
+        // Load station list dynamically
+        fetch('/api/stations')
+            .then(response => response.json())
+            .then(data => {
+                indianStations = data;
+                setupAutocomplete('sourceStation');
+                setupAutocomplete('destinationStation');
+            })
+            .catch(error => console.error("Error loading stations:", error));
+
+        function setupAutocomplete(inputId) {
+            const input = document.getElementById(inputId);
+            const container = input.parentElement;
+            let currentIndex = -1;
+            let touchStarted = false;
+
+            // Handle input events
+            input.addEventListener('input', function () {
+                const value = this.value.toLowerCase().trim();
+                const old = document.getElementById(`suggestions-${inputId}`);
+                if (old) old.remove();
+                
+                currentIndex = -1;
+
+                if (value.length < 2) return;
+
+                const matches = indianStations.filter(station =>
+                    station.name.toLowerCase().includes(value) || 
+                    station.code.toLowerCase().includes(value)
+                ).slice(0, 8);
+
+                const box = document.createElement('div');
+                box.className = 'suggestions';
+                box.id = `suggestions-${inputId}`;
+
+                if (matches.length === 0) {
+                    const no = document.createElement('div');
+                    no.className = 'no-suggestions';
+                    no.innerHTML = `No station found`;
+                    box.appendChild(no);
+                } else {
+                    matches.forEach((station, index) => {
+                        const item = document.createElement('div');
+                        item.className = 'suggestion-item';
+                        item.innerHTML = `<strong>${station.name}</strong> (${station.code})`;
+                        
+                        // Handle both click and touch events
+                        item.addEventListener('click', (e) => {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            selectStation(station.code);
+                        });
+
+                        // Touch events for mobile
+                        item.addEventListener('touchstart', (e) => {
+                            e.preventDefault();
+                            touchStarted = true;
+                            item.classList.add('highlighted');
+                        });
+
+                        item.addEventListener('touchend', (e) => {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            if (touchStarted) {
+                                selectStation(station.code);
+                                touchStarted = false;
+                            }
+                        });
+
+                        item.addEventListener('touchcancel', () => {
+                            touchStarted = false;
+                            item.classList.remove('highlighted');
+                        });
+
+                        box.appendChild(item);
+                    });
+                }
+
+                container.appendChild(box);
+            });
+
+            function selectStation(code) {
+                input.value = code;
+                const box = document.getElementById(`suggestions-${inputId}`);
+                if (box) box.remove();
+                currentIndex = -1;
+                input.blur(); // Hide mobile keyboard
+            }
+
+            // Handle blur events with delay for mobile touch
+            input.addEventListener('blur', () => {
+                setTimeout(() => {
+                    if (!touchStarted) {
+                        const box = document.getElementById(`suggestions-${inputId}`);
+                        if (box) box.remove();
+                    }
+                }, 300); // Increased delay for mobile
+            });
+
+            // Handle focus events
+            input.addEventListener('focus', () => {
+                // Re-trigger suggestions if input has value
+                if (input.value.length >= 2) {
+                    input.dispatchEvent(new Event('input'));
+                }
+            });
+
+            // Keyboard navigation
+            input.addEventListener('keydown', function (e) {
+                const box = document.getElementById(`suggestions-${inputId}`);
+                const items = box ? box.querySelectorAll('.suggestion-item') : [];
+
+                if (e.key === 'ArrowDown') {
+                    e.preventDefault();
+                    currentIndex = Math.min(currentIndex + 1, items.length - 1);
+                    highlight(items);
+                } else if (e.key === 'ArrowUp') {
+                    e.preventDefault();
+                    currentIndex = Math.max(currentIndex - 1, 0);
+                    highlight(items);
+                } else if (e.key === 'Enter') {
+                    e.preventDefault();
+                    if (items[currentIndex]) {
+                        const stationCode = items[currentIndex].textContent.match(/\(([^)]+)\)$/)[1];
+                        selectStation(stationCode);
+                    }
+                } else if (e.key === 'Escape') {
+                    const box = document.getElementById(`suggestions-${inputId}`);
+                    if (box) box.remove();
+                    currentIndex = -1;
+                }
+            });
+
+            function highlight(items) {
+                items.forEach((item, idx) => {
+                    item.classList.toggle('highlighted', idx === currentIndex);
+                });
+            }
+
+            // Handle outside clicks/touches
+            document.addEventListener('click', (e) => {
+                if (!container.contains(e.target)) {
+                    const box = document.getElementById(`suggestions-${inputId}`);
+                    if (box) box.remove();
+                    currentIndex = -1;
+                }
+            });
+
+            document.addEventListener('touchstart', (e) => {
+                if (!container.contains(e.target)) {
+                    const box = document.getElementById(`suggestions-${inputId}`);
+                    if (box) box.remove();
+                    currentIndex = -1;
+                }
+            });
+        }
+
+        // Uppercase for specific fields
+        document.addEventListener('DOMContentLoaded', function () {
+            const inputs = ['trainNo', 'sourceStation', 'destinationStation', 'trainName'];
+            inputs.forEach(name => {
+                const el = document.querySelector(`input[name="${name}"]`);
+                if (el) {
+                    el.addEventListener('input', function () {
                         this.value = this.value.toUpperCase();
                     });
                 }
@@ -257,27 +491,48 @@
 
             // Form validation
             const form = document.querySelector('form');
-            form.addEventListener('submit', function(e) {
-                const inputs = form.querySelectorAll('input[type="text"]');
-                let hasValue = false;
-                
-                inputs.forEach(input => {
-                    if (input.value.trim() !== '' && input.name !== 'limit') {
-                        hasValue = true;
-                    }
-                });
+            form.addEventListener('submit', function (e) {
+                const fields = form.querySelectorAll('input[type="text"]');
+                let filled = Array.from(fields).some(input => 
+                    input.name !== 'limit' && input.value.trim() !== ''
+                );
 
-                if (!hasValue) {
+                if (!filled) {
                     e.preventDefault();
-                    alert('Please enter at least one search criteria.');
+                    alert("Please enter at least one search criteria.");
                     return;
                 }
 
-                // Show loading state
-                const submitBtn = form.querySelector('button[type="submit"]');
-                submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Searching...';
-                submitBtn.disabled = true;
+                const btn = form.querySelector('button[type="submit"]');
+                if (btn) {
+                    btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Searching...';
+                    btn.disabled = true;
+                }
             });
+
+            // Prevent zoom on iOS when focusing input fields
+            if (/iPad|iPhone|iPod/.test(navigator.userAgent)) {
+                const inputs = document.querySelectorAll('input[type="text"], input[type="number"]');
+                inputs.forEach(input => {
+                    input.addEventListener('focus', () => {
+                        input.style.fontSize = '16px';
+                    });
+                    input.addEventListener('blur', () => {
+                        input.style.fontSize = '';
+                    });
+                });
+            }
+        });
+
+        // Handle viewport changes on mobile (keyboard show/hide)
+        let initialViewportHeight = window.innerHeight;
+        window.addEventListener('resize', () => {
+            // If viewport height decreased significantly (keyboard shown)
+            if (window.innerHeight < initialViewportHeight * 0.75) {
+                document.body.style.height = window.innerHeight + 'px';
+            } else {
+                document.body.style.height = '';
+            }
         });
     </script>
 </body>

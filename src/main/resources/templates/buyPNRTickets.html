@@ -495,7 +495,7 @@
     </form>
 
     <div class="pnr-notice">
-        *Confirm ticket using PNR before buying:
+        <b>*Confirm ticket using PNR before buying:</b>
         <a href="https://www.indianrail.gov.in/enquiry/PNR/PnrEnquiry.html?locale=en" target="_blank">Click here</a>
     </div>
 
@@ -532,7 +532,7 @@
                 </div>
 
                 <!-- ✅ Ticket Image -->
-				                <div class="ticket-image">
+				     <div class="ticket-image">
                     <strong>Ticket Image:</strong>
                     <div th:if="${pnr.sold}">
                         <img th:src="${pnr.ticketImage}" alt="Ticket Image"/>
@@ -615,443 +615,146 @@
 </button>
 
     <script>
-        // 🚂 COMPREHENSIVE INDIAN RAILWAY STATIONS DATABASE
-        const indianRailwayStations = [
-            // 🏙️ KARNATAKA REGION (Major Hub)
-            { name: "Bangalore City Junction", code: "SBC", state: "Karnataka", district: "Bangalore Urban", zone: "SWR" },
-            { name: "Bangalore City Junction", code: "KSR", state: "Karnataka", district: "Bangalore Urban", zone: "SWR" },
-            { name: "Bangalore East", code: "BNCE", state: "Karnataka", district: "Bangalore Urban", zone: "SWR" },
-            { name: "Bangalore Cantonment", code: "BNC", state: "Karnataka", district: "Bangalore Urban", zone: "SWR" },
-            { name: "Yeshwantpur Junction", code: "YPR", state: "Karnataka", district: "Bangalore Urban", zone: "SWR" },
-            { name: "Krishnarajapuram", code: "KJM", state: "Karnataka", district: "Bangalore Urban", zone: "SWR" },
-            { name: "Whitefield", code: "WFD", state: "Karnataka", district: "Bangalore Urban", zone: "SWR" },
-            { name: "Baiyappanahalli", code: "BYPL", state: "Karnataka", district: "Bangalore Urban", zone: "SWR" },
-            { name: "Yelahanka Junction", code: "YNK", state: "Karnataka", district: "Bangalore Urban", zone: "SWR" },
-            
-            // 🌊 COASTAL KARNATAKA
-            { name: "Mangalore Central", code: "MAQ", state: "Karnataka", district: "Dakshina Kannada", zone: "KR" },
-            { name: "Mangalore Junction", code: "MAJN", state: "Karnataka", district: "Dakshina Kannada", zone: "KR" },
-            { name: "Surathkal", code: "SL", state: "Karnataka", district: "Dakshina Kannada", zone: "KR" },
-            { name: "Udupi", code: "UD", state: "Karnataka", district: "Udupi", zone: "KR" },
-            { name: "Kundapura", code: "KUDA", state: "Karnataka", district: "Udupi", zone: "KR" },
-            { name: "Karwar", code: "KAWR", state: "Karnataka", district: "Uttara Kannada", zone: "KR" },
-            { name: "Kumta", code: "KT", state: "Karnataka", district: "Uttara Kannada", zone: "KR" },
-            { name: "Murdeshwar", code: "MRDW", state: "Karnataka", district: "Uttara Kannada", zone: "KR" },
-            
-            { name: "Mysore Junction", code: "MYS", state: "Karnataka", district: "Mysore", zone: "SWR" },
-            { name: "Mandya", code: "MYA", state: "Karnataka", district: "Mandya", zone: "SWR" },
-            { name: "Maddur", code: "MAD", state: "Karnataka", district: "Mandya", zone: "SWR" },
-            { name: "Channapatna", code: "CPT", state: "Karnataka", district: "Ramanagara", zone: "SWR" },
-            { name: "Ramanagara", code: "RMGM", state: "Karnataka", district: "Ramanagara", zone: "SWR" },
-            { name: "Kengeri", code: "KGI", state: "Karnataka", district: "Bangalore Rural", zone: "SWR" },
-            { name: "Bidadi", code: "BDDI", state: "Karnataka", district: "Ramanagara", zone: "SWR" },
-            { name: "Srirangapatna", code: "SRGP", state: "Karnataka", district: "Mandya", zone: "SWR" },
-            { name: "Pandavapura", code: "PVR", state: "Karnataka", district: "Mandya", zone: "SWR" },
-            { name: "Melukote", code: "MELT", state: "Karnataka", district: "Mandya", zone: "SWR" },
+    let indianRailwayStations = [];
+    let currentHighlightedIndex = -1;
 
-            // 🏭 NORTH KARNATAKA (Industrial Belt)
-            { name: "Hubli Junction", code: "UBL", state: "Karnataka", district: "Dharwad", zone: "SWR" },
-            { name: "Dharwad", code: "DWR", state: "Karnataka", district: "Dharwad", zone: "SWR" },
-            { name: "Belgaum", code: "BGM", state: "Karnataka", district: "Belgaum", zone: "SWR" },
-            { name: "Gadag Junction", code: "GDG", state: "Karnataka", district: "Gadag", zone: "SWR" },
-            { name: "Koppal", code: "KBL", state: "Karnataka", district: "Koppal", zone: "SWR" },
-            { name: "Hospet Junction", code: "HPT", state: "Karnataka", district: "Bellary", zone: "SWR" },
-            { name: "Bellary Junction", code: "BAY", state: "Karnataka", district: "Bellary", zone: "SWR" },
-            { name: "Raichur Junction", code: "RC", state: "Karnataka", district: "Raichur", zone: "SWR" },
-            { name: "Bijapur", code: "BJP", state: "Karnataka", district: "Bijapur", zone: "SWR" },
-            { name: "Bagalkot", code: "BGK", state: "Karnataka", district: "Bagalkot", zone: "SWR" },
-            // 🏔️ NORTH-EAST KARNATAKA
-            { name: "Bidar", code: "BIDR", state: "Karnataka", district: "Bidar", zone: "SWR" },
-            { name: "Gulbarga", code: "GR", state: "Karnataka", district: "Gulbarga", zone: "SWR" },
-            { name: "Yadgir", code: "YG", state: "Karnataka", district: "Yadgir", zone: "SWR" },
-            { name: "Jewargi Junction", code: "JWO", state: "Karnataka", district: "Gulbarga", zone: "SWR" },
-            { name: "Shahabad", code: "SDB", state: "Karnataka", district: "Gulbarga", zone: "SWR" },
-            { name: "Wadi Junction", code: "WADI", state: "Karnataka", district: "Gulbarga", zone: "SWR" },
-            
-            // 🌿 SOUTH KARNATAKA
-            { name: "Hassan Junction", code: "HAS", state: "Karnataka", district: "Hassan", zone: "SWR" },
-            { name: "Arsikere Junction", code: "ASK", state: "Karnataka", district: "Hassan", zone: "SWR" },
-            { name: "Tumkur", code: "TK", state: "Karnataka", district: "Tumkur", zone: "SWR" },
-            { name: "Davangere", code: "DVG", state: "Karnataka", district: "Davangere", zone: "SWR" },
-            { name: "Chitradurga", code: "CTA", state: "Karnataka", district: "Chitradurga", zone: "SWR" },
-            { name: "Kolar Gold Fields", code: "KGF", state: "Karnataka", district: "Kolar", zone: "SWR" },
-            { name: "Chikballapur", code: "CBP", state: "Karnataka", district: "Chikballapur", zone: "SWR" },
-            { name: "Shimoga Town", code: "SMET", state: "Karnataka", district: "Shimoga", zone: "SWR" },
-            { name: "Chikmagalur", code: "CMG", state: "Karnataka", district: "Chikmagalur", zone: "SWR" },
-            
-            // 🏛️ DELHI & NCR
-            { name: "New Delhi", code: "NDLS", state: "Delhi", district: "New Delhi", zone: "NR" },
-            { name: "Delhi Junction", code: "DLI", state: "Delhi", district: "Delhi", zone: "NR" },
-            { name: "Hazrat Nizamuddin", code: "NZM", state: "Delhi", district: "New Delhi", zone: "NR" },
-            { name: "Delhi Sarai Rohilla", code: "DEE", state: "Delhi", district: "Delhi", zone: "NR" },
-            { name: "Anand Vihar Terminal", code: "ANVT", state: "Delhi", district: "Delhi", zone: "NR" },
-            { name: "Gurgaon", code: "GGN", state: "Haryana", district: "Gurgaon", zone: "NR" },
-            { name: "Faridabad", code: "FDB", state: "Haryana", district: "Faridabad", zone: "NR" },
-            { name: "Ghaziabad", code: "GZB", state: "Uttar Pradesh", district: "Ghaziabad", zone: "NR" },
-            
-            // 🏙️ MUMBAI & MAHARASHTRA
-            { name: "Mumbai Central", code: "MMCT", state: "Maharashtra", district: "Mumbai", zone: "WR" },
-            { name: "Chhatrapati Shivaji Terminus", code: "CSMT", state: "Maharashtra", district: "Mumbai", zone: "CR" },
-            { name: "Lokmanya Tilak Terminus", code: "LTT", state: "Maharashtra", district: "Mumbai", zone: "CR" },
-            { name: "Dadar", code: "DR", state: "Maharashtra", district: "Mumbai", zone: "CR" },
-            { name: "Pune Junction", code: "PUNE", state: "Maharashtra", district: "Pune", zone: "CR" },
-            { name: "Nashik Road", code: "NK", state: "Maharashtra", district: "Nashik", zone: "CR" },
-            { name: "Nagpur Junction", code: "NGP", state: "Maharashtra", district: "Nagpur", zone: "SECR" },
-            { name: "Aurangabad", code: "AWB", state: "Maharashtra", district: "Aurangabad", zone: "SCR" },
-            { name: "Solapur", code: "SUR", state: "Maharashtra", district: "Solapur", zone: "CR" },
-            
-            // 🌴 CHENNAI & TAMIL NADU
-            { name: "Chennai Central", code: "MAS", state: "Tamil Nadu", district: "Chennai", zone: "SR" },
-            { name: "Chennai Egmore", code: "MS", state: "Tamil Nadu", district: "Chennai", zone: "SR" },
-            { name: "Coimbatore Junction", code: "CBE", state: "Tamil Nadu", district: "Coimbatore", zone: "SR" },
-            { name: "Madurai Junction", code: "MDU", state: "Tamil Nadu", district: "Madurai", zone: "SR" },
-            { name: "Tiruchirapalli", code: "TPJ", state: "Tamil Nadu", district: "Tiruchirappalli", zone: "SR" },
-            { name: "Salem Junction", code: "SA", state: "Tamil Nadu", district: "Salem", zone: "SR" },
-            { name: "Erode Junction", code: "ED", state: "Tamil Nadu", district: "Erode", zone: "SR" },
-            { name: "Tirunelveli", code: "TEN", state: "Tamil Nadu", district: "Tirunelveli", zone: "SR" },
-            { name: "Kanyakumari", code: "CAPE", state: "Tamil Nadu", district: "Kanyakumari", zone: "SR" },
-            
-            // 🌊 KERALA
-            { name: "Thiruvananthapuram Central", code: "TVC", state: "Kerala", district: "Thiruvananthapuram", zone: "SR" },
-            { name: "Ernakulam Junction", code: "ERS", state: "Kerala", district: "Ernakulam", zone: "SR" },
-            { name: "Kozhikode", code: "CLT", state: "Kerala", district: "Kozhikode", zone: "SR" },
-            { name: "Thrissur", code: "TCR", state: "Kerala", district: "Thrissur", zone: "SR" },
-            { name: "Kannur", code: "CAN", state: "Kerala", district: "Kannur", zone: "SR" },
-            { name: "Kollam Junction", code: "QLN", state: "Kerala", district: "Kollam", zone: "SR" },
-            { name: "Palakkad Junction", code: "PGT", state: "Kerala", district: "Palakkad", zone: "SR" },
-            { name: "Kottayam", code: "KTYM", state: "Kerala", district: "Kottayam", zone: "SR" },
-            { name: "Alappuzha", code: "ALLP", state: "Kerala", district: "Alappuzha", zone: "SR" },
-            
-            // 🏛️ HYDERABAD & TELANGANA
-            { name: "Hyderabad Deccan", code: "HYB", state: "Telangana", district: "Hyderabad", zone: "SCR", category: "A1" },
-    		{ name: "Secunderabad Junction", code: "SC", state: "Telangana", district: "Hyderabad", zone: "SCR", category: "A1" },
-    		{ name: "Kacheguda", code: "KCG", state: "Telangana", district: "Hyderabad", zone: "SCR", category: "A" },
-    		{ name: "Begumpet", code: "BMT", state: "Telangana", district: "Hyderabad", zone: "SCR", category: "B" },
-    		{ name: "Lingampalli", code: "LPI", state: "Telangana", district: "Hyderabad", zone: "SCR", category: "B" },
-    		{ name: "Hi-Tech City", code: "HTC", state: "Telangana", district: "Hyderabad", zone: "SCR", category: "B" },
-    		{ name: "Bolarum", code: "BMO", state: "Telangana", district: "Hyderabad", zone: "SCR", category: "C" },
-    		{ name: "Falaknuma", code: "FM", state: "Telangana", district: "Hyderabad", zone: "SCR", category: "B" },
-    		{ name: "Malakpet", code: "MXT", state: "Telangana", district: "Hyderabad", zone: "SCR", category: "C" },
-    		{ name: "Yakutpura", code: "YKA", state: "Telangana", district: "Hyderabad", zone: "SCR", category: "C" },
-    		{ name: "Dabirpura", code: "DQR", state: "Telangana", district: "Hyderabad", zone: "SCR", category: "C" },
-    		{ name: "Nampally", code: "NMP", state: "Telangana", district: "Hyderabad", zone: "SCR", category: "C" },
-    		{ name: "Sitafalmandi", code: "STPD", state: "Telangana", district: "Hyderabad", zone: "SCR", category: "C" },
-    		{ name: "Lallaguda", code: "LGDH", state: "Telangana", district: "Hyderabad", zone: "SCR", category: "C" },
-    { name: "Cherlapalli", code: "CHZ", state: "Telangana", district: "Hyderabad", zone: "SCR", category: "C" },
-    { name: "Ghatkesar", code: "GKS", state: "Telangana", district: "Hyderabad", zone: "SCR", category: "C" },
-    { name: "Bolaram Bazar", code: "BOZ", state: "Telangana", district: "Hyderabad", zone: "SCR", category: "D" },
-    { name: "Alwal", code: "ALW", state: "Telangana", district: "Hyderabad", zone: "SCR", category: "D" },
-    { name: "Sanathnagar", code: "SNF", state: "Telangana", district: "Hyderabad", zone: "SCR", category: "D" },
-    { name: "Moula Ali", code: "MOB", state: "Telangana", district: "Hyderabad", zone: "SCR", category: "D" },
+    // 🚀 Fetch stations from backend API
+    fetch('/api/stations')
+        .then(response => response.json())
+        .then(data => {
+            indianRailwayStations = data;
+            setupStationAutocomplete(['fromStation', 'toStation']);
+        })
+        .catch(error => {
+            console.error('Error loading stations:', error);
+        });
 
-    // 🏭 WARANGAL DIVISION
-    { name: "Warangal", code: "WL", state: "Telangana", district: "Warangal Urban", zone: "SCR", category: "A" },
-    { name: "Kazipet Junction", code: "KZJ", state: "Telangana", district: "Warangal Urban", zone: "SCR", category: "A" },
-    { name: "Hanamkonda", code: "HNK", state: "Telangana", district: "Warangal Urban", zone: "SCR", category: "B" },
-    { name: "Mahbubabad", code: "MABD", state: "Telangana", district: "Mahabubabad", zone: "SCR", category: "B" },
-    { name: "Dornakal Junction", code: "DKJ", state: "Telangana", district: "Mahabubabad", zone: "SCR", category: "B" },
-    { name: "Kesamudram", code: "KDM", state: "Telangana", district: "Mahabubabad", zone: "SCR", category: "C" },
-    { name: "Garladinne", code: "GLA", state: "Telangana", district: "Warangal Rural", zone: "SCR", category: "C" },
-    { name: "Thallada", code: "TDD", state: "Telangana", district: "Warangal Rural", zone: "SCR", category: "D" },
-    { name: "Hasanparthi Road", code: "HSP", state: "Telangana", district: "Warangal Rural", zone: "SCR", category: "D" },
-    { name: "Parkal", code: "PKL", state: "Telangana", district: "Warangal Rural", zone: "SCR", category: "D" },
+    function setupStationAutocomplete(inputIds) {
+        inputIds.forEach(inputId => {
+            const input = document.getElementById(inputId);
+            if (!input) return;
 
-    // 🌾 KHAMMAM DIVISION
-    { name: "Khammam", code: "KMT", state: "Telangana", district: "Khammam", zone: "SCR", category: "A" },
-    { name: "Madhira", code: "MDR", state: "Telangana", district: "Khammam", zone: "SCR", category: "B" },
-    { name: "Wyra", code: "WYR", state: "Telangana", district: "Khammam", zone: "SCR", category: "C" },
-    { name: "Nelakondapalli", code: "NKD", state: "Telangana", district: "Khammam", zone: "SCR", category: "C" },
-    { name: "Mudigonda", code: "MDG", state: "Telangana", district: "Khammam", zone: "SCR", category: "C" },
-    { name: "Kalluru", code: "KLU", state: "Telangana", district: "Khammam", zone: "SCR", category: "D" },
-    { name: "Kothagudem Town", code: "KDGM", state: "Telangana", district: "Bhadradri Kothagudem", zone: "SCR", category: "B" },
-    { name: "Yellandu", code: "YLU", state: "Telangana", district: "Bhadradri Kothagudem", zone: "SCR", category: "C" },
-    { name: "Manuguru", code: "MANU", state: "Telangana", district: "Bhadradri Kothagudem", zone: "SCR", category: "C" },
-    { name: "Sathupalli", code: "STPL", state: "Telangana", district: "Khammam", zone: "SCR", category: "C" },
+            input.addEventListener('input', function () {
+                showStationSuggestions(this);
+            });
 
-    // 🏛️ NIZAMABAD DIVISION
-    { name: "Nizamabad", code: "NZB", state: "Telangana", district: "Nizamabad", zone: "SCR", category: "A" },
-    { name: "Kamareddy", code: "KMC", state: "Telangana", district: "Kamareddy", zone: "SCR", category: "B" },
-    { name: "Bodhan", code: "BDN", state: "Telangana", district: "Nizamabad", zone: "SCR", category: "B" },
-    { name: "Armoor", code: "AMQ", state: "Telangana", district: "Nizamabad", zone: "SCR", category: "C" },
-    { name: "Metpalli", code: "MET", state: "Telangana", district: "Nizamabad", zone: "SCR", category: "C" },
-    { name: "Nizamabad South", code: "NZBD", state: "Telangana", district: "Nizamabad", zone: "SCR", category: "C" },
-    { name: "Banswada", code: "BSWD", state: "Telangana", district: "Kamareddy", zone: "SCR", category: "C" },
-    { name: "Yellareddy", code: "YEA", state: "Telangana", district: "Kamareddy", zone: "SCR", category: "D" },
-    { name: "Pitlam", code: "PTLM", state: "Telangana", district: "Kamareddy", zone: "SCR", category: "D" },
+            input.addEventListener('keydown', function (event) {
+                handleKeyNavigation(this, event);
+            });
 
-    // 🌸 ADILABAD DIVISION
-    { name: "Adilabad", code: "ADB", state: "Telangana", district: "Adilabad", zone: "SCR", category: "B" },
-    { name: "Sirpur Town", code: "SKZR", state: "Telangana", district: "Komaram Bheem", zone: "SCR", category: "C" },
-    { name: "Mancherial", code: "MCI", state: "Telangana", district: "Mancherial", zone: "SCR", category: "B" },
-    { name: "Bellampalli", code: "BLMP", state: "Telangana", district: "Mancherial", zone: "SCR", category: "C" },
-    { name: "Mandamarri", code: "MDMR", state: "Telangana", district: "Mancherial", zone: "SCR", category: "C" },
-    { name: "Luxettipet", code: "LXD", state: "Telangana", district: "Mancherial", zone: "SCR", category: "C" },
-    { name: "Ramagundam", code: "RDM", state: "Telangana", district: "Peddapalli", zone: "SCR", category: "B" },
-    { name: "Peddapalli", code: "PDPL", state: "Telangana", district: "Peddapalli", zone: "SCR", category: "B" },
-    { name: "Manthani", code: "MCI", state: "Telangana", district: "Peddapalli", zone: "SCR", category: "C" },
-    { name: "Raghavapuram", code: "RGP", state: "Telangana", district: "Peddapalli", zone: "SCR", category: "D" },
+            input.addEventListener('focus', function () {
+                if (this.value.length >= 2) {
+                    showStationSuggestions(this);
+                }
+            });
 
-    // 🏞️ KARIMNAGAR DIVISION
-    { name: "Karimnagar", code: "KRMR", state: "Telangana", district: "Karimnagar", zone: "SCR", category: "B" },
-    { name: "Peddapalli Junction", code: "PDPL", state: "Telangana", district: "Peddapalli", zone: "SCR", category: "B" },
-    { name: "Jammikunta", code: "JMK", state: "Telangana", district: "Karimnagar", zone: "SCR", category: "C" },
-    { name: "Huzurabad", code: "HZD", state: "Telangana", district: "Karimnagar", zone: "SCR", category: "C" },
-    { name: "Vemulawada", code: "VMA", state: "Telangana", district: "Rajanna Sircilla", zone: "SCR", category: "C" },
-    { name: "Sircilla", code: "SRCL", state: "Telangana", district: "Rajanna Sircilla", zone: "SCR", category: "C" },
-    { name: "Choppadandi", code: "CHPD", state: "Telangana", district: "Karimnagar", zone: "SCR", category: "D" },
-    { name: "Koratla", code: "KTL", state: "Telangana", district: "Jagtial", zone: "SCR", category: "C" },
-    { name: "Jagtial", code: "JGTL", state: "Telangana", district: "Jagtial", zone: "SCR", category: "C" },
-    { name: "Metpalli Halt", code: "MTPI", state: "Telangana", district: "Jagtial", zone: "SCR", category: "D" },
+            input.addEventListener('blur', function () {
+                setTimeout(() => {
+                    const suggestions = document.getElementById(`suggestions-${this.id}`);
+                    if (suggestions) suggestions.remove();
+                    currentHighlightedIndex = -1;
+                }, 200);
+            });
+        });
 
-    // 🌾 MEDAK DIVISION
-    { name: "Medak", code: "MED", state: "Telangana", district: "Medak", zone: "SCR", category: "B" },
-    { name: "Sangareddy", code: "SGRL", state: "Telangana", district: "Medak", zone: "SCR", category: "B" },
-    { name: "Patancheru", code: "PTC", state: "Telangana", district: "Medak", zone: "SCR", category: "C" },
-    { name: "Vikarabad Junction", code: "VKB", state: "Telangana", district: "Vikarabad", zone: "SCR", category: "B" },
-    { name: "Tandur", code: "TDU", state: "Telangana", district: "Vikarabad", zone: "SCR", category: "C" },
-    { name: "Zahirabad", code: "ZB", state: "Telangana", district: "Sangareddy", zone: "SCR", category: "C" },
-    { name: "Gajwel", code: "GJWL", state: "Telangana", district: "Medak", zone: "SCR", category: "D" },
-    { name: "Kulkacharla", code: "KLKA", state: "Telangana", district: "Medak", zone: "SCR", category: "D" },
-    { name: "Shankarpalli", code: "SKPL", state: "Telangana", district: "Vikarabad", zone: "SCR", category: "D" },
-
-    // 🏛️ NALGONDA DIVISION
-    { name: "Nalgonda", code: "NLGD", state: "Telangana", district: "Nalgonda", zone: "SCR", category: "B" },
-    { name: "Miryalaguda", code: "MRGA", state: "Telangana", district: "Nalgonda", zone: "SCR", category: "B" },
-    
-    // 🌾 ANDHRA PRADESH
-            { name: "Vijayawada Junction", code: "BZA", state: "Andhra Pradesh", district: "Krishna", zone: "SCR" },
-            { name: "Visakhapatnam", code: "VSKP", state: "Andhra Pradesh", district: "Visakhapatnam", zone: "ECoR" },
-            { name: "Tirupati", code: "TPTY", state: "Andhra Pradesh", district: "Chittoor", zone: "SCR" },
-            { name: "Guntur Junction", code: "GNT", state: "Andhra Pradesh", district: "Guntur", zone: "SCR" },
-            { name: "Rajahmundry", code: "RJY", state: "Andhra Pradesh", district: "East Godavari", zone: "SCR" },
-            { name: "Nellore", code: "NLR", state: "Andhra Pradesh", district: "Nellore", zone: "SCR" },
-            
-            // 🏔️ KOLKATA & WEST BENGAL
-            { name: "Howrah Junction", code: "HWH", state: "West Bengal", district: "Howrah", zone: "ER" },
-            { name: "Sealdah", code: "SDAH", state: "West Bengal", district: "Kolkata", zone: "ER" },
-            { name: "Kolkata", code: "KOAA", state: "West Bengal", district: "Kolkata", zone: "ER" },
-            { name: "New Jalpaiguri", code: "NJP", state: "West Bengal", district: "Jalpaiguri", zone: "NFR" },
-            { name: "Asansol Junction", code: "ASN", state: "West Bengal", district: "Bardhaman", zone: "ER" },
-            { name: "Durgapur", code: "DGR", state: "West Bengal", district: "Bardhaman", zone: "ER" },
-            
-            // 🕌 LUCKNOW & UTTAR PRADESH
-            { name: "Lucknow Junction", code: "LJN", state: "Uttar Pradesh", district: "Lucknow", zone: "NER" },
-            { name: "Kanpur Central", code: "CNB", state: "Uttar Pradesh", district: "Kanpur", zone: "NCR" },
-            { name: "Allahabad Junction", code: "ALD", state: "Uttar Pradesh", district: "Allahabad", zone: "NCR" },
-            { name: "Varanasi Junction", code: "BSB", state: "Uttar Pradesh", district: "Varanasi", zone: "NER" },
-            { name: "Agra Cantonment", code: "AGC", state: "Uttar Pradesh", district: "Agra", zone: "NCR" },
-            { name: "Gorakhpur Junction", code: "GKP", state: "Uttar Pradesh", district: "Gorakhpur", zone: "NER" },
-            
-            // 🌸 JAIPUR & RAJASTHAN
-            { name: "Jaipur Junction", code: "JP", state: "Rajasthan", district: "Jaipur", zone: "NWR" },
-            { name: "Jodhpur Junction", code: "JU", state: "Rajasthan", district: "Jodhpur", zone: "NWR" },
-            { name: "Udaipur City", code: "UDZ", state: "Rajasthan", district: "Udaipur", zone: "NWR" },
-            { name: "Ajmer Junction", code: "AII", state: "Rajasthan", district: "Ajmer", zone: "NWR" },
-            { name: "Bikaner Junction", code: "BKN", state: "Rajasthan", district: "Bikaner", zone: "NWR" },
-            { name: "Kota Junction", code: "KOTA", state: "Rajasthan", district: "Kota", zone: "WCR" },
-            
-            // 🏛️ BHOPAL & MADHYA PRADESH
-            { name: "Bhopal Junction", code: "BPL", state: "Madhya Pradesh", district: "Bhopal", zone: "WCR" },
-            { name: "Indore Junction", code: "INDB", state: "Madhya Pradesh", district: "Indore", zone: "WCR" },
-            { name: "Jabalpur", code: "JBP", state: "Madhya Pradesh", district: "Jabalpur", zone: "WCR" },
-            { name: "Gwalior Junction", code: "GWL", state: "Madhya Pradesh", district: "Gwalior", zone: "NCR" },
-            { name: "Ujjain Junction", code: "UJN", state: "Madhya Pradesh", district: "Ujjain", zone: "WCR" },
-            
-            // 🌾 GUJARAT
-            { name: "Ahmedabad Junction", code: "ADI", state: "Gujarat", district: "Ahmedabad", zone: "WR" },
-            { name: "Surat", code: "ST", state: "Gujarat", district: "Surat", zone: "WR" },
-            { name: "Vadodara Junction", code: "BRC", state: "Gujarat", district: "Vadodara", zone: "WR" },
-            { name: "Rajkot Junction", code: "RJT", state: "Gujarat", district: "Rajkot", zone: "WR" },
-            { name: "Bhavnagar Terminus", code: "BVC", state: "Gujarat", district: "Bhavnagar", zone: "WR" },
-            { name: "Gandhinagar Capital", code: "GNC", state: "Gujarat", district: "Gandhinagar", zone: "WR" },
-            
-            // 🏔️ CHANDIGARH & PUNJAB
-            { name: "Chandigarh", code: "CDG", state: "Chandigarh", district: "Chandigarh", zone: "NR" },
-            { name: "Amritsar Junction", code: "ASR", state: "Punjab", district: "Amritsar", zone: "NR" },
-            { name: "Ludhiana Junction", code: "LDH", state: "Punjab", district: "Ludhiana", zone: "NR" },
-            { name: "Jalandhar City", code: "JRC", state: "Punjab", district: "Jalandhar", zone: "NR" },
-            { name: "Patiala", code: "PTA", state: "Punjab", district: "Patiala", zone: "NR" },
-            
-            // 🏔️ JAMMU & KASHMIR
-            { name: "Jammu Tawi", code: "JAT", state: "Jammu and Kashmir", district: "Jammu", zone: "NR" },
-            { name: "Udhampur", code: "UHP", state: "Jammu and Kashmir", district: "Udhampur", zone: "NR" },
-            { name: "Katra", code: "KTRA", state: "Jammu and Kashmir", district: "Reasi", zone: "NR" },
-            
-            // 🌊 BHUBANESWAR & ODISHA
-            { name: "Bhubaneswar", code: "BBS", state: "Odisha", district: "Khordha", zone: "ECoR" },
-            { name: "Cuttack", code: "CTC", state: "Odisha", district: "Cuttack", zone: "ECoR" },
-            { name: "Puri", code: "PURI", state: "Odisha", district: "Puri", zone: "ECoR" },
-            { name: "Berhampur", code: "BAM", state: "Odisha", district: "Ganjam", zone: "ECoR" },
-            { name: "Rourkela", code: "ROU", state: "Odisha", district: "Sundargarh", zone: "ECoR" },
-            
-            // 🏔️ PATNA & BIHAR
-            { name: "Patna Junction", code: "PNBE", state: "Bihar", district: "Patna", zone: "ECR" },
-            { name: "Gaya Junction", code: "GAYA", state: "Bihar", district: "Gaya", zone: "ECR" },
-            { name: "Muzaffarpur Junction", code: "MFP", state: "Bihar", district: "Muzaffarpur", zone: "ECR" },
-            { name: "Darbhanga Junction", code: "DBG", state: "Bihar", district: "Darbhanga", zone: "ECR" },
-            { name: "Bhagalpur", code: "BGP", state: "Bihar", district: "Bhagalpur", zone: "ECR" },
-            
-            // 🏔️ RANCHI & JHARKHAND
-            { name: "Ranchi", code: "RNC", state: "Jharkhand", district: "Ranchi", zone: "SER" },
-            { name: "Dhanbad Junction", code: "DHN", state: "Jharkhand", district: "Dhanbad", zone: "ECR" },
-            { name: "Bokaro Steel City", code: "BKSC", state: "Jharkhand", district: "Bokaro", zone: "SER" },
-            { name: "Jamshedpur", code: "TATA", state: "Jharkhand", district: "East Singhbhum", zone: "SER" },
-            
-            // 🏔️ DEHRADUN & UTTARAKHAND
-            { name: "Dehradun", code: "DDN", state: "Uttarakhand", district: "Dehradun", zone: "NR" },
-            { name: "Haridwar", code: "HW", state: "Uttarakhand", district: "Haridwar", zone: "NR" },
-            { name: "Rishikesh", code: "RKSH", state: "Uttarakhand", district: "Dehradun", zone: "NR" },
-            { name: "Kathgodam", code: "KGM", state: "Uttarakhand", district: "Nainital", zone: "NER" },
-            
-            // 🏔️ SHIMLA & HIMACHAL PRADESH
-            { name: "Kalka", code: "KLK", state: "Haryana", district: "Panchkula", zone: "NR" },
-            { name: "Shimla", code: "SML", state: "Himachal Pradesh", district: "Shimla", zone: "NR" },
-            { name: "Una Himachal", code: "UHL", state: "Himachal Pradesh", district: "Una", zone: "NR" },
-            
-            // 🌊 GOA
-            { name: "Madgaon Junction", code: "MAO", state: "Goa", district: "South Goa", zone: "KR" },
-            { name: "Vasco Da Gama", code: "VSG", state: "Goa", district: "South Goa", zone: "KR" },
-            { name: "Thivim", code: "THVM", state: "Goa", district: "North Goa", zone: "KR" },
-            
-            // 🏔️ NORTHEAST STATES
-            { name: "Guwahati", code: "GHY", state: "Assam", district: "Kamrup", zone: "NFR" },
-            { name: "Dibrugarh", code: "DBRG", state: "Assam", district: "Dibrugarh", zone: "NFR" },
-            { name: "Jorhat Town", code: "JTTN", state: "Assam", district: "Jorhat", zone: "NFR" },
-            { name: "Silchar", code: "SCL", state: "Assam", district: "Cachar", zone: "NFR" },
-            { name: "Agartala", code: "AGTL", state: "Tripura", district: "West Tripura", zone: "NFR" },
-            
-            // 🏛️ RAIPUR & CHHATTISGARH
-            { name: "Raipur Junction", code: "R", state: "Chhattisgarh", district: "Raipur", zone: "SECR" },
-            { name: "Bilaspur Junction", code: "BSP", state: "Chhattisgarh", district: "Bilaspur", zone: "SECR" },
-            { name: "Durg", code: "DURG", state: "Chhattisgarh", district: "Durg", zone: "SECR" },
-            { name: "Korba", code: "KRBA", state: "Chhattisgarh", district: "Korba", zone: "SECR" }
-        ];
-
-        let currentHighlightedIndex = -1;
-
-        // 🔍 STATION SEARCH FUNCTIONALITY
-        function showStationSuggestions(input) {
-            const query = input.value.toLowerCase().trim();
-            const existingSuggestions = document.getElementById(`suggestions-${input.id}`);
-            
-            // Remove existing suggestions
-            if (existingSuggestions) {
-                existingSuggestions.remove();
+        document.addEventListener('click', function (event) {
+            if (!event.target.closest('.form-group')) {
+                document.querySelectorAll('.suggestions').forEach(s => s.remove());
+                currentHighlightedIndex = -1;
             }
+        });
+    }
 
-            if (query.length < 2) return;
+    function showStationSuggestions(input) {
+        const query = input.value.toLowerCase().trim();
+        const suggestionsId = `suggestions-${input.id}`;
+        const existingSuggestions = document.getElementById(suggestionsId);
+        if (existingSuggestions) existingSuggestions.remove();
+        if (query.length < 2) return;
 
-            // Filter stations based on query
-            const filteredStations = indianRailwayStations.filter(station => 
-                station.name.toLowerCase().includes(query) ||
-                station.code.toLowerCase().includes(query) ||
-                station.state.toLowerCase().includes(query) ||
-                station.district.toLowerCase().includes(query)
-            ).slice(0, 8); // Limit to 8 suggestions
+        const filteredStations = indianRailwayStations.filter(station =>
+            station.name.toLowerCase().includes(query) ||
+            station.code.toLowerCase().includes(query)
+        ).slice(0, 8);
 
-            if (filteredStations.length === 0) {
-                showNoSuggestions(input);
-                return;
-            }
-            // Create suggestions container
-            const suggestionsDiv = document.createElement('div');
-            suggestionsDiv.className = 'suggestions';
-            suggestionsDiv.id = `suggestions-${input.id}`;
+        const suggestionsDiv = document.createElement('div');
+        suggestionsDiv.className = 'suggestions';
+        suggestionsDiv.id = suggestionsId;
 
-            // Add header
+        if (filteredStations.length === 0) {
+            const noResults = document.createElement('div');
+            noResults.className = 'no-suggestions';
+            noResults.innerHTML = `
+                <i class="fas fa-search"></i>
+                <div>No stations found matching "${input.value}"</div>
+                <small>Try searching by station name or code</small>
+            `;
+            suggestionsDiv.appendChild(noResults);
+        } else {
             const headerDiv = document.createElement('div');
             headerDiv.className = 'suggestions-header';
-            headerDiv.textContent = `${filteredStations.length} stations found`;
+            headerDiv.textContent = `${filteredStations.length} station(s) found`;
             suggestionsDiv.appendChild(headerDiv);
 
-            // Add station suggestions
             filteredStations.forEach((station, index) => {
                 const suggestionDiv = document.createElement('div');
                 suggestionDiv.className = 'suggestion-item';
                 suggestionDiv.innerHTML = `
                     <div class="station-info">
                         <div class="station-name">${station.name}</div>
-                        <div class="station-details">${station.district}, ${station.state} • Zone: ${station.zone}</div>
                     </div>
                     <div class="station-code">${station.code}</div>
                 `;
-                
                 suggestionDiv.addEventListener('click', () => {
                     input.value = `${station.name} (${station.code})`;
                     suggestionsDiv.remove();
                     currentHighlightedIndex = -1;
                 });
-
                 suggestionsDiv.appendChild(suggestionDiv);
             });
-
-            // Position and show suggestions
-            input.parentElement.appendChild(suggestionsDiv);
-            currentHighlightedIndex = -1;
         }
 
-        function showNoSuggestions(input) {
-            const suggestionsDiv = document.createElement('div');
-            suggestionsDiv.className = 'suggestions';
-            suggestionsDiv.id = `suggestions-${input.id}`;
-            
-            const noResultsDiv = document.createElement('div');
-            noResultsDiv.className = 'no-suggestions';
-            noResultsDiv.innerHTML = `
-                <i class="fas fa-search"></i>
-                <div>No stations found matching "${input.value}"</div>
-                <small>Try searching by station name, code, or city</small>
-            `;
-            
-            suggestionsDiv.appendChild(noResultsDiv);
-            input.parentElement.appendChild(suggestionsDiv);
-        }
+        input.parentElement.appendChild(suggestionsDiv);
+        currentHighlightedIndex = -1;
+    }
 
-        // 🎯 KEYBOARD NAVIGATION
-        function handleKeyNavigation(input, event) {
-            const suggestions = document.getElementById(`suggestions-${input.id}`);
-            if (!suggestions) return;
+    function handleKeyNavigation(input, event) {
+        const suggestions = document.getElementById(`suggestions-${input.id}`);
+        if (!suggestions) return;
 
-            const suggestionItems = suggestions.querySelectorAll('.suggestion-item');
-            if (suggestionItems.length === 0) return;
+        const items = suggestions.querySelectorAll('.suggestion-item');
+        if (items.length === 0) return;
 
-            switch (event.key) {
-                case 'ArrowDown':
-                    event.preventDefault();
-                    currentHighlightedIndex = Math.min(currentHighlightedIndex + 1, suggestionItems.length - 1);
-                    updateHighlight(suggestionItems);
-                    break;
-                
-                case 'ArrowUp':
-                    event.preventDefault();
-                    currentHighlightedIndex = Math.max(currentHighlightedIndex - 1, -1);
-                    updateHighlight(suggestionItems);
-                    break;
-                
-                case 'Enter':
-                    event.preventDefault();
-                    if (currentHighlightedIndex >= 0 && suggestionItems[currentHighlightedIndex]) {
-                        suggestionItems[currentHighlightedIndex].click();
-                    }
-                    break;
-                
-                case 'Escape':
-                    suggestions.remove();
-                    currentHighlightedIndex = -1;
-                    break;
-            }
-        }
-
-        function updateHighlight(suggestionItems) {
-            suggestionItems.forEach((item, index) => {
-                if (index === currentHighlightedIndex) {
-                    item.classList.add('highlighted');
-                } else {
-                    item.classList.remove('highlighted');
+        switch (event.key) {
+            case 'ArrowDown':
+                event.preventDefault();
+                currentHighlightedIndex = Math.min(currentHighlightedIndex + 1, items.length - 1);
+                updateHighlight(items);
+                break;
+            case 'ArrowUp':
+                event.preventDefault();
+                currentHighlightedIndex = Math.max(currentHighlightedIndex - 1, -1);
+                updateHighlight(items);
+                break;
+            case 'Enter':
+                event.preventDefault();
+                if (currentHighlightedIndex >= 0 && items[currentHighlightedIndex]) {
+                    items[currentHighlightedIndex].click();
                 }
-            });
+                break;
+            case 'Escape':
+                suggestions.remove();
+                currentHighlightedIndex = -1;
+                break;
         }
-            // Back to Top Button functionality
+    }
+
+    function updateHighlight(items) {
+        items.forEach((item, index) => {
+            item.classList.toggle('highlighted', index === currentHighlightedIndex);
+        });
+    }
+           // Back to Top Button functionality
             const backToTopBtn = document.createElement('style');
             backToTopBtn.textContent = `
                 #backToTopBtn {
