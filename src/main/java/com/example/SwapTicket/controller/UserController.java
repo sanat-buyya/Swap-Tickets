@@ -3,6 +3,8 @@ package com.example.SwapTicket.controller;
 import com.example.SwapTicket.model.PNR;
 import com.example.SwapTicket.model.Passenger;
 import com.example.SwapTicket.model.SupportMessage;
+import com.example.SwapTicket.model.TrainResult;
+import com.example.SwapTicket.model.TrainStop;
 import com.example.SwapTicket.model.TransactionHistory;
 import com.example.SwapTicket.model.User;
 import com.example.SwapTicket.model.Wallet;
@@ -20,6 +22,7 @@ import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 
 import java.io.BufferedReader;
+import java.io.FileReader;
 import java.io.InputStreamReader;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -359,12 +362,12 @@ public class UserController {
         }
         List<PNR> pnrs = pnrRepository.findBySellerEmailOrderByJourneyDateAsc(sellerEmail);
         model.addAttribute("pnrs", pnrs);
-        return "myListedTickets"; // Name of the template
+        return "myListedTickets";
     }
     
     @GetMapping("/user/transactions")
     public String viewMyTransaction(HttpSession session, Model model) {
-        String email = (String) session.getAttribute("loggedInUserEmail"); // or "email" if that's what you store
+        String email = (String) session.getAttribute("loggedInUserEmail");
         if (email == null) return "redirect:/login";
 
         List<TransactionHistory> list = transactionHistoryRepository.findByUserEmailOrderByDateDesc(email);
@@ -530,7 +533,11 @@ public class UserController {
     private final String API_KEY = "579b464db66ec23bdd0000014639b061d7f4430f7e28a3efc8e894b3"; // Replace with your own if needed
 
     @GetMapping("/train-status")
-    public String showTrainStatusForm() {
+    public String showTrainStatusForm(HttpSession session) {
+    	String userEmail = (String) session.getAttribute("loggedInUserEmail");
+        if (userEmail == null) {
+            return "redirect:/login";
+        }
         return "trainStatus";
     }
 
@@ -588,4 +595,110 @@ public class UserController {
     private String encode(String value) {
         return URLEncoder.encode(value, StandardCharsets.UTF_8);
     }
+    
+    public Map<String, List<TrainStop>> parseTrainCsv(String filePath) {
+        Map<String, List<TrainStop>> trainRoutes = new HashMap<>();
+
+        try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
+            String headerLine = br.readLine(); // read header
+            String[] headers = headerLine.split(",", -1);
+
+            // Map column names to indices
+            Map<String, Integer> columnIndex = new HashMap<>();
+            for (int i = 0; i < headers.length; i++) {
+                columnIndex.put(headers[i].trim(), i);
+            }
+
+            // Ensure required columns exist
+            if (!columnIndex.containsKey("Train No") || !columnIndex.containsKey("Train Name") ||
+                !columnIndex.containsKey("Station Code") || !columnIndex.containsKey("Arrival time") ||
+                !columnIndex.containsKey("Departure Time")) {
+                throw new RuntimeException("CSV missing required columns");
+            }
+
+            String line;
+            while ((line = br.readLine()) != null) {
+                String[] parts = line.split(",", -1);
+
+                try {
+                    String trainNo = parts[columnIndex.get("Train No")].trim();
+                    String trainName = parts[columnIndex.get("Train Name")].trim();
+                    String stationCode = parts[columnIndex.get("Station Code")].trim();
+                    String arrivalTime = parts[columnIndex.get("Arrival time")].trim();
+                    String departureTime = parts[columnIndex.get("Departure Time")].trim();
+
+                    TrainStop stop = new TrainStop(trainNo, trainName, stationCode, arrivalTime, departureTime);
+                    trainRoutes.computeIfAbsent(trainNo, k -> new ArrayList<>()).add(stop);
+
+                } catch (Exception e) {
+                    System.err.println("Skipping line due to error: " + line);
+                    e.printStackTrace();
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return trainRoutes;
+    }
+
+    public List<TrainResult> findMatchingTrains(String start, String end, String csvPath) {
+        Map<String, List<TrainStop>> trainRoutes = parseTrainCsv(csvPath);
+        List<TrainResult> result = new ArrayList<>();
+
+        for (Map.Entry<String, List<TrainStop>> entry : trainRoutes.entrySet()) {
+            List<TrainStop> route = entry.getValue();
+            TrainStop sourceStop = null;
+            TrainStop destinationStop = null;
+
+            for (TrainStop stop : route) {
+                if (stop.getStationCode().equalsIgnoreCase(start)) {
+                    sourceStop = stop;
+                } else if (stop.getStationCode().equalsIgnoreCase(end)) {
+                    destinationStop = stop;
+                }
+            }
+
+            if (sourceStop != null && destinationStop != null && route.indexOf(sourceStop) < route.indexOf(destinationStop)) {
+                TrainResult trainResult = new TrainResult(
+                        sourceStop.getTrainNo(),
+                        sourceStop.getTrainName(),
+                        sourceStop.getStationCode(),
+                        destinationStop.getStationCode(),
+                        sourceStop.getDepartureTime(),
+                        destinationStop.getArrivalTime()
+                );
+                result.add(trainResult);
+            }
+        }
+
+        return result;
+    }
+
+    @GetMapping("/track-train-between")
+    public String trackTrainBetweenStations(HttpSession session) {
+    	String userEmail = (String) session.getAttribute("loggedInUserEmail");
+        if (userEmail == null) {
+            return "redirect:/login";
+        }
+        return "trainBetweenStations";
+    }
+
+    @PostMapping("/track-train-between")
+    public String trackTrainBetweenStations(@RequestParam String sourceStation,
+                                            @RequestParam String destinationStation,
+                                            Model model) {
+        String csvPath = "src/main/resources/Train_details_22122017.csv";
+
+        List<TrainResult> matchingTrains = findMatchingTrains(sourceStation, destinationStation, csvPath);
+
+        model.addAttribute("trains", matchingTrains);
+        model.addAttribute("sourceStation", sourceStation);
+        model.addAttribute("destinationStation", destinationStation);
+
+        return "trainBetweenStations";
+    }
+
+
 }
+

@@ -10,6 +10,7 @@
         body {
             background-color: #f8f9fa;
             padding: 10px;
+            background-image: url('https://www.transparenttextures.com/patterns/cubes.png');
         }
         
         .search-container {
@@ -27,6 +28,8 @@
             border-radius: 5px;
             margin-bottom: 15px;
         }
+        .text-center{
+        color: blue}
         
         .station-table {
             width: 100%;
@@ -216,9 +219,9 @@
 <body>
     <div class="container-fluid">
         <div class="search-container">
-            <h2 class="text-center mb-3">Train Time Table Lookup</h2>
-            <form method="post" action="/train-status" class="compact-form">
-                <!-- Row 1: Limit & Train No -->
+            <h2 class="text-center mb-3">🚇 Train Time Table Lookup</h2>
+             <!--<form method="post" action="/train-status" class="compact-form">
+                <!-- Row 1: Limit & Train No 
                 <div class="row g-2 mb-2">
                     <div class="col-6">
                         <label class="form-label">Limit</label>
@@ -230,7 +233,7 @@
                     </div>
                 </div>
                 
-                <!-- Row 2: Source Station & Destination Station -->
+                <!-- Row 2: Source Station & Destination Station 
                 <div class="row g-2 mb-2">
                     <div class="col-6">
                         <label class="form-label">From</label>
@@ -247,20 +250,20 @@
                 </div>
                 
                 <!-- Row 3: Train Name (Full Width) -->
-                <div class="row g-2 mb-3">
+        <!--        <div class="row g-2 mb-3">
                     <div class="col-12">
                         <label class="form-label">Train Name</label>
                         <input type="text" name="trainName" class="form-control" placeholder="e.g. Rajdhani Express">
                     </div>
                 </div>
-                
-                <!-- Search Button -->
+           -->      
+                <!-- Search Button 
                 <div class="text-center">
                     <button type="submit" class="btn btn-primary">Search</button>
                 </div>
             </form>
-        </div>
-
+        </div>-->
+        
         <!-- Error Message -->
         <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
 

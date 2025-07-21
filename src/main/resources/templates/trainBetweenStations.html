@@ -1,0 +1,857 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <link rel="icon" href="/docs/swaplogo.png" type="image/png">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Track Train</title>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background-color: #f4f6f8;
+            padding: 15px;
+            margin: 0;
+            line-height: 1.6;
+            background-image: url('https://www.transparenttextures.com/patterns/cubes.png');
+        }
+
+        h2 {
+            color: #333;
+            margin-top: 20px;
+            font-size: 1.2rem;
+            text-align: center;
+        }
+
+        /* Search Form Styles */
+        .search-form {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+            position: relative;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 16px; /* Prevents zoom on iOS */
+            background-color: white;
+            transition: border-color 0.2s ease;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: #007bff;
+            box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            margin-top: 10px;
+            transition: background-color 0.2s ease;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        button:active {
+            transform: translateY(1px);
+        }
+
+        /* Autocomplete Suggestions Styles */
+        .suggestions {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: white;
+            border: 1px solid #ddd;
+            border-top: none;
+            border-radius: 0 0 8px 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            z-index: 1000;
+            max-height: 280px;
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .suggestion-item {
+            padding: 12px 16px;
+            cursor: pointer;
+            border-bottom: 1px solid #f0f0f0;
+            transition: background-color 0.15s ease;
+            display: flex;
+            align-items: center;
+            min-height: 48px; /* Touch-friendly height */
+        }
+
+        .suggestion-item:last-child {
+            border-bottom: none;
+        }
+
+        .suggestion-item:hover,
+        .suggestion-item.highlighted {
+            background-color: #f8f9fa;
+        }
+
+        .suggestion-item strong {
+            color: #333;
+            font-weight: 600;
+        }
+
+        .suggestion-item:active {
+            background-color: #e9ecef;
+        }
+
+        .no-suggestions {
+            padding: 16px;
+            color: #666;
+            font-style: italic;
+            text-align: center;
+            background-color: #f8f9fa;
+        }
+
+        /* Station code styling in suggestions */
+        .suggestion-item {
+            font-size: 14px;
+            line-height: 1.4;
+        }
+
+        .suggestion-item strong {
+            margin-right: 8px;
+        }
+
+        /* Train Cards for Mobile */
+        .trains-container {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .train-card {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            cursor: pointer;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .train-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .train-card:active {
+            transform: translateY(0);
+        }
+
+        .train-card-content {
+            padding: 16px;
+        }
+
+        .train-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .train-number {
+            background-color: #007bff;
+            color: white;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-weight: bold;
+            font-size: 0.9rem;
+        }
+
+        .train-name {
+            font-weight: 600;
+            color: #333;
+            font-size: 1rem;
+            flex: 1;
+            min-width: 0;
+            word-break: break-word;
+        }
+
+        .route-info {
+            display: grid;
+            grid-template-columns: 1fr auto 1fr;
+            gap: 10px;
+            align-items: center;
+            margin-top: 12px;
+        }
+
+        .station-info {
+            text-align: center;
+        }
+
+        .station-info.source {
+            text-align: left;
+        }
+
+        .station-info.destination {
+            text-align: right;
+        }
+
+        .station-name {
+            font-weight: 600;
+            color: #333;
+            font-size: 0.9rem;
+            margin-bottom: 4px;
+            word-break: break-word;
+        }
+
+        .station-time {
+            color: #666;
+            font-size: 0.8rem;
+        }
+
+        .route-arrow {
+            color: #007bff;
+            font-size: 1.2rem;
+            font-weight: bold;
+        }
+
+        /* Desktop Table (hidden on mobile) */
+        .desktop-table {
+            display: none;
+        }
+
+        .clickable-form {
+            margin: 0;
+            cursor: pointer;
+        }
+
+        .clickable-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .clickable-table td {
+            padding: 12px;
+        }
+
+        .no-trains {
+            text-align: center;
+            margin-top: 40px;
+            color: #888;
+            font-style: italic;
+            background: white;
+            padding: 40px 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Loading State */
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 2px solid #f3f3f3;
+            border-top: 2px solid #007bff;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-left: 8px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Tablet Styles */
+        @media (min-width: 768px) {
+            body {
+                padding: 30px;
+            }
+
+            .search-form {
+                display: flex;
+                align-items: end;
+                gap: 15px;
+            }
+
+            .form-group {
+                flex: 1;
+                margin-bottom: 0;
+            }
+
+            button {
+                width: auto;
+                min-width: 120px;
+                margin-top: 0;
+            }
+
+            h2 {
+                font-size: 1.5rem;
+            }
+
+            .trains-container {
+                grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+                display: grid;
+            }
+
+            /* Larger suggestions on tablet */
+            .suggestion-item {
+                padding: 14px 18px;
+                font-size: 15px;
+            }
+
+            .suggestions {
+                max-height: 320px;
+            }
+        }
+
+        /* Desktop Styles */
+        @media (min-width: 1024px) {
+            .trains-container {
+                display: block;
+            }
+
+            .train-card {
+                display: none;
+            }
+
+            .desktop-table {
+                display: table;
+                width: 100%;
+                border-collapse: collapse;
+                margin-top: 15px;
+                box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+                background-color: white;
+                border-radius: 8px;
+                overflow: hidden;
+            }
+
+            .desktop-table th,
+            .desktop-table td {
+                text-align: left;
+                padding: 12px;
+                border-bottom: 1px solid #ddd;
+            }
+
+            .desktop-table th {
+                background-color: #343a40;
+                color: white;
+            }
+
+            .desktop-table tr:hover {
+                background-color: #f1f1f1;
+            }
+
+            /* Desktop suggestions styling */
+            .suggestion-item {
+                padding: 10px 16px;
+                font-size: 14px;
+                min-height: auto;
+            }
+
+            .suggestions {
+                max-height: 300px;
+            }
+        }
+
+        /* High DPI displays */
+        @media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+            .suggestions {
+                border-width: 0.5px;
+            }
+        } 
+
+        /* Accessibility improvements */
+        @media (prefers-reduced-motion: reduce) {
+            .train-card,
+            input,
+            button,
+            .suggestion-item {
+                transition: none;
+            }
+
+            .loading {
+                animation: none;
+            }
+        }
+
+        /* Focus visible for keyboard navigation */
+        .suggestion-item:focus-visible {
+            outline: 2px solid #007bff;
+            outline-offset: -2px;
+        }
+
+        /* Scrollbar styling for suggestions */
+        .suggestions::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .suggestions::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+
+        .suggestions::-webkit-scrollbar-thumb {
+            background: #c1c1c1;
+            border-radius: 3px;
+        }
+
+        .suggestions::-webkit-scrollbar-thumb:hover {
+            background: #a8a8a8;
+        }
+
+        /* iOS Safari specific fixes */
+        @supports (-webkit-touch-callout: none) {
+            input {
+                font-size: 16px; /* Prevents zoom */
+                -webkit-appearance: none;
+                border-radius: 4px;
+            }
+
+            .suggestions {
+                -webkit-overflow-scrolling: touch;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Search Form -->
+    <form method="post" action="/track-train-between" class="search-form">
+        <div class="form-group">
+            <label for="sourceStation">From:</label>
+            <input id="sourceStation" name="sourceStation" required placeholder="Enter source station" autocomplete="off" />
+        </div>
+        <div class="form-group">
+            <label for="destinationStation">To:</label>
+            <input id="destinationStation" name="destinationStation" required placeholder="Enter destination station" autocomplete="off" />
+        </div>
+        <button type="submit">Search Trains</button>
+    </form>
+
+    <!-- Route Header -->
+    <div th:if="${sourceStation != null and destinationStation != null}">
+        <h2 th:text="|${sourceStation} ➝ ${destinationStation}|">Route</h2>
+    </div>
+
+    <!-- Trains Display -->
+    <div th:if="${trains != null}" class="trains-container">
+        <!-- Mobile/Tablet Cards -->
+        <div th:each="train : ${trains}" class="train-card">
+            <form th:id="'form-' + ${train.trainNo}"
+                  th:action="@{/train-status(trainNo=${train.trainNo})}"
+                  method="post"
+                  class="clickable-form"
+                  onclick="this.submit()">
+                <input type="hidden" name="limit" value="50" />
+                <div class="train-card-content">
+                    <div class="train-header">
+                        <span class="train-number" th:text="${train.trainNo}">12345</span>
+                        <span class="train-name" th:text="${train.trainName}">Express Train</span>
+                    </div>
+                    <div class="route-info">
+                        <div class="station-info source">
+                            <div class="station-name" th:text="${train.sourceStation}">Source</div>
+                            <div class="station-time" th:text="${train.departureTime}">00:00</div>
+                        </div>
+                        <div class="route-arrow">→</div>
+                        <div class="station-info destination">
+                            <div class="station-name" th:text="${train.destinationStation}">Destination</div>
+                            <div class="station-time" th:text="${train.arrivalTime}">00:00</div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        <!-- Desktop Table -->
+        <table class="desktop-table">
+            <thead>
+                <tr>
+                    <th>Train No.</th>
+                    <th>Train Name</th>
+                    <th>Source</th>
+                    <th>Departure</th>
+					                    <th>Destination</th>
+                    <th>Arrival</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="train : ${trains}">
+                    <td colspan="6" style="padding: 0;">
+                        <form th:id="'form-desktop-' + ${train.trainNo}"
+                              th:action="@{/train-status(trainNo=${train.trainNo})}"
+                              method="post"
+                              class="clickable-form"
+                              onclick="this.submit()">
+                            <table class="clickable-table">
+                                <tr>
+                                    <input type="hidden" name="limit" value="50" />
+                                    <td th:text="${train.trainNo}"></td>
+                                    <td th:text="${train.trainName}"></td>
+                                    <td th:text="${train.sourceStation}"></td>
+                                    <td th:text="${train.departureTime}"></td>
+                                    <td th:text="${train.destinationStation}"></td>
+                                    <td th:text="${train.arrivalTime}"></td>
+                                </tr>
+                            </table>
+                        </form>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- No Trains Message -->
+    <div th:if="${trains != null and #lists.isEmpty(trains)}" class="no-trains">
+        <p>🚂 No trains found for this route.</p>
+        <p>Please try different stations or check your spelling.</p>
+    </div>
+
+    <script>
+        let indianStations = [];
+        let isLoading = false;
+
+        // Load station list dynamically
+        fetch('/api/stations')
+            .then(response => response.json())
+            .then(data => {
+                indianStations = data;
+                setupAutocomplete('sourceStation');
+                setupAutocomplete('destinationStation');
+            })
+            .catch(error => {
+                console.error("Error loading stations:", error);
+                // Fallback: still setup autocomplete with empty array
+                setupAutocomplete('sourceStation');
+                setupAutocomplete('destinationStation');
+            });
+
+        function setupAutocomplete(inputId) {
+            const input = document.getElementById(inputId);
+            const container = input.parentElement;
+            let currentIndex = -1;
+            let touchStarted = false;
+            let searchTimeout;
+
+            // Debounced search function
+            function performSearch(value) {
+                if (isLoading) return;
+                
+                const old = document.getElementById(`suggestions-${inputId}`);
+                if (old) old.remove();
+                currentIndex = -1;
+
+                if (value.length < 2) return;
+
+                // Show loading state for slow connections
+                if (indianStations.length === 0) {
+                    showLoadingState();
+                    return;
+                }
+
+                const matches = indianStations.filter(station =>
+                    station.name.toLowerCase().includes(value) ||
+                    station.code.toLowerCase().includes(value)
+                ).slice(0, 8);
+
+                showSuggestions(matches);
+            }
+
+            function showLoadingState() {
+                const box = document.createElement('div');
+                box.className = 'suggestions';
+                box.id = `suggestions-${inputId}`;
+                
+                const loading = document.createElement('div');
+                loading.className = 'no-suggestions';
+                loading.innerHTML = `<span>Loading stations...</span><div class="loading"></div>`;
+                box.appendChild(loading);
+                
+                container.appendChild(box);
+            }
+
+            function showSuggestions(matches) {
+                const box = document.createElement('div');
+                box.className = 'suggestions';
+                box.id = `suggestions-${inputId}`;
+
+                if (matches.length === 0) {
+                    const no = document.createElement('div');
+                    no.className = 'no-suggestions';
+                    no.innerHTML = `No station found`;
+                    box.appendChild(no);
+                } else {
+                    matches.forEach((station, index) => {
+                        const item = document.createElement('div');
+                        item.className = 'suggestion-item';
+                        item.setAttribute('role', 'option');
+                        item.setAttribute('tabindex', '-1');
+                        item.innerHTML = `<strong>${station.name}</strong> (${station.code})`;
+                        
+                        // Mouse events
+                        item.addEventListener('click', (e) => {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            selectStation(station.code);
+                        });
+
+                        // Touch events for mobile
+                        item.addEventListener('touchstart', (e) => {
+                            e.preventDefault();
+                            touchStarted = true;
+                            item.classList.add('highlighted');
+                            
+                            // Remove highlight from other items
+                            box.querySelectorAll('.suggestion-item').forEach(otherItem => {
+                                if (otherItem !== item) {
+                                    otherItem.classList.remove('highlighted');
+                                }
+                            });
+                        });
+
+                        item.addEventListener('touchend', (e) => {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            if (touchStarted) {
+                                selectStation(station.code);
+                                touchStarted = false;
+                            }
+                        });
+
+                        item.addEventListener('touchcancel', () => {
+                            touchStarted = false;
+                            item.classList.remove('highlighted');
+                        });
+
+                        // Mouse hover for desktop
+                        item.addEventListener('mouseenter', () => {
+                            if (!touchStarted) {
+                                currentIndex = index;
+                                highlight(box.querySelectorAll('.suggestion-item'));
+                            }
+                        });
+
+                        box.appendChild(item);
+                    });
+                }
+
+                container.appendChild(box);
+            }
+
+            input.addEventListener('input', function () {
+                const value = this.value.toLowerCase().trim();
+                
+                // Clear previous timeout
+                if (searchTimeout) {
+                    clearTimeout(searchTimeout);
+                }
+                
+                // Debounce search to improve performance
+                searchTimeout = setTimeout(() => {
+                    performSearch(value);
+                }, 150);
+            });
+
+            function selectStation(code) {
+                input.value = code;
+                const box = document.getElementById(`suggestions-${inputId}`);
+                if (box) box.remove();
+                currentIndex = -1;
+                input.blur();
+                
+                // Trigger form validation
+                input.dispatchEvent(new Event('change', { bubbles: true }));
+            }
+
+            input.addEventListener('blur', () => {
+                setTimeout(() => {
+                    if (!touchStarted) {
+                        const box = document.getElementById(`suggestions-${inputId}`);
+                        if (box) box.remove();
+                    }
+                }, 300);
+            });
+
+            input.addEventListener('focus', () => {
+                if (input.value.length >= 2) {
+                    input.dispatchEvent(new Event('input'));
+                }
+            });
+
+            input.addEventListener('keydown', function (e) {
+                const box = document.getElementById(`suggestions-${inputId}`);
+                const items = box ? box.querySelectorAll('.suggestion-item') : [];
+
+                if (e.key === 'ArrowDown') {
+                    e.preventDefault();
+                    currentIndex = Math.min(currentIndex + 1, items.length - 1);
+                    highlight(items);
+                    scrollToHighlighted(box, items[currentIndex]);
+                } else if (e.key === 'ArrowUp') {
+                    e.preventDefault();
+                    currentIndex = Math.max(currentIndex - 1, 0);
+                    highlight(items);
+                    scrollToHighlighted(box, items[currentIndex]);
+                } else if (e.key === 'Enter') {
+                    e.preventDefault();
+                    if (items[currentIndex]) {
+                        const stationCode = items[currentIndex].textContent.match(/\(([^)]+)\)$/)[1];
+                        selectStation(stationCode);
+                    }
+                } else if (e.key === 'Escape') {
+                    const box = document.getElementById(`suggestions-${inputId}`);
+                    if (box) box.remove();
+                    currentIndex = -1;
+                    input.blur();
+                }
+            });
+
+            function highlight(items) {
+                items.forEach((item, idx) => {
+                    item.classList.toggle('highlighted', idx === currentIndex);
+                });
+            }
+
+            function scrollToHighlighted(box, item) {
+                if (box && item) {
+                    const boxRect = box.getBoundingClientRect();
+                    const itemRect = item.getBoundingClientRect();
+                    
+                    if (itemRect.bottom > boxRect.bottom) {
+                        box.scrollTop += itemRect.bottom - boxRect.bottom;
+                    } else if (itemRect.top < boxRect.top) {
+                        box.scrollTop -= boxRect.top - itemRect.top;
+                    }
+                }
+            }
+
+            // Close suggestions when clicking outside
+            document.addEventListener('click', (e) => {
+                if (!container.contains(e.target)) {
+                    const box = document.getElementById(`suggestions-${inputId}`);
+                    if (box) box.remove();
+                    currentIndex = -1;
+                }
+            });
+
+            // Close suggestions when touching outside (mobile)
+            document.addEventListener('touchstart', (e) => {
+                if (!container.contains(e.target)) {
+                    const box = document.getElementById(`suggestions-${inputId}`);
+                    if (box) box.remove();
+                    currentIndex = -1;
+                }
+            });
+        }
+
+        // Uppercase formatting for relevant fields
+        document.addEventListener('DOMContentLoaded', function () {
+            const inputs = ['trainNo', 'sourceStation', 'destinationStation', 'trainName'];
+            inputs.forEach(name => {
+                const el = document.querySelector(`input[name="${name}"]`);
+                if (el) {
+                    el.addEventListener('input', function () {
+                        this.value = this.value.toUpperCase();
+                    });
+                }
+            });
+
+            // Add loading state management
+            const form = document.querySelector('.search-form');
+            const submitButton = form.querySelector('button[type="submit"]');
+            
+            form.addEventListener('submit', function() {
+                submitButton.disabled = true;
+                submitButton.innerHTML = 'Searching... <div class="loading"></div>';
+                
+                // Re-enable after 10 seconds as fallback
+                setTimeout(() => {
+                    submitButton.disabled = false;
+                    submitButton.innerHTML = 'Search Trains';
+                }, 10000);
+            });
+
+            // Handle form validation
+            const sourceInput = document.getElementById('sourceStation');
+            const destInput = document.getElementById('destinationStation');
+            
+            function validateStations() {
+                const sourceValid = indianStations.some(station => 
+                    station.code === sourceInput.value || station.name === sourceInput.value
+                );
+                const destValid = indianStations.some(station => 
+                    station.code === destInput.value || station.name === destInput.value
+                );
+                
+                if (sourceInput.value && !sourceValid) {
+                    sourceInput.setCustomValidity('Please select a valid station from the suggestions');
+                } else {
+                    sourceInput.setCustomValidity('');
+                }
+                
+                if (destInput.value && !destValid) {
+                    destInput.setCustomValidity('Please select a valid station from the suggestions');
+                } else {
+                    destInput.setCustomValidity('');
+                }
+            }
+            
+            sourceInput.addEventListener('change', validateStations);
+            destInput.addEventListener('change', validateStations);
+        });
+
+        // Handle orientation changes on mobile
+        window.addEventListener('orientationchange', function() {
+            setTimeout(() => {
+                // Close any open suggestions after orientation change
+                document.querySelectorAll('.suggestions').forEach(box => box.remove());
+            }, 100);
+        });
+
+        // Handle viewport resize
+        let resizeTimeout;
+        window.addEventListener('resize', function() {
+            clearTimeout(resizeTimeout);
+            resizeTimeout = setTimeout(() => {
+                // Reposition suggestions if open
+                document.querySelectorAll('.suggestions').forEach(box => {
+                    const input = box.parentElement.querySelector('input');
+                    if (input) {
+                        // Trigger repositioning by re-showing suggestions
+                        const event = new Event('input');
+                        input.dispatchEvent(event);
+                    }
+                });
+            }, 250);
+        });
+    </script>
+</body>
+</html>
+					
