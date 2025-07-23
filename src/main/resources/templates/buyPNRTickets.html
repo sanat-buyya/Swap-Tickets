@@ -496,7 +496,7 @@
 
     <div class="pnr-notice">
         <b>*Confirm ticket using PNR before buying:</b>
-        <a href="https://www.indianrail.gov.in/enquiry/PNR/PnrEnquiry.html?locale=en" target="_blank">Click here</a>
+        <a href="/pnr/external" style="text-decoration: none;">Click here</a>
     </div>
 
     <!-- 🎫 LIST OF PNRs -->
@@ -509,17 +509,24 @@
     </div>
         <div th:each="pnr : ${pnrs}" class="pnr-card">
             <div class="pnr-header">
-                <h3><span class="emoji">📄</span> PNR: <span th:text="${pnr.pnrNumber}"></span>
-            	<form th:action="@{/train-status(trainNo=${pnr.trainNumber})}" method="post" style="display: inline;">
+                <h3>
+    PNR: <span th:text="${pnr.pnrNumber}" id="pnrNumberText"></span>
+    <button type="button" onclick="copyPNR(this)" style="margin-left:2px;padding:0px 0px; font-size:1em;">
+        <span class="emoji">📋</span>
+    </button>
+    <span class="copied-msg" style="display:none; margin-left:2px; color:#ffc107; font-size:0.85em;">Copied!</span>
+	<a href="/pnr/external" style="text-decoration: none; font-size: 0.7em; margin-left: 15%;">
+    <span class="emoji" style="text-decoration: none; color: white;">PNR Verify</span>
+</a>
+     <form th:action="@{/train-status(trainNo=${pnr.trainNumber})}" method="post" style="display: inline;">
     <!-- Hidden input for limit -->
     <input type="hidden" name="limit" value="50" />
     <!-- Submit button styled like a link/icon -->
-    <button type="submit" title="Train Status" style="color: inherit; text-decoration: none; margin-left: 130%; font-size: 1.3em; padding-right: 0px;">
-        <img src="/docs/route.gif" alt="Route" height="40px" width="50px" />
+    <button type="submit" title="Train Status" style="color: inherit; text-decoration: none; margin-left: 0%; font-size: 0.75em; padding-right: 0px;">
+        <span class="emoji">Track Station</span>
     </button>
 </form>
 
-    </a>
             </div>
             <div class="pnr-body">
                 <div class="pnr-details">
@@ -853,7 +860,21 @@
                 journeyDateInput.setAttribute('min', today);
             }
         });
-
+        
+      function copyPNR(btn) {
+    const pnrSpan = btn.previousElementSibling;
+    if (pnrSpan) {
+        navigator.clipboard.writeText(pnrSpan.textContent.trim());
+        // Show "Copied!" message
+        const copiedMsg = btn.nextElementSibling;
+        if (copiedMsg) {
+            copiedMsg.style.display = 'inline';
+            setTimeout(() => {
+                copiedMsg.style.display = 'none';
+            }, 1200);
+        }
+    }
+}
         // 🚀 PERFORMANCE OPTIMIZATION
         let searchTimeout;
         function debounceSearch(input) {

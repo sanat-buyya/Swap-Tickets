@@ -86,7 +86,10 @@ public class PNRController {
             @RequestParam("documentUrls") List<MultipartFile> documentFiles,
             RedirectAttributes redirectAttributes
     ) throws IOException {
-
+    	String userEmail = (String) session.getAttribute("loggedInUserEmail");
+        if (userEmail == null) {
+            return "redirect:/login";
+        }
         if (pnrRepository.existsById(pnrNumber)) {
             redirectAttributes.addFlashAttribute("error", "PNR already exists.");
             return "redirect:/user/home";
@@ -155,8 +158,11 @@ public class PNRController {
             @RequestParam(required = false) String trainNumber,
             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate journeyDate,
             @RequestParam(required = false) String gender,
-            Model model) {
-        
+            HttpSession session,Model model) {
+    	String userEmail = (String) session.getAttribute("loggedInUserEmail");
+        if (userEmail == null) {
+            return "redirect:/login";
+        }
         List<PNR> pnrs;
         
         if (trainNumber != null && !trainNumber.isEmpty()) {
@@ -562,7 +568,10 @@ public class PNRController {
         return "myPurchasedTickets1";
     }
 
-
+        @GetMapping("/external")
+        public String showExternalPNRPage(Model model, HttpSession session) {
+            return "pnr-enquiry-external";
+        }
    
 
 

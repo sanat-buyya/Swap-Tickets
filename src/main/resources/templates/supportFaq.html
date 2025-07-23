@@ -1,862 +1,1094 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FAQ - SwapTicket</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <link rel="icon" href="/docs/swaplogo.png" type="image/png">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FAQ - SwapTicket</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+<link rel="icon" href="/docs/swaplogo.png" type="image/png">
+<style>
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    line-height: 1.6;
+    color: #333;
+    background: #f5f7ff;
+    min-height: 100vh;
+    background-image: url('https://www.transparenttextures.com/patterns/cubes.png');
+}
+
+.container {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.header {
+    text-align: center;
+    margin-bottom: 30px;
+    color: blue;
+}
+
+.header h1 {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 10px;
+}
+
+.header p {
+    font-size: 1.1rem;
+    opacity: 0.9;
+    font-weight: 300;
+}
+
+.back-button {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    color: white;
+    text-decoration: none;
+    font-weight: 500;
+    margin-bottom: 20px;
+    padding: 10px 20px;
+    background: rgb(255, 128, 128);
+    border-radius: 25px;
+    backdrop-filter: blur(10px);
+    transition: all 0.3s ease;
+}
+
+.back-button:hover {
+    background: rgb(240, 143, 79);
+    transform: translateY(-2px);
+}
+
+.faq-container {
+    background: white;
+    border-radius: 20px;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+    overflow: hidden;
+    backdrop-filter: blur(10px);
+    margin-bottom: 30px;
+}
+
+.faq-section {
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.faq-section:last-child {
+    border-bottom: none;
+}
+
+.section-header {
+    background: linear-gradient(135deg, #f8f9ff 0%, #e8f2ff 100%);
+    padding: 20px 25px;
+    border-left: 5px solid #1ed0d3;
+}
+
+.section-title {
+    font-size: 1.3rem;
+    font-weight: 600;
+    color: #2d3748;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.section-emoji {
+    font-size: 1.4rem;
+}
+
+.faq-content {
+    padding: 25px;
+}
+
+.faq-item {
+    margin-bottom: 20px;
+    border-radius: 12px;
+    border: 1px solid #e2e8f0;
+    overflow: hidden;
+    transition: all 0.3s ease;
+}
+
+.faq-item:hover {
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.1);
+    border-color: #667eea;
+}
+
+.faq-item:last-child {
+    margin-bottom: 0;
+}
+
+.question {
+    background: #f8fafc;
+    padding: 18px;
+    font-weight: 600;
+    color: #2d3748;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: all 0.3s ease;
+    min-height: 60px;
+}
+
+.question:hover {
+    background: #edf2f7;
+}
+
+.question.active {
+    background: #667eea;
+    color: white;
+}
+
+.question-text {
+    flex: 1;
+    font-size: 1rem;
+    line-height: 1.4;
+}
+
+.toggle-icon {
+    font-size: 1.1rem;
+    transition: transform 0.3s ease;
+    margin-left: 15px;
+    flex-shrink: 0;
+}
+
+.question.active .toggle-icon {
+    transform: rotate(180deg);
+}
+
+.answer {
+    padding: 0 18px;
+    background: white;
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.4s ease, padding 0.4s ease;
+}
+
+.answer.active {
+    padding: 18px;
+    /* Remove fixed max-height - will be set dynamically */
+}
+
+.answer-content {
+    color: #4a5568;
+    line-height: 1.7;
+    font-size: 0.95rem;
+}
+
+.answer-content ol, .answer-content ul {
+    margin: 10px 0;
+    padding-left: 20px;
+}
+
+.answer-content li {
+    margin: 8px 0;
+    font-weight: 500;
+}
+
+.answer-content a {
+    color: #667eea;
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.answer-content a:hover {
+    text-decoration: underline;
+}
+
+/* Support Section */
+.support-section {
+    background: white;
+    border-radius: 20px;
+    padding: 30px;
+    text-align: center;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    margin-bottom: 30px;
+}
+
+.support-title {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #2d3748;
+    margin-bottom: 10px;
+}
+
+.support-subtitle {
+    color: #718096;
+    margin-bottom: 25px;
+    font-size: 1rem;
+}
+
+.chat-button {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    text-decoration: none;
+    padding: 15px 30px;
+    border-radius: 50px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+}
+
+.chat-button:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 12px 35px rgba(102, 126, 234, 0.4);
+}
+
+.chat-icon {
+    font-size: 1.3rem;
+}
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+    .container {
+        padding: 15px;
+    }
     
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            line-height: 1.6;
-            color: #333;
-            background:  #f5f7ff;
-            min-height: 100vh;
-            background-image: url('https://www.transparenttextures.com/patterns/cubes.png');
-        }
-
-        .container {
-            max-width: 900px;
-            margin: 0 auto;
-            padding: 20px;
-        }
-
-        .header {
-            text-align: center;
-            margin-bottom: 30px;
-            color: blue;
-        }
-
-        .header h1 {
-            font-size: 2.5rem;
-            font-weight: 700;
-            margin-bottom: 10px;
-           
-        }
-
-        .header p {
-            font-size: 1.1rem;
-            opacity: 0.9;
-            font-weight: 300;
-        }
-
-        .back-button {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            color: white;
-            text-decoration: none;
-            font-weight: 500;
-            margin-bottom: 20px;
-            padding: 10px 20px;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 25px;
-            backdrop-filter: blur(10px);
-            transition: all 0.3s ease;
-        }
-
-        .back-button:hover {
-            background: rgba(255, 255, 255, 0.2);
-            transform: translateY(-2px);
-        }
-
-        .faq-container {
-            background: white;
-            border-radius: 20px;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
-            overflow: hidden;
-            backdrop-filter: blur(10px);
-            margin-bottom: 30px;
-        }
-
-        .faq-section {
-            border-bottom: 1px solid #f0f0f0;
-        }
-
-        .faq-section:last-child {
-            border-bottom: none;
-        }
-
-        .section-header {
-            background: linear-gradient(135deg, #f8f9ff 0%, #e8f2ff 100%);
-            padding: 20px 25px;
-            border-left: 5px solid #1ed0d3;
-        }
-
-        .section-title {
-            font-size: 1.3rem;
-            font-weight: 600;
-            color: #2d3748;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .section-emoji {
-            font-size: 1.4rem;
-        }
-
-        .faq-content {
-            padding: 25px;
-        }
-
-        .faq-item {
-            margin-bottom: 20px;
-            border-radius: 12px;
-            border: 1px solid #e2e8f0;
-            overflow: hidden;
-            transition: all 0.3s ease;
-        }
-
-        .faq-item:hover {
-            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.1);
-            border-color: #667eea;
-        }
-
-        .faq-item:last-child {
-            margin-bottom: 0;
-        }
-
-        .question {
-            background: #f8fafc;
-            padding: 18px;
-            font-weight: 600;
-            color: #2d3748;
-            cursor: pointer;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            transition: all 0.3s ease;
-            min-height: 60px;
-        }
-
-        .question:hover {
-            background: #edf2f7;
-        }
-
-        .question.active {
-            background: #667eea;
-            color: white;
-        }
-
-        .question-text {
-            flex: 1;
-            font-size: 1rem;
-            line-height: 1.4;
-        }
-
-        .toggle-icon {
-            font-size: 1.1rem;
-            transition: transform 0.3s ease;
-            margin-left: 15px;
-            flex-shrink: 0;
-        }
-
-        .question.active .toggle-icon {
-            transform: rotate(180deg);
-        }
-
-        .answer {
-            padding: 0 18px;
-            background: white;
-            max-height: 0;
-            overflow: hidden;
-            transition: all 0.3s ease;
-        }
-
-        .answer.active {
-            max-height: 500px;
-            padding: 18px;
-        }
-
-        .answer-content {
-            color: #4a5568;
-            line-height: 1.7;
-            font-size: 0.95rem;
-        }
-
-        .answer-content ol {
-            margin: 10px 0;
-            padding-left: 20px;
-        }
-
-        .answer-content li {
-            margin: 8px 0;
-            font-weight: 500;
-        }
-
-        .answer-content a {
-            color: #667eea;
-            text-decoration: none;
-            font-weight: 500;
-        }
-
-        .answer-content a:hover {
-            text-decoration: underline;
-        }
-
-        /* Support Section */
-        .support-section {
-            background: white;
-            border-radius: 20px;
-            padding: 30px;
-            text-align: center;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-            margin-bottom: 30px;
-        }
-
-        .support-title {
-            font-size: 1.5rem;
-            font-weight: 600;
-            color: #2d3748;
-            margin-bottom: 10px;
-        }
-
-        .support-subtitle {
-            color: #718096;
-            margin-bottom: 25px;
-            font-size: 1rem;
-        }
-
-        .chat-button {
-            display: inline-flex;
-            align-items: center;
-            gap: 12px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            text-decoration: none;
-            padding: 15px 30px;
-            border-radius: 50px;
-            font-size: 1.1rem;
-            font-weight: 600;
-            transition: all 0.3s ease;
-            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
-        }
-
-        .chat-button:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 12px 35px rgba(102, 126, 234, 0.4);
-        }
-
-        .chat-icon {
-            font-size: 1.3rem;
-        }
-
-        /* Mobile Responsive */
-        @media (max-width: 768px) {
-            .container {
-                padding: 15px;
-            }
-
-            .header {
-                margin-bottom: 25px;
-            }
-
-            .header h1 {
-                font-size: 1.8rem;
-                margin-bottom: 8px;
-            }
-
-            .header p {
-                font-size: 0.95rem;
-            }
-
-            .back-button {
-                padding: 8px 16px;
-                font-size: 0.9rem;
-                margin-bottom: 15px;
-            }
-
-            .faq-container {
-                border-radius: 15px;
-                margin-bottom: 20px;
-            }
-
-            .section-header {
-                padding: 15px 18px;
-            }
-
-            .section-title {
-                font-size: 1.1rem;
-            }
-
-            .section-emoji {
-                font-size: 1.2rem;
-            }
-
-            .faq-content {
-                padding: 18px;
-            }
-
-            .faq-item {
-                margin-bottom: 15px;
-                border-radius: 10px;
-            }
-
-            .question {
-                padding: 15px;
-                font-size: 0.9rem;
-                min-height: 50px;
-                align-items: flex-start;
-            }
-
-            .question-text {
-                padding-right: 10px;
-                line-height: 1.3;
-            }
-
-            .toggle-icon {
-                font-size: 1rem;
-                margin-left: 10px;
-                margin-top: 2px;
-            }
-
-            .answer.active {
-                padding: 15px;
-            }
-
-            .answer-content {
-                font-size: 0.9rem;
-                line-height: 1.6;
-            }
-
-            .answer-content ol {
-                padding-left: 18px;
-            }
-
-            .support-section {
-                padding: 25px 20px;
-                border-radius: 15px;
-                margin-bottom: 20px;
-            }
-
-            .support-title {
-                font-size: 1.3rem;
-            }
-
-            .support-subtitle {
-                font-size: 0.9rem;
-                margin-bottom: 20px;
-            }
-
-            .chat-button {
-                padding: 12px 25px;
-                font-size: 1rem;
-                gap: 10px;
-            }
-
-            .chat-icon {
-                font-size: 1.2rem;
-            }
-        }
-
-        @media (max-width: 480px) {
-            .container {
-                padding: 12px;
-            }
-
-            .header h1 {
-                font-size: 1.6rem;
-            }
-
-            .header p {
-                font-size: 0.9rem;
-            }
-
-            .back-button {
-                padding: 6px 12px;
-                font-size: 0.85rem;
-                gap: 6px;
-            }
-
-            .faq-container {
-                border-radius: 12px;
-            }
-
-            .section-header {
-                padding: 12px 15px;
-            }
-
-            .section-title {
-                font-size: 1rem;
-                gap: 8px;
-            }
-
-            .section-emoji {
-                font-size: 1.1rem;
-            }
-
-            .faq-content {
-                padding: 15px;
-            }
-
-            .faq-item {
-                margin-bottom: 12px;
-                border-radius: 8px;
-            }
-
-            .question {
-                padding: 12px;
-                font-size: 0.85rem;
-                min-height: 45px;
-            }
-
-            .question-text {
-                padding-right: 8px;
-            }
-
-            .toggle-icon {
-                font-size: 0.9rem;
-                margin-left: 8px;
-            }
-
-            .answer.active {
-                padding: 12px;
-            }
-
-            .answer-content {
-                font-size: 0.85rem;
-                line-height: 1.5;
-            }
-
-            .answer-content ol {
-                padding-left: 16px;
-            }
-
-            .answer-content li {
-                margin: 6px 0;
-            }
-
-            .support-section {
-                padding: 20px 15px;
-                border-radius: 12px;
-            }
-
-            .support-title {
-                font-size: 1.2rem;
-                margin-bottom: 8px;
-            }
-
-            .support-subtitle {
-                font-size: 0.85rem;
-                margin-bottom: 18px;
-            }
-
-            .chat-button {
-                padding: 10px 20px;
-                font-size: 0.9rem;
-                gap: 8px;
-            }
-
-            .chat-icon {
-                font-size: 1.1rem;
-            }
-        }
-
-        @media (max-width: 360px) {
-            .container {
-                padding: 10px;
-            }
-
-            .header h1 {
-                font-size: 1.4rem;
-            }
-
-            .question {
-                padding: 10px;
-                font-size: 0.8rem;
-            }
-
-            .answer.active {
-                padding: 10px;
-            }
-
-            .answer-content {
-                font-size: 0.8rem;
-            }
-
-            .support-section {
-                padding: 18px 12px;
-            }
-
-            .chat-button {
-                padding: 8px 16px;
-                font-size: 0.85rem;
-            }
-        }
-
-        /* Loading animation */
-        .faq-item {
-            opacity: 0;
-            transform: translateY(20px);
-            animation: fadeInUp 0.6s ease forwards;
-        }
-
-        .faq-item:nth-child(1) { animation-delay: 0.1s; }
-        .faq-item:nth-child(2) { animation-delay: 0.2s; }
-        .faq-item:nth-child(3) { animation-delay: 0.3s; }
-        .faq-item:nth-child(4) { animation-delay: 0.4s; }
-        .faq-item:nth-child(5) { animation-delay: 0.5s; }
-
-        @keyframes fadeInUp {
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        /* Smooth scrolling */
-        html {
-            scroll-behavior: smooth;
-        }
-    </style>
+    .header {
+        margin-bottom: 25px;
+    }
+    
+    .header h1 {
+        font-size: 1.8rem;
+        margin-bottom: 8px;
+    }
+    
+    .header p {
+        font-size: 0.95rem;
+    }
+    
+    .back-button {
+        padding: 8px 16px;
+        font-size: 0.9rem;
+        margin-bottom: 15px;
+    }
+    
+    .faq-container {
+        border-radius: 15px;
+        margin-bottom: 20px;
+    }
+    
+    .section-header {
+        padding: 15px 18px;
+    }
+    
+    .section-title {
+        font-size: 1.1rem;
+    }
+    
+    .section-emoji {
+        font-size: 1.2rem;
+    }
+    
+    .faq-content {
+        padding: 18px;
+    }
+    
+    .faq-item {
+        margin-bottom: 15px;
+        border-radius: 10px;
+    }
+    
+    .question {
+        padding: 15px;
+        font-size: 0.9rem;
+        min-height: 50px;
+        align-items: flex-start;
+    }
+    
+    .question-text {
+        padding-right: 10px;
+        line-height: 1.3;
+    }
+    
+    .toggle-icon {
+        font-size: 1rem;
+        margin-left: 10px;
+        margin-top: 2px;
+    }
+    
+    .answer.active {
+        padding: 15px;
+    }
+    
+    .answer-content {
+        font-size: 0.9rem;
+        line-height: 1.6;
+    }
+    
+    .answer-content ol, .answer-content ul {
+        padding-left: 18px;
+    }
+    
+    .support-section {
+        padding: 25px 20px;
+        border-radius: 15px;
+        margin-bottom: 20px;
+    }
+    
+    .support-title {
+        font-size: 1.3rem;
+    }
+    
+    .support-subtitle {
+        font-size: 0.9rem;
+        margin-bottom: 20px;
+    }
+    
+    .chat-button {
+        padding: 12px 25px;
+        font-size: 1rem;
+        gap: 10px;
+    }
+    
+    .chat-icon {
+        font-size: 1.2rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .container {
+        padding: 12px;
+    }
+    
+    .header h1 {
+        font-size: 1.6rem;
+    }
+    
+    .header p {
+        font-size: 0.9rem;
+    }
+    
+    .back-button {
+        padding: 6px 12px;
+        font-size: 0.85rem;
+        gap: 6px;
+    }
+    
+    .faq-container {
+        border-radius: 12px;
+    }
+    
+    .section-header {
+        padding: 12px 15px;
+    }
+    
+    .section-title {
+        font-size: 1rem;
+        gap: 8px;
+    }
+    
+    .section-emoji {
+        font-size: 1.1rem;
+    }
+    
+    .faq-content {
+        padding: 15px;
+    }
+    
+    .faq-item {
+        margin-bottom: 12px;
+        border-radius: 8px;
+    }
+    
+    .question {
+        padding: 12px;
+        font-size: 0.85rem;
+        min-height: 45px;
+    }
+    
+    .question-text {
+        padding-right: 8px;
+    }
+    
+    .toggle-icon {
+        font-size: 0.9rem;
+        margin-left: 8px;
+    }
+    
+    .answer.active {
+        padding: 12px;
+    }
+    
+    .answer-content {
+        font-size: 0.85rem;
+        line-height: 1.5;
+    }
+    
+    .answer-content ol, .answer-content ul {
+        padding-left: 16px;
+    }
+    
+    .answer-content li {
+        margin: 6px 0;
+    }
+    
+    .support-section {
+        padding: 20px 15px;
+        border-radius: 12px;
+    }
+    
+    .support-title {
+        font-size: 1.2rem;
+        margin-bottom: 8px;
+    }
+    
+    .support-subtitle {
+        font-size: 0.85rem;
+        margin-bottom: 18px;
+    }
+    
+    .chat-button {
+        padding: 10px 20px;
+        font-size: 0.9rem;
+        gap: 8px;
+    }
+    
+    .chat-icon {
+        font-size: 1.1rem;
+    }
+}
+
+@media (max-width: 360px) {
+    .container {
+        padding: 10px;
+    }
+    
+    .header h1 {
+        font-size: 1.4rem;
+    }
+    
+    .question {
+        padding: 10px;
+        font-size: 0.8rem;
+    }
+    
+    .answer.active {
+        padding: 10px;
+    }
+    
+    .answer-content {
+        font-size: 0.8rem;
+    }
+    
+    .support-section {
+        padding: 18px 12px;
+    }
+    
+    .chat-button {
+        padding: 8px 16px;
+        font-size: 0.85rem;
+    }
+}
+
+/* Loading animation */
+.faq-item {
+    opacity: 0;
+    transform: translateY(20px);
+    animation: fadeInUp 0.6s ease forwards;
+}
+
+.faq-item:nth-child(1) { animation-delay: 0.1s; }
+.faq-item:nth-child(2) { animation-delay: 0.2s; }
+.faq-item:nth-child(3) { animation-delay: 0.3s; }
+.faq-item:nth-child(4) { animation-delay: 0.4s; }
+.faq-item:nth-child(5) { animation-delay: 0.5s; }
+
+@keyframes fadeInUp {
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Smooth scrolling */
+html {
+    scroll-behavior: smooth;
+}
+</style>
 </head>
 <body>
-    <div class="container">
-        <a href="/user/home" class="back-button">
-            <i class="fas fa-arrow-left"></i>
-            Back to Home
-        </a>
-
-        <div class="header">
-            <h1>Frequently Asked Questions</h1>
-        </div>
-
-        <div class="faq-container">
-            <!-- General Questions Section -->
-            <div class="faq-section">
-                <div class="section-header">
-                    <h2 class="section-title">
-                        <span class="section-emoji">🔄</span>
-                        General Questions
-                    </h2>
-                </div>
-                <div class="faq-content">
-                    <div class="faq-item">
-                        <div class="question" onclick="toggleAnswer(this)">
-                            <span class="question-text">What is SwapTicket?</span>
-                            <i class="fas fa-chevron-down toggle-icon"></i>
-                        </div>
-					                        <div class="answer">
-                            <div class="answer-content">
-                                <strong>A:</strong> SwapTicket is a peer-to-peer platform that allows users to safely sell or buy IRCTC train tickets. We aim to reduce scams by providing verified listings and secure payments.
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="faq-item">
-                        <div class="question" onclick="toggleAnswer(this)">
-                            <span class="question-text">Is SwapTicket affiliated with Indian Railways?</span>
-                            <i class="fas fa-chevron-down toggle-icon"></i>
-                        </div>
-                        <div class="answer">
-                            <div class="answer-content">
-                                <strong>A:</strong> No, SwapTicket is an independent platform and is not affiliated with IRCTC or Indian Railways.
-                            </div>
-                        </div>
-                    </div>
-                </div>
+<div class="container">
+    <div class="header">
+        <h1>Frequently Asked Questions</h1>
+    </div>
+    
+    <div class="faq-container">
+        <!-- General Questions Section -->
+        <div class="faq-section">
+            <div class="section-header">
+                <h2 class="section-title">
+                    <span class="section-emoji">🔄</span>
+                    General Questions
+                </h2>
             </div>
-
-            <!-- Selling Tickets Section -->
-            <div class="faq-section">
-                <div class="section-header">
-                    <h2 class="section-title">
-                        <span class="section-emoji">🧾</span>
-                        Selling Tickets
-                    </h2>
-                </div>
-                <div class="faq-content">
-                    <div class="faq-item">
-                        <div class="question" onclick="toggleAnswer(this)">
-                            <span class="question-text">How do I sell my train ticket?</span>
-                            <i class="fas fa-chevron-down toggle-icon"></i>
-                        </div>
-                        <div class="answer">
-                            <div class="answer-content">
-                                <strong>A:</strong> Follow these simple steps:
-                                <ol>
-                                    <li>Log in or register</li>
-                                    <li>Go to the Sell Ticket page</li>
-                                    <li>Enter ticket and passenger details</li>
-                                    <li>Upload ticket image or document</li>
-                                    <li>Set your price and submit</li>
-                                </ol>
-                            </div>
-                        </div>
+            <div class="faq-content">
+                <div class="faq-item">
+                    <div class="question" onclick="toggleAnswer(this)">
+                        <span class="question-text">What is SwapTicket?</span>
+                        <i class="fas fa-chevron-down toggle-icon"></i>
                     </div>
-
-                    <div class="faq-item">
-                        <div class="question" onclick="toggleAnswer(this)">
-                            <span class="question-text">Can I sell a ticket with multiple passengers?</span>
-                            <i class="fas fa-chevron-down toggle-icon"></i>
-                        </div>
-                        <div class="answer">
-                            <div class="answer-content">
-                                <strong>A:</strong> Yes. A single PNR can contain multiple passengers, each listed individually with name, age, seat, price, and document.
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="faq-item">
-                        <div class="question" onclick="toggleAnswer(this)">
-                            <span class="question-text">When does the seller receive the money?</span>
-                            <i class="fas fa-chevron-down toggle-icon"></i>
-                        </div>
-                        <div class="answer">
-                            <div class="answer-content">
-                                <strong>A:</strong> The ticket price is credited to the seller's UPI/Bank Account only after the journey is completed, as a fraud-prevention measure. This ensures buyers receive genuine and valid tickets.
-                            </div>
+                    <div class="answer">
+                        <div class="answer-content">
+                                                        <strong>A:</strong> SwapTicket is a peer-to-peer platform that allows users to safely sell or buy IRCTC train tickets. We aim to reduce scams by providing verified listings and secure payments.
                         </div>
                     </div>
                 </div>
-            </div>
 
-            <!-- Buying Tickets Section -->
-            <div class="faq-section">
-                <div class="section-header">
-                    <h2 class="section-title">
-                        <span class="section-emoji">🎫</span>
-                        Buying Tickets
-                    </h2>
+                <div class="faq-item">
+                    <div class="question" onclick="toggleAnswer(this)">
+                        <span class="question-text">Is SwapTicket affiliated with Indian Railways?</span>
+                        <i class="fas fa-chevron-down toggle-icon"></i>
+                    </div>
+                    <div class="answer">
+                        <div class="answer-content">
+                            <strong>A:</strong> No, SwapTicket is an independent platform and is not affiliated with IRCTC or Indian Railways.
+                        </div>
+                    </div>
                 </div>
-                <div class="faq-content">
-                    <div class="faq-item">
-                        <div class="question" onclick="toggleAnswer(this)">
-                            <span class="question-text">How do I buy a ticket?</span>
-                            <i class="fas fa-chevron-down toggle-icon"></i>
-                        </div>
-                        <div class="answer">
-                            <div class="answer-content">
-                                <strong>A:</strong> Here's how to buy a ticket:
-                                <ol>
-                                    <li>Go to the Buy Tickets page</li>
-                                    <li>Use filters to find available options</li>
-                                    <li>Click Buy and make payment via Razorpay</li>
-                                    <li>After payment, you'll see complete ticket details including documents</li>
-                                </ol>
-                            </div>
-                        </div>
-                    </div>
 
-                    <div class="faq-item">
-                        <div class="question" onclick="toggleAnswer(this)">
-                            <span class="question-text">Can I buy a single seat from a multi-passenger ticket?</span>
-                            <i class="fas fa-chevron-down toggle-icon"></i>
-                        </div>
-                        <div class="answer">
-                            <div class="answer-content">
-                                <strong>A:</strong> Yes. Each passenger is listed separately and can be purchased individually.
-                            </div>
-                        </div>
+                <div class="faq-item">
+                    <div class="question" onclick="toggleAnswer(this)">
+                        <span class="question-text">Who do I contact for IRCTC-related issues?</span>
+                        <i class="fas fa-chevron-down toggle-icon"></i>
                     </div>
-
-                    <div class="faq-item">
-                        <div class="question" onclick="toggleAnswer(this)">
-                            <span class="question-text">What if I face any issue?</span>
-                            <i class="fas fa-chevron-down toggle-icon"></i>
-                        </div>
-                        <div class="answer">
-                            <div class="answer-content">
-                                <strong>A:</strong> You can contact our team via the Contact Us page or email us directly at <a href="mailto:swap2ticket@gmail.com">swap2ticket@gmail.com</a>. You can also use our live chat feature for instant support.
-                            </div>
+                    <div class="answer">
+                        <div class="answer-content">
+                            <strong>A:</strong> SwapTicket is an independent platform and is not affiliated with Indian Railways. For official help, contact Indian Railways through the numbers below:<br><br>
+                            
+                            <strong>📞 General Enquiries & Grievances:</strong>
+                            <ul>
+                                <li><a href="tel:139">139</a>: PNR status, fare enquiry, live train status, and general complaints. (Chargeable)</li>
+                            </ul>
+                            
+                            <strong>🧼 Specific Services & Complaints:</strong>
+                            <ul>
+                                <li><a href="tel:138">138</a>: Toll-free for complaints related to cleanliness, catering, coach maintenance, medical issues, and linens.</li>
+                                <li><a href="tel:182">182</a>: RPF (Railway Protection Force) helpline for theft, harassment, or other security issues.</li>
+                                <li><a href="tel:1323">1323</a>: E-catering helpline for ordering food; WhatsApp: <a href="https://wa.me/918750001323" target="_blank">+91-8750001323</a></li>
+                                <li><a href="tel:1800111321">1800-111-321</a> / <a href="tel:1800111139">1800-111-139</a>: Toll-free numbers for catering complaints, including overcharging and food quality.</li>
+                                <li><a href="tel:9717630982">9717630982</a>: SMS complaint number for coach-related issues.</li>
+                                <li><a href="tel:58888">58888</a>: (OBHS) Coach cleaning complaints during your journey.</li>
+                            </ul>
+                            
+                            <strong>🚨 Other Important Numbers:</strong>
+                            <ul>
+                                <li><a href="tel:1098">1098</a>: For lost or missing children.</li>
+                                <li><a href="tel:1512">1512</a>: All-India Railway Helpline (24x7)</li>
+                                <li><a href="tel:155210">155210</a>: Anti-corruption vigilance</li>
+                                <li><a href="tel:14646">14646</a>: IRCTC customer care for booking/refund issues.</li>
+                                <li><a href="tel:08035734999">080-35734999</a> / <a href="tel:08044647999">080-44647999</a>: For Hindi/English support</li>
+                            </ul>
+                            <br>
+                            For faster assistance, keep your PNR number handy and clearly explain your issue when calling. You can also contact the Ministry of Railways via Twitter at <strong>@RailMinIndia</strong> or <strong>@EasternRailway</strong> for support.
                         </div>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- Support Section with Chat Button -->
-        <div class="support-section">
-            <h3 class="support-title">Need More Help?</h3>
-            <p class="support-subtitle">Can't find what you're looking for? Our support team is here to help you 24/7</p>
-            <a href="/support/submit" class="chat-button">
-                <i class="fas fa-comments chat-icon"></i>
-                Chat with Support Team
-            </a>
+        <!-- Selling Tickets Section -->
+        <div class="faq-section">
+            <div class="section-header">
+                <h2 class="section-title">
+                    <span class="section-emoji">🧾</span>
+                    Selling Tickets
+                </h2>
+            </div>
+            <div class="faq-content">
+                <div class="faq-item">
+                    <div class="question" onclick="toggleAnswer(this)">
+                        <span class="question-text">How do I sell my train ticket?</span>
+                        <i class="fas fa-chevron-down toggle-icon"></i>
+                    </div>
+                    <div class="answer">
+                        <div class="answer-content">
+                            <strong>A:</strong> Follow these simple steps:
+                            <ol>
+                                <li>Log in or register</li>
+                                <li>Go to the Sell Ticket page</li>
+                                <li>Enter ticket and passenger details</li>
+                                <li>Upload ticket image or document</li>
+                                <li>Set your price and submit</li>
+                            </ol>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="question" onclick="toggleAnswer(this)">
+                        <span class="question-text">Can I sell a ticket with multiple passengers?</span>
+                        <i class="fas fa-chevron-down toggle-icon"></i>
+                    </div>
+                    <div class="answer">
+                        <div class="answer-content">
+                            <strong>A:</strong> Yes. A single PNR can contain multiple passengers, each listed individually with name, age, seat, price, and document.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="question" onclick="toggleAnswer(this)">
+                        <span class="question-text">What if the seller wants their ticket back after listing it?</span>
+                        <i class="fas fa-chevron-down toggle-icon"></i>
+                    </div>
+                    <div class="answer">
+                        <div class="answer-content">
+                            <strong>A:</strong> If a seller changes their mind and wants to reclaim their ticket, they must <b>buy their own ticket back</b> before someone else purchases it. Once a buyer has completed the payment, the ticket is considered sold and <b>cannot be reversed</b>.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="question" onclick="toggleAnswer(this)">
+                        <span class="question-text">When does the seller receive the money?</span>
+                        <i class="fas fa-chevron-down toggle-icon"></i>
+                    </div>
+                    <div class="answer">
+                        <div class="answer-content">
+                            <strong>A:</strong> The ticket price is credited to the seller's UPI/Bank Account only after the journey is completed, as a fraud-prevention measure. This ensures buyers receive genuine and valid tickets.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Buying Tickets Section -->
+        <div class="faq-section">
+            <div class="section-header">
+                <h2 class="section-title">
+                    <span class="section-emoji">🎫</span>
+                    Buying Tickets
+                </h2>
+            </div>
+            <div class="faq-content">
+                <div class="faq-item">
+                    <div class="question" onclick="toggleAnswer(this)">
+                        <span class="question-text">How do I buy a ticket?</span>
+                        <i class="fas fa-chevron-down toggle-icon"></i>
+                    </div>
+                    <div class="answer">
+                        <div class="answer-content">
+                            <strong>A:</strong> Here's how to buy a ticket:
+                            <ol>
+                                <li>Go to the Buy Tickets page</li>
+                                <li>Use filters to find available options</li>
+                                <li>Click Buy and make payment via Razorpay</li>
+                                <li>After payment, you'll see complete ticket details including documents</li>
+                            </ol>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="question" onclick="toggleAnswer(this)">
+                        <span class="question-text">Can I buy a single seat from a multi-passenger ticket?</span>
+                        <i class="fas fa-chevron-down toggle-icon"></i>
+                    </div>
+                    <div class="answer">
+                        <div class="answer-content">
+                            <strong>A:</strong> Yes. Each passenger is listed separately and can be purchased individually.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="question" onclick="toggleAnswer(this)">
+                        <span class="question-text">What if I face any issue?</span>
+                        <i class="fas fa-chevron-down toggle-icon"></i>
+                    </div>
+                    <div class="answer">
+                        <div class="answer-content">
+                            <strong>A:</strong> You can contact our team via the Contact Us page or email us directly at <a href="mailto:swap2ticket@gmail.com">swap2ticket@gmail.com</a>. You can also use our live chat feature for instant support.
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 
-    <script>
-        function toggleAnswer(questionElement) {
-            const answer = questionElement.nextElementSibling;
-            const isActive = questionElement.classList.contains('active');
-            
-            // Close all other answers
-            document.querySelectorAll('.question.active').forEach(q => {
-                if (q !== questionElement) {
-                    q.classList.remove('active');
-                    q.nextElementSibling.classList.remove('active');
-                }
-            });
-            
-            // Toggle current answer
-            if (isActive) {
-                questionElement.classList.remove('active');
-                answer.classList.remove('active');
-            } else {
-                questionElement.classList.add('active');
-                answer.classList.add('active');
-                
-                // Smooth scroll to question on mobile
-                if (window.innerWidth <= 768) {
-                    setTimeout(() => {
-                        questionElement.scrollIntoView({
-                            behavior: 'smooth',
-                            block: 'nearest'
-                        });
-                    }, 100);
-                }
-            }
+    <!-- Support Section with Chat Button -->
+    <div class="support-section">
+        <h3 class="support-title">Need More Help?</h3>
+        <p class="support-subtitle">Can't find what you're looking for? Our support team is here to help you 24/7</p>
+        <a href="/support/submit" class="chat-button">
+            <i class="fas fa-comments chat-icon"></i>
+            Chat with Support Team
+        </a>
+    </div>
+
+    <a href="/user/home" class="back-button">
+        <i class="fas fa-arrow-left"></i>
+        Back to Home
+    </a>
+</div>
+
+<script>
+function toggleAnswer(questionElement) {
+    const answer = questionElement.nextElementSibling;
+    const isActive = questionElement.classList.contains('active');
+    
+    // Close all other answers first
+    document.querySelectorAll('.question.active').forEach(q => {
+        if (q !== questionElement) {
+            q.classList.remove('active');
+            const otherAnswer = q.nextElementSibling;
+            otherAnswer.classList.remove('active');
+            otherAnswer.style.maxHeight = '0px';
+            q.setAttribute('aria-expanded', 'false');
         }
-
-        // Enhanced mobile experience
-        document.addEventListener('DOMContentLoaded', function() {
-            // Add touch feedback for mobile
-            if ('ontouchstart' in window) {
-                document.querySelectorAll('.question').forEach(question => {
-                    question.addEventListener('touchstart', function() {
-                        this.style.transform = 'scale(0.98)';
-                    });
-                    
-                    question.addEventListener('touchend', function() {
-                        this.style.transform = 'scale(1)';
-                    });
-                });
-            }
-
-            // Add keyboard accessibility
-            document.querySelectorAll('.question').forEach(question => {
-                question.addEventListener('keypress', function(e) {
-                    if (e.key === 'Enter' || e.key === ' ') {
-                        e.preventDefault();
-                        toggleAnswer(this);
-                    }
-                });
-                
-                question.setAttribute('tabindex', '0');
-                question.setAttribute('role', 'button');
-                question.setAttribute('aria-expanded', 'false');
-            });
-
-            // Update aria-expanded when toggling
-            const originalToggle = window.toggleAnswer;
-            window.toggleAnswer = function(questionElement) {
-                const wasActive = questionElement.classList.contains('active');
-                originalToggle(questionElement);
-                questionElement.setAttribute('aria-expanded', !wasActive);
-            };
-
-            // Add animation delay to FAQ items
-            const faqItems = document.querySelectorAll('.faq-item');
-            faqItems.forEach((item, index) => {
-                item.style.animationDelay = `${(index + 1) * 0.1}s`;
-            });
-
-            // Smooth scroll behavior for mobile
-            if (window.innerWidth <= 768) {
-                document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-                    anchor.addEventListener('click', function (e) {
-                        e.preventDefault();
-                        const target = document.querySelector(this.getAttribute('href'));
-                        if (target) {
-                            target.scrollIntoView({
-                                behavior: 'smooth',
-                                block: 'start'
-                            });
-                        }
-                    });
-                });
-            }
-        });
-
-        // Handle orientation change on mobile
-        window.addEventListener('orientationchange', function() {
+    });
+    
+    // Toggle current answer
+    if (isActive) {
+        // Close current answer
+        questionElement.classList.remove('active');
+        answer.classList.remove('active');
+        answer.style.maxHeight = '0px';
+        questionElement.setAttribute('aria-expanded', 'false');
+    } else {
+        // Open current answer
+        questionElement.classList.add('active');
+        answer.classList.add('active');
+        
+        // Calculate and set the exact height needed + 10px extra
+        const contentHeight = answer.scrollHeight + 25;
+        answer.style.maxHeight = contentHeight + 'px';
+        
+        questionElement.setAttribute('aria-expanded', 'true');
+        
+        // Smooth scroll to question on mobile
+        if (window.innerWidth <= 768) {
             setTimeout(() => {
-                // Recalculate heights after orientation change
-                document.querySelectorAll('.answer.active').forEach(answer => {
-                    answer.style.maxHeight = 'none';
-                    const height = answer.scrollHeight;
-                    answer.style.maxHeight = '0';
-                    setTimeout(() => {
-                        answer.style.maxHeight = height + 'px';
-                    }, 10);
+                questionElement.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'nearest'
                 });
-            }, 100);
-        });
+            }, 200);
+        }
+    }
+}
 
-        // Optimize for mobile performance
-        let resizeTimer;
-        window.addEventListener('resize', function() {
-            clearTimeout(resizeTimer);
-            resizeTimer = setTimeout(() => {
-                // Recalculate answer heights on resize
-                document.querySelectorAll('.answer.active').forEach(answer => {
-                    answer.style.maxHeight = answer.scrollHeight + 'px';
-                });
-            }, 250);
-        });
-
-        // Add loading state
-        window.addEventListener('load', function() {
-            document.body.style.opacity = '1';
+// Enhanced mobile experience
+document.addEventListener('DOMContentLoaded', function() {
+    // Add touch feedback for mobile
+    if ('ontouchstart' in window) {
+        document.querySelectorAll('.question').forEach(question => {
+            question.addEventListener('touchstart', function() {
+                this.style.transform = 'scale(0.98)';
+            });
             
-            // Add stagger animation to FAQ items
-            const faqItems = document.querySelectorAll('.faq-item');
-            faqItems.forEach((item, index) => {
-                setTimeout(() => {
-                    item.style.opacity = '1';
-                    item.style.transform = 'translateY(0)';
-                }, index * 100);
+            question.addEventListener('touchend', function() {
+                this.style.transform = 'scale(1)';
             });
         });
-
-        // Prevent zoom on input focus for iOS
-        if (/iPad|iPhone|iPod/.test(navigator.userAgent)) {
-            const viewport = document.querySelector('meta[name=viewport]');
-            viewport.setAttribute('content', viewport.content + ', maximum-scale=1.0, user-scalable=0');
-        }
-
-        // Add haptic feedback for supported devices
-        function addHapticFeedback(element) {
-            element.addEventListener('click', function() {
-                if (navigator.vibrate) {
-                    navigator.vibrate(50);
+    }
+    
+    // Add keyboard accessibility
+    document.querySelectorAll('.question').forEach(question => {
+        question.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                toggleAnswer(this);
+            }
+        });
+        
+        question.setAttribute('tabindex', '0');
+        question.setAttribute('role', 'button');
+        question.setAttribute('aria-expanded', 'false');
+    });
+    
+    // Add animation delay to FAQ items
+    const faqItems = document.querySelectorAll('.faq-item');
+    faqItems.forEach((item, index) => {
+        item.style.animationDelay = `${(index + 1) * 0.1}s`;
+    });
+    
+    // Smooth scroll behavior for mobile
+    if (window.innerWidth <= 768) {
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
                 }
             });
+        });
+    }
+});
+
+// Handle orientation change on mobile
+window.addEventListener('orientationchange', function() {
+    setTimeout(() => {
+        // Recalculate heights after orientation change + 10px extra
+        document.querySelectorAll('.answer.active').forEach(answer => {
+            const contentHeight = answer.scrollHeight + 15;
+            answer.style.maxHeight = contentHeight + 'px';
+        });
+    }, 200);
+});
+
+// Optimize for mobile performance
+let resizeTimer;
+window.addEventListener('resize', function() {
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(() => {
+        // Recalculate answer heights on resize + 10px extra
+        document.querySelectorAll('.answer.active').forEach(answer => {
+            const contentHeight = answer.scrollHeight + 15;
+            answer.style.maxHeight = contentHeight + 'px';
+        });
+    }, 250);
+});
+
+// Add loading state
+window.addEventListener('load', function() {
+    document.body.style.opacity = '1';
+    
+    // Add stagger animation to FAQ items
+    const faqItems = document.querySelectorAll('.faq-item');
+    faqItems.forEach((item, index) => {
+        setTimeout(() => {
+            item.style.opacity = '1';
+            item.style.transform = 'translateY(0)';
+        }, index * 100);
+    });
+});
+
+// Prevent zoom on input focus for iOS
+if (/iPad|iPhone|iPod/.test(navigator.userAgent)) {
+    const viewport = document.querySelector('meta[name=viewport]');
+    if (viewport) {
+        viewport.setAttribute('content', viewport.content + ', maximum-scale=1.0, user-scalable=0');
+    }
+}
+
+// Add haptic feedback for supported devices
+function addHapticFeedback(element) {
+    element.addEventListener('click', function() {
+        if (navigator.vibrate) {
+            navigator.vibrate(50);
         }
+    });
+}
 
-        // Apply haptic feedback to interactive elements
-        document.querySelectorAll('.question, .chat-button, .back-button').forEach(addHapticFeedback);
+// Apply haptic feedback to interactive elements
+document.querySelectorAll('.question, .chat-button, .back-button').forEach(addHapticFeedback);
 
-        // Intersection Observer for animations
-        if ('IntersectionObserver' in window) {
-            const observer = new IntersectionObserver((entries) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        entry.target.style.opacity = '1';
-                        entry.target.style.transform = 'translateY(0)';
-                    }
-                });
-            }, {
-                threshold: 0.1,
-                rootMargin: '0px 0px -50px 0px'
-            });
+// Intersection Observer for animations
+if ('IntersectionObserver' in window) {
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.style.opacity = '1';
+                entry.target.style.transform = 'translateY(0)';
+            }
+        });
+    }, {
+        threshold: 0.1,
+        rootMargin: '0px 0px -50px 0px'
+    });
+    
+    document.querySelectorAll('.faq-item, .support-section').forEach(item => {
+        observer.observe(item);
+    });
+}
 
-            document.querySelectorAll('.faq-item, .support-section').forEach(item => {
-                observer.observe(item);
-            });
+// Enhanced error handling
+window.addEventListener('error', function(e) {
+    console.error('FAQ Page Error:', e.error);
+});
+
+// Performance optimization - debounce scroll events
+let scrollTimer;
+window.addEventListener('scroll', function() {
+    clearTimeout(scrollTimer);
+    scrollTimer = setTimeout(() => {
+        // Any scroll-based functionality can go here
+    }, 100);
+});
+
+// Add focus management for accessibility
+document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') {
+        // Close all open FAQ items when Escape is pressed
+        document.querySelectorAll('.question.active').forEach(question => {
+            question.classList.remove('active');
+            const answer = question.nextElementSibling;
+            answer.classList.remove('active');
+            answer.style.maxHeight = '0px';
+            question.setAttribute('aria-expanded', 'false');
+        });
+    }
+});
+
+// Enhanced mobile touch handling
+let touchStartY = 0;
+let touchEndY = 0;
+
+document.addEventListener('touchstart', function(e) {
+    touchStartY = e.changedTouches[0].screenY;
+});
+
+document.addEventListener('touchend', function(e) {
+    touchEndY = e.changedTouches[0].screenY;
+    handleSwipe();
+});
+
+function handleSwipe() {
+    const swipeThreshold = 50;
+    const diff = touchStartY - touchEndY;
+    
+    if (Math.abs(diff) > swipeThreshold) {
+        // Add any swipe-based functionality here if needed
+    }
+}
+
+
+// Analytics tracking (optional)
+function trackFAQInteraction(action, question) {
+    if (typeof gtag !== 'undefined') {
+        gtag('event', 'faq_interaction', {
+            'event_category': 'FAQ',
+            'event_label': question,
+            'action': action
+        });
+    }
+}
+
+// Track FAQ clicks
+document.addEventListener('click', function(e) {
+    if (e.target.closest('.question')) {
+        const questionText = e.target.closest('.question').querySelector('.question-text').textContent;
+        trackFAQInteraction('question_clicked', questionText);
+    }
+});
+
+// Add keyboard shortcuts
+document.addEventListener('keydown', function(e) {
+    // Ctrl/Cmd + H to go home
+    if ((e.ctrlKey || e.metaKey) && e.key === 'h') {
+        e.preventDefault();
+        window.location.href = '/user/home';
+    }
+});
+
+// Add theme detection and adaptation
+function adaptToSystemTheme() {
+    if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        // Add dark theme styles if needed
+        document.body.classList.add('dark-theme');
+    }
+    
+    // Listen for theme changes
+    if (window.matchMedia) {
+        window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', e => {
+            if (e.matches) {
+                document.body.classList.add('dark-theme');
+            } else {
+                document.body.classList.remove('dark-theme');
+            }
+        });
+    }
+}
+
+// Initialize theme adaptation
+adaptToSystemTheme();
+
+// Add print styles support
+function addPrintStyles() {
+    const printStyles = `
+        @media print {
+            .back-button, .chat-button, .support-section {
+                display: none !important;
+            }
+            
+            .faq-container {
+                box-shadow: none !important;
+                border: 1px solid #ccc !important;
+            }
+            
+            .question {
+                background: #f5f5f5 !important;
+                color: #000 !important;
+            }
+            
+            .answer {
+                max-height: none !important;
+                padding: 15px !important;
+                display: block !important;
+            }
+            
+            .toggle-icon {
+                display: none !important;
+            }
+            
+            body {
+                background: white !important;
+            }
         }
-    </script>
+    `;
+    
+    const styleSheet = document.createElement('style');
+    styleSheet.textContent = printStyles;
+    document.head.appendChild(styleSheet);
+}
+
+// Initialize print styles
+addPrintStyles();
+
+// Final initialization
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('FAQ page fully loaded and interactive');
+    
+    // Add any final initialization code here
+    setTimeout(() => {
+        document.body.classList.add('loaded');
+    }, 100);
+});
+
+// Force recalculation of heights when content changes
+function recalculateHeights() {
+    document.querySelectorAll('.answer.active').forEach(answer => {
+        // Reset height to auto temporarily to get accurate measurement
+        answer.style.maxHeight = 'auto';
+        const contentHeight = answer.scrollHeight + 10; // Add 10px extra
+        answer.style.maxHeight = contentHeight + 'px';
+    });
+}
+
+// Call recalculation after fonts load
+document.fonts.ready.then(() => {
+    setTimeout(recalculateHeights, 100);
+});
+
+// Additional safety check for long content with extra padding
+setTimeout(() => {
+    document.querySelectorAll('.answer.active').forEach(answer => {
+        const currentMaxHeight = parseInt(answer.style.maxHeight);
+        const actualHeight = answer.scrollHeight + 10; // Add 10px extra
+        
+        if (actualHeight > currentMaxHeight) {
+            answer.style.maxHeight = actualHeight + 'px';
+        }
+    });
+}, 1000);
+</script>
+
 </body>
 </html>
-					

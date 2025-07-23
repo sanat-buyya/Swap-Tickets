@@ -19,35 +19,33 @@
             --gray: #6c757d;
             --border: #e0e0e0;
             --white: #ffffff;
-            --shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            --shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
         }
 
         * {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
-            font-family: 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            font-family: 'Segoe UI', Roboto, sans-serif;
         }
 
         body {
-            background-color: #f5f7fa;
+            background: #f5f7fa;
             color: var(--dark);
-            line-height: 1.6;
-            padding: 20px;
-            min-height: 100vh;;
-            background-image: url('https://www.transparenttextures.com/patterns/cubes.png');
+            line-height: 1.5;
+            padding: 10px;
+            min-height: 100vh;
         }
 
         .container {
             max-width: 600px;
             width: 100%;
-            margin: 20px auto;
+            margin: 10px auto;
             background: var(--white);
-            border-radius: 12px;
+            border-radius: 8px;
             box-shadow: var(--shadow);
-            padding: 30px;
+            padding: 20px;
             position: relative;
-            overflow: hidden;
         }
 
         .container::before {
@@ -56,23 +54,23 @@
             top: 0;
             left: 0;
             width: 100%;
-            height: 5px;
+            height: 3px;
             background: linear-gradient(90deg, var(--primary), var(--success));
         }
 
         h2 {
             color: var(--dark);
             text-align: center;
-            margin-bottom: 25px;
-            font-size: 1.75rem;
+            margin-bottom: 20px;
+            font-size: 1.4rem;
             font-weight: 600;
         }
 
-        /* Price Breakdown */
+        /* Price Details */
         .price-details {
             width: 100%;
             border-collapse: collapse;
-            margin-bottom: 25px;
+            margin-bottom: 20px;
         }
 
         .price-details tr {
@@ -84,8 +82,9 @@
         }
 
         .price-details td {
-            padding: 14px 10px;
+            padding: 10px 8px;
             vertical-align: top;
+            font-size: 1.0rem;
         }
 
         .price-details td:first-child {
@@ -105,7 +104,7 @@
 
         .gst-row {
             color: var(--gray);
-            font-size: 0.95em;
+            font-size: 0.85em;
         }
 
         .discount-row, .tip-row {
@@ -122,13 +121,13 @@
             color: var(--primary);
         }
 
-        /* Discount Checkbox */
+        /* Compact Sections */
         .discount-checkbox-container {
-            margin: 20px 0;
-            padding: 15px;
+            margin: 15px 0;
+            padding: 12px;
             background-color: #e8f5e8;
-            border-radius: 10px;
-            border: 2px solid var(--success);
+            border-radius: 6px;
+            border: 1px solid var(--success);
             display: none;
         }
 
@@ -139,14 +138,14 @@
         .discount-checkbox {
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 8px;
             cursor: pointer;
-            user-select: none;
+            font-size: 0.9rem;
         }
 
         .discount-checkbox input[type="checkbox"] {
-            width: 20px;
-            height: 20px;
+            width: 16px;
+            height: 16px;
             cursor: pointer;
             accent-color: var(--success);
         }
@@ -157,41 +156,32 @@
             cursor: pointer;
             display: flex;
             align-items: center;
-            gap: 8px;
-        }
-
-        .discount-checkbox label i {
-            font-size: 1.2rem;
+            gap: 6px;
         }
 
         /* Payment Options */
         .payment-options {
-            margin: 25px 0;
-            padding: 20px;
+            margin: 20px 0;
+            padding: 15px;
             background-color: var(--light);
-            border-radius: 10px;
+            border-radius: 6px;
             border: 1px solid var(--border);
         }
 
         .options-title {
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 8px;
             font-weight: 500;
             color: var(--dark);
-            margin-bottom: 18px;
-            font-size: 1.1rem;
-        }
-
-        .options-title i {
-            color: var(--success);
-            font-size: 1.2rem;
+            margin-bottom: 12px;
+            font-size: 1rem;
         }
 
         .options-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
-            gap: 12px;
+            gap: 8px;
         }
 
         .payment-option {
@@ -199,82 +189,75 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            font-size: 0.9rem;
-            padding: 12px 8px;
+            font-size: 0.8rem;
+            padding: 8px 4px;
             background: var(--white);
-            border-radius: 8px;
+            border-radius: 6px;
             border: 1px solid var(--border);
             text-align: center;
-            min-height: 70px;
-            transition: all 0.3s ease;
+            min-height: 50px;
+            transition: all 0.2s ease;
         }
 
         .payment-option:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
             border-color: var(--primary);
         }
 
         .payment-option i {
             color: var(--primary);
-            font-size: 1.5rem;
-            margin-bottom: 8px;
+            font-size: 1.2rem;
+            margin-bottom: 4px;
         }
 
         /* Tip Section */
         .tip-section {
-            margin: 25px 0;
-            padding: 20px;
+            margin: 20px 0;
+            padding: 15px;
             background-color: #fff8e1;
-            border-radius: 10px;
+            border-radius: 6px;
             border: 1px solid #ffcc02;
         }
 
         .tip-header {
             display: flex;
             align-items: center;
-            gap: 10px;
-            margin-bottom: 15px;
-        }
-
-        .tip-header i {
-            color: #ff9800;
-            font-size: 1.3rem;
+            gap: 8px;
+            margin-bottom: 10px;
         }
 
         .tip-header h3 {
             color: var(--dark);
-            font-size: 1.1rem;
+            font-size: 1rem;
             margin: 0;
         }
 
         .tip-subtitle {
             color: var(--gray);
-            font-size: 0.9rem;
-            margin-bottom: 15px;
+            font-size: 0.85rem;
+            margin-bottom: 12px;
         }
 
         .tip-options {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
-            gap: 10px;
-            margin-bottom: 15px;
+            gap: 8px;
+            margin-bottom: 10px;
         }
 
         .tip-option {
-            padding: 12px 8px;
-            border: 2px solid var(--border);
-            border-radius: 8px;
+            padding: 8px 4px;
+            border: 1px solid var(--border);
+            border-radius: 6px;
             text-align: center;
             cursor: pointer;
-            transition: all 0.3s ease;
+            transition: all 0.2s ease;
             background: var(--white);
             font-weight: 500;
+            font-size: 0.85rem;
         }
 
         .tip-option:hover {
             border-color: var(--primary);
-            background-color: #f0f8ff;
         }
 
         .tip-option.selected {
@@ -283,16 +266,9 @@
             color: white;
         }
 
-        .tip-option.custom {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 5px;
-        }
-
         .custom-tip-input {
             display: none;
-            margin-top: 10px;
+            margin-top: 8px;
         }
 
         .custom-tip-input.show {
@@ -301,65 +277,55 @@
 
         .custom-tip-input input {
             width: 100%;
-            padding: 10px;
+            padding: 8px;
             border: 1px solid var(--border);
-            border-radius: 6px;
-            font-size: 1rem;
-        }
-
-        .custom-tip-input input:focus {
-            outline: none;
-            border-color: var(--primary);
-            box-shadow: 0 0 0 3px rgba(51, 153, 204, 0.1);
+            border-radius: 4px;
+            font-size: 0.9rem;
         }
 
         /* Referral Benefits */
         .referral-benefits {
-            margin: 25px 0;
-            padding: 20px;
+            margin: 20px 0;
+            padding: 15px;
             background-color: #f0f8ff;
-            border-radius: 10px;
-            border-left: 4px solid var(--primary);
+            border-radius: 6px;
+            border-left: 3px solid var(--primary);
         }
 
         .benefits-header {
             display: flex;
             align-items: center;
-            gap: 10px;
-            margin-bottom: 15px;
-        }
-
-        .benefits-header i {
-            color: var(--primary);
-            font-size: 1.3rem;
+            gap: 8px;
+            margin-bottom: 12px;
         }
 
         .benefits-header h3 {
             color: var(--dark);
-            font-size: 1.2rem;
+            font-size: 1rem;
             margin: 0;
         }
 
         .benefit-item {
             display: flex;
             align-items: flex-start;
-            margin-bottom: 10px;
+            margin-bottom: 8px;
+            font-size: 0.9rem;
         }
 
         .benefit-item i {
             color: var(--success);
-            margin-right: 10px;
-            margin-top: 3px;
+            margin-right: 8px;
+            margin-top: 2px;
         }
 
         .discount-status {
             display: inline-flex;
             align-items: center;
-            padding: 4px 10px;
-            border-radius: 20px;
-            font-size: 0.85rem;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 0.8rem;
             font-weight: 500;
-            margin-left: 8px;
+            margin-left: 6px;
         }
 
         .eligible {
@@ -373,25 +339,25 @@
         }
 
         .progress-container {
-            margin-top: 15px;
+            margin-top: 10px;
             background-color: #e9ecef;
-            border-radius: 10px;
-            height: 8px;
+            border-radius: 6px;
+            height: 6px;
             overflow: hidden;
         }
 
         .progress-bar {
             height: 100%;
             background: linear-gradient(90deg, var(--primary), #6e8efb);
-            border-radius: 10px;
-            transition: width 0.5s ease;
+            border-radius: 6px;
+            transition: width 0.3s ease;
         }
 
         .progress-text {
             display: flex;
             justify-content: space-between;
-            margin-top: 5px;
-            font-size: 0.85rem;
+            margin-top: 4px;
+            font-size: 0.8rem;
             color: var(--gray);
         }
 
@@ -399,53 +365,36 @@
         .action-buttons {
             display: flex;
             flex-direction: column;
-            gap: 15px;
-            margin-top: 25px;
+            gap: 12px;
+            margin-top: 20px;
         }
 
         .btn {
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            padding: 15px 25px;
+            padding: 12px 20px;
             border: none;
-            border-radius: 8px;
+            border-radius: 6px;
             cursor: pointer;
-            font-size: 1rem;
+            font-size: 0.95rem;
             font-weight: 500;
-            transition: all 0.3s ease;
+            transition: all 0.2s ease;
             text-decoration: none;
             width: 100%;
-            gap: 10px;
+            gap: 8px;
             position: relative;
-            overflow: hidden;
-        }
-
-        .btn::after {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
-            transition: 0.5s;
-        }
-
-        .btn:hover::after {
-            left: 100%;
         }
 
         .btn-primary {
             background-color: var(--primary);
             color: white;
-            box-shadow: 0 4px 15px rgba(51, 153, 204, 0.3);
+            box-shadow: 0 2px 8px rgba(51, 153, 204, 0.3);
         }
 
         .btn-primary:hover {
             background-color: var(--primary-hover);
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(51, 153, 204, 0.4);
+            transform: translateY(-1px);
         }
 
         .btn-secondary {
@@ -460,9 +409,9 @@
 
         .btn .loading {
             display: none;
-            width: 18px;
-            height: 18px;
-            border: 3px solid rgba(255, 255, 255, 0.3);
+            width: 16px;
+            height: 16px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
             border-radius: 50%;
             border-top-color: white;
             animation: spin 1s linear infinite;
@@ -482,9 +431,9 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 8px;
-            margin: 25px 0 10px;
-            font-size: 0.9rem;
+            gap: 6px;
+            margin: 15px 0 8px;
+            font-size: 0.85rem;
             color: var(--gray);
         }
 
@@ -494,14 +443,15 @@
 
         /* Error Message */
         .error-message {
-            padding: 12px 15px;
+            padding: 10px 12px;
             background-color: #f8d7da;
             color: #721c24;
-            border-radius: 8px;
-            margin: 15px 0;
+            border-radius: 6px;
+            margin: 12px 0;
             display: none;
             align-items: center;
-            gap: 10px;
+            gap: 8px;
+            font-size: 0.9rem;
         }
 
         .error-message i {
@@ -513,103 +463,256 @@
             to { transform: rotate(360deg); }
         }
 
-        /* Responsive Design */
+        /* Mobile Optimizations */
         @media (max-width: 768px) {
+            body {
+                padding: 8px;
+            }
+            
             .container {
-                padding: 25px 20px;
+                padding: 15px;
+                margin: 5px auto;
+                border-radius: 6px;
             }
-
+            
             h2 {
-                font-size: 1.5rem;
+                font-size: 1.3rem;
+                margin-bottom: 15px;
             }
-
+            
             .options-grid {
                 grid-template-columns: repeat(2, 1fr);
+                gap: 6px;
             }
-
+            
             .payment-option {
-                min-height: 60px;
+                min-height: 45px;
+                font-size: 0.75rem;
+                padding: 6px 3px;
             }
-
-            .btn {
-                padding: 14px 20px;
+            
+            .payment-option i {
+                font-size: 1.1rem;
             }
-
+            
             .tip-options {
                 grid-template-columns: repeat(2, 1fr);
+                gap: 6px;
+            }
+            
+            .tip-option {
+                padding: 6px 3px;
+                font-size: 0.8rem;
+            }
+            
+            .btn {
+                padding: 10px 16px;
+                font-size: 0.9rem;
+            }
+            #paymentBtn{
+            padding: 14px 16px;
+            }
+            
+            .referral-benefits, .tip-section, .payment-options {
+                padding: 12px;
+                margin: 15px 0;
+            }
+            
+            .price-details td {
+                padding: 10px 8px;      /* Increase row height */
+    font-size: 1.0rem;
+            }
+            
+            .benefit-item, .tip-subtitle {
+                font-size: 0.85rem;
             }
         }
 
-                @media (max-width: 480px) {
-            body {
-                padding: 15px;
-            }
-
+        @media (max-width: 480px) {
             .container {
-                padding: 20px 15px;
-                margin: 10px auto;
+                padding: 12px;
+                margin: 3px auto;
             }
-
-            .price-details td {
-                padding: 12px 8px;
-                font-size: 0.95rem;
+            
+            h2 {
+                font-size: 1.2rem;
             }
-
+            
             .options-grid {
                 grid-template-columns: 1fr 1fr;
-                gap: 8px;
+                gap: 5px;
             }
-
+            
             .payment-option {
-                font-size: 0.85rem;
-                padding: 10px 5px;
+                font-size: 0.7rem;
+                padding: 5px 2px;
+                min-height: 40px;
             }
-
+            
             .payment-option i {
-                font-size: 1.3rem;
+				                font-size: 1rem;
+                margin-bottom: 3px;
             }
-
-            .referral-benefits {
-                padding: 15px;
-            }
-
+            
             .tip-options {
                 grid-template-columns: 1fr 1fr;
-                gap: 8px;
+                gap: 5px;
             }
-
+            
             .tip-option {
-                padding: 10px 6px;
+                padding: 5px 2px;
+                font-size: 0.75rem;
+            }
+            
+            .referral-benefits, .tip-section, .payment-options {
+                padding: 10px;
+                margin: 12px 0;
+            }
+            
+            .price-details td {
+                padding: 8px 6px;
+                font-size: 1.0rem;
+            }
+            
+            .benefit-item {
+                font-size: 0.8rem;
+                margin-bottom: 6px;
+            }
+            
+            .tip-subtitle {
+                font-size: 0.8rem;
+                margin-bottom: 8px;
+            }
+            
+            .discount-checkbox {
+                font-size: 0.8rem;
+            }
+            
+            .discount-checkbox input[type="checkbox"] {
+                width: 14px;
+                height: 14px;
+            }
+            
+            .btn {
+                padding: 8px 12px;
+                font-size: 0.95rem;
+                gap: 6px;
+            }
+            
+            #paymentBtn{
+            padding: 12px 12px;
+            }
+            .security-info {
+                font-size: 0.8rem;
+                margin: 12px 0 6px;
+            }
+            
+            .error-message {
+                padding: 8px 10px;
+                font-size: 0.8rem;
+                margin: 10px 0;
+            }
+            
+            .benefits-header h3, .tip-header h3 {
                 font-size: 0.9rem;
+            }
+            
+            .options-title {
+                font-size: 0.9rem;
+                margin-bottom: 10px;
+            }
+            
+            .progress-text {
+                font-size: 0.75rem;
+            }
+            
+            .discount-status {
+                font-size: 0.75rem;
+                padding: 1px 6px;
+            }
+        }
+        
+        /* Extra small screens */
+        @media (max-width: 360px) {
+            .container {
+                padding: 10px;
+            }
+            
+            h2 {
+                font-size: 1.1rem;
+                margin-bottom: 12px;
+            }
+            
+            .payment-option {
+                font-size: 0.65rem;
+                min-height: 35px;
+            }
+            
+            .payment-option i {
+                font-size: 0.9rem;
+            }
+            
+            .tip-option {
+                font-size: 0.7rem;
+                padding: 4px 1px;
+            }
+            
+            .btn {
+                padding: 7px 10px;
+                font-size: 0.8rem;
+            }
+            
+            .price-details td {
+                padding: 5px 3px;
+                font-size: 0.75rem;
+            }
+            
+            .referral-benefits, .tip-section, .payment-options {
+                padding: 8px;
+                margin: 10px 0;
+            }
+            
+            .benefit-item, .tip-subtitle {
+                font-size: 0.75rem;
+            }
+            
+            .discount-checkbox {
+                font-size: 0.75rem;
+                gap: 6px;
+            }
+            
+            .benefits-header h3, .tip-header h3 {
+                font-size: 0.85rem;
+            }
+            
+            .options-title {
+                font-size: 0.85rem;
             }
         }
     </style>
 </head>
-
 <body>
     <div class="container">
         <h2>Ticket Payment Preview</h2>
-
+        
         <div class="referral-benefits">
             <div class="benefits-header">
                 <i class="fas fa-gift"></i>
                 <h3>Your Referral Benefits</h3>
             </div>
-
             <div class="benefit-item">
                 <i class="fas fa-tag"></i>
                 <div>
                     <span>Discount Status: </span>
                     <span th:if="${eligibleForDiscount}" class="discount-status eligible">
-                        <i class="fas fa-check-circle"></i> 
-                        Eligible for ₹<span th:text="${referralDiscountAmount}"></span> discount
+                        <i class="fas fa-check-circle"></i>Eligible for ₹<span th:text="${referralDiscountAmount}"></span> discount
                     </span>
                     <span th:if="${!eligibleForDiscount}" class="discount-status not-eligible">
                         <i class="fas fa-times-circle"></i> Not Eligible
                     </span>
                 </div>
             </div>
-
+            
             <!-- Show progress only when not eligible and referrals left > 0 -->
             <th:block th:if="${!eligibleForDiscount}">
                 <div th:if="${referralsLeft > 0}" class="benefit-item">
@@ -618,7 +721,7 @@
                         <span>Refer <strong th:text="${referralsLeft}"></strong> more friends and referred users purchased at least one ticket to unlock your ₹<span th:text="${referralDiscountAmount}"></span> discount</span>
                     </div>
                 </div>
-
+                
                 <div th:if="${referralsLeft > 0}" class="progress-container">
                     <div class="progress-bar" th:style="'width:' + ${(successfulReferrals * 100.0) / (successfulReferrals + referralsLeft)} + '%'"></div>
                     <div class="progress-text">
@@ -626,7 +729,7 @@
                         <span th:text="${successfulReferrals} + '/' + ${successfulReferrals + referralsLeft}"></span>
                     </div>
                 </div>
-
+                
                 <div th:if="${referralsLeft <= 0}" class="benefit-item">
                     <i class="fas fa-info-circle"></i>
                     <div>
@@ -634,13 +737,11 @@
                     </div>
                 </div>
             </th:block>
-
+            
             <div th:if="${eligibleForDiscount}" class="benefit-item">
                 <i class="fas fa-star"></i>
                 <div>
-                    <span style="color: var(--success); font-weight: 600;">
-                        🎉 Congratulations! You can apply a ₹<span th:text="${referralDiscountAmount}"></span> discount on this purchase!
-                    </span>
+                    <span style="color: var(--success); font-weight: 600;">🎉 Congratulations! You can apply a ₹<span th:text="${referralDiscountAmount}"></span> discount on this purchase!</span>
                 </div>
             </div>
         </div>
@@ -655,7 +756,7 @@
                 <td>₹<span th:text="${#numbers.formatDecimal(handlingCharge, 0, 2)}"></span></td>
             </tr>
             <tr class="gst-row">
-                <td>GST (18%):</td>
+                <td>GST (0.18x):</td>
                 <td>₹<span th:text="${#numbers.formatDecimal(gst, 0, 2)}"></span></td>
             </tr>
             <tr class="discount-row" id="discountRow">
@@ -712,7 +813,6 @@
                 <h3>Support Our Platform</h3>
             </div>
             <p class="tip-subtitle">Your tip helps us maintain and improve SwapTicket for everyone. Thank you for your support!</p>
-            
             <div class="tip-options">
                 <div class="tip-option" data-tip="10" onclick="selectTip(10)">
                     <div>₹10</div>
@@ -728,7 +828,6 @@
                     <span>Custom</span>
                 </div>
             </div>
-
             <div class="custom-tip-input" id="customTipInput">
                 <input type="number" id="customTipAmount" placeholder="Enter custom tip amount" min="1" max="1000" onchange="applyCustomTip()">
             </div>
@@ -740,7 +839,7 @@
                 <input type="checkbox" id="applyDiscount" onchange="toggleDiscount()">
                 <label for="applyDiscount">
                     <i class="fas fa-gift"></i>
-                    Apply₹<span th:text="${referralDiscountAmount}"></span> referral discount to this purchase
+                    Apply ₹<span th:text="${referralDiscountAmount}"></span> referral discount to this purchase
                 </label>
             </div>
         </div>
@@ -749,8 +848,8 @@
             <div class="discount-checkbox">
                 <input type="checkbox" id="conformticket" name="conformticket" required>
                 <label for="conformticket">
-                    <span>*Confirm ticket using PNR before buying:</span>
-                    <a href="https://www.indianrail.gov.in/enquiry/PNR/PnrEnquiry.html?locale=en" target="_blank">Click here</a>
+                    <span>*Confirm ticket using PNR verify:</span>
+                    <a href="/pnr/external" style="text-decoration: none;">Click here</a>
                 </label>
             </div>
         </div>
