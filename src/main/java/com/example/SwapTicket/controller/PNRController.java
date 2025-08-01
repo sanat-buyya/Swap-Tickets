@@ -15,6 +15,7 @@ import com.example.SwapTicket.repository.PassengerRepository;
 import com.example.SwapTicket.repository.TransactionHistoryRepository;
 import com.example.SwapTicket.repository.UserRepository;
 import com.example.SwapTicket.repository.WalletRepository;
+import com.example.SwapTicket.service.UserService;
 import com.example.SwapTicket.helper.EmailSender;
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -47,6 +48,9 @@ public class PNRController {
     private UserRepository userRepository;
     
     @Autowired
+    private UserService userService;
+    
+    @Autowired
     private WalletRepository walletRepository;
 
     @Autowired
@@ -69,7 +73,25 @@ public class PNRController {
 	
 	@Value("${admin.email}")
 	String adminEmail;
+	
+	@GetMapping("/sell")
+    public String sellTicket(HttpSession session, RedirectAttributes redirectAttributes) {
+        String email = (String) session.getAttribute("loggedInUserEmail");
 
+        if (email == null) {
+            return "redirect:/login";
+        }
+
+        User user = userService.findByEmail(email);
+
+        if (user == null || "BLOCKED".equalsIgnoreCase(user.getStatus())) {
+            redirectAttributes.addFlashAttribute("error", "Access denied. Your account is blocked.");
+            return "redirect:/user/home";
+        }
+
+        return "sellTicket1";
+    }
+	
     @PostMapping("/sell")
     public String sellPNRTicket(
             @RequestParam("pnrNumber") String pnrNumber,

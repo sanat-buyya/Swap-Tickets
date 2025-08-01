@@ -78,14 +78,19 @@
             height: 36px;
         }
 
-        .logo h1 {
-            font-size: 1.8rem;
-            font-weight: 700;
-            background: var(--gradient);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
+        .logo-text {
+    font-size: 1.8rem;
+    font-weight: 700;
+    position: relative;
+    display: inline-block;
+    color: rgb(128, 64, 64); /* Ticket color */
+}
+.logo-text::before {
+    content: "Swap";
+    color: #0775f3;
+    position: absolute;
+    left: 0;
+}
         .register-title {
             font-size: 1.8rem;
             color: var(--primary-dark);
@@ -315,7 +320,7 @@
         <div class="logo-header">
             <div class="logo">
                 <img src="/docs/swaplogo.png" alt="logo" height="50px">
-                <h1>SwapTicket</h1>
+                <h1 class="logo-text">SwapTicket</h1>
             </div>
             <h2 class="register-title">Create Your Account</h2>
             <p class="register-subtitle">Join thousands of travelers using our secure ticket exchange platform</p>

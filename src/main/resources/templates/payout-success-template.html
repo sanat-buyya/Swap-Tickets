@@ -3,158 +3,225 @@
 <head>
     <meta charset="UTF-8">
     <title>Payout Successful</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
         body {
             font-family: 'Poppins', Arial, sans-serif;
             background-color: #f4f6f8;
-            padding: 20px;
+            padding: 0;
             margin: 0;
             line-height: 1.6;
         }
-        
         .email-container {
             background-color: #fff;
-            padding: 30px;
+            padding: 20px 12px;
             border-radius: 12px;
-            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
-            max-width: 600px;
-            margin: auto;
-            border: 1px solid rgba(67, 97, 238, 0.1);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.08);
+            max-width: 400px;
+            margin: 24px auto;
+            border: 1px solid rgba(67, 97, 238, 0.08);
+            width: 100%;
+            box-sizing: border-box;
         }
-        
-        /* Logo Container */
         .logo-container {
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 12px;
-            margin-bottom: 25px;
-            padding: 20px 0;
-            border-bottom: 2px solid #f8f9fa;
+            gap: 10px;
+            margin-bottom: 18px;
+            padding: 16px 0 10px 0;
+            border-bottom: 1px solid #f8f9fa;
         }
-        
         .logo-img {
-            height: 50px;
+            height: 38px;
             width: auto;
         }
-        
-        /* SwapTicket Text Logo - Same as reference */
-        .logo-text {
-            font-size: 24px;
-            font-weight: 700;
-            color: #4361ee; /* Fallback for email clients */
-            background: linear-gradient(to right, #4361ee 0%, #3a0ca3 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            text-fill-color: transparent;
-            margin: 0;
-            letter-spacing: 0.5px;
-        }
-        
+                .logo-text {
+    font-size: 1.8rem;
+    font-weight: 700;
+    font-weight: bold;
+    position: relative;
+    display: inline-block;
+    color: rgb(128, 64, 64); /* Ticket color */
+}
+.logo-text::before {
+    content: "Swap";
+    color: #0775f3;
+    position: absolute;
+    left: 0;
+}
+
         h2 {
-            color: #2b2d42;
-            font-size: 24px;
-            margin-bottom: 20px;
+            color: #1f2937;
+            font-size: 18px;
+            margin-bottom: 14px;
             font-weight: 600;
         }
-        
         p {
             color: #4a5568;
-            font-size: 16px;
-            margin-bottom: 15px;
+            font-size: 15px;
+            margin-bottom: 12px;
         }
-        
         .highlight-name {
             font-weight: 600;
             color: #3a0ca3;
         }
-        
         .details {
-            margin: 25px 0;
-            font-size: 15px;
+            margin: 18px 0;
             background: linear-gradient(135deg, rgba(67, 97, 238, 0.05) 0%, rgba(72, 149, 239, 0.05) 100%);
-            padding: 20px;
+            padding: 12px;
             border-radius: 8px;
-            border-left: 4px solid #4361ee;
+            border-left: 3px solid #4361ee;
         }
-        
         .details p {
-            margin: 10px 0;
+            margin: 8px 0 6px 0;
             color: #2b2d42;
+            font-size: 14px;
         }
-        
         .details strong {
             color: #3a0ca3;
             font-weight: 600;
         }
-        
         .amount-highlight {
             color: #28a745;
             font-weight: 700;
-            font-size: 18px;
+            font-size: 16px;
         }
-        
         .success-message {
             background: linear-gradient(135deg, rgba(40, 167, 69, 0.1) 0%, rgba(34, 139, 34, 0.1) 100%);
-            padding: 15px;
+            padding: 10px;
             border-radius: 8px;
-            border-left: 4px solid #28a745;
-            margin: 20px 0;
+            border-left: 3px solid #28a745;
+            margin: 14px 0;
         }
-        
         .success-message p {
             color: #155724;
             margin: 0;
             font-weight: 500;
-        }
-        
-        .footer {
-            margin-top: 30px;
-            padding-top: 20px;
-            border-top: 1px solid rgba(67, 97, 238, 0.1);
             font-size: 14px;
+        }
+        .footer {
+            margin-top: 18px;
+            padding-top: 12px;
+            border-top: 1px solid rgba(67, 97, 238, 0.08);
+            font-size: 12px;
             color: #6c757d;
             text-align: center;
         }
-        
         .footer p {
-            margin: 5px 0;
+            margin: 4px 0;
         }
-        
         .team-signature {
             color: #4361ee;
             font-weight: 600;
         }
-        
-        /* Responsive Design */
+
+        /* Responsive improvements */
         @media only screen and (max-width: 640px) {
             .email-container {
-                padding: 20px;
-                margin: 10px;
+                padding: 18px 12px;
+                margin: 16px auto;
             }
-            
             .logo-text {
-                font-size: 20px;
+                font-size: 18px;
             }
-            
             .logo-img {
-                height: 40px;
+                height: 34px;
             }
-            
             h2 {
-                font-size: 20px;
+                font-size: 17px;
             }
-            
+            p {
+                font-size: 14px;
+            }
             .details {
-                padding: 15px;
+                padding: 10px;
+            }
+            .success-message {
+                padding: 9px;
+            }
+            .footer {
+                font-size: 11px;
             }
         }
-        
-        /* Email client compatibility */
-        .logo-text-fallback {
-            color: #4361ee !important;
-            background: none !important;
+
+        @media only screen and (max-width: 480px) {
+            .email-container {
+                padding: 16px 10px;
+                margin: 10px auto;
+                border-radius: 10px;
+            }
+            .logo-container {
+                gap: 8px;
+                padding: 12px 0 8px 0;
+            }
+            .logo-text {
+                font-size: 16px;
+            }
+            .logo-img {
+                height: 30px;
+            }
+            h2 {
+                font-size: 16px;
+                margin-bottom: 12px;
+            }
+            p {
+                font-size: 13px;
+                margin-bottom: 10px;
+            }
+            .details {
+                margin: 16px 0;
+                padding: 8px;
+            }
+            .details p {
+                font-size: 13px;
+            }
+            .amount-highlight {
+                font-size: 15px;
+            }
+            .success-message {
+                padding: 8px;
+                margin: 12px 0;
+            }
+            .success-message p {
+                font-size: 13px;
+            }
+            .footer {
+                margin-top: 16px;
+                padding-top: 10px;
+                font-size: 10px;
+            }
+        }
+
+        @media only screen and (max-width: 375px) {
+            .email-container {
+                padding: 14px 8px;
+                margin: 8px auto;
+            }
+            .logo-text {
+                font-size: 15px;
+            }
+            .logo-img {
+                height: 28px;
+            }
+            h2 {
+                font-size: 15px;
+            }
+            p {
+                font-size: 12px;
+            }
+            .details p {
+                font-size: 12px;
+            }
+            .amount-highlight {
+                font-size: 14px;
+            }
+            .success-message p {
+                font-size: 12px;
+            }
+            .footer {
+                font-size: 9px;
+            }
         }
     </style>
 </head>
@@ -165,22 +232,16 @@
             <img src="https://res.cloudinary.com/dgrxmavho/image/upload/v1751145067/swaplogo_j5aqzu.png" alt="SwapTicket Logo" class="logo-img">
             <h1 class="logo-text">SwapTicket</h1>
         </div>
-        
         <h2>Hello <span class="highlight-name" th:text="${name}">Seller</span>,</h2>
-        
         <p>We've successfully credited your account with the amount for the following sold ticket:</p>
-        
         <div class="details">
             <p><strong>Passenger Name:</strong> <span th:text="${passengerName}">John Doe</span></p>
             <p><strong>Amount Credited:</strong> ₹<span class="amount-highlight" th:text="${amount}">500</span></p>
         </div>
-        
         <div class="success-message">
-            <p>✅ Payment has been successfully processed and credited to your wallet!</p>
+            <p>✅ Payment has been successfully processed and credited to your Account</p>
         </div>
-        
-        <p>Thank you for using SwapTicket. The amount is now available in your wallet balance and you can withdraw it anytime from your dashboard.</p>
-        
+        <p>Thank you for using SwapTicket.</p>
         <div class="footer">
             <p class="team-signature">— SwapTicket Team</p>
             <p>© 2025 SwapTicket. All rights reserved.</p>

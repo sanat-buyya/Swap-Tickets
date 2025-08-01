@@ -4,210 +4,276 @@
     <meta charset="UTF-8">
     <title>Your Ticket Has Been Sold</title>
     <link rel="icon" href="https://res.cloudinary.com/dgrxmavho/image/upload/v1749496815/swaplogo_zzganr.png" type="image/png">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
         body {
             font-family: 'Poppins', Arial, sans-serif;
             background-color: #f3f4f6;
-            padding: 20px;
+            padding: 0;
             margin: 0;
             line-height: 1.6;
         }
-        
         .email-container {
-            background-color: #ffffff;
-            padding: 30px;
+            background-color: #fff;
+            padding: 20px 15px;
             border-radius: 12px;
-            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
-            max-width: 600px;
-            margin: auto;
-            border: 1px solid rgba(67, 97, 238, 0.1);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.08);
+            max-width: 400px;
+            margin: 24px auto;
+            border: 1px solid rgba(67, 97, 238, 0.08);
+            width: 100%;
+            box-sizing: border-box;
         }
-        
-        /* Logo Container */
         .logo-container {
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 12px;
-            margin-bottom: 25px;
-            padding: 20px 0;
-            border-bottom: 2px solid #f8f9fa;
+            gap: 10px;
+            margin-bottom: 18px;
+            padding: 16px 0 10px 0;
+            border-bottom: 1px solid #f8f9fa;
         }
-        
         .logo-img {
-            height: 50px;
+            height: 38px;
             width: auto;
         }
-        
-        /* SwapTicket Text Logo - Same as reference */
-        .logo-text {
-            font-size: 24px;
-            font-weight: 700;
-            color: #4361ee; /* Fallback for email clients */
-            background: linear-gradient(to right, #4361ee 0%, #3a0ca3 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            text-fill-color: transparent;
-            margin: 0;
-            letter-spacing: 0.5px;
-        }
-        
+                .logo-text {
+    font-size: 1.8rem;
+    font-weight: 700;
+    font-weight: bold;
+    position: relative;
+    display: inline-block;
+    color: rgb(128, 64, 64); /* Ticket color */
+}
+.logo-text::before {
+    content: "Swap";
+    color: #0775f3;
+    position: absolute;
+    left: 0;
+}
+
         h2 {
             color: #1f2937;
-            font-size: 24px;
-            margin-bottom: 20px;
+            font-size: 18px;
+            margin-bottom: 14px;
             font-weight: 600;
         }
-        
         p {
             color: #4a5568;
-            font-size: 16px;
-            margin-bottom: 15px;
+            font-size: 15px;
+            margin-bottom: 12px;
         }
-        
         .highlight-name {
             font-weight: 600;
             color: #3a0ca3;
         }
-        
         .success-badge {
             background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
             color: white;
-            padding: 8px 16px;
-            border-radius: 20px;
-            font-size: 14px;
+            padding: 7px 14px;
+            border-radius: 18px;
+            font-size: 13px;
             font-weight: 600;
             display: inline-block;
-            margin: 10px 0;
+            margin: 8px 0 10px 0;
         }
-        
         .ticket-details {
-            margin: 25px 0;
+            margin: 18px 0;
             background: linear-gradient(135deg, rgba(67, 97, 238, 0.05) 0%, rgba(72, 149, 239, 0.05) 100%);
-            padding: 20px;
+            padding: 12px;
             border-radius: 8px;
-            border-left: 4px solid #4361ee;
+            border-left: 3px solid #4361ee;
         }
-        
         .ticket-details p {
-            margin: 10px 0;
+            margin: 8px 0 6px 0;
             color: #2b2d42;
-            font-size: 15px;
+            font-size: 14px;
         }
-        
         .ticket-details strong {
             color: #3a0ca3;
             font-weight: 600;
         }
-        
         .ticket-details ul {
-            margin: 10px 0;
-            padding-left: 20px;
+            margin: 8px 0;
+            padding-left: 18px;
         }
-        
         .ticket-details li {
             color: #2b2d42;
-            margin: 5px 0;
+            margin: 3px 0;
             font-weight: 500;
+            font-size: 13px;
         }
-        
         .note {
             background: linear-gradient(135deg, #fff4e5 0%, #fef3c7 100%);
             color: #8a4b08;
-            padding: 15px;
-            border-left: 4px solid #f59e0b;
-            margin: 20px 0;
+            padding: 12px;
+            border-left: 3px solid #f59e0b;
+            margin: 16px 0;
             border-radius: 8px;
-            font-size: 15px;
+            font-size: 13px;
         }
-        
         .note strong {
             color: #92400e;
         }
-        
         .dashboard-link {
             color: #4361ee;
             text-decoration: none;
             font-weight: 600;
             border-bottom: 2px solid transparent;
             transition: border-bottom 0.3s ease;
+            font-size: 15px;
         }
-        
         .dashboard-link:hover {
             border-bottom: 2px solid #4361ee;
         }
-        
         .footer {
-            margin-top: 30px;
-            padding-top: 20px;
-            border-top: 1px solid rgba(67, 97, 238, 0.1);
-            font-size: 14px;
+            margin-top: 18px;
+            padding-top: 12px;
+            border-top: 1px solid rgba(67, 97, 238, 0.08);
+            font-size: 5px;
             color: #6b7280;
             text-align: center;
         }
-        
         .footer p {
-            margin: 5px 0;
+            margin: 4px 0;
         }
-        
         .team-signature {
             color: #4361ee;
             font-weight: 600;
         }
         
-        /* Responsive Design */
+        /* Improved media queries */
         @media only screen and (max-width: 640px) {
             .email-container {
-                padding: 20px;
-                margin: 10px;
+                padding: 20px 14px;
+                margin: 16px auto;
             }
-            
             .logo-container {
-                flex-direction: column;
-                gap: 8px;
+                padding: 12px 0 8px 0;
             }
-            
             .logo-text {
-                font-size: 20px;
+                font-size: 18px;
             }
-            
             .logo-img {
-                height: 40px;
+                height: 34px;
             }
-            
             h2 {
-                font-size: 20px;
+                font-size: 16px;
             }
-            
+            p {
+                font-size: 14px;
+            }
             .ticket-details {
-                padding: 15px;
+                padding: 10px;
+            }
+            .note {
+                padding: 10px;
+                font-size: 12px;
+            }
+            .success-badge {
+                font-size: 12px;
+                padding: 6px 12px;
+            }
+            .footer {
+                font-size: 5px;
+                padding-top: 10px;
+            }
+            .footer p {
+                font-size: 12px;
             }
         }
         
-        /* Email client compatibility */
-        .logo-text-fallback {
-            color: #4361ee !important;
-            background: none !important;
+        @media only screen and (max-width: 480px) {
+            .email-container {
+                padding: 16px 12px;
+                margin: 8px auto;
+                border-radius: 8px;
+            }
+            .logo-container {
+                flex-direction: row;
+                gap: 8px;
+                padding: 10px 0 6px 0;
+            }
+            .logo-text {
+                font-size: 16px;
+            }
+            .logo-img {
+                height: 30px;
+            }
+            h2 {
+                font-size: 15px;
+                margin-bottom: 12px;
+            }
+            p {
+                font-size: 13px;
+                margin-bottom: 10px;
+            }
+            .ticket-details {
+                padding: 8px;
+                margin: 14px 0;
+            }
+            .ticket-details p,
+            .ticket-details li {
+                font-size: 12px;
+            }
+            .note {
+                padding: 8px;
+                font-size: 11px;
+                margin: 12px 0;
+            }
+            .success-badge {
+                font-size: 11px;
+                padding: 5px 10px;
+                margin: 6px 0 8px 0;
+            }
+            .dashboard-link {
+                font-size: 13px;
+            }
+            .footer {
+                margin-top: 14px;
+                padding-top: 8px;
+            }
+            .footer p {
+                font-size: 11px;
+            }
+        }
+        
+        @media only screen and (max-width: 375px) {
+            .email-container {
+                padding: 14px 10px;
+            }
+            .logo-text {
+                font-size: 15px;
+            }
+            .logo-img {
+                height: 28px;
+            }
+            h2 {
+                font-size: 14px;
+            }
+            p {
+                font-size: 12px;
+            }
+            .ticket-details ul {
+                padding-left: 16px;
+            }
+            .footer p {
+                font-size: 10px;
+            }
         }
     </style>
 </head>
 <body>
     <div class="email-container">
-        <!-- Logo Container with SwapTicket Text -->
         <div class="logo-container">
             <img src="https://res.cloudinary.com/dgrxmavho/image/upload/v1751145067/swaplogo_j5aqzu.png" alt="SwapTicket Logo" class="logo-img">
             <h1 class="logo-text">SwapTicket</h1>
         </div>
-        
         <h2>Hello <span class="highlight-name" th:text="${name}">Seller</span>,</h2>
-        
         <p>Great news! One of your listed train ticket(s) has just been <strong>sold</strong> on SwapTicket.</p>
-        
         <div class="success-badge">
             🎉 Ticket Sold Successfully!
         </div>
-        
         <div class="ticket-details">
             <p><strong>PNR Number:</strong> <span th:text="${pnr}">1234567890</span></p>
             <p><strong>Train Number:</strong> <span th:text="${train}">12345</span></p>
@@ -217,13 +283,10 @@
                 <li th:each="p : ${passengerNames}" th:text="${p}">Passenger Name</li>
             </ul>
         </div>
-        
         <div class="note">
             💡 <strong>Note:</strong> The ticket amount will be credited to your Account <strong>after the train journey is completed</strong>.
         </div>
-        
-        <p>You can check the full details in your <a href="https://swapticket.example.com" class="dashboard-link">SwapTicket dashboard</a>.</p>
-        
+        <p>You can check the full details in your <a href="https://swapticket.com" class="dashboard-link">SwapTicket dashboard</a>.</p>
         <div class="footer">
             <p>Thank you for using SwapTicket.</p>
             <p class="team-signature">— SwapTicket Team</p>

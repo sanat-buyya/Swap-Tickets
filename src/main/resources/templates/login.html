@@ -59,112 +59,17 @@
             top: 0;
         }
 
-        /* Navbar styles */
-        .navbar {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 1rem 5%;
-            background-color: #ffffff;
-            box-shadow: var(--card-shadow);
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-        }
-
-        .logo {
-            display: flex;
-            align-items: center;
-        }
-
-        .logo a {
-            text-decoration: none;
-            color: var(--dark);
-            display: flex;
-            align-items: center;
-        }
-
-        .logo i, .logo img {
-            font-size: 2rem;
-            color: var(--primary);
-            margin-right: 10px;
-            width: 36px;
-            height: 36px;
-        }
-
-        .logo h1, .logo h2 {
+        /* Logo styles */
+        .logo-text {
             font-size: 1.8rem;
-            color: var(--primary);
             font-weight: 700;
-            background: var(--gradient);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+            display: inline-block;
         }
-
-        .nav-buttons {
-            display: flex;
-            gap: 15px;
+        .logo-text .swap {
+            color: #4a90e2;
         }
-
-        .nav-btn {
-            padding: 10px 20px;
-            border: none;
-            border-radius: 5px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: var(--transition);
-        }
-
-        .login-btn {
-            background-color: transparent;
-            color: var(--primary);
-            border: 2px solid var(--primary);
-        }
-
-        .login-btn:hover {
-            background-color: var(--primary);
-            color: white;
-        }
-
-        .register-btn {
-            background-color: var(--primary);
-            color: white;
-            position: relative;
-            display: flex;
-            align-items: center;
-            gap: 5px;
-        }
-
-        .register-btn:hover {
-            background-color: var(--primary-dark);
-        }
-
-        /* Mobile menu */
-        .mobile-menu-btn {
-            display: none;
-            background: none;
-            border: none;
-            color: var(--dark);
-            font-size: 1.5rem;
-            cursor: pointer;
-        }
-
-        .mobile-menu {
-            display: none;
-            position: fixed;
-            top: 70px;
-            left: 0;
-            width: 100%;
-            background-color: white;
-            padding: 20px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            z-index: 999;
-        }
-
-        .mobile-menu .nav-buttons {
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
+        .logo-text .ticket {
+            color: rgb(128, 64, 64);
         }
 
         /* Alert styles */
@@ -272,14 +177,6 @@
         .login-logo img {
             width: 36px;
             height: 36px;
-        }
-
-        .login-logo h2 {
-            font-size: 1.8rem;
-            font-weight: 700;
-            background: var(--gradient);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
         }
 
         .login-header h1 {
@@ -554,71 +451,6 @@
             color: var(--error);
         }
 
-        /* Footer */
-        .footer {
-            background-color: #1a1a1a;
-            color: white;
-            padding: 3rem 5% 1.5rem;
-            margin-top: auto;
-        }
-
-        .footer-content {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            max-width: 1200px;
-            margin: 0 auto;
-            padding-bottom: 1.5rem;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
-        .footer-logo {
-            display: flex;
-            align-items: center;
-        }
-
-        .footer-logo i, .footer-logo img {
-            font-size: 1.8rem;
-            margin-right: 10px;
-            color: white;
-            width: 36px;
-            height: 36px;
-        }
-
-        .footer-logo h2 {
-            font-size: 1.5rem;
-            color: white;
-        }
-
-        .social-icons-footer {
-            display: flex;
-            gap: 15px;
-        }
-
-        .social-icons-footer a {
-            color: white;
-            background-color: rgba(255, 255, 255, 0.1);
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: var(--transition);
-        }
-
-        .social-icons-footer a:hover {
-            background-color: var(--primary);
-            transform: translateY(-3px);
-        }
-
-        .footer-bottom {
-            text-align: center;
-            padding-top: 1.5rem;
-            color: rgba(255, 255, 255, 0.7);
-            font-size: 0.9rem;
-        }
-
         /* Responsive styles */
         @media (max-width: 768px) {
             .login-container {
@@ -629,38 +461,12 @@
             .login-header h1 {
                 font-size: 1.8rem;
             }
-
-            .footer-content {
-                flex-direction: column;
-                gap: 20px;
-                text-align: center;
-            }
-
-            .mobile-menu-btn {
-                display: block;
-            }
-
-            .navbar .nav-buttons {
-                display: none;
-            }
         }
     </style>
 </head>
 <body>
     <!-- Accessibility skip link -->
     <a href="#main-content" class="skip-link">Skip to main content</a>
-
-    <!-- Mobile menu (hidden by default) -->
-    <div class="mobile-menu">
-        <div class="nav-buttons">
-            <a href="/login">
-                <button class="nav-btn login-btn">Login</button>
-            </a>
-            <a href="/register">
-                <button class="nav-btn register-btn">Register</button>
-            </a>
-        </div>
-    </div>
 
     <!-- Alert messages -->
     <div th:if="${param.success}" class="alert alert-success">
@@ -678,7 +484,7 @@
             <div class="login-header">
                 <div class="login-logo">
                     <img src="/docs/swaplogo.png" alt="logo" height="50px">
-                    <h2>SwapTicket</h2>
+                    <h2 class="logo-text"><span class="swap">Swap</span><span class="ticket">Ticket</span></h2>
                 </div>
                 <h1>Welcome Back</h1>
                 <p>Login to access your account and manage your tickets</p>
@@ -738,7 +544,6 @@
                     </a>
                 </div>
             </form>
-            
         </div>
     </main>
 
@@ -820,40 +625,7 @@
                     loginButton.disabled = false;
                 }
             });
-
-            // Mobile menu functionality
-            const mobileMenuBtn = document.querySelector(".mobile-menu-btn");
-            const mobileMenu = document.querySelector(".mobile-menu");
-            if (mobileMenuBtn && mobileMenu) {
-                mobileMenuBtn.addEventListener("click", function () {
-                    if (mobileMenu.style.display === "block") {
-                        mobileMenu.style.display = "none";
-                        mobileMenuBtn.innerHTML = '<i class="fas fa-bars"></i>';
-                        mobileMenuBtn.setAttribute("aria-expanded", "false");
-                    } else {
-                        mobileMenu.style.display = "block";
-                        mobileMenuBtn.innerHTML = '<i class="fas fa-times"></i>';
-                        mobileMenuBtn.setAttribute("aria-expanded", "true");
-                    }
-                });
-            }
-
-            // Close mobile menu when clicking outside
-            document.addEventListener("click", function (event) {
-                if (mobileMenu && mobileMenu.style.display === "block") {
-                    const isClickInsideMenu = mobileMenu.contains(event.target);
-                    const isClickOnMenuBtn = mobileMenuBtn && mobileMenuBtn.contains(event.target);
-                    if (!isClickInsideMenu && !isClickOnMenuBtn) {
-                        mobileMenu.style.display = "none";
-                        if (mobileMenuBtn) {
-                            mobileMenuBtn.innerHTML = '<i class="fas fa-bars"></i>';
-                            mobileMenuBtn.setAttribute("aria-expanded", "false");
-                        }
-                    }
-                }
-            });
         });
     </script>
 </body>
 </html>
-            

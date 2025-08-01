@@ -245,23 +245,20 @@ public class UserController {
             return "otp";
         }
     }
-
-    @GetMapping("/user/sell")
-    public String sellTicket(HttpSession session, RedirectAttributes redirectAttributes) {
-        String email = (String) session.getAttribute("loggedInUserEmail");
-
-        if (email == null) {
+    
+    @GetMapping("/user/home")
+    public String userHome(Model model, HttpSession session) {
+        String userEmail = (String) session.getAttribute("loggedInUserEmail");
+        if (userEmail == null) {
             return "redirect:/login";
         }
+        model.addAttribute("userName", userEmail);
+        
+        walletRepository.findByEmail(userEmail).ifPresent(wallet -> {
+            model.addAttribute("walletBalance", wallet.getBalance());
+        });
 
-        User user = userService.findByEmail(email);
-
-        if (user == null || "BLOCKED".equalsIgnoreCase(user.getStatus())) {
-            redirectAttributes.addFlashAttribute("error", "Access denied. Your account is blocked.");
-            return "redirect:/user/home";
-        }
-
-        return "sellTicket1";
+        return "userHome";
     }
     
     @GetMapping("/api/stations")
@@ -287,46 +284,82 @@ public class UserController {
         }
         return stations;
     }
-
-    @GetMapping("/user/home")
-    public String userHome(Model model, HttpSession session) {
-        String userEmail = (String) session.getAttribute("loggedInUserEmail");
-        if (userEmail == null) {
-            return "redirect:/login";
-        }
-        model.addAttribute("userName", userEmail);
-        
-        walletRepository.findByEmail(userEmail).ifPresent(wallet -> {
-            model.addAttribute("walletBalance", wallet.getBalance());
-        });
-
-        return "userHome";
-    }
     
+ // Step 1: Show Forgot Password Page
     @GetMapping("/forgot-password")
-    public String forgotPasswordPage() {
+    public String forgotPasswordPage(Model model) {
+        model.addAttribute("showOtpForm", null); // Only email form
         return "forgotPassword";
     }
 
+    // Step 2: Send OTP after user submits email
     @PostMapping("/forgot-password")
-    public String resetPassword(@RequestParam("email") String email,
-                                @RequestParam("newPassword") String newPassword,
-                                @RequestParam("confirmPassword") String confirmPassword,
-                                Model model) {
-        if (!newPassword.equals(confirmPassword)) {
-            model.addAttribute("error", "Passwords do not match.");
-            return "forgotPassword";
-        }
-        
+    public String sendOtpForForgotPassword(@RequestParam("email") String email,
+                                           HttpSession session,
+                                           Model model) {
         User user = userService.findByEmail(email);
         if (user == null) {
             model.addAttribute("error", "No user found with this email.");
+            model.addAttribute("showOtpForm", null);
             return "forgotPassword";
         }
-        
+
+        // Generate and store OTP
+        int otp = new Random().nextInt(100000, 1000000);
+        emailSender.sendEmail(user, otp); // You should already have this implemented
+
+        // Store in session
+        session.setAttribute("forgotUser", user);
+        session.setAttribute("forgotOtp", otp);
+        session.setAttribute("otpTime", System.currentTimeMillis());
+
+        // Show OTP + new password form
+        model.addAttribute("email", email);
+        model.addAttribute("showOtpForm", true);
+        return "forgotPassword"; // same page, conditionally renders OTP form
+    }
+
+    // Step 3: Verify OTP and Reset Password
+    @PostMapping("/verify-forgot-password")
+    public String verifyForgotOtp(@RequestParam("email") String email,
+                                  @RequestParam("otp") int userOtp,
+                                  @RequestParam("newPassword") String newPassword,
+                                  @RequestParam("confirmPassword") String confirmPassword,
+                                  HttpSession session,
+                                  Model model) {
+        Integer sessionOtp = (Integer) session.getAttribute("forgotOtp");
+        User user = (User) session.getAttribute("forgotUser");
+
+        if (sessionOtp == null || user == null || !user.getEmail().equals(email)) {
+            model.addAttribute("error", "Session expired or email mismatch. Please try again.");
+            model.addAttribute("showOtpForm", null);
+            return "forgotPassword";
+        }
+
+        if (userOtp != sessionOtp) {
+            model.addAttribute("otpError", "Invalid OTP.");
+            model.addAttribute("email", email);
+            model.addAttribute("showOtpForm", true);
+            return "forgotPassword";
+        }
+
+        if (!newPassword.equals(confirmPassword)) {
+            model.addAttribute("passwordError", "Passwords do not match.");
+            model.addAttribute("email", email);
+            model.addAttribute("showOtpForm", true);
+            return "forgotPassword";
+        }
+
+        // Save encrypted password
         String encryptedPassword = AES.encrypt(newPassword);
         user.setPassword(encryptedPassword);
         userService.saveUser(user);
+
+        // Clear session
+        session.removeAttribute("forgotOtp");
+        session.removeAttribute("forgotUser");
+        session.removeAttribute("otpTime");
+
         model.addAttribute("success", "Password reset successfully!");
         return "login";
     }
