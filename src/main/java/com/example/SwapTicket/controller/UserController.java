@@ -214,6 +214,7 @@ public class UserController {
 
         if (userOtp == sessionOtp) {
             String encryptedPassword = AES.encrypt(user.getPassword());
+            
             if (encryptedPassword == null) {
                 model.addAttribute("error", "Encryption error. Please try registering again.");
                 return "register";
@@ -732,6 +733,62 @@ public class UserController {
         return "trainBetweenStations";
     }
 
+    @GetMapping("/debug/aes")
+    @ResponseBody
+    public String debugAES() {
+        StringBuilder result = new StringBuilder();
+        result.append("AES Debug Information:\n");
+        
+        // Test encryption/decryption
+        String testPassword = "test123";
+        String encrypted = AES.encrypt(testPassword);
+        String decrypted = AES.decrypt(encrypted);
+        
+        result.append("Test password: ").append(testPassword).append("\n");
+        result.append("Encrypted: ").append(encrypted).append("\n");
+        result.append("Decrypted: ").append(decrypted).append("\n");
+        result.append("Test result: ").append(testPassword.equals(decrypted) ? "PASSED" : "FAILED").append("\n\n");
+        
+        // Check existing users
+        List<User> allUsers = userService.findAllUsers();
+        result.append("Existing users:\n");
+        for (User user : allUsers) {
+            result.append("Email: ").append(user.getEmail()).append("\n");
+            result.append("Password (encrypted): ").append(user.getPassword()).append("\n");
+            
+            try {
+                String decryptedUserPassword = AES.decrypt(user.getPassword());
+                result.append("Password (decrypted): ").append(decryptedUserPassword).append("\n");
+            } catch (Exception e) {
+                result.append("Password decryption failed: ").append(e.getMessage()).append("\n");
+            }
+            result.append("---\n");
+        }
+        
+        return result.toString();
+    }
+
+    @GetMapping("/debug/reset-password/{email}")
+    @ResponseBody
+    public String resetUserPassword(@PathVariable String email) {
+        User user = userService.findByEmail(email);
+        if (user == null) {
+            return "User not found with email: " + email;
+        }
+        
+        // Reset password to "password123"
+        String newPassword = "password123";
+        String encryptedPassword = AES.encrypt(newPassword);
+        
+        if (encryptedPassword == null) {
+            return "Failed to encrypt password";
+        }
+        
+        user.setPassword(encryptedPassword);
+        userService.saveUser(user);
+        
+        return "Password reset successfully for " + email + " to: " + newPassword;
+    }
 
 }
 
