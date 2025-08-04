@@ -277,13 +277,72 @@ public class UserController {
         if (userEmail == null) {
             return "redirect:/login";
         }
-        model.addAttribute("userName", userEmail);
+        
+        String userName = (String) session.getAttribute("loggedInUserName");
+        String profileImage = (String) session.getAttribute("userProfileImage");
+        String loginType = (String) session.getAttribute("loginType");
+        
+        model.addAttribute("userName", userName != null ? userName : userEmail);
+        model.addAttribute("userEmail", userEmail);
+        model.addAttribute("profileImage", profileImage);
+        model.addAttribute("loginType", loginType);
         
         walletRepository.findByEmail(userEmail).ifPresent(wallet -> {
             model.addAttribute("walletBalance", wallet.getBalance());
         });
 
         return "userHome";
+    }
+    
+    @GetMapping("/user/complete-profile")
+    public String showCompleteProfile(Model model, HttpSession session) {
+        String userEmail = (String) session.getAttribute("loggedInUserEmail");
+        if (userEmail == null) {
+            return "redirect:/login";
+        }
+        
+        User user = userService.findByEmail(userEmail);
+        if (user == null) {
+            return "redirect:/login";
+        }
+        
+        model.addAttribute("user", user);
+        return "completeProfile";
+    }
+    
+    @PostMapping("/user/complete-profile")
+    public String completeProfile(@RequestParam String mobile,
+                                 @RequestParam String dob,
+                                 HttpSession session,
+                                 RedirectAttributes redirectAttributes) {
+        String userEmail = (String) session.getAttribute("loggedInUserEmail");
+        if (userEmail == null) {
+            return "redirect:/login";
+        }
+        
+        try {
+            User user = userService.findByEmail(userEmail);
+            if (user != null) {
+                // Validate mobile number
+                if (mobile == null || !mobile.matches("^[6-9]\\d{9}$")) {
+                    redirectAttributes.addFlashAttribute("error", "Please enter a valid 10-digit mobile number");
+                    return "redirect:/user/complete-profile";
+                }
+                
+                user.setMobile(mobile);
+                if (dob != null && !dob.trim().isEmpty()) {
+                    user.setDob(LocalDate.parse(dob));
+                }
+                userRepository.save(user);
+                
+                redirectAttributes.addFlashAttribute("success", "Profile completed successfully!");
+            }
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("error", "Error completing profile: " + e.getMessage());
+            return "redirect:/user/complete-profile";
+        }
+        
+        return "redirect:/user/home";
     }
     
     @GetMapping("/api/stations")

@@ -36,12 +36,11 @@ public class User {
     @NotNull(message = "* DOB is required")
     private LocalDate dob;
 
-    @NotBlank(message = "Password is required")
     @Pattern(
         regexp = "^.*(?=.{8,})(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=]).*$",
         message = "* Password must have 1 uppercase, 1 lowercase, 1 number, 1 special character, and be at least 8 characters long"
     )
-    private String password;
+    private String password; // Can be null for OAuth2 users
 
     @Transient
     @Pattern(
@@ -60,6 +59,11 @@ public class User {
     
     @ElementCollection
     private Set<Integer> usedReferralDiscounts = new HashSet<>();
+    
+    // OAuth2 related fields
+    private String provider; // "local" for registration, "google" for OAuth2
+    private String providerId; // Google user ID
+    private String profileImageUrl;
 
     @Override
     public String toString() {

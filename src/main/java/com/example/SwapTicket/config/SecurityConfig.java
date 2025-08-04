@@ -26,7 +26,8 @@ public class SecurityConfig implements WebMvcConfigurer {
         registry.addInterceptor(new SessionValidationInterceptor())
                 .addPathPatterns("/user/**", "/pnr/**", "/admin/**")
                 .excludePathPatterns("/", "/login", "/register", "/otp", "/forgot-password", "/api/**", 
-                                   "/privacy", "/terms", "/about", "/how-it-works", "/faq", "/refund", "/maskedAadhar");
+                                   "/privacy", "/terms", "/about", "/how-it-works", "/faq", "/refund", "/maskedAadhar",
+                                   "/oauth2/**", "/login/oauth2/**");
     }
 
     public static class SessionValidationInterceptor implements HandlerInterceptor {
