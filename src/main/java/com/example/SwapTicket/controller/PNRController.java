@@ -16,6 +16,7 @@ import com.example.SwapTicket.repository.TransactionHistoryRepository;
 import com.example.SwapTicket.repository.UserRepository;
 import com.example.SwapTicket.repository.WalletRepository;
 import com.example.SwapTicket.service.UserService;
+import com.example.SwapTicket.service.PaymentService;
 import com.example.SwapTicket.helper.EmailSender;
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -64,6 +65,9 @@ public class PNRController {
     
     @Autowired
     private AdminConfigRepository adminConfigRepository;
+    
+    @Autowired
+    private PaymentService paymentService;
     
     @Autowired
 	com.example.SwapTicket.helper.RazorPayHelper razorPayHelper;
@@ -546,18 +550,13 @@ public class PNRController {
         // Calculate total amount exactly like in previewAmount
         double totalAmount = extraBasePrice + handlingCharge + gst - discount + tipAmount;
         
-       
-        // ----- UPDATE ADMIN WALLET -----
-        Optional<Wallet> adminWalletOpt = walletRepository.findByEmail(adminEmail);
-        Wallet adminWallet = adminWalletOpt.orElseGet(() -> {
-            Wallet newWallet = new Wallet();
-            newWallet.setEmail(adminEmail);
-            newWallet.setBalance(10000.0);
-            return newWallet;
-        });
-
-        adminWallet.setBalance(adminWallet.getBalance() + totalAmount);
-        walletRepository.save(adminWallet);
+        // ----- PROCESS PAYMENT THROUGH SERVICE -----
+        try {
+            paymentService.processPayment(buyerEmail, totalAmount, adminEmail);
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("error", "Payment processing failed: " + e.getMessage());
+            return "redirect:/pnr/buy";
+        }
         passenger.setBuyerPaid(totalAmount);
 
         // Save passenger

@@ -9,6 +9,9 @@ import javax.crypto.spec.SecretKeySpec;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+
+import jakarta.annotation.PostConstruct;
+
 import javax.crypto.Cipher;
 import javax.crypto.spec.SecretKeySpec;
 import java.security.MessageDigest;
@@ -23,12 +26,15 @@ public class AES {
 
     private static String secret;
 
-    @Value("${aes.secret.key}")
+    @Value("${aes.secret.key:DefaultSecretKey123}")
     private String secretFromProperties;
 
-    @jakarta.annotation.PostConstruct
+    @PostConstruct
     public void init() {
         secret = secretFromProperties;
+        if (secret == null || secret.trim().isEmpty()) {
+            throw new IllegalStateException("AES secret key is not configured...");
+        }
     }
 
     public static void setKey(final String myKey) {

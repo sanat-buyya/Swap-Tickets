@@ -14,6 +14,7 @@ import com.example.SwapTicket.repository.SupportMessageRepository;
 import com.example.SwapTicket.repository.TransactionHistoryRepository;
 import com.example.SwapTicket.repository.UserRepository;
 import com.example.SwapTicket.repository.WalletRepository;
+import com.example.SwapTicket.service.AdminAuthService;
 import com.example.SwapTicket.service.UserService;
 import com.example.SwapTicket.helper.AES;
 import com.example.SwapTicket.helper.EmailSender;
@@ -93,6 +94,9 @@ public class UserController {
     @Autowired
     private SimpMessagingTemplate messagingTemplate;
     
+    @Autowired
+    private AdminAuthService adminAuthService;
+    
     @GetMapping("/")
     public String defaultPage(HttpSession session) { 
         if (session.getAttribute("loggedInUserEmail") != null) {
@@ -110,13 +114,29 @@ public class UserController {
     @PostMapping("/login")
     public String loginUser(@RequestParam String username,
                             @RequestParam String password,
-                            Model model,
-                            HttpSession session) {
-        if (username.equals(adminEmail) && password.equals(adminPassword)) {
+                            Model model, HttpSession session) {
+        
+        // Input validation
+        if (username == null || username.trim().isEmpty()) {
+            model.addAttribute("loginError", "Email is required");
+            return "login";
+        }
+        
+        if (password == null || password.trim().isEmpty()) {
+            model.addAttribute("loginError", "Password is required");
+            return "login";
+        }
+        
+        // Sanitize input
+        username = username.trim();
+        password = password.trim();
+        
+        if (adminAuthService.authenticateAdmin(username, password)) {
             session.setAttribute("admin", true);
+            session.setAttribute("adminEmail", username);
             return "redirect:/admin/dashboard";
         }
-
+        
         User user = userService.findByEmail(username);
         if (user == null) {
             model.addAttribute("loginError", "Enter correct email");
@@ -734,4 +754,3 @@ public class UserController {
 
 
 }
-

@@ -38,4 +38,18 @@ public class UserService {
 	public User findById(Long id) {
 	    return userRepository.findById(id).orElse(null);
 	}
+	
+	// OAuth2 specific methods
+	public void saveOAuth2User(User user) {
+		// For OAuth2 users, we don't require mobile and DOB validation
+		userRepository.save(user);
+	}
+	
+	public void updateUser(User user) {
+		userRepository.save(user);
+	}
+	
+	public List<User> findAllUsers() {
+	    return userRepository.findAll();
+	}
 }
