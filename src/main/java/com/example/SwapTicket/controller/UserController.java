@@ -107,7 +107,7 @@ public class UserController {
         return "login";
     }
 
-    @PostMapping("/login")
+    @PostMapping("/traditional-login")
     public String loginUser(@RequestParam String username,
                             @RequestParam String password,
                             Model model,

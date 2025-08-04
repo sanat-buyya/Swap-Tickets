@@ -18,6 +18,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
     User findByReferralCode(String referralCode);
     List<User> findAllByReferredBy(String referredBy);
     List<User> findAllByStatus(String status);
+    User findByGoogleId(String googleId);
     
     @Modifying
     @Query("UPDATE User u SET u.status = :status WHERE u.id = :id")

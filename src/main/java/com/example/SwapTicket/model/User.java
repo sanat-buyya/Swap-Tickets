@@ -59,6 +59,13 @@ public class User {
     
     @ElementCollection
     private Set<Integer> usedReferralDiscounts = new HashSet<>();
+    
+    // OAuth2 provider field (LOCAL, GOOGLE)
+    @Column(nullable = false)
+    private String provider = "LOCAL";
+    
+    // Google ID for OAuth2 users
+    private String googleId;
 
 	public Long getId() {
 		return id;
@@ -146,6 +153,22 @@ public class User {
 
 	public void setUsedReferralDiscounts(Set<Integer> usedReferralDiscounts) {
 		this.usedReferralDiscounts = usedReferralDiscounts;
+	}
+	
+	public String getProvider() {
+		return provider;
+	}
+
+	public void setProvider(String provider) {
+		this.provider = provider;
+	}
+
+	public String getGoogleId() {
+		return googleId;
+	}
+
+	public void setGoogleId(String googleId) {
+		this.googleId = googleId;
 	}
 
 	@Override
