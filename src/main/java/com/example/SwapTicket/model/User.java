@@ -59,6 +59,12 @@ public class User {
     
     @ElementCollection
     private Set<Integer> usedReferralDiscounts = new HashSet<>();
+    
+    // Google OAuth2 fields
+    private String googleId;
+    
+    @Column(nullable = false)
+    private Boolean emailVerified = false;
 
 	public Long getId() {
 		return id;
@@ -147,12 +153,28 @@ public class User {
 	public void setUsedReferralDiscounts(Set<Integer> usedReferralDiscounts) {
 		this.usedReferralDiscounts = usedReferralDiscounts;
 	}
+	
+	public String getGoogleId() {
+		return googleId;
+	}
+
+	public void setGoogleId(String googleId) {
+		this.googleId = googleId;
+	}
+
+	public Boolean getEmailVerified() {
+		return emailVerified;
+	}
+
+	public void setEmailVerified(Boolean emailVerified) {
+		this.emailVerified = emailVerified;
+	}
 
 	@Override
 	public String toString() {
 		return "User [id=" + id + ", name=" + name + ", email=" + email + ", mobile=" + mobile + ", dob=" + dob
 				+ ", password=" + password + ", confirmPassword=" + confirmPassword + ", referralCode=" + referralCode
-				+ ", referredBy=" + referredBy + "]";
+				+ ", referredBy=" + referredBy + ", googleId=" + googleId + ", emailVerified=" + emailVerified + "]";
 	}
     
     
