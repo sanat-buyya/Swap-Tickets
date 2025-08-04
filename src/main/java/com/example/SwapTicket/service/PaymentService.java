@@ -23,26 +23,42 @@ public class PaymentService {
     private PassengerRepository passengerRepository;
     
     @Value("${admin.email}")
-	String ADMIN_EMAIL;
+    String ADMIN_EMAIL;
     
-    public boolean paySeller(Passenger passenger) {
+    @Transactional
+    public synchronized boolean paySeller(Passenger passenger) {
+        if (passenger == null) {
+            throw new IllegalArgumentException("Passenger cannot be null");
+        }
+        
+        if (passenger.isSellerPaid()) {
+            throw new IllegalStateException("Seller has already been paid for this passenger");
+        }
+        
         Wallet sellerWallet = walletRepository.findByEmail(passenger.getSellerEmail())
-                .orElseThrow(() -> new RuntimeException("Seller wallet not found"));
+                .orElseThrow(() -> new RuntimeException("Seller wallet not found for email: " + passenger.getSellerEmail()));
         Wallet adminWallet = walletRepository.findByEmail(ADMIN_EMAIL)
                 .orElseThrow(() -> new RuntimeException("Admin wallet not found"));
 
         double ticketPrice = passenger.getPrice();
-
-        if (adminWallet.getBalance() < ticketPrice) {
-            return false;
+        
+        if (ticketPrice <= 0) {
+            throw new IllegalArgumentException("Ticket price must be positive");
         }
 
-        adminWallet.setBalance(adminWallet.getBalance() - ticketPrice);
-        walletRepository.save(adminWallet);
+        if (adminWallet.getBalance() < ticketPrice) {
+            throw new IllegalStateException("Insufficient admin wallet balance. Required: " + ticketPrice + ", Available: " + adminWallet.getBalance());
+        }
 
-        sellerWallet.setBalance(sellerWallet.getBalance() + ticketPrice);
+        // Perform atomic wallet operations
+        adminWallet.deductBalance(ticketPrice);
+        sellerWallet.addBalance(ticketPrice);
+        
+        // Save wallets
+        walletRepository.save(adminWallet);
         walletRepository.save(sellerWallet);
 
+        // Mark passenger as paid
         passenger.setSellerPaid(true);
         passengerRepository.save(passenger);
 
@@ -51,18 +67,56 @@ public class PaymentService {
     
     @Transactional
     public synchronized boolean buyPassenger(Long passengerId, String buyerEmail) {
+        if (passengerId == null) {
+            throw new IllegalArgumentException("Passenger ID cannot be null");
+        }
+        
+        if (buyerEmail == null || buyerEmail.trim().isEmpty()) {
+            throw new IllegalArgumentException("Buyer email cannot be null or empty");
+        }
+        
         Passenger passenger = passengerRepository.findById(passengerId)
-            .orElseThrow(() -> new RuntimeException("Passenger not found"));
+            .orElseThrow(() -> new RuntimeException("Passenger not found with ID: " + passengerId));
 
         if (passenger.isSold()) {
-            throw new RuntimeException("Passenger already sold");
+            throw new IllegalStateException("Passenger already sold");
         }
 
-        // set details
-        passenger.setBuyerEmail(buyerEmail);
+        // Set details atomically
+        passenger.setBuyerEmail(buyerEmail.trim());
         passenger.setSold(true);
         passengerRepository.save(passenger);
+        
         return true;
     }
-
+    
+    @Transactional
+    public synchronized boolean processPayment(String buyerEmail, double amount, String adminEmail) {
+        if (buyerEmail == null || buyerEmail.trim().isEmpty()) {
+            throw new IllegalArgumentException("Buyer email cannot be null or empty");
+        }
+        
+        if (amount <= 0) {
+            throw new IllegalArgumentException("Payment amount must be positive");
+        }
+        
+        if (adminEmail == null || adminEmail.trim().isEmpty()) {
+            throw new IllegalArgumentException("Admin email cannot be null or empty");
+        }
+        
+        // Get or create admin wallet
+        Wallet adminWallet = walletRepository.findByEmail(adminEmail)
+                .orElseGet(() -> {
+                    Wallet newWallet = new Wallet();
+                    newWallet.setEmail(adminEmail);
+                    newWallet.setBalance(0.0);
+                    return walletRepository.save(newWallet);
+                });
+        
+        // Add payment to admin wallet
+        adminWallet.addBalance(amount);
+        walletRepository.save(adminWallet);
+        
+        return true;
+    }
 }

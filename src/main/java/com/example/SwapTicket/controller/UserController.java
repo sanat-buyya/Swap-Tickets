@@ -15,6 +15,8 @@ import com.example.SwapTicket.repository.TransactionHistoryRepository;
 import com.example.SwapTicket.repository.UserRepository;
 import com.example.SwapTicket.repository.WalletRepository;
 import com.example.SwapTicket.service.UserService;
+import com.example.SwapTicket.service.AdminAuthService;
+import com.example.SwapTicket.service.FileService;
 import com.example.SwapTicket.helper.AES;
 import com.example.SwapTicket.helper.EmailSender;
 
@@ -93,6 +95,12 @@ public class UserController {
     @Autowired
     private SimpMessagingTemplate messagingTemplate;
     
+    @Autowired
+    private AdminAuthService adminAuthService;
+    
+    @Autowired
+    private FileService fileService;
+    
     @GetMapping("/")
     public String defaultPage(HttpSession session) { 
         if (session.getAttribute("loggedInUserEmail") != null) {
@@ -112,8 +120,25 @@ public class UserController {
                             @RequestParam String password,
                             Model model,
                             HttpSession session) {
-        if (username.equals(adminEmail) && password.equals(adminPassword)) {
+        
+        // Input validation
+        if (username == null || username.trim().isEmpty()) {
+            model.addAttribute("loginError", "Email is required");
+            return "login";
+        }
+        
+        if (password == null || password.trim().isEmpty()) {
+            model.addAttribute("loginError", "Password is required");
+            return "login";
+        }
+        
+        // Sanitize input
+        username = username.trim();
+        password = password.trim();
+        // Check admin authentication first
+        if (adminAuthService.authenticateAdmin(username, password)) {
             session.setAttribute("admin", true);
+            session.setAttribute("adminEmail", username);
             return "redirect:/admin/dashboard";
         }
 
@@ -252,7 +277,15 @@ public class UserController {
         if (userEmail == null) {
             return "redirect:/login";
         }
-        model.addAttribute("userName", userEmail);
+        
+        String userName = (String) session.getAttribute("loggedInUserName");
+        String profileImage = (String) session.getAttribute("userProfileImage");
+        String loginType = (String) session.getAttribute("loginType");
+        
+        model.addAttribute("userName", userName != null ? userName : userEmail);
+        model.addAttribute("userEmail", userEmail);
+        model.addAttribute("profileImage", profileImage);
+        model.addAttribute("loginType", loginType);
         
         walletRepository.findByEmail(userEmail).ifPresent(wallet -> {
             model.addAttribute("walletBalance", wallet.getBalance());
@@ -261,28 +294,61 @@ public class UserController {
         return "userHome";
     }
     
+    @GetMapping("/user/complete-profile")
+    public String showCompleteProfile(Model model, HttpSession session) {
+        String userEmail = (String) session.getAttribute("loggedInUserEmail");
+        if (userEmail == null) {
+            return "redirect:/login";
+        }
+        
+        User user = userService.findByEmail(userEmail);
+        if (user == null) {
+            return "redirect:/login";
+        }
+        
+        model.addAttribute("user", user);
+        return "completeProfile";
+    }
+    
+    @PostMapping("/user/complete-profile")
+    public String completeProfile(@RequestParam String mobile,
+                                 @RequestParam String dob,
+                                 HttpSession session,
+                                 RedirectAttributes redirectAttributes) {
+        String userEmail = (String) session.getAttribute("loggedInUserEmail");
+        if (userEmail == null) {
+            return "redirect:/login";
+        }
+        
+        try {
+            User user = userService.findByEmail(userEmail);
+            if (user != null) {
+                // Validate mobile number
+                if (mobile == null || !mobile.matches("^[6-9]\\d{9}$")) {
+                    redirectAttributes.addFlashAttribute("error", "Please enter a valid 10-digit mobile number");
+                    return "redirect:/user/complete-profile";
+                }
+                
+                user.setMobile(mobile);
+                if (dob != null && !dob.trim().isEmpty()) {
+                    user.setDob(LocalDate.parse(dob));
+                }
+                userRepository.save(user);
+                
+                redirectAttributes.addFlashAttribute("success", "Profile completed successfully!");
+            }
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("error", "Error completing profile: " + e.getMessage());
+            return "redirect:/user/complete-profile";
+        }
+        
+        return "redirect:/user/home";
+    }
+    
     @GetMapping("/api/stations")
     @ResponseBody
     public List<Map<String, String>> getAllStations() {
-        List<Map<String, String>> stations = new ArrayList<>();
-        try {
-            Path path = Paths.get("src/main/resources/Train_details_22122017.csv");
-            List<String> lines = Files.readAllLines(path);
-            for (String line : lines.subList(1, lines.size())) {
-                String[] columns = line.split(",", -1);
-                if (columns.length >= 5) {
-                    String code = columns[3].trim().toUpperCase();
-                    String name = columns[4].trim().toUpperCase();
-                    Map<String, String> stationMap = new HashMap<>();
-                    stationMap.put("code", code);
-                    stationMap.put("name", name);
-                    stations.add(stationMap);
-                }
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return stations;
+        return fileService.readTrainStations();
     }
     
  // Step 1: Show Forgot Password Page
@@ -721,7 +787,7 @@ public class UserController {
     public String trackTrainBetweenStations(@RequestParam String sourceStation,
                                             @RequestParam String destinationStation,
                                             Model model) {
-        String csvPath = "src/main/resources/Train_details_22122017.csv";
+        String csvPath = fileService.getTrainDataFilePath();
 
         List<TrainResult> matchingTrains = findMatchingTrains(sourceStation, destinationStation, csvPath);
 

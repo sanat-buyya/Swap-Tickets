@@ -399,6 +399,73 @@
         .login-btn-submit.loading .btn-content {
             opacity: 0;
         }
+        
+        /* Divider styles */
+        .login-divider {
+            display: flex;
+            align-items: center;
+            margin: 30px 0;
+            color: var(--gray);
+            font-size: 0.9rem;
+        }
+        
+        .login-divider::before,
+        .login-divider::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: #e0e0e0;
+        }
+        
+        .login-divider span {
+            padding: 0 20px;
+            background: white;
+            font-weight: 500;
+        }
+        
+        /* Google login button */
+        .google-login-btn {
+            width: 100%;
+            padding: 14px;
+            background: white;
+            color: #333;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        
+        .google-login-btn:hover {
+            border-color: #4285f4;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+            transform: translateY(-1px);
+            color: #333;
+            text-decoration: none;
+        }
+        
+        .google-login-btn:focus {
+            outline: 2px solid #4285f4;
+            outline-offset: 2px;
+        }
+        
+        .google-icon {
+            width: 20px;
+            height: 20px;
+            background-image: url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTgiIGhlaWdodD0iMTgiIHZpZXdCb3g9IjAgMCAxOCAxOCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGcgZmlsbD0ibm9uZSIgZmlsbC1ydWxlPSJldmVub2RkIj4KPHBhdGggZD0iTTE3LjY0IDkuMjA0NTQ1NDVjMC0uNjM5NzI3MjctLjA1NzI3MjctMS4yNzk0NTQ1NS0uMTcxODE4MTgtMS45MDkwOTA5MUg5djMuNDU4MTgxODJoNC44NDM2MzYzNmMtLjIwODM2MzY0IDEuMTI0NTQ1NDUtLjgzNzI3MjczIDIuMDc5MDkwOTEtMS43NzgxODE4MiAyLjcyNTQ1NDU1djIuMjU5MDkwOTFoMi44Nzc3MjcyN2MyLjg5NzI3MjczLTIuNjcyNzI3MjcgMy4wMzY4MTgxOC02LjU5MzE4MTgyIDMuMDM2ODE4MTgtNi41OTMxODE4MnoiIGZpbGw9IiM0Mjg1RjQiLz4KPHBhdGggZD0iTTkgMThjMi40MjU0NTQ1NSAwIDQuNDU5MDkwOTEtLjgwNDU0NTQ1IDUuOTQ1NDU0NTUtMi4xODE4MTgxOGwtMi44Nzc3MjcyNy0yLjI1OTA5MDkxYy0uODAyNzI3MjcuNTM3MjcyNzMtMS44MzE4MTgxOC44NTM2MzYzNi0zLjA2NzI3MjczLjg1MzYzNjM2LTIuMzU5MDkwOTEgMC00LjM1NDU0NTQ1LTEuNTkzMTgxODItNS4wNjcyNzI3My0zLjczNjM2MzY0SDEuMTgxODE4MThWMTUuNDA5MDkwOTFDMi4wMzYzNjM2NCAxNy4xMzYzNjM2NCA1LjMzNjM2MzY0IDE4IDkgMTh6IiBmaWxsPSIjMzRBODUzIi8+CjxwYXRoIGQ9Ik0zLjkzMjcyNzI3IDEwLjYzNjM2MzY0Yy0uMTgxODE4MTgtLjUzNzI3MjczLS4yODU0NTQ1NS0xLjEwNzI3MjczLS4yODU0NTQ1NS0xLjY4NjM2MzY0IDAtLjU3OTA5MDkxLjEwMzYzNjM3LTEuMTQ5MDkwOTEuMjg1NDU0NTUtMS42ODYzNjM2NFYzLjU5MDkwOTA5SDF1MTgxODE4MThDLjQzNjM2MzY0IDQuNTQ1NDU0NTUgMCA2Ljc5MDkwOTA5IDAgOXMuNDM2MzYzNjQgNC40NTQ1NDU0NSAxLjE4MTgxODE4IDUuNDA5MDkwOTFsMi43NS0yLjE3MjcyNzI3eiIgZmlsbD0iI0ZCQkMwNSIvPgo8cGF0aCBkPSJNOSAzLjU2MzYzNjM2YzEuMzMxODE4MTggMCAyLjUzNjM2MzY0LjQ5MDkwOTA5IDMuNDc3MjcyNzMgMS40NTQ1NDU0NWwyLjYwNDU0NTQ1LTIuNjA0NTQ1NDVDMTMuNDU5MDkwOTEuODkwOTA5MDkgMTEuNDI1NDU0NTUgMCA5IDBjLTMuNjYzNjM2MzYgMC02Ljk2MzYzNjM2Ljg2MzYzNjM2LTcuODE4MTgxODIgMi41OTA5MDkwOWwyLjc1IDIuMTcyNzI3MjdDNC42NDU0NTQ1NSA1LjE1NjM2MzY0IDYuNjQwOTA5MDkgMy41NjM2MzYzNiA5IDMuNTYzNjM2MzZ6IiBmaWxsPSIjRUE0MzM1Ii8+CjwvZz4KPC9zdmc+');
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
+        }
+        }
 
         .login-btn-submit.loading .spinner {
             display: block;
@@ -536,14 +603,31 @@
                         <i class="fas fa-sign-in-alt"></i>
                     </div>
                 </button>
-
-                <div class="register-link">
-                    Don't have an account? 
-                    <a th:href="@{/register}">
-                        <i class="fas fa-user-plus"></i> Register now
-                    </a>
-                </div>
             </form>
+
+            <!-- OAuth2 Error Message -->
+            <div th:if="${param.error == 'oauth2'}" class="auth-message error">
+                <i class="fas fa-exclamation-circle"></i>
+                <p>Google login failed. Please try again or use email/password login.</p>
+            </div>
+
+            <!-- Login Divider -->
+            <div class="login-divider">
+                <span>OR</span>
+            </div>
+
+            <!-- Google Login Button -->
+            <a href="/oauth2/authorization/google" class="google-login-btn" id="googleLoginBtn">
+                <div class="google-icon"></div>
+                <span>Continue with Google</span>
+            </a>
+
+            <div class="register-link">
+                Don't have an account? 
+                <a th:href="@{/register}">
+                    <i class="fas fa-user-plus"></i> Register now
+                </a>
+            </div>
         </div>
     </main>
 

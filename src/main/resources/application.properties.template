@@ -24,6 +24,19 @@ cloudinary.api.secret=Your api secret
 razor-pay.api.key=your key
 razor-pay.api.secret=your secret
 
+#AES Encryption Key (IMPORTANT: Change this to a secure random key in production)
+aes.secret.key=MySecretKey12345
+
+#Google OAuth2 Configuration
+spring.security.oauth2.client.registration.google.client-id=your-google-client-id
+spring.security.oauth2.client.registration.google.client-secret=your-google-client-secret
+spring.security.oauth2.client.registration.google.scope=profile,email
+spring.security.oauth2.client.registration.google.redirect-uri={baseUrl}/login/oauth2/code/{registrationId}
+
+#File Paths Configuration
+app.train.data.file=classpath:Train_details_22122017.csv
+app.upload.directory=uploads/
+
 #Admin Login
 admin.email=<adminemail>
 admin.password=<password>

@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Complete Your Profile - SwapTicket</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .profile-card {
+            max-width: 500px;
+            margin: 50px auto;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+        }
+        .profile-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            text-align: center;
+            padding: 30px;
+            border-radius: 10px 10px 0 0;
+        }
+        .profile-image {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            border: 4px solid white;
+            margin-bottom: 15px;
+        }
+        .form-container {
+            padding: 30px;
+        }
+        .btn-complete {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+            padding: 12px 30px;
+            border-radius: 25px;
+            font-weight: 600;
+        }
+        .btn-complete:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+    </style>
+</head>
+<body class="bg-light">
+    <div class="container">
+        <div class="profile-card card">
+            <div class="profile-header">
+                <img th:src="${user.profileImageUrl}" 
+                     th:alt="${user.name}" 
+                     class="profile-image"
+                     onerror="this.src='https://via.placeholder.com/80x80/667eea/white?text=User'">
+                <h3 th:text="${user.name}">User Name</h3>
+                <p th:text="${user.email}">user@example.com</p>
+                <p class="mb-0"><i class="fas fa-info-circle"></i> Please complete your profile to continue</p>
+            </div>
+            
+            <div class="form-container">
+                <!-- Success/Error Messages -->
+                <div th:if="${success}" class="alert alert-success alert-dismissible fade show" role="alert">
+                    <i class="fas fa-check-circle"></i> <span th:text="${success}"></span>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+                
+                <div th:if="${error}" class="alert alert-danger alert-dismissible fade show" role="alert">
+                    <i class="fas fa-exclamation-circle"></i> <span th:text="${error}"></span>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+                
+                <form th:action="@{/user/complete-profile}" method="post">
+                    <div class="mb-3">
+                        <label for="mobile" class="form-label">
+                            <i class="fas fa-phone"></i> Mobile Number *
+                        </label>
+                        <input type="tel" 
+                               class="form-control" 
+                               id="mobile" 
+                               name="mobile" 
+                               th:value="${user.mobile}"
+                               placeholder="Enter your 10-digit mobile number"
+                               pattern="[6-9][0-9]{9}"
+                               title="Please enter a valid 10-digit Indian mobile number starting with 6-9"
+                               required>
+                        <div class="form-text">
+                            <i class="fas fa-info-circle"></i> Required for ticket booking and notifications
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="dob" class="form-label">
+                            <i class="fas fa-calendar"></i> Date of Birth (Optional)
+                        </label>
+                        <input type="date" 
+                               class="form-control" 
+                               id="dob" 
+                               name="dob" 
+                               th:value="${user.dob}"
+                               max="2006-01-01">
+                        <div class="form-text">
+                            <i class="fas fa-info-circle"></i> Help us provide age-appropriate services
+                        </div>
+                    </div>
+                    
+                    <div class="mb-4">
+                        <div class="card bg-light">
+                            <div class="card-body">
+                                <h6 class="card-title"><i class="fas fa-shield-alt text-success"></i> Your Information</h6>
+                                <p class="card-text small mb-0">
+                                    We use this information to enhance your ticket booking experience and 
+                                    ensure secure transactions. Your data is protected and never shared with third parties.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-primary btn-complete">
+                            <i class="fas fa-check"></i> Complete Profile
+                        </button>
+                        <a href="/user/home" class="btn btn-outline-secondary">
+                            <i class="fas fa-arrow-left"></i> Skip for Now
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Auto-dismiss alerts after 5 seconds
+        setTimeout(function() {
+            const alerts = document.querySelectorAll('.alert');
+            alerts.forEach(alert => {
+                const bsAlert = new bootstrap.Alert(alert);
+                bsAlert.close();
+            });
+        }, 5000);
+        
+        // Mobile number validation
+        document.getElementById('mobile').addEventListener('input', function(e) {
+            const value = e.target.value;
+            if (value.length > 10) {
+                e.target.value = value.slice(0, 10);
+            }
+        });
+    </script>
+</body>
+</html>
