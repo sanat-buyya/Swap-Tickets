@@ -549,7 +549,17 @@
                 <p>You have been logged out successfully.</p>
             </div>
 
-            <form th:action="@{/login}" method="post" id="loginForm">
+            <div th:if="${param.error == 'oauth2'}" class="auth-message error">
+                <i class="fas fa-exclamation-circle"></i>
+                <p>Google login failed. Please try again or use traditional login.</p>
+            </div>
+
+            <div th:if="${param.error == 'oauth'}" class="auth-message error">
+                <i class="fas fa-exclamation-circle"></i>
+                <p>OAuth authentication error. Please try again.</p>
+            </div>
+
+            <form th:action="@{/traditional-login}" method="post" id="loginForm">
                 <div class="form-group">
                     <label for="username">Email Address</label>
                     <div class="input-with-icon">

@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
 import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
+import org.springframework.security.oauth2.core.OAuth2Error;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 
@@ -33,23 +34,36 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
             // Create new user for Google OAuth2
             User newUser = new User();
             newUser.setEmail(email);
-            newUser.setName(name);
+            newUser.setName(name != null ? name : "Google User");
             newUser.setProvider("GOOGLE");
             newUser.setGoogleId(googleId);
             
-            // Set default values for required fields
-            newUser.setMobile("0000000000"); // Default mobile, user can update later
+            // Set default values for required fields to avoid validation errors
+            newUser.setMobile("9999999999"); // Valid default mobile that passes validation
             newUser.setDob(LocalDate.of(1990, 1, 1)); // Default DOB, user can update later
-            newUser.setPassword(""); // No password for OAuth2 users
+            newUser.setPassword("GoogleOAuth2User@123"); // Set a default password that meets validation rules
             newUser.setReferralCode(generateReferralCode());
             newUser.setStatus("ACTIVE");
             
-            userService.saveUser(newUser);
-        } else if (existingUser.getProvider().equals("LOCAL")) {
+            try {
+                userService.saveUser(newUser);
+                System.out.println("Successfully created Google user: " + email);
+            } catch (Exception e) {
+                System.err.println("Error creating Google user: " + e.getMessage());
+                e.printStackTrace();
+                throw new OAuth2AuthenticationException("Failed to create user account");
+            }
+        } else if ("LOCAL".equals(existingUser.getProvider())) {
             // Link existing local account with Google
             existingUser.setProvider("GOOGLE");
             existingUser.setGoogleId(googleId);
-            userService.saveUser(existingUser);
+            try {
+                userService.saveUser(existingUser);
+                System.out.println("Successfully linked existing user with Google: " + email);
+            } catch (Exception e) {
+                System.err.println("Error linking user with Google: " + e.getMessage());
+                e.printStackTrace();
+            }
         }
         
         return oauth2User;

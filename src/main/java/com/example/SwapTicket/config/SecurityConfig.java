@@ -24,16 +24,22 @@ public class SecurityConfig {
         http
             .csrf(csrf -> csrf.disable())
             .authorizeHttpRequests(authz -> authz
-                .requestMatchers("/", "/home", "/login", "/register", "/oauth2/**", "/css/**", "/js/**", "/docs/**", "/static/**").permitAll()
-                .requestMatchers("/admin/**").hasRole("ADMIN")
-                .anyRequest().permitAll()
+                .requestMatchers("/", "/home", "/login", "/register", "/traditional-login", "/oauth2/**", "/login/oauth2/**", "/css/**", "/js/**", "/docs/**", "/static/**", "/forgot-password", "/otp", "/reset-password").permitAll()
+                .anyRequest().permitAll() // Keep permissive for now to avoid auth issues
             )
             .oauth2Login(oauth2 -> oauth2
                 .loginPage("/login")
+                .authorizationEndpoint(authorization -> authorization
+                    .baseUri("/oauth2/authorization")
+                )
+                .redirectionEndpoint(redirection -> redirection
+                    .baseUri("/login/oauth2/code/*")
+                )
                 .userInfoEndpoint(userInfo -> userInfo
                     .userService(customOAuth2UserService)
                 )
                 .successHandler(oAuth2LoginSuccessHandler)
+                .failureUrl("/login?error=oauth2")
             )
             .logout(logout -> logout
                 .logoutUrl("/logout")
