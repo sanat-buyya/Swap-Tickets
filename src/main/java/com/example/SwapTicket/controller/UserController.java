@@ -116,27 +116,12 @@ public class UserController {
                             @RequestParam String password,
                             Model model, HttpSession session) {
         
-        // Input validation
-        if (username == null || username.trim().isEmpty()) {
-            model.addAttribute("loginError", "Email is required");
-            return "login";
-        }
-        
-        if (password == null || password.trim().isEmpty()) {
-            model.addAttribute("loginError", "Password is required");
-            return "login";
-        }
-        
-        // Sanitize input
-        username = username.trim();
-        password = password.trim();
-        
         if (adminAuthService.authenticateAdmin(username, password)) {
             session.setAttribute("admin", true);
             session.setAttribute("adminEmail", username);
             return "redirect:/admin/dashboard";
         }
-        
+
         User user = userService.findByEmail(username);
         if (user == null) {
             model.addAttribute("loginError", "Enter correct email");
@@ -156,7 +141,6 @@ public class UserController {
 
         session.setAttribute("loggedInUserEmail", user.getEmail());
         session.setAttribute("loggedInUserName", user.getName());
-        model.addAttribute("message", "Welcome back, " + user.getName() + "!");
         return "redirect:/user/home";
     }
 

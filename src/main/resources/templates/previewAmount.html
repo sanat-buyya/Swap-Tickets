@@ -209,79 +209,141 @@
             margin-bottom: 4px;
         }
 
-        /* Tip Section */
-        .tip-section {
-            margin: 20px 0;
-            padding: 15px;
-            background-color: #fff8e1;
-            border-radius: 6px;
-            border: 1px solid #ffcc02;
-        }
+     /* Updated CSS with image fixes */
+    .tip-section {
+        margin: 20px 0;
+        padding: 20px;
+        background: rgb(230, 225, 247);
+        border-radius: 6px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+        position: relative;
+        overflow: visible; /* Changed from hidden to visible */
+    }
 
-        .tip-header {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            margin-bottom: 10px;
-        }
+    .tip-section {
+        margin: 20px 0;
+        padding: 20px;
+        background: rgb(230, 225, 247);
+        border-radius: 6px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+        position: relative;
+        overflow: hidden;
+    }
 
-        .tip-header h3 {
-            color: var(--dark);
-            font-size: 1rem;
-            margin: 0;
-        }
+    .tip-header-image {
+        position: absolute;
+        top: 0;
+        right: 10px;
+        width: 30%;
+        height: 100%;
+        background: url('https://res.cloudinary.com/dgrxmavho/image/upload/v1754397060/file_00000000378061f5afac89f60b260d84_c1pfxs.png') bottom center/cover no-repeat;
+        opacity: 0.5;
+        z-index: 0;
+    }
 
-        .tip-subtitle {
-            color: var(--gray);
-            font-size: 0.85rem;
-            margin-bottom: 12px;
-        }
+    .delivery-partner-image::before {
+        position: absolute;
+        right: 10px;
+        top: 10px;
+        width: 30%;
+        height: 100%;
+        object-fit: contain;
+        z-index: 2; /* Increased z-index */
+        border: 1px solid #ddd; /* Added for debugging */
+    }
 
-        .tip-options {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 8px;
-            margin-bottom: 10px;
-        }
+    .tip-header h3 {
+        color: var(--dark);
+        font-size: 1.2rem;
+        font-weight: 700;
+        margin: 10px 0 8px 0;
+        position: relative;
+        z-index: 1;
+    }
 
-        .tip-option {
-            padding: 8px 4px;
-            border: 1px solid var(--border);
-            border-radius: 6px;
-            text-align: center;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            background: var(--white);
-            font-weight: 500;
-            font-size: 0.85rem;
-        }
+    .tip-subtitle {
+        color: var(--dark);
+        font-size: 0.9rem;
+        margin-bottom: 20px;
+        line-height: 1.4;
+        position: relative;
+        z-index: 1;
+    }
 
-        .tip-option:hover {
-            border-color: var(--primary);
-        }
+    .tip-options-container {
+        position: relative;
+        z-index: 1;
+        width: 100%;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        padding-bottom: 10px;
+    }
 
-        .tip-option.selected {
-            border-color: var(--primary);
-            background-color: var(--primary);
-            color: white;
-        }
+    .tip-options-scroll {
+        display: flex;
+        gap: 12px;
+        width: max-content;
+        min-width: 100%;
+    }
 
-        .custom-tip-input {
-            display: none;
-            margin-top: 8px;
-        }
+    .tip-option {
+        flex: 0 0 auto;
+        min-width: 80px;
+        padding: 12px 8px;
+        border: 2px solid #f0f0f0;
+        border-radius: 12px;
+        text-align: center;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        background: white;
+        font-weight: 600;
+        box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
+        white-space: nowrap;
+    }
 
-        .custom-tip-input.show {
-            display: block;
-        }
+    .tip-option:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    }
 
-        .custom-tip-input input {
-            width: 100%;
-            padding: 8px;
-            border: 1px solid var(--border);
-            border-radius: 4px;
-            font-size: 0.9rem;
-        }
+    .tip-option.selected {
+        border-color: #9c6ade;
+        background: #f8f0ff;
+        color: #7d4ac8;
+        box-shadow: 0 5px 15px rgba(156, 106, 222, 0.2);
+    }
+
+    .custom-tip-input {
+        display: none;
+        margin-top: 12px;
+        position: relative;
+        z-index: 1;
+    }
+
+    .custom-tip-input.show {
+        display: block;
+        animation: fadeIn 0.3s ease-out;
+    }
+
+    .custom-tip-input input {
+        width: 100%;
+        padding: 12px;
+        border: 2px solid #f0f0f0;
+        border-radius: 8px;
+        font-size: 0.95rem;
+        transition: all 0.2s ease;
+    }
+
+    .custom-tip-input input:focus {
+        border-color: #9c6ade;
+        outline: none;
+        box-shadow: 0 0 0 3px rgba(156, 106, 222, 0.2);
+    }
+
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(-10px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
 
         /* Referral Benefits */
         .referral-benefits {
@@ -495,16 +557,20 @@
                 font-size: 1.1rem;
             }
             
-            .tip-options {
-                grid-template-columns: repeat(2, 1fr);
-                gap: 6px;
-            }
-            
-            .tip-option {
-                padding: 6px 3px;
-                font-size: 0.8rem;
-            }
-            
+            .delivery-partner-image {
+            width: 100px;
+            height: 100px;
+            top: 10px;
+            right: 10px;
+        }
+        
+        .tip-option {
+            min-width: 70px;
+            padding: 10px 6px;
+            font-size: 0.9rem;
+        }
+    
+              
             .btn {
                 padding: 10px 16px;
                 font-size: 0.9rem;
@@ -550,21 +616,40 @@
             }
             
             .payment-option i {
-				                font-size: 1rem;
+				 font-size: 1rem;
                 margin-bottom: 3px;
             }
-            
-            .tip-options {
-                grid-template-columns: 1fr 1fr;
-                gap: 5px;
-            }
-            
-            .tip-option {
-                padding: 5px 2px;
-                font-size: 0.75rem;
-            }
-            
-            .referral-benefits, .tip-section, .payment-options {
+            .tip-header-image {
+        		position: absolute;
+        		top: 0;
+        		right: 1px;
+        		width: 40%;
+        		height: 65%;
+        	}
+           
+           .delivery-partner-image {
+            position: absolute;
+        top: 0;
+        right: 10px;
+        width: 40%;
+        height: 60%;
+        }
+        
+        .tip-option {
+            min-width: 60px;
+            padding: 8px 4px;
+            font-size: 0.85rem;
+        }
+    
+        
+        .tip-header h3 {
+            font-size: 1.1rem;
+        }
+        
+        .tip-subtitle {
+            font-size: 0.85rem;
+        }
+		 .referral-benefits, .tip-section, .payment-options {
                 padding: 10px;
                 margin: 12px 0;
             }
@@ -578,11 +663,7 @@
                 font-size: 0.8rem;
                 margin-bottom: 6px;
             }
-            
-            .tip-subtitle {
-                font-size: 0.8rem;
-                margin-bottom: 8px;
-            }
+           
             
             .discount-checkbox {
                 font-size: 0.8rem;
@@ -652,10 +733,16 @@
                 font-size: 0.9rem;
             }
             
-            .tip-option {
-                font-size: 0.7rem;
-                padding: 4px 1px;
-            }
+			.delivery-partner-image {
+            width: 70px;
+            height: 70px;
+        }
+        
+        .tip-option {
+            min-width: 55px;
+            padding: 6px 3px;
+            font-size: 0.8rem;
+        }
             
             .btn {
                 padding: 7px 10px;
@@ -806,32 +893,39 @@
             </div>
         </div>
 
-        <!-- Tip Section -->
-        <div class="tip-section">
-            <div class="tip-header">
-                <i class="fas fa-heart"></i>
-                <h3>Support Our Platform</h3>
+        <!-- Updated Tip Section with Working Image -->
+<div class="tip-section">
+    <div class="tip-header-image"></div>
+    <!-- Updated to use a reliable placeholder image -->
+    
+    
+    <div class="tip-header" style="display: flex; align-items: center; gap: 8px;">
+        <i class="fas fa-heart"></i>
+        <h3 style="margin: 0;">Support Our Platform</h3>
+    </div>
+    <p class="tip-subtitle">Your kindness means a lot!<br>100% of your tip helps us maintain and improve SwapTicket.</p>
+    
+    <div class="tip-options-container">
+        <div class="tip-options-scroll">
+            <div class="tip-option" data-tip="10" onclick="toggleTip(this, 10)">
+                <span>₹10 😁</span>
             </div>
-            <p class="tip-subtitle">Your tip helps us maintain and improve SwapTicket for everyone. Thank you for your support!</p>
-            <div class="tip-options">
-                <div class="tip-option" data-tip="10" onclick="selectTip(10)">
-                    <div>₹10</div>
-                </div>
-                <div class="tip-option" data-tip="20" onclick="selectTip(20)">
-                    <div>₹20</div>
-                </div>
-                <div class="tip-option" data-tip="30" onclick="selectTip(30)">
-                    <div>₹30</div>
-                </div>
-                <div class="tip-option custom" onclick="selectCustomTip()">
-                    <i class="fas fa-edit"></i>
-                    <span>Custom</span>
-                </div>
+            <div class="tip-option" data-tip="20" onclick="toggleTip(this, 20)">
+                <span>₹20 🤩</span>
             </div>
-            <div class="custom-tip-input" id="customTipInput">
-                <input type="number" id="customTipAmount" placeholder="Enter custom tip amount" min="1" max="1000" onchange="applyCustomTip()">
+            <div class="tip-option" data-tip="30" onclick="toggleTip(this, 30)">
+                <span>₹30 😍</span>
+            </div>
+            <div class="tip-option custom" onclick="toggleCustomTip(this)">
+                <span>Custom 👏</span>
             </div>
         </div>
+    </div>
+    
+    <div class="custom-tip-input" id="customTipInput">
+        <input type="number" id="customTipAmount" placeholder="Enter custom tip amount" min="1" max="1000" onchange="applyCustomTip()">
+    </div>
+</div>
 
         <!-- Discount Checkbox (only show if eligible) -->
         <div th:if="${eligibleForDiscount}" class="discount-checkbox-container show" id="discountCheckboxContainer">
@@ -891,45 +985,68 @@
 
         let currentTotal = originalTotal;
         let discountApplied = false;
+        let currentSelectedTip = null;
         let tipAmount = 0;
         let selectedTipOption = null;
 
-        // Tip functionality
-        function selectTip(amount) {
-            // Remove previous selection
-            document.querySelectorAll('.tip-option').forEach(option => {
-                option.classList.remove('selected');
-            });
-
-            // Select current option
-            const selectedOption = document.querySelector(`[data-tip="${amount}"]`);
-            selectedOption.classList.add('selected');
+        function toggleTip(element, amount) {
+            if (currentSelectedTip === element) {
+                // Clicking the same tip again - deselect it
+                element.classList.remove('selected');
+                currentSelectedTip = null;
+                tipAmount = 0;
+                selectedTipOption = null;
+                
+                // Hide custom input if it was shown
+                document.getElementById('customTipInput').classList.remove('show');
+                document.getElementById('customTipAmount').value = '';
+            } else {
+                // Remove selection from previous tip
+                if (currentSelectedTip) {
+                    currentSelectedTip.classList.remove('selected');
+                }
+                
+                // Select new tip
+                element.classList.add('selected');
+                currentSelectedTip = element;
+                tipAmount = amount;
+                selectedTipOption = amount;
+                
+                // Hide custom input
+                document.getElementById('customTipInput').classList.remove('show');
+                document.getElementById('customTipAmount').value = '';
+            }
             
-            // Hide custom input
-            document.getElementById('customTipInput').classList.remove('show');
-            document.getElementById('customTipAmount').value = '';
-
-            // Apply tip
-            tipAmount = amount;
-            selectedTipOption = amount;
             updateTipDisplay();
             updateTotal();
         }
 
-        function selectCustomTip() {
-            // Remove previous selection
-            document.querySelectorAll('.tip-option').forEach(option => {
-                option.classList.remove('selected');
-            });
-
-            // Select custom option
-            document.querySelector('.tip-option.custom').classList.add('selected');
+        function toggleCustomTip(element) {
+            if (currentSelectedTip === element && document.getElementById('customTipInput').classList.contains('show')) {
+                // Clicking custom when already open - close it
+                element.classList.remove('selected');
+                currentSelectedTip = null;
+                tipAmount = 0;
+                selectedTipOption = null;
+                document.getElementById('customTipInput').classList.remove('show');
+            } else {
+                // Remove selection from previous tip
+                if (currentSelectedTip) {
+                    currentSelectedTip.classList.remove('selected');
+                }
+                
+                // Select custom
+                element.classList.add('selected');
+                currentSelectedTip = element;
+                selectedTipOption = 'custom';
+                
+                // Show custom input
+                document.getElementById('customTipInput').classList.add('show');
+                document.getElementById('customTipAmount').focus();
+            }
             
-            // Show custom input
-            document.getElementById('customTipInput').classList.add('show');
-            document.getElementById('customTipAmount').focus();
-
-            selectedTipOption = 'custom';
+            updateTipDisplay();
+            updateTotal();
         }
 
         function applyCustomTip() {
@@ -952,6 +1069,54 @@
             updateTotal();
         }
 
+        // Keep your existing updateTipDisplay and updateTotal functions
+        function updateTipDisplay() {
+            const tipRow = document.getElementById('tipRow');
+            const tipAmountSpan = document.getElementById('tipAmount');
+            
+            if (tipAmount > 0) {
+                tipRow.classList.add('show');
+                tipAmountSpan.textContent = formatCurrency(tipAmount);
+                
+                // Add animation effect
+                tipRow.style.opacity = '0';
+                setTimeout(() => {
+                    tipRow.style.opacity = '1';
+                }, 100);
+            } else {
+                tipRow.classList.remove('show');
+            }
+        }
+
+        function updateTotal() {
+            let newTotal = originalTotal;
+            
+            // Apply discount if selected
+            if (discountApplied) {
+                newTotal -= referralDiscount;
+            }
+            
+            // Add tip if selected
+            newTotal += tipAmount;
+            
+            currentTotal = newTotal;
+            
+            // Update total amount with animation
+            const totalAmountSpan = document.getElementById('totalAmount');
+            totalAmountSpan.style.transform = 'scale(1.1)';
+            totalAmountSpan.style.color = 'var(--primary)';
+            
+            setTimeout(() => {
+                totalAmountSpan.textContent = formatCurrency(currentTotal);
+                totalAmountSpan.style.transform = 'scale(1)';
+                totalAmountSpan.style.color = '';
+            }, 150);
+        }
+
+        function formatCurrency(amount) {
+            return amount.toFixed(2);
+        }
+        
         function updateTipDisplay() {
             const tipRow = document.getElementById('tipRow');
             const tipAmountSpan = document.getElementById('tipAmount');
