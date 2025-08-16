@@ -7,30 +7,51 @@
     <style>
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            text-align: center;
             padding: 0;
             margin: 0;
-            background-color: #f8f9fa;
+            background-color: #f7f1eb;
             color: #333;
-            height: 100vh;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #f7f1eb 0%, #f7f1eb 100%);
+        }
+        
+        .main-container {
             display: flex;
             align-items: center;
             justify-content: center;
-            background: linear-gradient(135deg, #f5f7fa 0%, #e4e8eb 100%);
+            min-height: 100vh;
+            padding: 20px;
+            box-sizing: border-box;
         }
         
-        .error-container {
-            max-width: 650px;
-            padding: 40px;
-            background: white;
+        .error-content {
+            display: flex;
+            max-width: 1200px;
+            width: 100%;
+            align-items: center;
+            background: #fdf9f2;
             border-radius: 15px;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-            margin: 20px;
-            transition: transform 0.3s ease;
+            overflow: hidden;
         }
         
-        .error-container:hover {
-            transform: translateY(-5px);
+        .text-container {
+            flex: 1;
+            padding: 40px;
+        }
+        
+        .image-container {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        
+        .error-image {
+            max-width: 100%;
+            height: auto;
+            border-radius: 10px;
         }
         
         .error-code {
@@ -61,7 +82,7 @@
         .home-button {
             display: inline-block;
             padding: 12px 30px;
-            background: linear-gradient(135deg, #74b9ff 0%, #0984e3 100%);
+            background: linear-gradient(135deg, #287849 0%, #4aa878 100%);
             color: white;
             text-decoration: none;
             border-radius: 50px;
@@ -75,7 +96,7 @@
         }
         
         .home-button:hover {
-            background: linear-gradient(135deg, #0984e3 0%, #74b9ff 100%);
+            background: linear-gradient(135deg, #2f3a56  0%, #2f3a56 100%);
             transform: translateY(-2px);
             box-shadow: 0 6px 20px rgba(9, 132, 227, 0.4);
         }
@@ -84,7 +105,21 @@
             transform: translateY(0);
         }
         
-        @media (max-width: 600px) {
+        @media (max-width: 768px) {
+            .error-content {
+                flex-direction: column;
+            }
+            
+            .image-container {
+                order: -1;
+                padding: 40px 20px 0;
+            }
+            
+            .text-container {
+                padding: 20px 30px 40px;
+                text-align: center;
+            }
+            
             .error-code {
                 font-size: 80px;
             }
@@ -100,14 +135,23 @@
     </style>
 </head>
 <body>
-    <div class="error-container">
-        <h1 class="error-code">404</h1>
-        <h2 class="error-message">Oops! Page Not Found</h2>
-        <p class="error-description">
-            The page you're looking for doesn't exist or might have been moved. 
-            Don't worry, you can find your way back home.
-        </p>
-        <a href="/" class="home-button">Return to Homepage</a>
+    <div class="main-container">
+        <div class="error-content">
+            <div class="text-container">
+                
+                <h2 class="error-message">Oops! Page Not Found</h2>
+                <p class="error-description">
+                    The page you're looking for doesn't exist or might have been moved. 
+                    Don't worry, you can find your way back home.
+                </p>
+                <a href="/" class="home-button">Return to Homepage</a>
+            </div>
+            <div class="image-container">
+                <img src="https://res.cloudinary.com/dgrxmavho/image/upload/v1754488999/IMG_20250806_192703_lr8c4e.png" 
+                     alt="404 Error Illustration" 
+                     class="error-image">
+            </div>
+        </div>
     </div>
 </body>
 </html>

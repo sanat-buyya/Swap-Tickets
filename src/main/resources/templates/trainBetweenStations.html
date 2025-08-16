@@ -225,16 +225,16 @@
         }
 
         .station-name {
-            font-weight: 600;
-            color: #333;
+            color: #666;
             font-size: 0.9rem;
-            margin-bottom: 4px;
-            word-break: break-word;
         }
 
         .station-time {
-            color: #666;
-            font-size: 0.8rem;
+            font-weight: 650;
+            color: #333;
+            font-size: 1rem;
+            margin-bottom: 4px;
+            word-break: break-word;
         }
 
         .route-arrow {
@@ -469,7 +469,7 @@
                   method="post"
                   class="clickable-form"
                   onclick="this.submit()">
-                <input type="hidden" name="limit" value="50" />
+                <input type="hidden" name="limit" value="100" />
                 <div class="train-card-content">
                     <div class="train-header">
                         <span class="train-number" th:text="${train.trainNo}">12345</span>
@@ -477,13 +477,16 @@
                     </div>
                     <div class="route-info">
                         <div class="station-info source">
+                            <div class="station-time" th:text="${train.departureTime}"><b>00:00</b></div>
                             <div class="station-name" th:text="${train.sourceStation}">Source</div>
-                            <div class="station-time" th:text="${train.departureTime}">00:00</div>
                         </div>
-                        <div class="route-arrow">→</div>
+                        <div class="route-arrow-container">
+        <div class="travel-time"></div> <!-- travel time will be filled via JS -->
+        <div class="route-arrow">→</div>
+    </div>
                         <div class="station-info destination">
+                            <div class="station-time" th:text="${train.arrivalTime}"><b>00:00</b></div></b>
                             <div class="station-name" th:text="${train.destinationStation}">Destination</div>
-                            <div class="station-time" th:text="${train.arrivalTime}">00:00</div>
                         </div>
                     </div>
                 </div>
@@ -498,7 +501,7 @@
                     <th>Train Name</th>
                     <th>Source</th>
                     <th>Departure</th>
-					                    <th>Destination</th>
+					<th>Destination</th>
                     <th>Arrival</th>
                 </tr>
             </thead>
@@ -512,7 +515,7 @@
                               onclick="this.submit()">
                             <table class="clickable-table">
                                 <tr>
-                                    <input type="hidden" name="limit" value="50" />
+                                    <input type="hidden" name="limit" value="100" />
                                     <td th:text="${train.trainNo}"></td>
                                     <td th:text="${train.trainName}"></td>
                                     <td th:text="${train.sourceStation}"></td>
@@ -535,323 +538,357 @@
     </div>
 
     <script>
-        let indianStations = [];
-        let isLoading = false;
+    let indianStations = [];
+    let isLoading = false;
 
-        // Load station list dynamically
-        fetch('/api/stations')
-            .then(response => response.json())
-            .then(data => {
-                indianStations = data;
-                setupAutocomplete('sourceStation');
-                setupAutocomplete('destinationStation');
-            })
-            .catch(error => {
-                console.error("Error loading stations:", error);
-                // Fallback: still setup autocomplete with empty array
-                setupAutocomplete('sourceStation');
-                setupAutocomplete('destinationStation');
-            });
+    // Fetch station list from API
+    fetch('/api/stations')
+        .then(response => response.json())
+        .then(data => {
+            indianStations = data;
+            setupAutocomplete('sourceStation');
+            setupAutocomplete('destinationStation');
+        })
+        .catch(error => {
+            console.error("Error loading stations:", error);
+            setupAutocomplete('sourceStation');
+            setupAutocomplete('destinationStation');
+        });
 
-        function setupAutocomplete(inputId) {
-            const input = document.getElementById(inputId);
-            const container = input.parentElement;
-            let currentIndex = -1;
-            let touchStarted = false;
-            let searchTimeout;
+    function setupAutocomplete(inputId) {
+        const input = document.getElementById(inputId);
+        const container = input.parentElement;
+        let currentIndex = -1;
+        let touchStarted = false;
+        let searchTimeout;
 
-            // Debounced search function
-            function performSearch(value) {
-                if (isLoading) return;
-                
-                const old = document.getElementById(`suggestions-${inputId}`);
-                if (old) old.remove();
-                currentIndex = -1;
+        function performSearch(value) {
+            if (isLoading) return;
+            const old = document.getElementById(`suggestions-${inputId}`);
+            if (old) old.remove();
+            currentIndex = -1;
 
-                if (value.length < 2) return;
+            if (value.length < 2) return;
 
-                // Show loading state for slow connections
-                if (indianStations.length === 0) {
-                    showLoadingState();
-                    return;
-                }
-
-                const matches = indianStations.filter(station =>
-                    station.name.toLowerCase().includes(value) ||
-                    station.code.toLowerCase().includes(value)
-                ).slice(0, 8);
-
-                showSuggestions(matches);
+            if (indianStations.length === 0) {
+                showLoadingState();
+                return;
             }
 
-            function showLoadingState() {
-                const box = document.createElement('div');
-                box.className = 'suggestions';
-                box.id = `suggestions-${inputId}`;
-                
-                const loading = document.createElement('div');
-                loading.className = 'no-suggestions';
-                loading.innerHTML = `<span>Loading stations...</span><div class="loading"></div>`;
-                box.appendChild(loading);
-                
-                container.appendChild(box);
-            }
+            const matches = indianStations.filter(station =>
+                station.name.toLowerCase().includes(value) ||
+                station.code.toLowerCase().includes(value)
+            ).slice(0, 8);
 
-            function showSuggestions(matches) {
-                const box = document.createElement('div');
-                box.className = 'suggestions';
-                box.id = `suggestions-${inputId}`;
+            showSuggestions(matches);
+        }
 
-                if (matches.length === 0) {
-                    const no = document.createElement('div');
-                    no.className = 'no-suggestions';
-                    no.innerHTML = `No station found`;
-                    box.appendChild(no);
-                } else {
-                    matches.forEach((station, index) => {
-                        const item = document.createElement('div');
-                        item.className = 'suggestion-item';
-                        item.setAttribute('role', 'option');
-                        item.setAttribute('tabindex', '-1');
-                        item.innerHTML = `<strong>${station.name}</strong> (${station.code})`;
-                        
-                        // Mouse events
-                        item.addEventListener('click', (e) => {
-                            e.preventDefault();
-                            e.stopPropagation();
-                            selectStation(station.code);
-                        });
+        function showLoadingState() {
+            const box = document.createElement('div');
+            box.className = 'suggestions';
+            box.id = `suggestions-${inputId}`;
+            const loading = document.createElement('div');
+            loading.className = 'no-suggestions';
+            loading.innerHTML = `<span>Loading stations...</span><div class="loading"></div>`;
+            box.appendChild(loading);
+            container.appendChild(box);
+        }
 
-                        // Touch events for mobile
-                        item.addEventListener('touchstart', (e) => {
-                            e.preventDefault();
-                            touchStarted = true;
-                            item.classList.add('highlighted');
-                            
-                            // Remove highlight from other items
-                            box.querySelectorAll('.suggestion-item').forEach(otherItem => {
-                                if (otherItem !== item) {
-                                    otherItem.classList.remove('highlighted');
-                                }
-                            });
-                        });
+        function showSuggestions(matches) {
+            const box = document.createElement('div');
+            box.className = 'suggestions';
+            box.id = `suggestions-${inputId}`;
 
-                        item.addEventListener('touchend', (e) => {
-                            e.preventDefault();
-                            e.stopPropagation();
-                            if (touchStarted) {
-                                selectStation(station.code);
-                                touchStarted = false;
-                            }
-                        });
+            if (matches.length === 0) {
+                const no = document.createElement('div');
+                no.className = 'no-suggestions';
+                no.innerHTML = `No station found`;
+                box.appendChild(no);
+            } else {
+                matches.forEach((station, index) => {
+                    const item = document.createElement('div');
+                    item.className = 'suggestion-item';
+                    item.setAttribute('role', 'option');
+                    item.setAttribute('tabindex', '-1');
+                    item.innerHTML = `<strong>${station.name}</strong> (${station.code})`;
 
-                        item.addEventListener('touchcancel', () => {
-                            touchStarted = false;
-                            item.classList.remove('highlighted');
-                        });
-
-                        // Mouse hover for desktop
-                        item.addEventListener('mouseenter', () => {
-                            if (!touchStarted) {
-                                currentIndex = index;
-                                highlight(box.querySelectorAll('.suggestion-item'));
-                            }
-                        });
-
-                        box.appendChild(item);
+                    item.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        selectStation(station.code);
                     });
-                }
 
-                container.appendChild(box);
+                    item.addEventListener('touchstart', (e) => {
+                        e.preventDefault();
+                        touchStarted = true;
+                        item.classList.add('highlighted');
+                        box.querySelectorAll('.suggestion-item').forEach(otherItem => {
+                            if (otherItem !== item) {
+                                otherItem.classList.remove('highlighted');
+                            }
+                        });
+                    });
+
+                    item.addEventListener('touchend', (e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        if (touchStarted) {
+                            selectStation(station.code);
+                            touchStarted = false;
+                        }
+                    });
+
+                    item.addEventListener('touchcancel', () => {
+                        touchStarted = false;
+                        item.classList.remove('highlighted');
+                    });
+
+                    item.addEventListener('mouseenter', () => {
+                        if (!touchStarted) {
+                            currentIndex = index;
+                            highlight(box.querySelectorAll('.suggestion-item'));
+                        }
+                    });
+
+                    box.appendChild(item);
+                });
             }
 
-            input.addEventListener('input', function () {
-                const value = this.value.toLowerCase().trim();
-                
-                // Clear previous timeout
-                if (searchTimeout) {
-                    clearTimeout(searchTimeout);
-                }
-                
-                // Debounce search to improve performance
-                searchTimeout = setTimeout(() => {
-                    performSearch(value);
-                }, 150);
-            });
+            container.appendChild(box);
+        }
 
-            function selectStation(code) {
-                input.value = code;
-                const box = document.getElementById(`suggestions-${inputId}`);
+        input.addEventListener('input', function () {
+            const value = this.value.toLowerCase().trim();
+            if (searchTimeout) clearTimeout(searchTimeout);
+            searchTimeout = setTimeout(() => {
+                performSearch(value);
+            }, 150);
+        });
+
+        function selectStation(code) {
+            input.value = code;
+            const box = document.getElementById(`suggestions-${inputId}`);
+            if (box) box.remove();
+            currentIndex = -1;
+            input.blur();
+            input.dispatchEvent(new Event('change', { bubbles: true }));
+        }
+
+        input.addEventListener('blur', () => {
+            setTimeout(() => {
+                if (!touchStarted) {
+                    const box = document.getElementById(`suggestions-${inputId}`);
+                    if (box) box.remove();
+                }
+                // Only accept value if it matches a suggestion
+                const valid = indianStations.some(station =>
+                    station.code === input.value || station.name === input.value
+                );
+                if (!valid) {
+                    input.value = '';
+                }
+            }, 300);
+        });
+
+        input.addEventListener('focus', () => {
+            if (input.value.length >= 2) {
+                input.dispatchEvent(new Event('input'));
+            }
+        });
+
+        input.addEventListener('keydown', function (e) {
+            const box = document.getElementById(`suggestions-${inputId}`);
+            const items = box ? box.querySelectorAll('.suggestion-item') : [];
+
+            if (e.key === 'ArrowDown') {
+                e.preventDefault();
+                currentIndex = Math.min(currentIndex + 1, items.length - 1);
+                highlight(items);
+                scrollToHighlighted(box, items[currentIndex]);
+            } else if (e.key === 'ArrowUp') {
+                e.preventDefault();
+                currentIndex = Math.max(currentIndex - 1, 0);
+                highlight(items);
+                scrollToHighlighted(box, items[currentIndex]);
+            } else if (e.key === 'Enter') {
+                e.preventDefault();
+                if (items[currentIndex]) {
+                    const stationCode = items[currentIndex].textContent.match(/\(([^)]+)\)$/)[1];
+                    selectStation(stationCode);
+                }
+            } else if (e.key === 'Escape') {
                 if (box) box.remove();
                 currentIndex = -1;
                 input.blur();
-                
-                // Trigger form validation
-                input.dispatchEvent(new Event('change', { bubbles: true }));
             }
+        });
 
-            input.addEventListener('blur', () => {
-                setTimeout(() => {
-                    if (!touchStarted) {
-                        const box = document.getElementById(`suggestions-${inputId}`);
-                        if (box) box.remove();
-                    }
-                }, 300);
-            });
-
-            input.addEventListener('focus', () => {
-                if (input.value.length >= 2) {
-                    input.dispatchEvent(new Event('input'));
-                }
-            });
-
-            input.addEventListener('keydown', function (e) {
-                const box = document.getElementById(`suggestions-${inputId}`);
-                const items = box ? box.querySelectorAll('.suggestion-item') : [];
-
-                if (e.key === 'ArrowDown') {
-                    e.preventDefault();
-                    currentIndex = Math.min(currentIndex + 1, items.length - 1);
-                    highlight(items);
-                    scrollToHighlighted(box, items[currentIndex]);
-                } else if (e.key === 'ArrowUp') {
-                    e.preventDefault();
-                    currentIndex = Math.max(currentIndex - 1, 0);
-                    highlight(items);
-                    scrollToHighlighted(box, items[currentIndex]);
-                } else if (e.key === 'Enter') {
-                    e.preventDefault();
-                    if (items[currentIndex]) {
-                        const stationCode = items[currentIndex].textContent.match(/\(([^)]+)\)$/)[1];
-                        selectStation(stationCode);
-                    }
-                } else if (e.key === 'Escape') {
-                    const box = document.getElementById(`suggestions-${inputId}`);
-                    if (box) box.remove();
-                    currentIndex = -1;
-                    input.blur();
-                }
-            });
-
-            function highlight(items) {
-                items.forEach((item, idx) => {
-                    item.classList.toggle('highlighted', idx === currentIndex);
-                });
-            }
-
-            function scrollToHighlighted(box, item) {
-                if (box && item) {
-                    const boxRect = box.getBoundingClientRect();
-                    const itemRect = item.getBoundingClientRect();
-                    
-                    if (itemRect.bottom > boxRect.bottom) {
-                        box.scrollTop += itemRect.bottom - boxRect.bottom;
-                    } else if (itemRect.top < boxRect.top) {
-                        box.scrollTop -= boxRect.top - itemRect.top;
-                    }
-                }
-            }
-
-            // Close suggestions when clicking outside
-            document.addEventListener('click', (e) => {
-                if (!container.contains(e.target)) {
-                    const box = document.getElementById(`suggestions-${inputId}`);
-                    if (box) box.remove();
-                    currentIndex = -1;
-                }
-            });
-
-            // Close suggestions when touching outside (mobile)
-            document.addEventListener('touchstart', (e) => {
-                if (!container.contains(e.target)) {
-                    const box = document.getElementById(`suggestions-${inputId}`);
-                    if (box) box.remove();
-                    currentIndex = -1;
-                }
+        function highlight(items) {
+            items.forEach((item, idx) => {
+                item.classList.toggle('highlighted', idx === currentIndex);
             });
         }
 
-        // Uppercase formatting for relevant fields
-        document.addEventListener('DOMContentLoaded', function () {
-            const inputs = ['trainNo', 'sourceStation', 'destinationStation', 'trainName'];
-            inputs.forEach(name => {
-                const el = document.querySelector(`input[name="${name}"]`);
-                if (el) {
-                    el.addEventListener('input', function () {
-                        this.value = this.value.toUpperCase();
-                    });
-                }
-            });
-
-            // Add loading state management
-            const form = document.querySelector('.search-form');
-            const submitButton = form.querySelector('button[type="submit"]');
-            
-            form.addEventListener('submit', function() {
-                submitButton.disabled = true;
-                submitButton.innerHTML = 'Searching... <div class="loading"></div>';
-                
-                // Re-enable after 10 seconds as fallback
-                setTimeout(() => {
-                    submitButton.disabled = false;
-                    submitButton.innerHTML = 'Search Trains';
-                }, 10000);
-            });
-
-            // Handle form validation
-            const sourceInput = document.getElementById('sourceStation');
-            const destInput = document.getElementById('destinationStation');
-            
-            function validateStations() {
-                const sourceValid = indianStations.some(station => 
-                    station.code === sourceInput.value || station.name === sourceInput.value
-                );
-                const destValid = indianStations.some(station => 
-                    station.code === destInput.value || station.name === destInput.value
-                );
-                
-                if (sourceInput.value && !sourceValid) {
-                    sourceInput.setCustomValidity('Please select a valid station from the suggestions');
-                } else {
-                    sourceInput.setCustomValidity('');
-                }
-                
-                if (destInput.value && !destValid) {
-                    destInput.setCustomValidity('Please select a valid station from the suggestions');
-                } else {
-                    destInput.setCustomValidity('');
+        function scrollToHighlighted(box, item) {
+            if (box && item) {
+                const boxRect = box.getBoundingClientRect();
+                const itemRect = item.getBoundingClientRect();
+                if (itemRect.bottom > boxRect.bottom) {
+                    box.scrollTop += itemRect.bottom - boxRect.bottom;
+                } else if (itemRect.top < boxRect.top) {
+                    box.scrollTop -= boxRect.top - itemRect.top;
                 }
             }
-            
-            sourceInput.addEventListener('change', validateStations);
-            destInput.addEventListener('change', validateStations);
+        }
+
+        document.addEventListener('click', (e) => {
+            if (!container.contains(e.target)) {
+                const box = document.getElementById(`suggestions-${inputId}`);
+                if (box) box.remove();
+                currentIndex = -1;
+            }
         });
 
-        // Handle orientation changes on mobile
-        window.addEventListener('orientationchange', function() {
-            setTimeout(() => {
-                // Close any open suggestions after orientation change
-                document.querySelectorAll('.suggestions').forEach(box => box.remove());
-            }, 100);
+        document.addEventListener('touchstart', (e) => {
+            if (!container.contains(e.target)) {
+                const box = document.getElementById(`suggestions-${inputId}`);
+                if (box) box.remove();
+                currentIndex = -1;
+            }
         });
+    }
 
-        // Handle viewport resize
-        let resizeTimeout;
-        window.addEventListener('resize', function() {
-            clearTimeout(resizeTimeout);
-            resizeTimeout = setTimeout(() => {
-                // Reposition suggestions if open
-                document.querySelectorAll('.suggestions').forEach(box => {
-                    const input = box.parentElement.querySelector('input');
-                    if (input) {
-                        // Trigger repositioning by re-showing suggestions
-                        const event = new Event('input');
-                        input.dispatchEvent(event);
-                    }
+    // Uppercase formatting for relevant fields
+    document.addEventListener('DOMContentLoaded', function () {
+        const inputs = ['trainNo', 'sourceStation', 'destinationStation', 'trainName'];
+        inputs.forEach(name => {
+            const el = document.querySelector(`input[name="${name}"]`);
+            if (el) {
+                el.addEventListener('input', function () {
+                    this.value = this.value.toUpperCase();
                 });
-            }, 250);
+            }
         });
-    </script>
+
+        // Add loading state management
+        const form = document.querySelector('.search-form');
+        const submitButton = form.querySelector('button[type="submit"]');
+
+        form.addEventListener('submit', function() {
+            submitButton.disabled = true;
+            submitButton.innerHTML = 'Searching... <div class="loading"></div>';
+            setTimeout(() => {
+                submitButton.disabled = false;
+                submitButton.innerHTML = 'Search Trains';
+            }, 10000);
+        });
+
+        // Handle form validation
+        const sourceInput = document.getElementById('sourceStation');
+        const destInput = document.getElementById('destinationStation');
+
+        function validateStations() {
+            const sourceValid = indianStations.some(station =>
+                station.code === sourceInput.value || station.name === sourceInput.value
+            );
+            const destValid = indianStations.some(station =>
+                station.code === destInput.value || station.name === destInput.value
+            );
+
+            if (sourceInput.value && !sourceValid) {
+                sourceInput.setCustomValidity('Please select a valid station from the suggestions');
+            } else {
+                sourceInput.setCustomValidity('');
+            }
+
+            if (destInput.value && !destValid) {
+                destInput.setCustomValidity('Please select a valid station from the suggestions');
+            } else {
+                destInput.setCustomValidity('');
+            }
+        }
+
+        sourceInput.addEventListener('change', validateStations);
+        destInput.addEventListener('change', validateStations);
+    });
+
+    // Handle orientation changes on mobile
+    window.addEventListener('orientationchange', function() {
+        setTimeout(() => {
+            document.querySelectorAll('.suggestions').forEach(box => box.remove());
+        }, 100);
+    });
+
+    // Handle viewport resize
+    let resizeTimeout;
+    window.addEventListener('resize', function() {
+        clearTimeout(resizeTimeout);
+        resizeTimeout = setTimeout(() => {
+            document.querySelectorAll('.suggestions').forEach(box => {
+                const input = box.parentElement.querySelector('input');
+                if (input) {
+                    const event = new Event('input');
+                    input.dispatchEvent(event);
+                }
+            });
+        }, 250);
+    });
+  
+    document.addEventListener('DOMContentLoaded', function () {
+        function parseTime(t) {
+            if (!t || !t.includes(':')) return null;
+            let [h, m] = t.split(':').map(Number);
+            return h * 60 + m;
+        }
+
+        function formatDuration(minutes) {
+            let hrs = Math.floor(minutes / 60);
+            let mins = minutes % 60;
+            return `${hrs}h ${mins}m`;
+        }
+
+        document.querySelectorAll('.route-info').forEach(route => {
+            let depTimeEl = route.querySelector('.station-info.source .station-time');
+            let arrTimeEl = route.querySelector('.station-info.destination .station-time');
+            let travelTimeEl = route.querySelector('.travel-time');
+
+            if (depTimeEl && arrTimeEl && travelTimeEl) {
+                let dep = parseTime(depTimeEl.textContent.trim());
+                let arr = parseTime(arrTimeEl.textContent.trim());
+                if (dep !== null && arr !== null) {
+                    // Handle overnight trains
+                    if (arr < dep) arr += 24 * 60;
+                    let diff = arr - dep;
+                    travelTimeEl.textContent = formatDuration(diff);
+                }
+            }
+        });
+    });
+   
+    
+    document.addEventListener('DOMContentLoaded', function () {
+        function convertToAmPm(timeStr) {
+            if (!timeStr || !timeStr.includes(":")) return timeStr; // skip invalid
+            let [hours, minutes] = timeStr.split(':').map(Number);
+            let ampm = hours >= 12 ? 'PM' : 'AM';
+            hours = hours % 12 || 12; // convert 0 → 12
+            return `${hours}:${minutes.toString().padStart(2, '0')} ${ampm}`;
+        }
+
+        // Convert all departure and arrival times in cards
+        document.querySelectorAll('.station-time').forEach(el => {
+            el.textContent = convertToAmPm(el.textContent.trim());
+        });
+
+        // Convert all departure and arrival times in the desktop table
+        document.querySelectorAll('.desktop-table td:nth-child(4), .desktop-table td:nth-child(6)').forEach(el => {
+            el.textContent = convertToAmPm(el.textContent.trim());
+        });
+    });
+    
+    
+
+</script>
 </body>
 </html>
 					

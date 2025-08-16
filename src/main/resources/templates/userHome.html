@@ -848,7 +848,7 @@ transform: scale(1.05);
 <div class="container">
 	<div class="welcome-section" data-aos="fade-up">
 		<h1 class="welcome-title">Welcome Back!</h1>
-		<p class="welcome-subtitle">Manage your tickets, wallet, and transactions all in one place</p>
+		<p class="welcome-subtitle">Manage your tickets, track, transactions, customer support and refer all in one place</p>
 	</div>
 
 	<div class="message success" th:if="${successMessage}" id="successMessage">
@@ -866,11 +866,13 @@ transform: scale(1.05);
 		<div class="swap-ticket-label">SwapTicket Wallet</div>
 			<i class="fas fa-wallet"></i>
 		<div>
-			<h3>Over all Amount</h3>
+			<h3>Overall Amount</h3>
 			<p>Track SwapTicket transaction</p>
 		<form th:action="@{/user/transactions}" method="get">
 		<button class="button" type="submit">
 <i class="fas fa-history button-icon"></i>
+<div class="magic"></div>
+
 <span class="button-text">History</span>
 <div class="loader-dots">
 <span></span>
@@ -953,7 +955,7 @@ transform: scale(1.05);
 <div class="card" data-aos="fade-up" data-aos-delay="300">
 <img src="/docs/track.png" alt="Track">
 <h3>Track Train</h3>
-<p>Get live train status, current location, and set station alerts</p>
+<p>Track scheduled train stops</p>
 <form th:action="@{/track-train-between}" method="get">
 <button class="button" type="submit">
 <i class="fas fa-search-location"></i>

@@ -214,7 +214,8 @@
         .pnr-header {
             background-color: var(--primary-color);
             color: white;
-            padding: 12px 15px;
+            padding: 6px 10px;
+            min-height: unset;
         }
 
         .pnr-header h3 {
@@ -423,6 +424,15 @@
             width: 100%;
         }
         }
+        
+        @media (max-width: 768px) {
+    .pnr-header {
+        padding: 3px 6px;
+    }
+    .pnr-header h3 {
+        font-size: 0.88rem;
+    }
+}
 
         @media (max-width: 480px) {
             h1 {
@@ -496,7 +506,7 @@
 
     <div class="pnr-notice">
         <b>*Confirm ticket using PNR before buying:</b>
-        <a href="/pnr/external" style="text-decoration: none;">Click here</a>
+        <a href="https://www.indianrail.gov.in/enquiry/PNR/PnrEnquiry.html?locale=en" target="_blank">Click Here</a>
     </div>
 
     <!-- 🎫 LIST OF PNRs -->
@@ -510,24 +520,23 @@
         <div th:each="pnr : ${pnrs}" class="pnr-card">
             <div class="pnr-header">
                 <h3>
-    PNR: <span th:text="${pnr.pnrNumber}" id="pnrNumberText"></span>
-    <button type="button" onclick="copyPNR(this)" style="margin-left:2px;padding:0px 0px; font-size:1em;">
-        <span class="emoji">📋</span>
-    </button>
-    <span class="copied-msg" style="display:none; margin-left:2px; color:#ffc107; font-size:0.85em;">Copied!</span>
-	<a href="/pnr/external" style="text-decoration: none; font-size: 0.7em; margin-left: 15%;">
-    <span class="emoji" style="text-decoration: none; color: white;">PNR Verify</span>
-</a>
-     <form th:action="@{/train-status(trainNo=${pnr.trainNumber})}" method="post" style="display: inline;">
-    <!-- Hidden input for limit -->
-    <input type="hidden" name="limit" value="50" />
-    <!-- Submit button styled like a link/icon -->
-    <button type="submit" title="Train Status" style="color: inherit; text-decoration: none; margin-left: 0%; font-size: 0.75em; padding-right: 0px;">
-        <span class="emoji">Track Station</span>
-    </button>
-</form>
-
+                    PNR: <span th:text="${pnr.pnrNumber}" id="pnrNumberText"></span>
+                    <button type="button" onclick="copyPNR(this)" style="margin-left:2px;padding:0px 0px; font-size:1em;">
+                        <i class="fa-regular fa-copy"></i>
+                    </button>
+                    <span class="copied-msg" style="display:none; margin-left:2px; color:#ffc107; font-size:0.85em;">Copied!</span>
+	                <a href="https://www.indianrail.gov.in/enquiry/PNR/PnrEnquiry.html?locale=en" target="_blank" style="text-decoration: none; font-size: 0.7em; margin-left: 15%;">
+                    <span class="emoji" style="text-decoration: none; color: white;">PNR Verify</span>
+                    </a>
+                    <form th:action="@{/train-status(trainNo=${pnr.trainNumber})}" method="post" style="display: inline;">
+                    <!-- Hidden input for limit -->
+                        <input type="hidden" name="limit" value="50" />
+                        <button type="submit" title="Train Status" style="color: inherit; text-decoration: none; margin-left: 0%; font-size: 0.75em; padding-right: 0px;">
+                        <span class="emoji">Track Station</span>
+                        </button>
+                    </form>
             </div>
+            
             <div class="pnr-body">
                 <div class="pnr-details">
                     <div class="detail-item">
@@ -647,8 +656,10 @@
             const input = document.getElementById(inputId);
             if (!input) return;
 
+            let lastValidValue = "";
+
             input.addEventListener('input', function () {
-                showStationSuggestions(this);
+                debounceSearch(this);
             });
 
             input.addEventListener('keydown', function (event) {
@@ -666,7 +677,22 @@
                     const suggestions = document.getElementById(`suggestions-${this.id}`);
                     if (suggestions) suggestions.remove();
                     currentHighlightedIndex = -1;
+
+                    // Only accept value if it matches a suggestion
+                    const value = input.value.trim();
+                    const valid = indianRailwayStations.some(station =>
+                        value === `${station.name} (${station.code})`
+                    );
+                    if (!valid) {
+                        input.value = "";
+                    }
                 }, 200);
+            });
+
+            // Custom event for suggestion selection
+            input.addEventListener('stationSelected', function(e) {
+                lastValidValue = e.detail.value;
+                input.value = lastValidValue;
             });
         });
 
@@ -678,6 +704,7 @@
         });
     }
 
+    // Update suggestion click handler in showStationSuggestions:
     function showStationSuggestions(input) {
         const query = input.value.toLowerCase().trim();
         const suggestionsId = `suggestions-${input.id}`;
@@ -719,9 +746,12 @@
                     <div class="station-code">${station.code}</div>
                 `;
                 suggestionDiv.addEventListener('click', () => {
-                    input.value = `${station.name} (${station.code})`;
+                    const selectedValue = `${station.name} (${station.code})`;
+                    input.value = selectedValue;
                     suggestionsDiv.remove();
                     currentHighlightedIndex = -1;
+                    // Fire custom event for validation
+                    input.dispatchEvent(new CustomEvent('stationSelected', { detail: { value: selectedValue } }));
                 });
                 suggestionsDiv.appendChild(suggestionDiv);
             });

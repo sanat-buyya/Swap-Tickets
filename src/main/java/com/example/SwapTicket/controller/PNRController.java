@@ -21,17 +21,29 @@ import com.example.SwapTicket.helper.EmailSender;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import jakarta.servlet.http.HttpSession;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 
+import org.cloudinary.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
 import java.util.*;
 
@@ -74,6 +86,9 @@ public class PNRController {
 	
     @Value("${razor-pay.api.key}")
 	String key;
+
+    @Value("${razor-pay.api.secret}")
+    private String razorpayKeySecret;
 	
 	@Value("${admin.email}")
 	String adminEmail;
@@ -96,6 +111,46 @@ public class PNRController {
         return "sellTicket1";
     }
 	
+	@GetMapping("/verify")
+    @ResponseBody
+    public ResponseEntity<?> verifyUpi(@RequestParam String vpa) {
+        try {
+            String apiUrl = "https://api.razorpay.com/v1/payments/validate/vpa";
+            String auth = key + ":" + razorpayKeySecret;
+            String encodedAuth = Base64.getEncoder().encodeToString(auth.getBytes(StandardCharsets.UTF_8));
+
+            HttpHeaders headers = new HttpHeaders();
+            headers.set("Authorization", "Basic " + encodedAuth);
+            headers.setContentType(MediaType.APPLICATION_JSON);
+
+            Map<String, String> requestBody = new HashMap<>();
+            requestBody.put("vpa", vpa);
+
+            HttpEntity<Map<String, String>> entity = new HttpEntity<>(requestBody, headers);
+
+            RestTemplate restTemplate = new RestTemplate();
+            ResponseEntity<Map> response = restTemplate.postForEntity(apiUrl, entity, Map.class);
+
+            Map<String, Object> body = response.getBody();
+            Map<String, Object> result = new HashMap<>();
+
+            if (body != null && Boolean.TRUE.equals(body.get("success"))) {
+                result.put("success", true);
+                result.put("name", body.get("customer_name")); // Razorpay returns this if found
+            } else {
+                result.put("success", false);
+                result.put("message", "Invalid UPI ID");
+            }
+
+            return ResponseEntity.ok(result);
+
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(Map.of("success", false, "message", "Error verifying UPI: " + e.getMessage()));
+        }
+    }
+
+	 
     @PostMapping("/sell")
     public String sellPNRTicket(
             @RequestParam("pnrNumber") String pnrNumber,
@@ -121,7 +176,7 @@ public class PNRController {
             return "redirect:/user/home";
         }
 
-        String sellerEmail = (String) session.getAttribute("loggedInUserEmail");
+        String sellerEmail = (String) session.getAttribute("loggedInUserEmail");       
 
         PNR pnr = new PNR();
         pnr.setPnrNumber(pnrNumber);
@@ -589,14 +644,6 @@ public class PNRController {
         return "myPurchasedTickets1";
     }
 
-        @GetMapping("/external")
-        public String showExternalPNRPage(Model model, HttpSession session) {
-            return "pnr-enquiry-external";
-        }
-   
-
-
-
-    
+       
 
 }

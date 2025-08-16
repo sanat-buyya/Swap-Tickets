@@ -355,7 +355,7 @@
                 <label for="mobile">Mobile Number</label>
                 <div class="input-with-icon">
                     <i class="fas fa-phone"></i>
-                    <input type="text" id="mobile" th:field="*{mobile}" class="form-control" placeholder="Enter your mobile number" />
+                    <input type="text" id="mobile" th:field="*{mobile}" class="form-control" placeholder="Enter your mobile number" pattern="[0-9]{10}" required maxlength="10" inputmode="numeric" oninput="this.value=this.value.replace(/[^0-9]/g,'').slice(0,10)"/>
                 </div>
                 <span th:if="${#fields.hasErrors('mobile')}" class="error-message">
                     <i class="fas fa-exclamation-circle"></i>
