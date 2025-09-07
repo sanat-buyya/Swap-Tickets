@@ -227,21 +227,95 @@
             color: var(--border);
             margin-bottom: 20px;
         }
+        
+        .ticket-container-preloader {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 20px;
+        }
+
+        .preloader-card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+            overflow: hidden;
+            position: relative; /* For shimmer effect */
+        }
+
+        .preloader-card::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -150%;
+            width: 150%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.6), transparent);
+            animation: shimmer 1.5s infinite;
+        }
+
+        @keyframes shimmer {
+            0% {
+                left: -150%;
+            }
+            100% {
+                left: 150%;
+            }
+        }
+
+        .preloader-header {
+            background-color: #f0f0f0;
+            padding: 15px;
+            height: 55px; /* Match ticket-header height */
+        }
+
+        .preloader-body {
+            padding: 20px;
+        }
+
+        .placeholder-line {
+            background-color: #e0e0e0;
+            border-radius: 4px;
+            height: 1em;
+            margin-bottom: 10px;
+        }
 
         /* Responsive Adjustments */
         @media (max-width: 768px) {
             .ticket-container {
                 grid-template-columns: 1fr;
             }
-            
+
             .passenger-table {
-                display: block;
                 overflow-x: auto;
+                white-space: nowrap;
+            }
+
+            .passenger-table th, .passenger-table td {
+                text-align: center;
+                padding: 10px;
+            }
+            .passenger-table th {
+                background-color: var(--primary-light);
+                color: var(--primary);
+            }
+            .passenger-table td {
+                border-bottom: 1px solid var(--border);
+            }
+            .passenger-table tr {
+                border: 1px solid var(--border);
+                border-radius: 8px;
+                margin-bottom: 10px;
+            }
+            .passenger-table tr:last-child td {
+                border-bottom: none;
+            }
+            .passenger-table tr:nth-child(even) {
+                background-color: #f9f9f9;
+            }
+            .price {
+                font-size: 1.2rem;
             }
             
-            h1 {
-                font-size: 24px;
-            }
         }
 
         @media (max-width: 480px) {
@@ -258,7 +332,7 @@
             .journey-info {
                 grid-template-columns: 1fr;
                 gap: 10px;
-                display: flex; /* Change to flex layout */
+                display: flex; 
         		justify-content: space-between; /* Space out the items horizontally */
         		align-items: center;
             }
@@ -287,7 +361,7 @@
             <i class="fas fa-clipboard-list"></i> My Listed Tickets
             <span class="ticket-count" th:text="${pnrs.size()}">0</span>
         </h1>
-        <p>Manage all tickets you've listed for sale</p>
+        <p>Below are the tickets you have listed for sale. You can manage and track their status here.</p>
     </div>
 
     <div th:if="${pnrs.empty}" class="empty-state">
@@ -301,7 +375,37 @@
         </a>
     </div>
 
-    <div class="ticket-container" th:unless="${pnrs.empty}">
+    <div class="ticket-container-preloader" th:unless="${pnrs.empty}">
+        <!-- Preloader Card 1 -->
+        <div class="preloader-card">
+            <div class="preloader-header"></div>
+            <div class="preloader-body">
+                <div class="placeholder-line" style="width: 80%; height: 20px; margin-bottom: 20px;"></div>
+                <div class="placeholder-line" style="width: 50%; margin: 20px auto;"></div>
+                <div class="placeholder-line" style="height: 100px;"></div>
+            </div>
+        </div>
+        <!-- Preloader Card 2 -->
+        <div class="preloader-card">
+            <div class="preloader-header"></div>
+            <div class="preloader-body">
+                <div class="placeholder-line" style="width: 80%; height: 20px; margin-bottom: 20px;"></div>
+                <div class="placeholder-line" style="width: 50%; margin: 20px auto;"></div>
+                <div class="placeholder-line" style="height: 100px;"></div>
+            </div>
+        </div>
+        <!-- Preloader Card 3 -->
+        <div class="preloader-card">
+            <div class="preloader-header"></div>
+            <div class="preloader-body">
+                <div class="placeholder-line" style="width: 80%; height: 20px; margin-bottom: 20px;"></div>
+                <div class="placeholder-line" style="width: 50%; margin: 20px auto;"></div>
+                <div class="placeholder-line" style="height: 100px;"></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="ticket-container" th:unless="${pnrs.empty}" style="display:none;">
         <div th:each="pnr : ${pnrs}" class="ticket-card">
             <div class="ticket-header">
                 <div class="ticket-pnr" th:text="${pnr.pnrNumber}">PNR12345678</div>
@@ -372,4 +476,13 @@
 </div>
 
 </body>
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        // Simulate loading delay
+        setTimeout(function() {
+            document.querySelector(".ticket-container-preloader").style.display = "none";
+            document.querySelector(".ticket-container").style.display = "grid";
+        }, 1500); // Adjust delay as needed
+    });
+</script>
 </html>

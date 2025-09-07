@@ -4,13 +4,11 @@
     <title>Customer Support</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap" rel="stylesheet">
-    <link rel="icon" href="/docs/swaplogo.png" type="image/png">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
-    
-    <!-- WebSocket Dependencies -->
+    <link rel="icon" href="/docs/swaplogo.png" type="image/png">
     <script src="https://cdn.jsdelivr.net/npm/sockjs-client/dist/sockjs.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/stompjs/lib/stomp.min.js"></script>
-    
+
     <style>
         * {
             margin: 0;
@@ -136,7 +134,7 @@
             overflow-y: auto;
             overflow-x: hidden;
             background: linear-gradient(rgba(255, 255, 255, 0.85), rgba(255, 255, 255, 0.85)),
-                        url('https://res.cloudinary.com/dgrxmavho/image/upload/v1751145067/swaplogo_j5aqzu.png');
+                        url('/docs/swaplogo.png');
             background-size: 200px 200px;
             background-position: center;
             background-repeat: repeat;
@@ -309,6 +307,40 @@
             transform: scale(0.95);
         }
 
+        .date-separator {
+            text-align: center;
+            color: #999;
+            font-size: 0.8rem;
+            margin: 15px 0;
+            position: relative;
+            width: 100%;
+        }
+
+        .date-separator::before,
+        .date-separator::after {
+            content: "";
+            position: absolute;
+            top: 50%;
+            width: 40%;
+            height: 1px;
+            background-color: #ccc;
+        }
+
+        .date-separator::before {
+            left: 0;
+        }
+
+        .date-separator::after {
+            right: 0;
+        }
+
+        .date-separator span {
+            background-color: rgba(255, 255, 255, 0.7);
+            padding: 0 10px;
+            position: relative;
+            z-index: 1;
+        }
+
         /* Desktop styles */
         @media (min-width: 769px) {
             html {
@@ -463,27 +495,12 @@
 
         <!-- Chat History -->
         <div class="chat-box" id="chatBox">
-            <div th:each="msg : ${messages}">
-                <!-- Show user message only if it's not null or empty -->
-                <div class="message-container user-container" th:if="${msg.message != null and !#strings.isEmpty(msg.message)}">
-                    <div class="message user">
-                        <p th:text="${msg.message}"></p>
-                        <div class="timestamp" th:text="${#temporals.format(msg.timestamp, 'HH:mm')}"></div>
-                    </div>
-                </div>
-                
-                <!-- Show admin reply if available -->
-                <div class="message-container admin-container" th:if="${msg.adminReply != null}">
-                    <div class="message admin">
-                        <div class="sender-name">Support Team</div>
-                        <p th:text="${msg.adminReply}"></p>
-                        <div class="timestamp" th:text="${#temporals.format(msg.timestamp, 'HH:mm')}"></div>
-                    </div>
-                </div>
-            </div>
+            <!-- Messages will be loaded dynamically -->
         </div>
-		        <!-- New Message Form -->
+
+        <!-- New Message Form -->
         <div class="message-form">
+            <input type="hidden" id="userEmail" th:value="${session.loggedInUserEmail}">
             <input type="text" class="message-input" id="msgInput" placeholder="Type a message..." autocomplete="off">
             <button class="send-button" id="sendBtn">
                 <i class="fas fa-paper-plane"></i>
@@ -493,9 +510,11 @@
 
     <script>
         let stompClient = null;
-        const userEmail = /*[[${session.loggedInUserEmail}]]*/ '';
+        const userEmail = document.getElementById('userEmail').value;
         const connectionStatus = document.getElementById('connectionStatus');
         const statusText = document.getElementById('statusText');
+        const chatBox = document.getElementById('chatBox');
+        let lastMessageDate = null; // for date separators
 
         function connect() {
             const socket = new SockJS('/ws');
@@ -596,7 +615,18 @@
         }
 
         function displayMessage(message, type) {
-            const chatBox = document.getElementById('chatBox');
+            const msgDate = new Date(message.timestamp || new Date());
+            const dateString = msgDate.toDateString();
+
+            // Add date separator if day changed
+            if (lastMessageDate !== dateString) {
+                const separator = document.createElement('div');
+                separator.className = 'date-separator';
+                separator.innerHTML = '<span>' + formatDate(msgDate) + '</span>';
+                chatBox.appendChild(separator);
+                lastMessageDate = dateString;
+            }
+
             const messageContainer = document.createElement('div');
             messageContainer.className = `message-container ${type}-container`;
 
@@ -615,7 +645,7 @@
 
             const timestamp = document.createElement('div');
             timestamp.className = 'timestamp';
-            timestamp.textContent = formatTimestamp(message.timestamp || new Date());
+            timestamp.textContent = formatTimestampAMPM(message.timestamp || new Date());
 
             messageDiv.appendChild(messageText);
             messageDiv.appendChild(timestamp);
@@ -626,13 +656,40 @@
             chatBox.scrollTop = chatBox.scrollHeight;
         }
 
-        function formatTimestamp(timestamp) {
+        // Function to format time in AM/PM format
+        function formatTimestampAMPM(timestamp) {
             const date = new Date(timestamp);
-            return date.toLocaleTimeString('en-US', {
-                hour12: false,
-                hour: '2-digit',
-                minute: '2-digit'
-            });
+            let hours = date.getHours();
+            let minutes = date.getMinutes();
+            const ampm = hours >= 12 ? 'PM' : 'AM';
+            
+            // Convert to 12-hour format
+            hours = hours % 12;
+            hours = hours ? hours : 12; // the hour '0' should be '12'
+            
+            // Add leading zero to minutes if needed
+            minutes = minutes < 10 ? '0' + minutes : minutes;
+            
+            return hours + ':' + minutes + ' ' + ampm;
+        }
+
+        function formatDate(date) {
+            const today = new Date();
+            const yesterday = new Date(today);
+            yesterday.setDate(yesterday.getDate() - 1);
+            
+            if (date.toDateString() === today.toDateString()) {
+                return 'Today';
+            } else if (date.toDateString() === yesterday.toDateString()) {
+                return 'Yesterday';
+            } else {
+                return date.toLocaleDateString('en-US', {
+                    weekday: 'long',
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric'
+                });
+            }
         }
 
         function playNotificationSound() {
@@ -654,10 +711,21 @@
 
         // Auto-scroll to bottom when page loads
         window.onload = function() {
-            const chatBox = document.getElementById("chatBox");
-            chatBox.scrollTop = chatBox.scrollHeight;
+            loadChatHistory();
             connect();
         };
+
+        function loadChatHistory() {
+            fetch('/support/history')
+                .then(response => response.json())
+                .then(messages => {
+                    messages.forEach(msg => {
+                        const type = msg.adminReply ? 'admin' : 'user';
+                        displayMessage(msg, type);
+                    });
+                })
+                .catch(err => console.error('Failed to load chat history:', err));
+        }
 
         // Reconnect on page visibility change
         document.addEventListener('visibilitychange', function() {
@@ -683,7 +751,6 @@
         }, 30000); // Check every 30 seconds
 
         // Auto-scroll to bottom on new messages
-        const chatBox = document.getElementById('chatBox');
         const observer = new MutationObserver(function(mutations) {
             mutations.forEach(function(mutation) {
                 if (mutation.type === 'childList' && mutation.addedNodes.length > 0) {
@@ -712,4 +779,3 @@
     </script>
 </body>
 </html>
-		

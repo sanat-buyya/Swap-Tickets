@@ -122,6 +122,33 @@
             font-size: 14px;
         }
 
+        /* Preloader Loader */
+.loader {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: inline-grid;
+  width: 80px;
+  aspect-ratio: 2;
+  box-sizing: content-box;
+  border-bottom: 8px solid #0000; 
+  background: 
+    linear-gradient(90deg,#0B486B 50%,#C02942 0) 
+    50% 100%/52% 8px border-box repeat-x;
+  animation: l8-0 1s linear infinite;
+  z-index: 2000;
+}
+.loader:before {
+  content:"";
+  margin: 0 25%;
+  border-radius: 50%;
+  background: repeating-conic-gradient(#C02942 0 60deg,#0B486B 0 120deg);
+  animation: l8-1 1s linear infinite;
+}
+@keyframes l8-0 {to{background-position: -58% 100%}}
+@keyframes l8-1 {to{rotate: 120deg}}
+
         /* Mobile optimizations */
         @media (max-width: 768px) {
             body {
@@ -217,7 +244,8 @@
     </style>
 </head>
 <body>
-    <div class="container-fluid">
+    <div class="loader" id="pageLoader"></div>
+    <div class="container-fluid" style="display:none;">
         <div class="search-container">
             <h2 class="text-center mb-3">🚇 Train Time Table Lookup</h2>
              <!--<form method="post" action="/train-status" class="compact-form">
@@ -479,6 +507,11 @@
                 }
             });
         }
+      
+window.addEventListener("load", function() {
+  document.getElementById("pageLoader").style.display = "none";
+  document.querySelector(".container-fluid").style.display = "block";
+});
 
         // Uppercase for specific fields
         document.addEventListener('DOMContentLoaded', function () {

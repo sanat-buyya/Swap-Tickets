@@ -239,62 +239,84 @@ public class PNRController {
             @RequestParam(required = false) String trainNumber,
             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate journeyDate,
             @RequestParam(required = false) String gender,
-            HttpSession session,Model model) {
-    	String userEmail = (String) session.getAttribute("loggedInUserEmail");
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "20") int size,
+            HttpSession session,
+            Model model) {
+
+        String userEmail = (String) session.getAttribute("loggedInUserEmail");
         if (userEmail == null) {
             return "redirect:/login";
         }
+
+        // ✅ normalize filter
+        String appliedFilter = (filter == null || filter.isBlank()) ? "available" : filter;
+
+        // fetch PNRs
         List<PNR> pnrs;
-        
         if (trainNumber != null && !trainNumber.isEmpty()) {
             pnrs = pnrRepository.findByTrainNumber(trainNumber);
         } else if (fromStation != null && toStation != null && !fromStation.isEmpty() && !toStation.isEmpty()) {
-            // Try multiple approaches for station matching
             pnrs = findPNRsByStationsFlexible(fromStation, toStation);
         } else if (journeyDate != null) {
             pnrs = pnrRepository.findByJourneyDate(journeyDate);
         } else {
-            pnrs = pnrRepository.findAllAvailableTickets(); 
+            pnrs = pnrRepository.findAllAvailableTickets();
         }
 
-        // Remove PNRs with past journey dates
+        // filter out past journeys
         pnrs = pnrs.stream()
                 .filter(pnr -> !pnr.getJourneyDate().isBefore(LocalDate.now()))
                 .toList();
 
-        // Filter passengers based on sold/available and gender
-        boolean filterSold = "sold".equalsIgnoreCase(filter);
+        // filter passengers
+        boolean filterSold = "sold".equalsIgnoreCase(appliedFilter);
         for (PNR pnr : pnrs) {
             List<Passenger> filteredPassengers = pnr.getPassenger().stream()
-                    .filter(p -> (filter == null || p.isSold() == filterSold))
+                    .filter(p -> (appliedFilter == null || p.isSold() == filterSold))
                     .filter(p -> (gender == null || gender.isEmpty() || p.getGender().equalsIgnoreCase(gender)))
                     .toList();
             pnr.setPassenger(filteredPassengers);
         }
 
-        // Remove PNRs with no matching passengers
+        // remove empty
         pnrs = pnrs.stream()
                 .filter(pnr -> !pnr.getPassenger().isEmpty())
                 .toList();
 
-        Optional<AdminConfig> configOpt = adminConfigRepository.findById(1L);
-        double adminFee = configOpt.map(AdminConfig::getBookingFee).orElse(0.0);
-        
+        // ✅ Pagination manually
+        int totalItems = pnrs.size();
+        int totalPages = (int) Math.ceil((double) totalItems / size);
+
+        int fromIndex = Math.min(page * size, totalItems);
+        int toIndex = Math.min(fromIndex + size, totalItems);
+        List<PNR> pagedPnrs = (fromIndex <= toIndex) ? pnrs.subList(fromIndex, toIndex) : List.of();
+
+        // fees
+        double adminFee = adminConfigRepository.findById(1L)
+                .map(AdminConfig::getBookingFee).orElse(0.0);
         double extraFee = adminConfigRepository.findById(1L)
-                .map(AdminConfig::getExtraFee)
-                .orElse(0.0);
-        
+                .map(AdminConfig::getExtraFee).orElse(0.0);
+
+        // add to model
         model.addAttribute("adminFee", adminFee);
         model.addAttribute("extraFee", extraFee);
-        model.addAttribute("pnrs", pnrs);
-        model.addAttribute("filter", filter != null ? filter : "available");
+        model.addAttribute("pnrs", pagedPnrs);
+        model.addAttribute("filter", appliedFilter);
         model.addAttribute("fromStation", fromStation);
         model.addAttribute("toStation", toStation);
         model.addAttribute("trainNumber", trainNumber);
         model.addAttribute("gender", gender);
-        
+
+        // ✅ pagination attributes
+        model.addAttribute("currentPage", page);
+        model.addAttribute("totalPages", totalPages);
+        model.addAttribute("size", size);
+
         return "buyPNRTickets";
     }
+
+
 
     private List<PNR> findPNRsByStationsFlexible(String fromStation, String toStation) {
         // Extract station information

@@ -427,6 +427,18 @@
             background: #a8a8a8;
         }
 
+        .error-message {
+            color: #dc3545;
+            font-size: 0.85em;
+            margin-top: 5px;
+            display: none; /* Hidden by default */
+        }
+
+        input.invalid {
+            border-color: #dc3545;
+            box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25);
+        }
+
         /* iOS Safari specific fixes */
         @supports (-webkit-touch-callout: none) {
             input {
@@ -443,14 +455,16 @@
 </head>
 <body>
     <!-- Search Form -->
-    <form method="post" action="/track-train-between" class="search-form">
+    <form method="post" action="/track-train-between" class="search-form" id="searchForm">
         <div class="form-group">
             <label for="sourceStation">From:</label>
             <input id="sourceStation" name="sourceStation" required placeholder="Enter source station" autocomplete="off" />
+            <div class="error-message" id="sourceError">Invalid station. Please select from the list.</div>
         </div>
         <div class="form-group">
             <label for="destinationStation">To:</label>
             <input id="destinationStation" name="destinationStation" required placeholder="Enter destination station" autocomplete="off" />
+            <div class="error-message" id="destinationError">Invalid station. Please select from the list.</div>
         </div>
         <button type="submit">Search Trains</button>
     </form>
@@ -459,6 +473,19 @@
     <div th:if="${sourceStation != null and destinationStation != null}">
         <h2 th:text="|${sourceStation} ➝ ${destinationStation}|">Route</h2>
     </div>
+
+    <!-- Loading Animation -->
+    <div id="loading" style="display:none; text-align:center; margin-top:20px;">
+        <div class="loading"></div>
+    </div>
+    <script>
+        const form = document.getElementById('searchForm');
+        const loading = document.getElementById('loading');
+
+        form.addEventListener('submit', function() {
+            loading.style.display = 'block';
+        });
+    </script>
 
     <!-- Trains Display -->
     <div th:if="${trains != null}" class="trains-container">
@@ -540,6 +567,47 @@
     <script>
     let indianStations = [];
     let isLoading = false;
+
+    document.getElementById('searchForm').addEventListener('submit', function(event) {
+        const sourceInput = document.getElementById('sourceStation');
+        const destinationInput = document.getElementById('destinationStation');
+        const sourceError = document.getElementById('sourceError');
+        const destinationError = document.getElementById('destinationError');
+
+        // Reset previous errors
+        sourceInput.classList.remove('invalid');
+        sourceError.style.display = 'none';
+        destinationInput.classList.remove('invalid');
+        destinationError.style.display = 'none';
+
+        const isSourceValid = indianStations.some(station => station.code === sourceInput.value || `${station.name} (${station.code})` === sourceInput.value);
+        const isDestinationValid = indianStations.some(station => station.code === destinationInput.value || `${station.name} (${station.code})` === destinationInput.value);
+
+        let isValid = true;
+
+        if (!isSourceValid) {
+            event.preventDefault();
+            sourceInput.classList.add('invalid');
+            sourceError.style.display = 'block';
+            sourceInput.focus();
+            isValid = false;
+        }
+
+        if (!isDestinationValid) {
+            event.preventDefault();
+            destinationInput.classList.add('invalid');
+            destinationError.style.display = 'block';
+            if (isValid) { // only focus if source is valid
+                destinationInput.focus();
+            }
+            isValid = false;
+        }
+        
+        if (!isValid) {
+            const loading = document.getElementById('loading');
+            loading.style.display = 'none';
+        }
+    });
 
     // Fetch station list from API
     fetch('/api/stations')
@@ -886,6 +954,16 @@
         });
     });
     
+    document.addEventListener('DOMContentLoaded', function () {
+    	  const form = document.querySelector('.search-form');
+    	  const button = form.querySelector('button[type="submit"]');
+    	  form.addEventListener('keydown', function(e) {
+    	    if (e.key === 'Enter') {
+    	      e.preventDefault();
+    	      button.click();
+    	    }
+    	  });
+    	});
     
 
 </script>

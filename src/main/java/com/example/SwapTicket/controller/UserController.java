@@ -1,5 +1,6 @@
 package com.example.SwapTicket.controller;
 
+import com.example.SwapTicket.model.AdminConfig;
 import com.example.SwapTicket.model.PNR;
 import com.example.SwapTicket.model.Passenger;
 import com.example.SwapTicket.model.SupportMessage;
@@ -8,6 +9,7 @@ import com.example.SwapTicket.model.TrainStop;
 import com.example.SwapTicket.model.TransactionHistory;
 import com.example.SwapTicket.model.User;
 import com.example.SwapTicket.model.Wallet;
+import com.example.SwapTicket.repository.AdminConfigRepository;
 import com.example.SwapTicket.repository.PNRRepository;
 import com.example.SwapTicket.repository.PassengerRepository;
 import com.example.SwapTicket.repository.SupportMessageRepository;
@@ -96,6 +98,9 @@ public class UserController {
     
     @Autowired
     private AdminAuthService adminAuthService;
+       
+    @Autowired
+    private AdminConfigRepository adminConfigRepository;
     
     @GetMapping("/")
     public String defaultPage(HttpSession session) { 
@@ -323,7 +328,6 @@ public class UserController {
         return "forgotPassword"; // same page, conditionally renders OTP form
     }
 
-    // Step 3: Verify OTP and Reset Password
     @PostMapping("/verify-forgot-password")
     public String verifyForgotOtp(@RequestParam("email") String email,
                                   @RequestParam("otp") int userOtp,
@@ -409,7 +413,7 @@ public class UserController {
 
         List<TransactionHistory> list = transactionHistoryRepository.findByUserEmailOrderByDateDesc(email);
         model.addAttribute("transactions", list);
-        return "myTransactions"; // this maps to myTransaction.html
+        return "myTransactions";
     }
     
     @GetMapping("/privacy")
@@ -478,66 +482,49 @@ public class UserController {
         }
         return supportRepo.findByUserEmailOrderByTimestampAsc(email);
     }
-
-    @PostMapping("/support/submit")
-    @ResponseBody
-    public ResponseEntity<Void> submitSupportMessage(@RequestBody SupportMessage supportMessage, HttpSession session) {
-        String userEmail = (String) session.getAttribute("loggedInUserEmail");
-        if (userEmail == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+    
+    @MessageMapping("/support/user")
+    public void handleUserMessage(@Payload SupportMessage message) {
+        if (message.getUserEmail() == null) {
+            System.out.println("Error: userEmail is null!");
+            return;
         }
-        
-        supportMessage.setUserEmail(userEmail);
-        supportMessage.setTimestamp(LocalDateTime.now());
-        supportMessage.setResolved(false);
-        
-        SupportMessage savedMessage = supportRepo.save(supportMessage);
-        
-        // Broadcast to admin channel for this user
-        messagingTemplate.convertAndSend("/topic/admin/" + userEmail, savedMessage);
-        
-        return ResponseEntity.ok().build();
+
+        message.setTimestamp(LocalDateTime.now());
+        message.setResolved(false);
+
+        SupportMessage saved = supportRepo.save(message);
+
+        // Push to admin
+        messagingTemplate.convertAndSend("/topic/admin/" + message.getUserEmail(), saved);
     }
+    
+    @GetMapping("/support/history")
+    @ResponseBody
+    public List<SupportMessage> getChatHistory(@SessionAttribute("loggedInUserEmail") String email) {
+        return supportRepo.findByUserEmailOrderByTimestampAsc(email); // fetch from DB ordered by timestamp
+    }
+    
+ // Admin fetches chat history of a specific user
+    @GetMapping("/admin/support/history")
+    @ResponseBody
+    public List<SupportMessage> getAdminChatHistory(@RequestParam("userEmail") String userEmail) {
+        return supportRepo.findByUserEmailOrderByTimestampAsc(userEmail); // fetch all messages for this user
+    }  
 
-//    // WebSocket message handlers
-//    @MessageMapping("/support/user")
-//    public void handleUserMessage(@Payload SupportMessage message) {
-//        // Set timestamp and save user message
-//        message.setTimestamp(LocalDateTime.now());
-//        message.setResolved(false);
-//        
-//        SupportMessage savedMessage = supportRepo.save(message);
-//        
-//        // Broadcast to admin channel for this user
-//        messagingTemplate.convertAndSend("/topic/admin/" + message.getUserEmail(), savedMessage);
-//    }
-
+    // Admin sends reply
     @MessageMapping("/support/admin")
     public void handleAdminReply(@Payload SupportMessage message) {
-        
-    	message.setTimestamp(LocalDateTime.now());
+        message.setTimestamp(LocalDateTime.now());
         message.setResolved(true);
-        
-        SupportMessage savedMessage = supportRepo.save(message);
-        
-        // Broadcast to user channel
-        messagingTemplate.convertAndSend("/topic/user/" + message.getUserEmail(), savedMessage);
-        
-        // Also broadcast to admin channel to update admin's view
-        messagingTemplate.convertAndSend("/topic/admin/" + message.getUserEmail(), savedMessage);
-    }
 
-    // Legacy WebSocket handler (keeping for compatibility)
-    @MessageMapping("/support")
-    public void handleSupportMessage(SupportMessage message) {
-        
-    	message.setTimestamp(LocalDateTime.now());
-        message.setResolved(false);
-        
-        SupportMessage savedMessage = supportRepo.save(message);
-        
-        // Broadcast to admin channel
-        messagingTemplate.convertAndSend("/topic/admin/" + message.getUserEmail(), savedMessage);
+        SupportMessage saved = supportRepo.save(message);
+
+        // Send to user channel (instant push)
+        messagingTemplate.convertAndSend("/topic/user/" + message.getUserEmail(), saved);
+
+        // Optionally, update admin view
+        messagingTemplate.convertAndSend("/topic/admin/" + message.getUserEmail(), saved);
     }
 
     public String generateReferralCode(String nameOrEmail) {
@@ -556,10 +543,15 @@ public class UserController {
 
         String baseUrl = "http://localhost:8085/register"; 
         String referralLink = baseUrl + "?ref=" + referralCode;
+        
+        double referralDiscountAmount = adminConfigRepository.findById(1L)
+                .map(AdminConfig::getReferralDiscountAmount)
+                .orElse(0.0);
 
         model.addAttribute("referralCode", referralCode);
         model.addAttribute("referralLink", referralLink);
-
+        model.addAttribute("referralDiscountAmount", referralDiscountAmount);
+        
         List<User> referredUsers = userRepository.findAllByReferredBy(referralCode);
         model.addAttribute("referredUsers", referredUsers);
 

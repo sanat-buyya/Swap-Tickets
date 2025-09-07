@@ -18,5 +18,5 @@ public interface SupportMessageRepository extends JpaRepository<SupportMessage, 
 
 	List<SupportMessage> findByUserEmailOrderByTimestampAsc(String email);
 	void deleteByUserEmail(String email);
-
+	
 }

@@ -508,8 +508,34 @@
                 </div>
             </div>
 
+            <div class="ticket-table-container fade-in" id="tickettable-preload">
+                <table class="ticket-table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Train</th>
+                            <th>Buyer Email</th>
+                            <th>Seller Mobile</th>
+                            <th>PNR</th>
+                            <th>Price</th>
+                            <th>UPI ID</th>
+                            <th>Action</th>
+                            <th>Remove</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td colspan="9" class="text-center" style="text-align: center; padding: 20px;">
+                                <i class="fas fa-spinner fa-spin" style="font-size: 1.5rem; color:  var(--success);"></i>
+                                <span style="margin-left: 10px; font-size: 1rem; color: #555555;"> Loading payments...</span>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
             <!-- Table Section -->
-            <div class="ticket-table-container fade-in">
+            <div class="ticket-table-container fade-in" id="tickettable" style="display:none;">
                 <table class="ticket-table">
                     <thead>
                         <tr>
@@ -568,6 +594,14 @@
     </div>
 
     <script>
+        document.addEventListener("DOMContentLoaded", function() {
+        // Simulate loading delay
+        setTimeout(function() {
+            document.getElementById("tickettable-preload").style.display = "none";
+            document.getElementById("tickettable").style.display = "table";
+        }, 1000); // 1 second delay for demonstration
+    });
+
         // Mobile menu toggle functionality
         document.getElementById('menuToggle').addEventListener('click', function() {
             document.getElementById('adminNav').classList.toggle('active');
@@ -627,6 +661,8 @@
 
         // Call highlight function after page loads
         document.addEventListener('DOMContentLoaded', highlightSearchTerms);
+
+
     </script>
 </body>
 </html>

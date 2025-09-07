@@ -52,8 +52,33 @@
             justify-content: center;
             gap: 8px;
         }
-
-        /* Filter Form */
+        
+.loader {
+  display: flex;
+    align-items: center;
+    justify-content: center;
+  gap: 18px;
+}
+.loader:before,
+.loader:after {
+  content: "";
+  height: 32px;         
+  width: 32px;            
+  aspect-ratio: 1;
+  border-radius: 50%;
+  border: 1px solid #0000;
+  background:
+    radial-gradient(farthest-side,#000 95%,#0000) 50% 50%/12px 12px no-repeat
+    #fff;
+  animation: l5 3s infinite;
+}
+@keyframes l5 {
+  0%,11%   {background-position:50% 50%}
+  14%,36%  {background-position:80% 50%}
+  38%,61%  {background-position:80% 80%}
+  64%,86%  {background-position:50% 80%}
+  88%,100% {background-position:50% 50%}
+}
         .filter-form {
             background: white;
             padding: 15px;
@@ -187,7 +212,7 @@
         }
 
         .pnr-notice a {
-            color: var(--primary-color);
+            color: red;
             font-weight: 600;
             text-decoration: none;
         }
@@ -451,6 +476,61 @@
                 border-radius: 5px;
             }
         }
+        /* Pagination Styles */
+.pagination {
+    text-align: center;
+    margin-top: 24px;
+    margin-bottom: 8px;
+}
+
+.pagination ul {
+    list-style: none;
+    display: inline-flex;
+    gap: 8px;
+    padding: 0;
+    margin: 0;
+}
+
+.pagination li {
+    display: inline;
+}
+
+.pagination a {
+    display: inline-block;
+    padding: 7px 16px;
+    background: var(--primary-color, #007bff);
+    color: #fff;
+    border-radius: 6px;
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 15px;
+    border: 1px solid var(--primary-color, #007bff);
+    transition: background 0.18s, color 0.18s;
+}
+
+.pagination a.active,
+.pagination a:disabled {
+    background: var(--warning-color, #ffc107);
+    color: #333;
+    border-color: var(--warning-color, #ffc107);
+    cursor: default;
+    font-weight: bold;
+}
+
+.pagination a:hover:not(.active):not(:disabled) {
+    background: #0056b3;
+    color: #fff;
+}
+
+@media (max-width: 600px) {
+    .pagination ul {
+        gap: 4px;
+    }
+    .pagination a {
+        padding: 6px 10px;
+        font-size: 13px;
+    }
+}
     </style>
 </head>
 
@@ -506,9 +586,11 @@
 
     <div class="pnr-notice">
         <b>*Confirm ticket using PNR before buying:</b>
-        <a href="https://www.indianrail.gov.in/enquiry/PNR/PnrEnquiry.html?locale=en" target="_blank">Click Here</a>
+        <a href="https://www.indianrail.gov.in/enquiry/PNR/PnrEnquiry.html?locale=en" target="_blank">Click Here <i class="fa-solid fa-arrow-up-right-from-square"></i></a>
     </div>
 
+   <div class="loader" id="loader"></div> 
+    <div id="mainContent" style="display:none;">
     <!-- 🎫 LIST OF PNRs -->
     <div class="pnr-container">
     <div th:if="${#lists.isEmpty(pnrs)}" style="grid-column: 1/-1; text-align: center; padding: 40px 0; color: #888; font-size: 1.2em;">
@@ -530,7 +612,7 @@
                     </a>
                     <form th:action="@{/train-status(trainNo=${pnr.trainNumber})}" method="post" style="display: inline;">
                     <!-- Hidden input for limit -->
-                        <input type="hidden" name="limit" value="50" />
+                        <input type="hidden" name="limit" value="100" />
                         <button type="submit" title="Train Status" style="color: inherit; text-decoration: none; margin-left: 0%; font-size: 0.75em; padding-right: 0px;">
                         <span class="emoji">Track Station</span>
                         </button>
@@ -621,6 +703,48 @@
         </div>
     </div>
 
+    <div class="pagination" style="text-align: right; margin-top: 20px;">
+    <ul style="list-style: none; display: inline-flex; gap: 10px; padding: 0;">
+        
+        <!-- Prev -->
+        <li th:if="${currentPage > 0}">
+            <a th:href="@{/pnr/buy(page=${currentPage-1}, size=${size}, 
+                filter=${filter}, 
+                fromStation=${fromStation}, 
+                toStation=${toStation}, 
+                trainNumber=${trainNumber}, 
+                gender=${gender})}">
+                ⬅ Prev
+            </a>
+        </li>
+
+        <!-- Page Numbers -->
+        <li th:each="i : ${#numbers.sequence(0, totalPages-1)}">
+            <a th:href="@{/pnr/buy(page=${i}, size=${size}, 
+                filter=${filter}, 
+                fromStation=${fromStation}, 
+                toStation=${toStation}, 
+                trainNumber=${trainNumber}, 
+                gender=${gender})}"
+               th:text="${i+1}"
+               th:classappend="${i == currentPage} ? 'active' : ''">
+            </a>
+        </li>
+
+        <!-- Next -->
+        <li th:if="${currentPage < totalPages-1}">
+            <a th:href="@{/pnr/buy(page=${currentPage+1}, size=${size}, 
+                filter=${filter}, 
+                fromStation=${fromStation}, 
+                toStation=${toStation}, 
+                trainNumber=${trainNumber}, 
+                gender=${gender})}">
+                Next ➡
+            </a>
+        </li>
+    </ul>
+</div>
+
     <div class="action-buttons">
         <a th:href="@{/user/home}">
             <button class="btn back-button">
@@ -635,11 +759,12 @@
     <button id="backToTopBtn" title="Back to Top">
     <i class="fas fa-arrow-up"></i>
 </button>
+    </div>
 
     <script>
     let indianRailwayStations = [];
     let currentHighlightedIndex = -1;
-
+        
     // 🚀 Fetch stations from backend API
     fetch('/api/stations')
         .then(response => response.json())
@@ -990,6 +1115,10 @@
             });
         }
 
+        window.addEventListener("load", function() {
+  document.getElementById("loader").style.display = "none";
+  document.getElementById("mainContent").style.display = "block";
+});
         // 🔄 SWAP STATIONS FUNCTIONALITY
         function addSwapButton() {
         const fromGroup = document.querySelector('#fromStation').parentElement;

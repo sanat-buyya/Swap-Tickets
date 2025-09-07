@@ -6,6 +6,91 @@
     <link rel="icon" href="/docs/swaplogo.png" type="image/png">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
+        /* Preloader styling */
+        #preloader {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #f5f7fa;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            transition: opacity 0.5s ease-out, visibility 0.5s ease-out;
+        }
+
+        .loader {
+            width: 48px;
+            height: 24px;
+            color: #007bff;
+            background: currentColor;
+            border-radius: 50% 50% 0 0;
+            position: relative;
+            display: block;
+            margin: 60px auto 0;
+            box-sizing: border-box;
+            animation: animloader 4s linear infinite;
+        }
+        
+        .loader::after {
+            content: '';  
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: currentColor;
+            top: -34px;
+            box-sizing: border-box;
+            animation: animloader1 4s linear infinite;
+        }
+
+        @keyframes animloader {
+            0% {
+                box-shadow: 0 0 0 -2px , 0 0 0 -2px , 0 0 0 -5px , 0 0 0 -5px;
+            }
+            20% {
+                box-shadow: 40px -1px 0 -2px , 0 0 0 -2px , 40px -1px 0 -5px , 0 0 0 -5px;
+            }
+            40% {
+                box-shadow: 40px -1px 0 -2px , -40px -1px 0 -2px ,  40px -1px 0 -5px ,-40px -1px 0 -5px;
+            }
+            60% {
+                box-shadow: 40px -1px 0 -2px , -40px -1px 0 -2px ,   23px -29px 0 -5px ,-40px -1px 0 -5px;
+            }
+            80%, 95% {
+                box-shadow: 40px -1px 0 -2px , -40px -1px 0 -2px ,   23px -29px 0 -5px , -23px -29px 0 -5px;
+            }
+            100% {
+                box-shadow: 40px -1px 0 -2px rgba(255, 255, 255, 0), -40px -1px 0 -2px rgba(255, 255, 255, 0), 23px -29px 0 -5px rgba(255, 255, 255, 0), -23px -29px 0 -5px rgba(255, 255, 255, 0);
+            }
+        }
+
+        @keyframes animloader1 {
+            0% {
+                box-shadow: 0 0 0 -2px , 0 0 0 -2px , 0 0 0 -5px , 0 0 0 -5px;
+            }
+            20% {
+                box-shadow: 40px 2px 0 -2px  , 0 0 0 -2px , 40px 2px 0 -5px , 0 0 0 -5px;
+            }
+            40% {
+                box-shadow: 40px 2px 0 -2px  , -40px 2px 0 -2px , 40px 2px 0 -5px , -40px 2px 0 -5px;
+            }
+            60% {
+                box-shadow: 40px 2px 0 -2px  , -40px 2px 0 -2px , 23px -23px 0 -5px , -40px 2px 0 -5px;
+            }
+            80%, 95% {
+                box-shadow: 40px 2px 0 -2px  , -40px 2px 0 -2px , 23px -23px 0 -5px , -23px -23px 0 -5px;
+            }
+            100% {
+                box-shadow: 40px 2px 0 -2px rgba(255, 255, 255, 0), -40px 2px 0 -2px rgba(255, 255, 255, 0), 23px -23px 0 -5px rgba(255, 255, 255, 0), -23px -23px 0 -5px rgba(255, 255, 255, 0);
+            }
+        }
+
+        /* Original page styles */
         * {
             box-sizing: border-box;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -211,7 +296,7 @@
         }
         
         .reward-info {
-            margin-top: 30px;
+            margin-top: 25px;
             padding: 20px;
             background-color: #e7f8f0;
             border-radius: 10px;
@@ -220,171 +305,186 @@
     </style>
 </head>
 <body>
-<div class="container">
-    <h2>Refer A Friend</h2>
-    
-    <p>Invite your friends and earn rewards when they sign up using your referral link!</p>
-    
-    <div class="referral-box">
-        <div class="referral-code">
-            <span style="margin-right: 15px;">Your Code:</span>
-            <div class="code" th:text="${referralCode}"></div>
-        </div>
+    <!-- Preloader -->
+    <div id="preloader">
+        <span class="loader"></span>
+    </div>
+
+    <div class="container">
+        <h2>Refer A Friend</h2>
         
-        <div class="referral-link-container">
-            <input type="text" id="refLink" th:value="${referralLink}" readonly>
-            <button class="btn btn-primary" onclick="copyReferralLink()">
-                <i class="fas fa-copy"></i> Copy
-            </button>
-        </div>
+        <p>Invite your friends and earn rewards when they sign up using your referral link!</p>
         
-        <div class="share-dropdown">
-            <button class="btn btn-success" onclick="nativeShare()">
-                <i class="fas fa-share-alt"></i> Share
-            </button>
-            <div class="share-dropdown-content">
-                <div class="share-option" onclick="shareOnWhatsApp()">
-                    <i class="fab fa-whatsapp" style="color: #25D366;"></i> WhatsApp
-                </div>
-                <div class="share-option" onclick="shareOnFacebook()">
-                    <i class="fab fa-facebook" style="color: #1877F2;"></i> Facebook
-                </div>
-                <div class="share-option" onclick="shareOnTwitter()">
-                    <i class="fab fa-twitter" style="color: #1DA1F2;"></i> Twitter
-                </div>
-                <div class="share-option" onclick="shareOnInstagram()">
-                    <i class="fab fa-instagram" style="color: #E4405F;"></i> Instagram
-                </div>
-                <div class="share-option" onclick="shareViaEmail()">
-                    <i class="fas fa-envelope" style="color: #EA4335;"></i> Email
-                </div>
-                <div class="share-option" onclick="shareViaSMS()">
-                    <i class="fas fa-sms" style="color: #34B7F1;"></i> SMS
+        <div class="referral-box">
+            <div class="referral-code">
+                <span style="margin-right: 15px;">Your Code:</span>
+                <div class="code" th:text="${referralCode}"></div>
+            </div>
+            
+            <div class="referral-link-container">
+                <input type="text" id="refLink" th:value="${referralLink}" readonly>
+                <button class="btn btn-primary" onclick="copyReferralLink()">
+                    <i class="fas fa-copy"></i> Copy
+                </button>
+            </div>
+            
+            <div class="share-dropdown">
+                <button class="btn btn-success" onclick="nativeShare()">
+                    <i class="fas fa-share-alt"></i> Share
+                </button>
+                <div class="share-dropdown-content">
+                    <div class="share-option" onclick="shareOnWhatsApp()">
+                        <i class="fab fa-whatsapp" style="color: #25D366;"></i> WhatsApp
+                    </div>
+                    <div class="share-option" onclick="shareOnFacebook()">
+                        <i class="fab fa-facebook" style="color: #1877F2;"></i> Facebook
+                    </div>
+                    <div class="share-option" onclick="shareOnTwitter()">
+                        <i class="fab fa-twitter" style="color: #1DA1F2;"></i> Twitter
+                    </div>
+                    <div class="share-option" onclick="shareOnInstagram()">
+                        <i class="fab fa-instagram" style="color: #E4405F;"></i> Instagram
+                    </div>
+                    <div class="share-option" onclick="shareViaEmail()">
+                        <i class="fas fa-envelope" style="color: #EA4335;"></i> Email
+                    </div>
+                    <div class="share-option" onclick="shareViaSMS()">
+                        <i class="fas fa-sms" style="color: #34B7F1;"></i> SMS
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
-    
-    <div class="reward-info">
-        <h3><i class="fas fa-gift"></i> Your Rewards</h3>
-        <p>For every friend who joins using your link, you'll earn <strong>100</strong> rupees off when they complete their first transaction!</p>
-    </div>
+        
+        <div class="reward-info">
+            <h3><i class="fas fa-gift"></i> Your Rewards</h3>
+            <p>For every friend who joins using your link, you'll earn <span th:text="${referralDiscountAmount}"></span> rupees off when they complete their first transaction!</p>
+        </div>
 
-    <div th:if="${#lists.isEmpty(referredUsers)}">
-        <div class="empty-state">
-            <i class="fas fa-users"></i>
-            <h3>No friends referred yet</h3>
-            <p>Share your referral link to invite friends and start earning rewards!</p>
+        <div th:if="${#lists.isEmpty(referredUsers)}">
+            <div class="empty-state">
+                <i class="fas fa-users"></i>
+                <h3>No friends referred yet</h3>
+                <p>Share your referral link to invite friends and start earning rewards!</p>
+            </div>
+        </div>
+        <div th:if="${not #lists.isEmpty(referredUsers)}">
+            <h3>Friends you referred:</h3>
+            <ul class="referred-users">
+                <li th:each="u : ${referredUsers}" th:text="${u.email}"></li>
+            </ul>
         </div>
     </div>
-    <div th:if="${not #lists.isEmpty(referredUsers)}">
-        <h3>Friends you referred:</h3>
-        <ul class="referred-users">
-            <li th:each="u : ${referredUsers}" th:text="${u.email}"></li>
-        </ul>
-    </div>
-</div>
 
-<script>
-    function copyReferralLink() {
-        const refInput = document.getElementById("refLink");
-        refInput.select();
-        refInput.setSelectionRange(0, 99999);
-        document.execCommand("copy");
-        
-        // Change button text temporarily
-        const copyBtn = event.currentTarget;
-        const originalText = copyBtn.innerHTML;
-        copyBtn.innerHTML = '<i class="fas fa-check"></i> Copied!';
-        
-        setTimeout(() => {
-            copyBtn.innerHTML = originalText;
-        }, 2000);
-    }
-    
-    function shareOnWhatsApp() {
-        const link = document.getElementById("refLink").value;
-        const message = `Hello! 👋
-        	I wanted to share this great platform called SwapTicket where you can buy or sell train tickets securely.
-        	Use my referral link to join: ${link}`;
-        window.open(`https://wa.me/?text=${encodeURIComponent(message)}`);
-    }
-    
-    function shareOnFacebook() {
-        const link = document.getElementById("refLink").value;
-        window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(link)}`);
-    }
-    
-    function shareOnTwitter() {
-        const link = document.getElementById("refLink").value;
-        const message = `Hello! 👋
-        	I wanted to share this great platform called SwapTicket where you can buy or sell train tickets securely.
-        	Use my referral link to join: ${link}`;
-        window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(message)}`);
-    }
-    
-    function shareOnInstagram() {
-        const link = document.getElementById("refLink").value;
-        alert("Copy this link to share on Instagram: " + link);
-    }
-    
-    function shareViaEmail() {
-        const link = document.getElementById("refLink").value;
-        const subject = "Join me on this platform";
-        const body = `Hello! 👋,%0D%0A%0D%0AI wanted to share this great platform called SwapTicket where you can buy or sell train tickets securely. Use my referral link to join: ${link}%0D%0A%0D%0ABest regards,`;
-        window.location.href = `mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-    }
-    
-    function shareViaSMS() {
-        const link = document.getElementById("refLink").value;
-        const message = `Hello! 👋 I wanted to share this great platform called SwapTicket where you can buy or sell train tickets securely.
-        	Use my referral link to join: ${link}`;
-        if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
-            window.location.href = `sms:?body=${encodeURIComponent(message)}`;
-        } else {
-            alert("SMS sharing is available on mobile devices only. Here's your link to copy: " + link);
+    <script>
+        // Preloader functionality
+        window.addEventListener('load', function() {
+            const preloader = document.getElementById('preloader');
+            setTimeout(function() {
+                preloader.style.opacity = '0';
+                preloader.style.visibility = 'hidden';
+            }, 1000); // Show preloader for 1 second after page loads
+        });
+
+        // Original functions
+        function copyReferralLink() {
+            const refInput = document.getElementById("refLink");
+            refInput.select();
+            refInput.setSelectionRange(0, 99999);
+            document.execCommand("copy");
+            
+            // Change button text temporarily
+            const copyBtn = event.currentTarget;
+            const originalText = copyBtn.innerHTML;
+            copyBtn.innerHTML = '<i class="fas fa-check"></i> Copied!';
+            
+            setTimeout(() => {
+                copyBtn.innerHTML = originalText;
+            }, 2000);
         }
-    }
-    
-    // Primary share function that uses native share dialog when available
-    function nativeShare() {
-        const link = document.getElementById("refLink").value;
-        const shareData = {
-            title: 'Join me on this platform',
-            text: 'Hello! 👋 I wanted to share this great platform called SwapTicket where you can buy or sell train tickets securely. Use my referral link to sign up 👉',
-            url: link,
-        };
         
-        try {
-            if (navigator.share) {
-                // Use native share dialog on mobile devices
-                navigator.share(shareData)
-                    .then(() => console.log('Successful share'))
-                    .catch(error => {
-                        console.log('Error sharing:', error);
-                        // Fallback to dropdown if native share fails
-                        toggleShareDropdown();
-                    });
+        function shareOnWhatsApp() {
+            const link = document.getElementById("refLink").value;
+            const message = `Hello! 👋
+                I wanted to share this great platform called SwapTicket where you can buy or sell train tickets securely.
+                Use my referral link to join: ${link}`;
+            window.open(`https://wa.me/?text=${encodeURIComponent(message)}`);
+        }
+        
+        function shareOnFacebook() {
+            const link = document.getElementById("refLink").value;
+            window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(link)}`);
+        }
+        
+        function shareOnTwitter() {
+            const link = document.getElementById("refLink").value;
+            const message = `Hello! 👋
+                I wanted to share this great platform called SwapTicket where you can buy or sell train tickets securely.
+                Use my referral link to join: ${link}`;
+            window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(message)}`);
+        }
+        
+        function shareOnInstagram() {
+            const link = document.getElementById("refLink").value;
+            alert("Copy this link to share on Instagram: " + link);
+        }
+        
+        function shareViaEmail() {
+            const link = document.getElementById("refLink").value;
+            const subject = "Join me on this platform";
+            const body = `Hello! 👋,%0D%0A%0D%0AI wanted to share this great platform called SwapTicket where you can buy or sell train tickets securely. Use my referral link to join: ${link}%0D%0A%0D%0ABest regards,`;
+            window.location.href = `mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+        }
+        
+        function shareViaSMS() {
+            const link = document.getElementById("refLink").value;
+            const message = `Hello! 👋 I wanted to share this great platform called SwapTicket where you can buy or sell train tickets securely.
+                Use my referral link to join: ${link}`;
+            if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
+                window.location.href = `sms:?body=${encodeURIComponent(message)}`;
             } else {
-                // Fallback to dropdown on desktop
+                alert("SMS sharing is available on mobile devices only. Here's your link to copy: " + link);
+            }
+        }
+        
+        // Primary share function that uses native share dialog when available
+        function nativeShare() {
+            const link = document.getElementById("refLink").value;
+            const shareData = {
+                title: 'Join me on this platform',
+                text: 'Hello! 👋 I wanted to share this great platform called SwapTicket where you can buy or sell train tickets securely. Use my referral link to sign up 👉',
+                url: link,
+            };
+            
+            try {
+                if (navigator.share) {
+                    // Use native share dialog on mobile devices
+                    navigator.share(shareData)
+                        .then(() => console.log('Successful share'))
+                        .catch(error => {
+                            console.log('Error sharing:', error);
+                            // Fallback to dropdown if native share fails
+                            toggleShareDropdown();
+                        });
+                } else {
+                    // Fallback to dropdown on desktop
+                    toggleShareDropdown();
+                }
+            } catch (e) {
+                console.log('Error with share API:', e);
+                // Fallback to dropdown if any error occurs
                 toggleShareDropdown();
             }
-        } catch (e) {
-            console.log('Error with share API:', e);
-            // Fallback to dropdown if any error occurs
-            toggleShareDropdown();
         }
-    }
-    
-    // Helper function to toggle the share dropdown
-    function toggleShareDropdown() {
-        const dropdown = document.querySelector('.share-dropdown-content');
-        if (dropdown.style.display === 'flex') {
-            dropdown.style.display = 'none';
-        } else {
-            dropdown.style.display = 'flex';
+        
+        // Helper function to toggle the share dropdown
+        function toggleShareDropdown() {
+            const dropdown = document.querySelector('.share-dropdown-content');
+            if (dropdown.style.display === 'flex') {
+                dropdown.style.display = 'none';
+            } else {
+                dropdown.style.display = 'flex';
+            }
         }
-    }
-</script>
+    </script>
 </body>
 </html>

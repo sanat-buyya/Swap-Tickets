@@ -381,7 +381,28 @@
                 </p>
             </div>
 
-            <table th:unless="${transactions.isEmpty()}">
+            <table th:unless="${transactions.isEmpty()}" id="transactiontable-preload">
+                <thead>
+                    <tr>
+                        <th><i class="fas fa-user"></i> Passenger Name</th>
+                        <th><i class="fas fa-user-check"></i> Buyer Email</th>
+                        <th><i class="fas fa-user-tie"></i> Seller Email</th>
+                        <th><i class="fas fa-rupee-sign"></i> Price</th>
+                        <th><i class="fas fa-percentage"></i> Admin Fee</th>
+                        <th><i class="fas fa-credit-card"></i> Payment ID</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td colspan="6" class="text-center" style="text-align: center; padding: 20px;">
+                            <i class="fas fa-spinner fa-spin" style="font-size: 1.5rem; color: var(--primary-color);"></i>
+                            <span style="margin-left: 10px; font-size: 1rem; color: #555;"> Loading transactions...</span>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <table th:unless="${transactions.isEmpty()}" id="transactiontable" style="display:none;">
                 <thead>
                     <tr>
                         <th><i class="fas fa-user"></i> Passenger Name</th>
@@ -446,4 +467,13 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        // Simulate loading delay
+        setTimeout(function() {
+            document.getElementById("transactiontable-preload").style.display = "none";
+            document.getElementById("transactiontable").style.display = "table";
+        }, 1000); // 1 second delay for demonstration
+    });
+    </script>
 </html>

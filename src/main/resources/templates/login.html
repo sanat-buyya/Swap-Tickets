@@ -379,30 +379,41 @@
         }
 
         /* Spinner styles */
-        .spinner {
-            width: 20px;
-            height: 20px;
-            border: 2px solid rgba(255, 255, 255, 0.3);
-            border-radius: 50%;
-            border-top-color: white;
-            animation: spin 1s linear infinite;
-            display: none;
-        }
+        /* Multicolor spinner for login button */
+.spinner {
+    width: 20px;
+    height: 20px;
+    --b: 4px;
+    aspect-ratio: 1;
+    border-radius: 50%;
+    background: conic-gradient(
+        #4361ee 0 25%,      /* blue */
+        #721c24 0 50%,      /* chocolate */
+        #1ed0d3 0 75%,      /* cyan */
+        #f8b400 0 100%      /* yellow/orange */
+    );
+    -webkit-mask:
+        repeating-conic-gradient(#0000 0deg,#000 1deg 70deg,#0000 71deg 90deg),
+        radial-gradient(farthest-side,#0000 calc(100% - var(--b) - 1px),#000 calc(100% - var(--b)));
+    -webkit-mask-composite: destination-in;
+            mask-composite: intersect;
+    animation: l5 1s infinite linear;
+    display: none;
+    vertical-align: middle;
+}
+@keyframes l5 {to{transform: rotate(.5turn)}}
 
-        @keyframes spin {
-            to {
-                transform: rotate(360deg);
-            }
-        }
+/* Show spinner when loading */
+.login-btn-submit.loading .spinner {
+    display: block;
+}
 
         /* Loading state */
         .login-btn-submit.loading .btn-content {
             opacity: 0;
         }
 
-        .login-btn-submit.loading .spinner {
-            display: block;
-        }
+        
 
         /* Register link */
         .register-link {

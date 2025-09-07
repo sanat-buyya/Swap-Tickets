@@ -528,8 +528,33 @@
                     No tickets have been added to the system yet.
                 </p>
             </div>
-
-            <table th:unless="${passengers.isEmpty()}">
+            
+            <table th:unless="${passengers.isEmpty()}" id="ticketsTable-preload">
+                <thead>
+                    <tr>
+                        <th><span class="emoji">📄</span> PNR</th>
+                        <th><i class="fas fa-user"></i> Passenger</th>
+                        <th><i class="fas fa-birthday-cake"></i> Age</th>
+                        <th><i class="fas fa-venus-mars"></i> Gender</th>
+                        <th><i class="fas fa-train"></i> Coach</th>
+                        <th><i class="fas fa-chair"></i> Seat</th>
+                        <th><i class="fas fa-rupee-sign"></i> Price</th>
+                        <th><i class="fas fa-user-tie"></i> Seller</th>
+                        <th><i class="fas fa-user-check"></i> Buyer</th>
+                        <th><i class="fas fa-info-circle"></i> Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td colspan="10" style="text-align: center; padding: 20px;">
+                            <i class="fas fa-spinner fa-spin" style="font-size: 1.5rem; color: var(--primary-color);"></i>
+                            <span style="margin-left: 10px; font-size: 1rem; color: #555;">Loading tickets...</span>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        
+            <table th:unless="${passengers.isEmpty()}" id="ticketsTable" style="display:none;">
                 <thead>
                     <tr>
                         <th><span class="emoji">📄</span> PNR</th>
@@ -607,5 +632,14 @@
         </div>
     </div>
 </body>
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        // Simulate loading delay
+        setTimeout(function() {
+            document.getElementById("ticketsTable-preload").style.display = "none";
+            document.getElementById("ticketsTable").style.display = "table";
+        }, 1000); // 1 second delay for demonstration
+    });
+    </script>
 </html>
 						

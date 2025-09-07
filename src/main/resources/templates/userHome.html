@@ -372,6 +372,92 @@ backdrop-filter: blur(2px);
 color: white;
 }
 
+/* Preloader Overlay */
+#preloader {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: #fff;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 20px;
+  justify-content: center;
+  align-items: start;
+  z-index: 1000;
+  padding: 24px;
+}
+
+/* Responsive: Stack vertically on mobile */
+@media (max-width: 768px) {
+  #preloader {
+    grid-template-columns: 1fr;
+    gap: 15px;
+    padding: 12px;
+  }
+  .preloader-card {
+    min-width: unset;
+    width: 100%;
+    max-width: 400px;
+    margin: 0 auto;
+  }
+}
+
+.preloader-card {
+  background-color: var(--card-bg);
+  border-radius: var(--card-radius);
+  padding: 1.5rem;
+  box-shadow: var(--shadow-sm);
+  min-height: 250px;
+  min-width: 260px;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  position: relative;
+  overflow: hidden;
+}
+
+.preloader-card::before {
+  content: "";
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  border-radius: inherit;
+  border: 2px solid transparent;
+  background: linear-gradient(90deg, rgba(0,0,0,0.08) 25%, rgba(0,0,0,0.02) 50%, rgba(0,0,0,0.08) 75%);
+  background-size: 200% 100%;
+  animation: borderFlash 2s linear infinite;
+  pointer-events: none;
+}
+
+.preloader-content {
+  height: 100%;
+  width: 100%;
+  background: linear-gradient(90deg, #eee 25%, #f9f9f9 50%, #eee 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+  border-radius: 8px;
+}
+
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+@keyframes borderFlash {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+#preloader.hidden {
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.6s ease, visibility 0.6s;
+}
+@media (min-width: 992px) {
+  #preloader {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
 /* Standard Cards */
 .card {
 background-color: var(--card-bg);
@@ -651,13 +737,11 @@ right: 0;
 transition: right 0.6s cubic-bezier(0.25, 0.8, 0.25, 1);
 }
 
-/* Animate menu items when menu opens */
 .navbar-right.active .mobile-menu li {
 opacity: 1;
 transform: translateX(0);
 }
 
-/* Staggered animation for menu items */
 .navbar-right.active .mobile-menu li:nth-child(1) {
 transition-delay: 0.1s;
 }
@@ -741,7 +825,9 @@ grid-template-columns: 1fr;
 
 .card, .wallet-card {
 min-height: 160px;
-padding: 1.2rem;
+padding: 1rem;
+width: 85vw;         /* even wider for small screens */
+    max-width: 98vw;
 }
 
 .wallet-amount {
@@ -861,6 +947,39 @@ transform: scale(1.05);
 		<p th:text="${error}"></p>
 	</div>
 
+  <div class="dashboard" data-aos="fade-up">  
+
+  
+	<div id="preloader">
+  <div class="preloader-card">
+    <div class="preloader-content"></div>
+  </div>
+  <div class="preloader-card">
+    <div class="preloader-content"></div>
+  </div>
+  <div class="preloader-card">
+    <div class="preloader-content"></div>
+  </div>
+  <div class="preloader-card">
+    <div class="preloader-content"></div>
+  </div>
+  <div class="preloader-card">
+    <div class="preloader-content"></div>
+  </div>
+  <div class="preloader-card">
+    <div class="preloader-content"></div>
+  </div>
+  <div class="preloader-card">
+    <div class="preloader-content"></div>
+  </div>
+  <div class="preloader-card">
+    <div class="preloader-content"></div>
+  </div>
+</div>
+</div>
+
+
+<div id="main-content" style="display:none; padding:0.5rem;">
 	<main class="dashboard">
 		<div class="card wallet-card" data-aos="fade-up" data-aos-delay="100">
 		<div class="swap-ticket-label">SwapTicket Wallet</div>
@@ -1005,6 +1124,7 @@ transform: scale(1.05);
 
 </main>
 </div>
+</div>
 
 <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
 <script>
@@ -1143,6 +1263,12 @@ button.style.pointerEvents = 'none';
 });
 });
 });
+
+window.addEventListener("load", function() {
+	  const preloader = document.getElementById("preloader");
+	  preloader.classList.add("hidden");
+	  document.getElementById("main-content").style.display = "block";
+	});
 </script>
 
 <!-- Show live chat only for logged-in users -->

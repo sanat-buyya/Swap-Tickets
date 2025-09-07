@@ -1,16 +1,14 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>Chat with User</title>
+    <title>Admin Chat</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap" rel="stylesheet">
-    <link rel="icon" href="/docs/swaplogo.png" type="image/png">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
     
-    <!-- WebSocket Dependencies -->
     <script src="https://cdn.jsdelivr.net/npm/sockjs-client/dist/sockjs.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/stompjs/lib/stomp.min.js"></script>
-    
+
     <style>
         * {
             margin: 0;
@@ -304,38 +302,19 @@
             </a>
             <div class="header-content">
                 <h2>Support Chat</h2>
-                <div class="user-email" th:text="${userEmail}">user@example.com</div>
+                <div class="user-email" id="userEmailDisplay"></div>
             </div>
             <div class="connection-status" id="connectionStatus"></div>
         </div>
 
         <!-- Chat History -->
         <div class="chat-box" id="chatBox">
-            <div th:each="msg : ${messages}">
-                <!-- Show user message -->
-                <div class="message-container user-container" th:if="${msg.message != null}">
-                    <div class="message user">
-                        <div class="sender-name">User</div>
-                        <p th:text="${msg.message}"></p>
-                        <div class="timestamp" th:text="${#temporals.format(msg.timestamp, 'HH:mm')}"></div>
-                    </div>
-                </div>
-                
-                <!-- Show admin reply if available -->
-                <div class="message-container admin-container" th:if="${msg.adminReply != null}">
-                    <div class="message admin">
-                        <div class="sender-name">You (Admin)</div>
-                        <p th:text="${msg.adminReply}"></p>
-                        <div class="timestamp" th:text="${#temporals.format(msg.timestamp, 'HH:mm')}"></div>
-                    </div>
-                </div>
-            </div>
+            <!-- Messages will be loaded dynamically -->
         </div>
 
         <!-- Reply Form -->
         <div class="reply-box">
             <div class="reply-form">
-                <input type="hidden" id="userEmail" th:value="${userEmail}" />
                 <input type="text" class="reply-input" id="replyInput" placeholder="Type your reply..." autocomplete="off" />
                 <button type="button" class="send-button" id="sendReplyBtn">
                     <i class="fas fa-paper-plane"></i>
@@ -344,17 +323,20 @@
             
             <!-- Close Conversation Form -->
             <form th:action="@{/admin/support/close}" method="get" class="close-form">
-                <input type="hidden" name="email" th:value="${userEmail}" />
-                <button type="submit" class="close-button" onclick="return confirm('Are you sure you want to close and delete this conversation?');">
-                    <i class="fas fa-times-circle"></i> Close Conversation
-                </button>
-            </form>
+    <input type="hidden" name="email" th:value="${userEmail}" />
+    <button type="submit" class="close-button" onclick="return confirm('Are you sure you want to close and delete this conversation?');">
+        <i class="fas fa-times-circle"></i> Close Conversation
+    </button>
+</form>
         </div>
     </div>
 
     <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        const userEmail = urlParams.get('email'); // get email from URL
+        document.getElementById('userEmailDisplay').textContent = userEmail;
+
         let stompClient = null;
-        const userEmail = document.getElementById('userEmail').value;
         const connectionStatus = document.getElementById('connectionStatus');
 
         function connect() {
@@ -389,6 +371,19 @@
             });
         }
 
+        // Fetch chat history on page load
+        function loadHistory() {
+            fetch('/admin/support/history?userEmail=' + encodeURIComponent(userEmail))
+                .then(res => res.json())
+                .then(messages => {
+                    // Sort messages by timestamp ascending
+                    messages.sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
+                    messages.forEach(msg => {
+                        displayMessage(msg, msg.adminReply ? 'admin' : 'user');
+                    });
+                });
+        }
+
         function sendReply() {
             const replyInput = document.getElementById('replyInput');
             const replyContent = replyInput.value.trim();
@@ -405,13 +400,8 @@
                 stompClient.send("/app/support/admin", {}, JSON.stringify(message));
                 
                 // Also send via REST API as backup
-                const formData = new FormData();
-                formData.append('reply', replyContent);
-                formData.append('email', userEmail);
-                
-                fetch('/admin/support/reply', {
-                    method: 'POST',
-                    body: formData
+                fetch('/admin/support/reply?userEmail=' + encodeURIComponent(userEmail) + '&reply=' + encodeURIComponent(replyContent), {
+                    method: 'POST'
                 }).then(response => {
                     if (response.ok) {
                         replyInput.value = '';
@@ -432,13 +422,8 @@
             const replyContent = replyInput.value.trim();
             
             if (replyContent) {
-                const formData = new FormData();
-                formData.append('reply', replyContent);
-                formData.append('email', userEmail);
-                
-                fetch('/admin/support/reply', {
-                    method: 'POST',
-                    body: formData
+                fetch('/admin/support/reply?userEmail=' + encodeURIComponent(userEmail) + '&reply=' + encodeURIComponent(replyContent), {
+                    method: 'POST'
                 }).then(response => {
                     if (response.ok) {
                         // Display admin reply immediately
@@ -475,7 +460,7 @@
 
             const timestamp = document.createElement('div');
             timestamp.className = 'timestamp';
-            timestamp.textContent = formatTimestamp(message.timestamp || new Date());
+            timestamp.textContent = formatTimestampAMPM(message.timestamp || new Date());
 
             messageDiv.appendChild(messageText);
             messageDiv.appendChild(timestamp);
@@ -486,22 +471,48 @@
             chatBox.scrollTop = chatBox.scrollHeight;
         }
 
-        function formatTimestamp(timestamp) {
+        // Function to format time in AM/PM format
+        function formatTimestampAMPM(timestamp) {
             const date = new Date(timestamp);
-            return date.toLocaleTimeString('en-US', {
-                hour12: false,
-                hour: '2-digit',
-                minute: '2-digit'
-            });
+            let hours = date.getHours();
+            let minutes = date.getMinutes();
+            const ampm = hours >= 12 ? 'PM' : 'AM';
+            
+            // Convert to 12-hour format
+            hours = hours % 12;
+            hours = hours ? hours : 12; // the hour '0' should be '12'
+            
+            // Add leading zero to minutes if needed
+            minutes = minutes < 10 ? '0' + minutes : minutes;
+            
+            return hours + ':' + minutes + ' ' + ampm;
         }
 
         function playNotificationSound() {
             try {
-                const audio = new Audio('data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2/LDciUFLIHO8tiJNwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAoUXrTp66hVFApGn+DyvmwhBSuBzvLZiTYIG2m98OScTgwOUarm7blmGgU7k9n1unEiBC13yO/eizEIHWq+8+OWT');
+                const audio = new Audio('data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2/LDciUFLIHO8tnJNwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAoUXrTp66hVFApGn+DyvmwhBSuBzvLZiTYIG2m98OScTgwOUarm7blmGgU7k9n1unEiBC13yO/eizEIHWq+8+OWT');
                 audio.play().catch(e => console.log('Audio play failed:', e));
             } catch (e) {
                 console.log('Audio notification failed:', e);
             }
+        }
+
+        // Close Conversation
+        function closeConversation() {
+            if(!confirm('Are you sure you want to close and delete this conversation?')) return;
+
+            fetch('/admin/support/close?userEmail=' + encodeURIComponent(userEmail), { 
+                method: 'GET' 
+            })
+            .then(res => res.json())
+            .then(resp => {
+                if(resp.success) {
+                    alert('Conversation closed!');
+                    window.location.href = '/admin/support/list';
+                } else {
+                    alert('Failed to close conversation.');
+                }
+            }).catch(err => console.error(err));
         }
 
         // Event listeners
@@ -511,12 +522,11 @@
                 sendReply();
             }
         });
-
+        
         // Auto-scroll to bottom when page loads
         window.onload = function() {
-            const chatBox = document.getElementById("chatBox");
-            chatBox.scrollTop = chatBox.scrollHeight;
-            connect();
+            loadHistory(); // load all previous messages first
+            connect();     // then connect WebSocket
         };
 
         // Reconnect on page visibility change

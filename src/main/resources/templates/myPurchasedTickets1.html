@@ -236,10 +236,51 @@
             color: var(--gray);
         }
 
-        .empty-icon {
+         .empty-icon {
             font-size: 50px;
             color: var(--border);
             margin-bottom: 20px;
+        }
+
+        /* Preloader Styles */
+        .ticket-container-preloader {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 20px;
+        }
+        .preloader-card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+            overflow: hidden;
+            animation: shimmer 1.5s infinite;
+        }
+        .preloader-header {
+            background-color: var(--primary-light);
+            height: 50px;
+            width: 100%;
+        }
+        .preloader-body {
+            padding: 20px;
+        }
+        .preloader-footer {
+            display: none;
+        }
+        .placeholder-line {
+            background: linear-gradient(90deg, var(--light) 25%, var(--border) 50%, var(--light) 75%);
+            background-size: 200% 100%;
+            border-radius: 6px;
+            margin-bottom: 10px;
+            animation: shimmer 1.5s infinite;
+        }
+
+        @keyframes shimmer {
+            0% {
+                background-position: 200% 0;
+            }
+            100% {
+                background-position: -200% 0;
+            }
         }
 
         /* Responsive Adjustments */
@@ -249,7 +290,8 @@
             }
             
             .passenger-info {
-                grid-template-columns: 1fr;
+               display: grid;
+                grid-template-columns: repeat(2, 1fr);
             }
             
             h1 {
@@ -299,6 +341,7 @@
         transform: rotate(0deg);
     }
 }
+
     </style>
 </head>
 <body>
@@ -323,7 +366,29 @@
     </button>
     </div>
 
-    <div class="ticket-container" th:unless="${purchasedPassengers.empty}">
+    <div class="ticket-container-preloader" id="preloader" th:unless="${purchasedPassengers.empty}">
+        <!-- Preloader Card 1 -->
+        <div class="preloader-card">
+            <div class="preloader-header"></div>
+            <div class="preloader-body">
+                <div class="placeholder-line" style="width: 80%; height: 20px; margin-bottom: 20px;"></div>
+                <div class="placeholder-line" style="width: 50%; margin: 20px auto;"></div>
+                <div class="placeholder-line" style="height: 100px;"></div>
+            </div>
+        </div>
+        <!-- Preloader Card 2 -->
+         <div class="preloader-card">
+            <div class="preloader-header"></div>
+            <div class="preloader-body">
+                <div class="placeholder-line" style="width: 60%; height: 20px; margin-bottom: 20px;"></div>
+                <div class="placeholder-line" style="width: 40%; margin: 20px auto;"></div>
+                <div class="placeholder-line" style="height: 100px;"></div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="ticket-container" th:unless="${purchasedPassengers.empty}" style="display:none;" id="main-content">
         <div th:each="passenger : ${purchasedPassengers}" class="ticket-card">
             <div class="ticket-header">
                 <div class="ticket-pnr" th:text="${passenger.pnr.pnrNumber}">PNR12345678</div>
@@ -404,4 +469,15 @@
 </div>
 
 </body>
+<script>
+    // Show preloader when page is loading
+    document.getElementById('preloader').style.display = 'block';
+    document.getElementById('main-content').style.display = 'none';
+    // Fetch and display ticket data after 1 second
+    setTimeout(() => {
+        document.getElementById('preloader').style.display = 'none';
+        document.getElementById('main-content').style.display = 'grid';
+    }, 1000);
+
+</script>
 </html>
