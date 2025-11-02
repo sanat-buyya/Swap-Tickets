@@ -1,162 +1,242 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-  <title>Support Requests</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="icon" href="/docs/swaplogo.png" type="image/png">
-  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-    
-    body {
-      font-family: 'Roboto', Arial, sans-serif;
-      background-color: #f0f2f5;
-      color: #4a4a4a;
-      height: 100vh;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-    }
-    
-    .container {
-      width: 100%;
-      max-width: 900px;
-      height: 100vh;
-      display: flex;
-      flex-direction: column;
-      background-color: white;
-      box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
-    }
-    
-    .header {
-      background-color: #075e54;
-      color: white;
-      padding: 15px 20px;
-      display: flex;
-      align-items: center;
-      position: sticky;
-      top: 0;
-      z-index: 100;
-    }
-    
-    .header h2 {
-      font-size: 1.3rem;
-      font-weight: 500;
-    }
-
-    .header a {
-  color: #fff;
-  text-decoration: none;
-  font-size: 1.3rem;
-  margin-right: 12px;
-  display: flex;
-  align-items: center;
-  transition: color 0.2s;
-}
-
-.chat-header a:hover,
-.chat-header a:focus {
-  color: #ffd166;
-  outline: none;
-}
-    
-    .user-list {
-      flex: 1;
-      overflow-y: auto;
-      background-color: white;
-    }
-    
-    .user-item {
-      display: flex;
-      padding: 15px 20px;
-      border-bottom: 1px solid #f0f0f0;
-      text-decoration: none;
-      color: inherit;
-      transition: background-color 0.2s;
-    }
-    
-    .user-item:hover {
-      background-color: #f5f5f5;
-    }
-    
-    .user-avatar {
-      width: 50px;
-      height: 50px;
-      border-radius: 50%;
-      background-color: #128c7e;
-      color: white;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      margin-right: 15px;
-      flex-shrink: 0;
-      font-size: 1.2rem;
-    }
-    
-    .user-info {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-    }
-    
-    .user-email {
-      font-weight: 500;
-      margin-bottom: 5px;
-      color: #333;
-    }
-    
-    .user-status {
-      font-size: 0.85rem;
-      color: #777;
-    }
-    
-    .empty-list {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      height: 100%;
-      color: #777;
-      text-align: center;
-      padding: 20px;
-    }
-    
-    .empty-list i {
-      font-size: 3rem;
-      margin-bottom: 15px;
-      color: #128c7e;
-    }
-    
-    @media (max-width: 940px) {
-      .container {
-        max-width: 100%;
-      }
-    }
-    
-    @media (max-width: 768px) {
-      body {
-        background-color: white;
-      }
-      
-      .container {
-        box-shadow: none;
-      }
-    }
-  </style>
+    <title>Support Requests</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sockjs-client/dist/sockjs.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/stompjs/lib/stomp.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f5f7fa;
+            color: #333;
+            padding: 0;
+            margin: 0;
+        }
+        
+        .container {
+            max-width: 100%;
+            width: 70%;
+            margin: 0 auto;
+            background: white;
+            min-height: 100vh;
+        }
+        
+        .header {
+            background-color: #2c3e50;
+            color: white;
+            padding: 15px;
+            display: flex;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .header a {
+            color: #fff;
+            text-decoration: none;
+            margin-right: 15px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .header h2 {
+            font-size: 1.2rem;
+            font-weight: 500;
+        }
+        
+        .user-list {
+            padding: 10px;
+        }
+        
+        .user-item {
+            display: flex;
+            align-items: center;
+            padding: 15px;
+            border-bottom: 1px solid #eee;
+            text-decoration: none;
+            color: inherit;
+            transition: background-color 0.2s;
+        }
+        
+        .user-item:hover {
+            background-color: #f9f9f9;
+        }
+        
+        .user-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background-color: #e6e6e6;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+            flex-shrink: 0;
+        }
+        
+        .user-avatar i {
+            font-size: 20px;
+            color: #777;
+        }
+        
+        .user-info {
+            flex: 1;
+        }
+        
+        .user-email {
+            font-weight: 500;
+            margin-bottom: 5px;
+            color: #2c3e50;
+        }
+        
+        .user-status {
+            font-size: 0.8rem;
+            color: #7f8c8d;
+        }
+        
+        .empty-list {
+            text-align: center;
+            padding: 40px 20px;
+            color: #7f8c8d;
+        }
+        
+        .empty-list i {
+            font-size: 50px;
+            margin-bottom: 15px;
+            color: #bdc3c7;
+        }
+        
+        .empty-list h3 {
+            margin-bottom: 10px;
+            font-weight: 500;
+        }
+        
+        .empty-list p {
+            font-size: 0.9rem;
+        }
+        
+        /* New user notification */
+        .new-user-notification {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: #075e54;
+            color: white;
+            padding: 12px 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            display: flex;
+            align-items: center;
+            z-index: 1000;
+            animation: slideIn 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .new-user-notification i {
+            margin-right: 10px;
+        }
+        
+        @keyframes slideIn {
+            from {
+                transform: translateX(100px);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+        
+        /* Connection status */
+        .connection-status {
+            position: fixed;
+            top: 15px;
+            right: 15px;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background-color: #e74c3c;
+            z-index: 101;
+        }
+        
+        .connection-status.connected {
+            background-color: #2ecc71;
+        }
+        
+        /* New user highlight */
+        .new-user {
+            background-color: rgba(231, 248, 239, 0.5);
+            animation: highlight 2s ease;
+            border-left: 4px solid #2ecc71;
+        }
+        
+        @keyframes highlight {
+            0% { background-color: rgba(231, 248, 239, 1); }
+            100% { background-color: rgba(231, 248, 239, 0.5); }
+        }
+        
+        /* Loading spinner */
+        .loading {
+            display: flex;
+            justify-content: center;
+            padding: 20px;
+        }
+        
+        .spinner {
+            width: 24px;
+            height: 24px;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #075e54;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
 </head>
 <body>
   <div class="container">
     <div class="header">
-      <a href="/admin/dashboard"><i class="fas fa-arrow-left"></i></a><h2>Support Requests</h2>
+      <a href="/admin/dashboard"><i class="fas fa-arrow-left"></i></a>
+      <h2>Support Requests</h2>
     </div>
     
-    <div class="user-list">
+    <div class="connection-status" id="connectionStatus"></div>
+    
+    <div class="user-list" id="userList">
+      <div class="loading" id="loadingIndicator">
+        <div class="spinner"></div>
+      </div>
+      
+      <div th:if="${#lists.isEmpty(userEmails)}" class="empty-list" id="emptyState">
+        <i class="far fa-comments"></i>
+        <h3>No support requests</h3>
+        <p>When users submit support requests, they will appear here.</p>
+      <br>
+      <br><br><br>
+        <a href="/admin/dashboard" style="padding-top: 30%; text-decoration: none; border: 1px solid rgb(16, 74, 200);
+    background-color: rgb(16, 74, 200);
+    border-radius: 6px;
+    font-size: 17px;
+    font-weight: 700;
+    color: #e6e6e6;
+    padding: 10px;" >Go TO Home Page</a>
+
+      </div>
+      
       <th:block th:if="${not #lists.isEmpty(userEmails)}">
         <a th:each="email : ${userEmails}" th:href="@{/admin/support/chat(email=${email})}" class="user-item">
           <div class="user-avatar">
@@ -168,13 +248,143 @@
           </div>
         </a>
       </th:block>
-      
-      <div th:if="${#lists.isEmpty(userEmails)}" class="empty-list">
-        <i class="far fa-comments"></i>
-        <h3>No support requests</h3>
-        <p>When users submit support requests, they will appear here.</p>
-      </div>
     </div>
   </div>
+
+  <script>
+    let stompClient = null;
+    const connectionStatus = document.getElementById('connectionStatus');
+    const userList = document.getElementById('userList');
+    const loadingIndicator = document.getElementById('loadingIndicator');
+    const emptyState = document.getElementById('emptyState');
+    
+    // Hide loading indicator after page loads
+    window.addEventListener('load', function() {
+        setTimeout(() => {
+            if (loadingIndicator) loadingIndicator.style.display = 'none';
+        }, 500);
+    });
+    
+    function connect() {
+        const socket = new SockJS('/ws');
+        stompClient = Stomp.over(socket);
+        
+        stompClient.connect({}, function (frame) {
+            console.log('Connected: ' + frame);
+            connectionStatus.classList.add('connected');
+            
+            // Subscribe to new support requests
+            stompClient.subscribe('/topic/support-requests', function (message) {
+                const newUserEmail = JSON.parse(message.body).email;
+                console.log('New support request from: ' + newUserEmail);
+                
+                // Add new user to the list
+                addUserToList(newUserEmail);
+                
+                // Show notification
+                showNewUserNotification(newUserEmail);
+            });
+            
+        }, function(error) {
+            console.log('WebSocket connection error:', error);
+            connectionStatus.classList.remove('connected');
+            
+            // Try to reconnect after 5 seconds
+            setTimeout(connect, 5000);
+        });
+    }
+    
+    function addUserToList(email) {
+        // Hide empty state if it's shown
+        if (emptyState) emptyState.style.display = 'none';
+        
+        // Hide loading indicator
+        if (loadingIndicator) loadingIndicator.style.display = 'none';
+        
+        // Check if user already exists in the list
+        const existingUsers = document.querySelectorAll('.user-email');
+        for (let i = 0; i < existingUsers.length; i++) {
+            if (existingUsers[i].textContent === email) {
+                // User already exists, just highlight it
+                const userItem = existingUsers[i].closest('.user-item');
+                userItem.classList.add('new-user');
+                setTimeout(() => {
+                    userItem.classList.remove('new-user');
+                }, 2000);
+                return;
+            }
+        }
+        
+        // Create new user item
+        const userItem = document.createElement('a');
+        userItem.href = `/admin/support/chat?email=${encodeURIComponent(email)}`;
+        userItem.className = 'user-item new-user';
+        
+        const userAvatar = document.createElement('div');
+        userAvatar.className = 'user-avatar';
+        userAvatar.innerHTML = '<i class="fas fa-user"></i>';
+        
+        const userInfo = document.createElement('div');
+        userInfo.className = 'user-info';
+        
+        const userEmail = document.createElement('div');
+        userEmail.className = 'user-email';
+        userEmail.textContent = email;
+        
+        const userStatus = document.createElement('div');
+        userStatus.className = 'user-status';
+        userStatus.textContent = 'Tap to view conversation';
+        
+        userInfo.appendChild(userEmail);
+        userInfo.appendChild(userStatus);
+        
+        userItem.appendChild(userAvatar);
+        userItem.appendChild(userInfo);
+        
+        // Add to the top of the list
+        userList.insertBefore(userItem, userList.firstChild);
+        
+        // Remove highlight after 2 seconds
+        setTimeout(() => {
+            userItem.classList.remove('new-user');
+        }, 2000);
+    }
+    
+    function showNewUserNotification(email) {
+        // Create notification
+        const notification = document.createElement('div');
+        notification.className = 'new-user-notification';
+        notification.innerHTML = `
+            <i class="fas fa-user-plus"></i>
+            <span>New support request from ${email}</span>
+        `;
+        
+        // Add click handler to go to the chat
+        notification.addEventListener('click', function() {
+            window.location.href = `/admin/support/chat?email=${encodeURIComponent(email)}`;
+        });
+        
+        document.body.appendChild(notification);
+        
+        // Remove notification after 5 seconds
+        setTimeout(() => {
+            if (notification.parentNode) {
+                notification.parentNode.removeChild(notification);
+            }
+        }, 5000);
+    }
+    
+    // Connect to WebSocket when page loads
+    window.onload = function() {
+        connect();
+    };
+    
+    // Handle connection loss
+    window.addEventListener('beforeunload', function() {
+        if (stompClient && stompClient.connected) {
+            stompClient.disconnect();
+        }
+    });
+  </script>
 </body>
 </html>

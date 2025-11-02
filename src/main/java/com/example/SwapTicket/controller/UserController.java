@@ -294,14 +294,12 @@ public class UserController {
         return stations;
     }
     
- // Step 1: Show Forgot Password Page
     @GetMapping("/forgot-password")
     public String forgotPasswordPage(Model model) {
         model.addAttribute("showOtpForm", null); // Only email form
         return "forgotPassword";
     }
 
-    // Step 2: Send OTP after user submits email
     @PostMapping("/forgot-password")
     public String sendOtpForForgotPassword(@RequestParam("email") String email,
                                            HttpSession session,
@@ -313,11 +311,9 @@ public class UserController {
             return "forgotPassword";
         }
 
-        // Generate and store OTP
         int otp = new Random().nextInt(100000, 1000000);
-        emailSender.sendEmail(user, otp); // You should already have this implemented
+        emailSender.sendEmail(user, otp);
 
-        // Store in session
         session.setAttribute("forgotUser", user);
         session.setAttribute("forgotOtp", otp);
         session.setAttribute("otpTime", System.currentTimeMillis());
@@ -325,7 +321,7 @@ public class UserController {
         // Show OTP + new password form
         model.addAttribute("email", email);
         model.addAttribute("showOtpForm", true);
-        return "forgotPassword"; // same page, conditionally renders OTP form
+        return "forgotPassword";
     }
 
     @PostMapping("/verify-forgot-password")
@@ -374,7 +370,7 @@ public class UserController {
     
     @GetMapping("/logout")
     public String logout(HttpSession session) {
-        session.invalidate(); // Clear session
+        session.invalidate();
         return "home";
     }
     
@@ -497,6 +493,9 @@ public class UserController {
 
         // Push to admin
         messagingTemplate.convertAndSend("/topic/admin/" + message.getUserEmail(), saved);
+        
+        // Notify all admins about new support request
+        notifyNewSupportRequest(message.getUserEmail());
     }
     
     @GetMapping("/support/history")
@@ -526,6 +525,18 @@ public class UserController {
         // Optionally, update admin view
         messagingTemplate.convertAndSend("/topic/admin/" + message.getUserEmail(), saved);
     }
+    
+    private void notifyNewSupportRequest(String userEmail) {
+        Map<String, String> notification = new HashMap<>();
+        notification.put("email", userEmail);
+        notification.put("timestamp", LocalDateTime.now().toString());
+        notification.put("type", "new_support_request");
+        
+        // Send notification to all admins listening on the support-requests topic
+        messagingTemplate.convertAndSend("/topic/support-requests", notification);
+        System.out.println("Notification sent for new support request from: " + userEmail);
+    }
+
 
     public String generateReferralCode(String nameOrEmail) {
         return nameOrEmail.substring(0, 4).toUpperCase() + UUID.randomUUID().toString().substring(0, 4).toUpperCase();
