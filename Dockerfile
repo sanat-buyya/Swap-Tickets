@@ -1,24 +1,21 @@
 # ===============================
-# 1. Use official OpenJDK image
+# 1. Build stage
+# ===============================
+FROM maven:3.9.4-eclipse-temurin-17 AS build
+
+WORKDIR /app
+COPY pom.xml .
+COPY src ./src
+
+RUN mvn clean package -DskipTests
+
+# ===============================
+# 2. Run stage
 # ===============================
 FROM openjdk:17-jdk-slim
-
-# ===============================
-# 2. Set working directory
-# ===============================
 WORKDIR /app
 
-# ===============================
-# 3. Copy Maven build output JAR
-# ===============================
-COPY target/SwapTicket-0.0.1-SNAPSHOT.jar app.jar
+COPY --from=build /app/target/*.jar app.jar
 
-# ===============================
-# 4. Expose application port
-# ===============================
 EXPOSE 8085
-
-# ===============================
-# 5. Run the Spring Boot JAR
-# ===============================
 ENTRYPOINT ["java", "-jar", "app.jar"]
