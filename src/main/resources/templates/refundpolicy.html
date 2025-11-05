@@ -6,12 +6,7 @@
     <link rel="icon" href="/docs/swaplogo.png" type="image/png">
     <title>Refund Policy - SwapTicket</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             line-height: 1.6;
@@ -19,268 +14,92 @@
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
         }
-
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 20px;
-        }
-
+        .container { max-width: 1200px; margin: 0 auto; padding: 20px; }
         .policy-card {
-            background: white;
-            border-radius: 15px;
+            background: white; border-radius: 15px;
             box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
-            overflow: hidden;
-            margin: 20px 0;
+            overflow: hidden; margin: 20px 0;
         }
-
         .header {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 40px 30px;
-            text-align: center;
+            color: white; padding: 40px 30px; text-align: center;
         }
-
-        .header h1 {
-            font-size: 2.5rem;
-            margin-bottom: 10px;
-            font-weight: 700;
-        }
-
-        .header .brand {
-            font-size: 1.2rem;
-            opacity: 0.9;
-            margin-bottom: 15px;
-        }
-
+        .header h1 { font-size: 2.5rem; margin-bottom: 10px; font-weight: 700; }
+        .header .brand { font-size: 1.2rem; opacity: 0.9; margin-bottom: 15px; }
         .effective-date {
             background: rgba(255, 255, 255, 0.2);
-            padding: 10px 20px;
-            border-radius: 25px;
-            display: inline-block;
-            font-weight: 500;
+            padding: 10px 20px; border-radius: 25px;
+            display: inline-block; font-weight: 500;
         }
-
-        .content {
-            padding: 40px 30px;
-        }
-
+        .content { padding: 40px 30px; }
         .intro {
-            font-size: 1.1rem;
-            color: #666;
-            margin-bottom: 40px;
-            text-align: center;
-            font-style: italic;
+            font-size: 1.1rem; color: #666;
+            margin-bottom: 40px; text-align: center; font-style: italic;
         }
-
         .section {
-            margin-bottom: 35px;
-            padding: 25px;
-            border-left: 4px solid #667eea;
-            background: #f8f9ff;
+            margin-bottom: 35px; padding: 25px;
+            border-left: 4px solid #667eea; background: #f8f9ff;
             border-radius: 0 10px 10px 0;
         }
-
         .section h2 {
-            color: #667eea;
-            font-size: 1.4rem;
-            margin-bottom: 15px;
-            display: flex;
-            align-items: center;
+            color: #667eea; font-size: 1.4rem;
+            margin-bottom: 15px; display: flex; align-items: center;
         }
-
         .section-number {
-            background: #667eea;
-            color: white;
-            width: 30px;
-            height: 30px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-right: 15px;
-            font-weight: bold;
-            font-size: 0.9rem;
+            background: #667eea; color: white; width: 30px; height: 30px;
+            border-radius: 50%; display: flex; align-items: center;
+            justify-content: center; margin-right: 15px;
+            font-weight: bold; font-size: 0.9rem;
         }
-
-        .section p {
-            margin-bottom: 15px;
-            color: #555;
-        }
-
-        .section ul {
-            margin: 15px 0;
-            padding-left: 20px;
-        }
-
-        .section li {
-            margin-bottom: 8px;
-            color: #555;
-        }
-
+        .section p { margin-bottom: 15px; color: #555; }
+        .section ul { margin: 15px 0; padding-left: 20px; }
+        .section li { margin-bottom: 8px; color: #555; }
         .highlight {
-            background: #fff3cd;
-            border: 1px solid #ffeaa7;
-            padding: 15px;
-            border-radius: 8px;
-            margin: 15px 0;
+            background: #fff3cd; border: 1px solid #ffeaa7;
+            padding: 15px; border-radius: 8px; margin: 15px 0;
         }
-
         .warning {
-            background: #f8d7da;
-            border: 1px solid #f5c6cb;
-            color: #721c24;
-            padding: 15px;
-            border-radius: 8px;
-            margin: 15px 0;
+            background: #f8d7da; border: 1px solid #f5c6cb;
+            color: #721c24; padding: 15px; border-radius: 8px; margin: 15px 0;
         }
-
         .contact-section {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 30px;
-            text-align: center;
-            margin-top: 40px;
-            border-radius: 10px;
+            color: white; padding: 30px; text-align: center;
+            margin-top: 40px; border-radius: 10px;
         }
-
-        .contact-section h2 {
-            margin-bottom: 20px;
-            font-size: 1.5rem;
-        }
-
+        .contact-section h2 { margin-bottom: 20px; font-size: 1.5rem; }
         .contact-info {
-            font-size: 1.1rem;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
+            font-size: 1.1rem; display: flex; align-items: center;
+            justify-content: center; gap: 10px;
         }
-
         .email-link {
-            color: #fff;
-            text-decoration: none;
-            font-weight: bold;
-            padding: 10px 20px;
-            background: rgba(255, 255, 255, 0.2);
-            border-radius: 25px;
-            transition: all 0.3s ease;
+            color: #fff; text-decoration: none; font-weight: bold;
+            padding: 10px 20px; background: rgba(255, 255, 255, 0.2);
+            border-radius: 25px; transition: all 0.3s ease;
         }
-
-        .email-link:hover {
-            background: rgba(255, 255, 255, 0.3);
-            transform: translateY(-2px);
-        }
-
-        .footer {
-            text-align: center;
-            padding: 20px;
-            color: #666;
-            font-size: 0.9rem;
-        }
-
-        /* Mobile Responsive */
+        .email-link:hover { background: rgba(255, 255, 255, 0.3); transform: translateY(-2px); }
+        .footer { text-align: center; padding: 20px; color: #666; font-size: 0.9rem; }
         @media (max-width: 768px) {
-            .container {
-                padding: 10px;
-            }
-
-            .header {
-                padding: 30px 20px;
-            }
-
-            .header h1 {
-                font-size: 2rem;
-            }
-
-            .content {
-                padding: 30px 20px;
-            }
-
-            .section {
-                padding: 20px 15px;
-                margin-bottom: 25px;
-            }
-
-            .section h2 {
-                font-size: 1.2rem;
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 10px;
-            }
-
-            .section-number {
-                margin-right: 0;
-                margin-bottom: 5px;
-            }
-
-            .contact-info {
-                flex-direction: column;
-                gap: 15px;
-            }
-
-            .contact-section {
-                padding: 25px 15px;
-            }
+            .container { padding: 10px; } .header { padding: 30px 20px; }
+            .header h1 { font-size: 2rem; } .content { padding: 30px 20px; }
+            .section { padding: 20px 15px; margin-bottom: 25px; }
+            .section h2 { font-size: 1.2rem; flex-direction: column; align-items: flex-start; gap: 10px; }
+            .section-number { margin-right: 0; margin-bottom: 5px; }
+            .contact-info { flex-direction: column; gap: 15px; }
+            .contact-section { padding: 25px 15px; }
         }
-
         @media (max-width: 480px) {
-            .header h1 {
-                font-size: 1.8rem;
-            }
-
-            .header .brand {
-                font-size: 1rem;
-            }
-
-            .effective-date {
-                font-size: 0.9rem;
-                padding: 8px 15px;
-            }
-
-            .section {
-                padding: 15px 10px;
-            }
-
-            .section h2 {
-                font-size: 1.1rem;
-            }
-
-            .intro {
-                font-size: 1rem;
-            }
+            .header h1 { font-size: 1.8rem; }
+            .header .brand { font-size: 1rem; }
+            .effective-date { font-size: 0.9rem; padding: 8px 15px; }
+            .section { padding: 15px 10px; }
+            .section h2 { font-size: 1.1rem; }
+            .intro { font-size: 1rem; }
         }
-
-        /* Animation */
-        .section {
-            animation: fadeInUp 0.6s ease-out;
-        }
-
-        @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .policy-card {
-            animation: fadeIn 0.8s ease-out;
-        }
-
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: scale(0.95);
-            }
-            to {
-                opacity: 1;
-                transform: scale(1);
-            }
-        }
+        .section { animation: fadeInUp 0.6s ease-out; }
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+        .policy-card { animation: fadeIn 0.8s ease-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
     </style>
 </head>
 <body>
@@ -294,86 +113,71 @@
 
             <div class="content">
                 <p class="intro">
-                    At SwapTicket, we aim to ensure a smooth and secure ticket exchange process. 
-                    This Refund Policy outlines the circumstances under which refunds may or may not be issued.
+                    At SwapTicket, we act solely as a digital platform that connects users who wish to list and share details of their confirmed train bookings with interested travelers.  
+                    We do not issue, resell, or guarantee tickets. This Refund Policy explains when refunds may apply for payments made through our platform.
                 </p>
 
                 <div class="section">
-                    <h2>
-                        <span class="section-number">1</span>
-                        No Refund After Purchase
-                    </h2>
-                    <p>Once a ticket or passenger seat is purchased through SwapTicket, the transaction is considered final.</p>
+                    <h2><span class="section-number">1</span> No Refund After Confirmation</h2>
+                    <p>Once a user completes a transaction (for example, purchasing a listed passenger slot), it is treated as final.</p>
                     <p><strong>Refunds will not be issued for:</strong></p>
                     <ul>
-                        <li>Change of mind after purchase</li>
-                        <li>Incorrect selection of ticket/passenger</li>
-                        <li>Travel disruptions (train delays, cancellations, etc.)—please refer to the railway authority for such issues</li>
+                        <li>Change of mind or plan after purchase</li>
+                        <li>Incorrect selection of train, passenger, or journey details</li>
+                        <li>Travel cancellations or delays by railway authorities (refer to IRCTC for official refunds)</li>
                     </ul>
                 </div>
 
                 <div class="section">
-                    <h2>
-                        <span class="section-number">2</span>
-                        Invalid or Fraudulent Tickets
-                    </h2>
-                    <p>If a purchased ticket is found to be invalid, cancelled, or fake:</p>
+                    <h2><span class="section-number">2</span> Invalid or Misrepresented Listings</h2>
+                    <p>If a buyer reports that the ticket information provided by a seller is invalid or fraudulent:</p>
                     <ul>
-                        <li>Buyers must report the issue within <strong>24 hours</strong> of purchase</li>
-                        <li>SwapTicket will investigate the complaint, and if the claim is verified, the buyer may receive a full refund</li>
+                        <li>The issue must be reported within <strong>24 hours</strong> of the transaction</li>
+                        <li>SwapTicket will investigate the complaint, and if verified, a full refund may be initiated</li>
                     </ul>
                     <div class="warning">
-                        <strong>⚠️ Warning:</strong> Sellers found submitting fraudulent tickets will be permanently banned and may face legal action.
+                        <strong>⚠️ Important:</strong> Any seller found listing fraudulent or altered ticket details will face permanent account suspension and possible legal action.
                     </div>
                 </div>
 
                 <div class="section">
-                    <h2>
-                        <span class="section-number">3</span>
-                        Refund Processing
-                    </h2>
+                    <h2><span class="section-number">3</span> Refund Processing Time</h2>
                     <ul>
-                        <li>Refunds (if approved) will be processed to the original payment method or user wallet within <strong>5–7 business days</strong></li>
-                        <li>SwapTicket reserves the right to deduct processing or administrative fees, if applicable</li>
+                        <li>Approved refunds are credited to the original payment method within <strong>5–7 business days</strong>.</li>
+                        <li>SwapTicket may deduct administrative or transaction fees where applicable.</li>
                     </ul>
                 </div>
 
                 <div class="section">
-                    <h2>
-                        <span class="section-number">4</span>
-                        Journey Not Completed or Ticket Unused
-                    </h2>
-                    <p><strong>Refunds will not be issued if:</strong></p>
+                    <h2><span class="section-number">4</span> Platform’s Role and Limitations</h2>
                     <ul>
-                        <li>The buyer fails to board the train</li>
-                        <li>The journey is not completed due to personal reasons</li>
-                        <li>The seller fails to provide post-sale support (e.g., passenger info) unless proven fraudulent</li>
+                        <li>SwapTicket serves only as a neutral facilitator connecting users. We do not own, issue, or control train tickets.</li>
+                        <li>We are not responsible for disputes between users unless a violation of our platform policy is proven.</li>
+                        <li>Refund eligibility will be decided solely based on transaction verification and supporting evidence.</li>
                     </ul>
                 </div>
 
                 <div class="section">
-                    <h2>
-                        <span class="section-number">5</span>
-                        SwapTicket's Rights
-                    </h2>
+                    <h2><span class="section-number">5</span> Policy Changes</h2>
                     <ul>
-                        <li>SwapTicket acts as a neutral facilitator and is not obligated to mediate disputes unless a clear violation of terms is evident</li>
-                        <li>We reserve the right to amend or cancel refund requests that do not meet the conditions stated above</li>
+                        <li>SwapTicket reserves the right to modify or update this Refund Policy without prior notice.</li>
+                        <li>Any updates will be reflected on this page with a revised effective date.</li>
                     </ul>
                 </div>
 
                 <div class="contact-section">
                     <h2>📞 Contact Us</h2>
-                    <p>For any refund-related queries or to report a problem, contact us at:</p>
+                    <p>For refund-related queries or to report a fraudulent listing, reach out to:</p>
                     <div class="contact-info">
                         <span>📧</span>
                         <a href="mailto:swap2ticket@gmail.com" class="email-link">swap2ticket@gmail.com</a>
                     </div>
+                    <p style="margin-top:10px;">📍 Rajajinagar, Bengaluru - 560010</p>
                 </div>
             </div>
 
             <div class="footer">
-                <p>&copy; 2025 SwapTicket. All rights reserved. | Last updated: June 17, 2025</p>
+                <p>&copy; 2025 SwapTicket. All rights reserved. SwapTicket is an independent information-sharing platform and not affiliated with IRCTC or Indian Railways. | Last updated: June 17, 2025</p>
             </div>
         </div>
     </div>
