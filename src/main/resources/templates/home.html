@@ -3,7 +3,7 @@
 <head>
     <title>Home - SwapTicket</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="SwapTicket - Secure platform for buying and selling train tickets with guaranteed transactions">
+    <meta name="description" content="SwapTicket - Travel information sharing platform for train travelers to connect and share journey details">
     <link rel="icon" href="/docs/swaplogo.png" type="image/png">
 
     <!-- Preconnect to external domains -->
@@ -21,14 +21,16 @@
 
     <style>
         :root {
-            --primary: #4361ee;
-            --primary-dark: #3a0ca3;
-            --secondary: #f8f9fa;
-            --cta: #f72585;
-            --cta-hover: #d90368;
+            --primary: #804040;
+            --primary-dark: #663333;
+            --secondary: #4a90e2;
+            --secondary-dark: #3a7bc8;
+            --accent: linear-gradient(to right, rgb(128, 64, 64) 0%, #4a90e2 100%);
+            --accent-solid: #5d7aa3;
+            --accent-hover: #4c6691;
+            --secondary-bg: #f8f9fa;
             --dark-text: #212529;
             --light-text: #6c757d;
-            --gradient: linear-gradient(135deg, #4361ee 0%, #3a0ca3 100%);
             --card-shadow: 0 10px 20px rgba(0,0,0,0.1);
             --navbar-height: 70px;
         }
@@ -45,7 +47,7 @@
 
         body {
             font-family: 'Poppins', sans-serif;
-            background-color: var(--secondary);
+            background-color: var(--secondary-bg);
             color: var(--dark-text);
             line-height: 1.6;
             overflow-x: hidden;
@@ -58,7 +60,7 @@
             left: 0;
             width: 100vw; 
             height: 100vh;
-            background: linear-gradient(to right, rgb(128, 64, 64) 0%, #4a90e2 100%); 
+            background: var(--accent);
             display: flex;
             justify-content: center;
             align-items: center;
@@ -104,7 +106,7 @@
         }
 
         .navbar {
-            background: linear-gradient(to right,rgb(128, 64, 64) 0%, #4a90e2 100%); 
+            background: var(--accent);
             color: white;
             display: flex;
             justify-content: space-between;
@@ -192,7 +194,7 @@
             height: 2px;
             bottom: -4px;
             left: 0;
-            background-color: var(--cta);
+            background-color: #ffd166;
             transition: width 0.3s ease;
         }
 
@@ -201,7 +203,7 @@
         }
 
         .auth-links a:hover {
-            color: var(--cta);
+            color: #ffd166;
         }
 
         .auth-links a i {
@@ -266,7 +268,7 @@
         }
 
         .btn {
-            background-color: var(--cta);
+            background: var(--accent);
             color: white;
             padding: 0.9rem 2.2rem;
             border-radius: 50px;
@@ -274,7 +276,7 @@
             font-weight: 600;
             transition: all 0.3s ease;
             display: inline-block;
-            box-shadow: 0 4px 15px rgba(247, 37, 133, 0.4);
+            box-shadow: 0 4px 15px rgba(128, 64, 64, 0.4);
             animation: fadeIn 1s ease 0.6s both;
             border: none;
             cursor: pointer;
@@ -299,26 +301,38 @@
         }
 
         .btn:hover {
-            background-color: var(--cta-hover);
+            background: linear-gradient(to right, rgb(148, 74, 74) 0%, #5a9ae8 100%);
             transform: translateY(-3px);
-            box-shadow: 0 6px 20px rgba(247, 37, 133, 0.6);
+            box-shadow: 0 6px 20px rgba(128, 64, 64, 0.6);
         }
 
         .btn i {
             margin-left: 8px;
         }
 
+        .disclaimer-banner {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            color: #856404;
+            padding: 1rem;
+            text-align: center;
+            font-size: 0.9rem;
+            border-radius: 8px;
+            margin: 1rem auto;
+            max-width: 900px;
+        }
+
         .about-section {
             padding: 5rem 1rem;
-            background-color: #f8f9fa;
+            background-color: var(--secondary-bg);
             text-align: center;
-            background-image: url('data:image/svg+xml;charset=utf8,%3Csvg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"%3E%3Cpath fill="%232563eb" fill-opacity="0.03" d="M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM34 90c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm56-76c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM12 86c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm28-65c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm23-11c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-6 60c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm29 22c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 5zm-32-78c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm57 23c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-9-21c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zm-40 3c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM15 80c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zm32 12c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2z"%3E%3C/path%3E%3C/svg%3E');
+            background-image: url('data:image/svg+xml;charset=utf8,%3Csvg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"%3E%3Cpath fill="%23804040" fill-opacity="0.03" d="M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM34 90c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm56-76c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM12 86c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm28-65c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm23-11c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-6 60c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm29 22c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 5zm-32-78c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm57 23c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-9-21c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zm-40 3c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM15 80c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zm32 12c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2z"%3E%3C/path%3E%3C/svg%3E');
         }
 
         .section-title {
             font-size: 2.2rem;
             margin-bottom: 1.2rem;
-            background: var(--gradient);
+            background: var(--accent);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             display: inline-block;
@@ -330,7 +344,7 @@
             position: absolute;
             width: 60px;
             height: 3px;
-            background: var(--gradient);
+            background: var(--accent);
             bottom: -10px;
             left: 50%;
             transform: translateX(-50%);
@@ -372,7 +386,7 @@
         .icon-box i {
             font-size: 2.5rem;
             margin-bottom: 1.5rem;
-            background: var(--gradient);
+            background: var(--accent);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
@@ -380,7 +394,7 @@
         .icon-box h3 {
             font-size: 1.3rem;
             margin-bottom: 1rem;
-            color: var(--primary-dark);
+            color: var(--primary);
         }
 
         .icon-box p {
@@ -390,7 +404,7 @@
         }
 
         .stats-section {
-            background: var(--gradient);
+            background: var(--accent);
             padding: 5rem 1rem;
             color: white;
             text-align: center;
@@ -435,10 +449,53 @@
             opacity: 0.9;
         }
 
+        .how-it-works {
+            padding: 5rem 1rem;
+            background-color: white;
+            text-align: center;
+        }
+
+        .steps-container {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            flex-wrap: wrap;
+            margin-top: 3rem;
+        }
+
+        .step-box {
+            background: white;
+            border-radius: 15px;
+            padding: 2rem;
+            width: 100%;
+            max-width: 250px;
+            text-align: center;
+            box-shadow: var(--card-shadow);
+            border-top: 4px solid var(--accent-solid);
+            position: relative;
+        }
+
+        .step-number {
+            position: absolute;
+            top: -20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--accent);
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+
         .testimonials {
             padding: 5rem 1rem;
-            background-color: #f8f9fa;
-            background-image: url('data:image/svg+xml;charset=utf8,%3Csvg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"%3E%3Cpath fill="%232563eb" fill-opacity="0.03" d="M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM34 90c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm56-76c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM12 86c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm28-65c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm23-11c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-6 60c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm29 22c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 5zm-32-78c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm57 23c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-9-21c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zm-40 3c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM15 80c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zm32 12c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2z"%3E%3C/path%3E%3C/svg%3E');
+            background-color: var(--secondary-bg);
+            background-image: url('data:image/svg+xml;charset=utf8,%3Csvg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"%3E%3Cpath fill="%23804040" fill-opacity="0.03" d="M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM34 90c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm56-76c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM12 86c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm28-65c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm23-11c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-6 60c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm29 22c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 5zm-32-78c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm57 23c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-9-21c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zm-40 3c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM15 80c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zm32 12c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2z"%3E%3C/path%3E%3C/svg%3E');
             text-align: center;
         }
 
@@ -489,7 +546,7 @@
         .author-info h4 {
             margin-bottom: 0.3rem;
             font-size: 1.1rem;
-            color: var(--primary-dark);
+            color: var(--primary);
         }
 
         .author-info p {
@@ -511,7 +568,7 @@
             left: 0;
             width: 100%;
             height: 0px;
-            background: var(--gradient);
+            background: var(--accent);
         }
 
         .footer-content {
@@ -530,7 +587,7 @@
         .footer-column h3 {
             margin-bottom: 1.5rem;
             font-size: 1.2rem;
-            color: var(--cta);
+            color: #ffd166;
             position: relative;
             display: inline-block;
         }
@@ -540,7 +597,7 @@
             position: absolute;
             width: 40px;
             height: 2px;
-            background: var(--cta);
+            background: #ffd166;
             bottom: -8px;
             left: 0;
         }
@@ -576,7 +633,7 @@
 
         .footer-column ul li a i {
             font-size: 0.8rem;
-            color: var(--cta);
+            color: #ffd166;
         }
 
         .footer-column ul li a:hover {
@@ -604,7 +661,7 @@
         }
 
         .social-links a:hover {
-            background: var(--cta);
+            background: var(--accent);
             transform: translateY(-3px);
             text-decoration: none;
         }
@@ -623,14 +680,14 @@
             position: fixed;
             bottom: 25px;
             right: 25px;
-            background: var(--cta);
+            background: var(--accent);
             color: white;
             border: none;
             border-radius: 50px;
             padding: 1rem 1.8rem;
             font-weight: 600;
             font-size: 1rem;
-            box-shadow: 0 8px 25px rgba(247, 37, 133, 0.5);
+            box-shadow: 0 8px 25px rgba(128, 64, 64, 0.5);
             cursor: pointer;
             transition: all 0.3s;
             z-index: 1000;
@@ -641,9 +698,9 @@
         }
 
         .floating-cta:hover {
-            background-color: var(--cta-hover);
+            background: linear-gradient(to right, rgb(148, 74, 74) 0%, #5a9ae8 100%);
             transform: translateY(-5px) scale(1.05);
-            box-shadow: 0 12px 30px rgba(247, 37, 133, 0.7);
+            box-shadow: 0 12px 30px rgba(128, 64, 64, 0.7);
         }
 
         .moving-arrow i {
@@ -657,7 +714,7 @@
             right: 25px;
             width: 45px;
             height: 45px;
-            background: var(--primary);
+            background: var(--accent);
             color: white;
             border-radius: 50%;
             display: flex;
@@ -677,7 +734,7 @@
         }
 
         .back-to-top:hover {
-            background: var(--primary-dark);
+            background: linear-gradient(to right, rgb(148, 74, 74) 0%, #5a9ae8 100%);
             transform: translateY(-3px);
         }
 
@@ -695,13 +752,13 @@
 
         @keyframes pulse {
             0% {
-                box-shadow: 0 0 0 0 rgba(247, 37, 133, 0.7);
+                box-shadow: 0 0 0 0 rgba(128, 64, 64, 0.7);
             }
             70% {
-                box-shadow: 0 0 0 15px rgba(247, 37, 133, 0);
+                box-shadow: 0 0 0 15px rgba(128, 64, 64, 0);
             }
             100% {
-                box-shadow: 0 0 0 0 rgba(247, 37, 133, 0);
+                box-shadow: 0 0 0 0 rgba(128, 64, 64, 0);
             }
         }
 
@@ -746,7 +803,7 @@
                 right: -100%;
                 width: 80%;
                 height: calc(100vh - var(--navbar-height));
-                background: linear-gradient(to right,rgb(128, 64, 64) 0%, #4a90e2 100%);
+                background: var(--accent);
                 flex-direction: column;
                 align-items: center;
                 justify-content: flex-start;
@@ -978,10 +1035,13 @@
 
     <div class="hero">
         <div class="hero-content">
-            <h1 class="animate__animated animate__fadeInDown">Your Ticket Exchange Platform</h1>
-            <p class="animate__animated animate__fadeInUp">SwapTicket is an online community platform that allows users to list and share details of their already booked train journeys with interested travelers.
- <br>
- We only facilitate secure information exchange and communication between users — we do not sell, resell, or issue train tickets, nor are we affiliated with IRCTC or Indian Railways.</p>
+            <h1 class="animate__animated animate__fadeInDown">Your Travel Information Sharing Platform</h1>
+            <p class="animate__animated animate__fadeInUp">SwapTicket is a community-driven platform that allows travellers to share non-sensitive details of their already booked train journeys with other interested travellers.</p>
+            
+            <div class="disclaimer-banner animate__animated animate__fadeInUp">
+                <strong>Important Notice:</strong> SwapTicket is an information sharing platform only. We do not sell, resell, or transfer train tickets, nor do we issue bookings. We are not affiliated with IRCTC or Indian Railways.
+            </div>
+            
             <a href="/login" class="btn animate__animated animate__fadeIn moving-arrow">
                 Get Started <i class="fas fa-arrow-right"></i>
             </a>        
@@ -990,18 +1050,18 @@
 
     <div class="about-section">
         <h2 class="section-title animate-on-scroll">Why Choose SwapTicket?</h2>
-        <p class="section-subtitle animate-on-scroll">Our platform makes user-to-user ticket information sharing simple, safe, and verified using secure transaction handling and identity confirmation.</p>
+        <p class="section-subtitle animate-on-scroll">Our platform makes user-to-user travel information sharing simple, safe, and verified through identity confirmation and secure user interaction tools.</p>
         
         <div class="icon-row">
             <div class="icon-box animate-on-scroll">
                 <i class="fas fa-shield-alt"></i>
-                <h3>Secure Transactions</h3>
-                <p>Bank-level encryption and escrow protection for all your transactions</p>
+                <h3>Secure Communication</h3>
+                <p>Bank-level encryption and identity verification for all user interactions</p>
             </div>
             <div class="icon-box animate-on-scroll">
-                <i class="fas fa-bolt"></i>
-                <h3>Instant Transfer</h3>
-                <p>Receive your tickets immediately after payment confirmation</p>
+                <i class="fas fa-users"></i>
+                <h3>Community Driven</h3>
+                <p>Connect with fellow travelers to share journey information and travel insights</p>
             </div>
             <div class="icon-box animate-on-scroll">
                 <i class="fas fa-headset"></i>
@@ -1011,38 +1071,66 @@
         </div>
     </div>
 
-    <div class="stats-section">
-        <h2 class="section-title animate-on-scroll" style="color: white; -webkit-text-fill-color: unset;">Trusted by Thousands</h2>
-        <p class="section-subtitle animate-on-scroll" style="color: rgba(255,255,255,0.9);">Join our growing community of satisfied users</p>
+    <div class="how-it-works">
+        <h2 class="section-title animate-on-scroll">How It Works</h2>
+        <p class="section-subtitle animate-on-scroll">SwapTicket facilitates information sharing between travelers in three simple steps</p>
         
-        <div class="stats-container">
-            <div class="stat-box animate-on-scroll">
-                <div class="stat-number" data-count="10000">0</div>
-                <div class="stat-label">Tickets Exchanged</div>
+        <div class="steps-container">
+            <div class="step-box animate-on-scroll">
+                
+                <i class="fas fa-user-check" style="font-size: 2.5rem; margin-bottom: 1rem; background: var(--accent); -webkit-background-clip: text; -webkit-text-fill-color: transparent;"></i>
+                <h3>Create Profile</h3>
+                <p>Register and verify your identity to join our trusted traveler community</p>
             </div>
-            <div class="stat-box animate-on-scroll">
-                <div class="stat-number" data-count="99.7">0</div>
-                <div class="stat-label">Success Rate</div>
+            
+            <div class="step-box animate-on-scroll">
+                
+                <i class="fas fa-info-circle" style="font-size: 2.5rem; margin-bottom: 1rem; background: var(--accent); -webkit-background-clip: text; -webkit-text-fill-color: transparent;"></i>
+                <h3>Share Journey Details</h3>
+                <p>Share non-sensitive information about your upcoming train journey</p>
             </div>
-            <div class="stat-box animate-on-scroll">
-                <div class="stat-number">24/7</div>
-                <div class="stat-label">Customer Support</div>
-            </div>
-            <div class="stat-box animate-on-scroll">
-                <div class="stat-number" data-count="50">0</div>
-                <div class="stat-label">Routes Covered</div>
+            
+            <div class="step-box animate-on-scroll">
+               
+                <i class="fas fa-comments" style="font-size: 2.5rem; margin-bottom: 1rem; background: var(--accent); -webkit-background-clip: text; -webkit-text-fill-color: transparent;"></i>
+                <h3>Connect & Share</h3>
+                <p>Communicate securely with other travelers sharing similar journey information</p>
             </div>
         </div>
     </div>
 
-    <!-- <div class="testimonials">
-        <h2 class="section-title animate-on-scroll">What Our Users Say</h2>
-        <p class="section-subtitle animate-on-scroll">Don't just take our word for it - hear from our community</p>
+    <div class="stats-section">
+        <h2 class="section-title animate-on-scroll" style="color: white; -webkit-text-fill-color: unset;">Trusted Travel Community</h2>
+        <p class="section-subtitle animate-on-scroll" style="color: rgba(255,255,255,0.9);">Join our growing community of travelers sharing journey information</p>
+        
+        <div class="stats-container">
+            <div class="stat-box animate-on-scroll">
+                <div class="stat-number" data-count="5000">0</div>
+                <div class="stat-label">Verified Travelers</div>
+            </div>
+            <div class="stat-box animate-on-scroll">
+                <div class="stat-number" data-count="45">0</div>
+                <div class="stat-label">Routes Shared by Travelers</div>
+            </div>
+            <div class="stat-box animate-on-scroll">
+                <div class="stat-number">24/7</div>
+                <div class="stat-label">Community Support</div>
+            </div>
+            <div class="stat-box animate-on-scroll">
+                <div class="stat-number" data-count="98">0</div>
+                <div class="stat-label">Satisfaction Rate</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="testimonials">
+        <h2 class="section-title animate-on-scroll">What Our Community Says</h2>
+        <p class="section-subtitle animate-on-scroll">Hear from travelers who use our platform to share journey information</p>
         
         <div class="icon-row">
             <div class="testimonial-card animate-on-scroll">
                 <div class="testimonial-text">
-                    "I was able to sell my ticket within minutes when my plans changed. The process was so simple and secure!"
+                    "Found fellow travelers going the same route and shared useful travel tips. Great platform for connecting with like-minded travelers!"
                 </div>
                 <div class="testimonial-author">
                     <img src="https://randomuser.me/api/portraits/women/32.jpg" alt="Sandya" class="author-avatar">
@@ -1055,7 +1143,7 @@
             
             <div class="testimonial-card animate-on-scroll">
                 <div class="testimonial-text">
-                    "Found a last-minute ticket for half price when I thought all hope was lost. Lifesaver!"
+                    "The platform helped me connect with other business travelers on my regular route. Now we share updates and travel insights regularly."
                 </div>
                 <div class="testimonial-author">
                     <img src="https://randomuser.me/api/portraits/men/45.jpg" alt="Vaman Patil" class="author-avatar">
@@ -1068,7 +1156,7 @@
 
             <div class="testimonial-card animate-on-scroll">
                 <div class="testimonial-text">
-                    "The customer support team resolved my issue in less than 10 minutes. Amazing service!"
+                    "As a student traveler, I've found great travel companions and safety tips through SwapTicket's community features."
                 </div>
                 <div class="testimonial-author">
                     <img src="https://randomuser.me/api/portraits/women/68.jpg" alt="Priya K" class="author-avatar">
@@ -1079,13 +1167,13 @@
                 </div>
             </div>
         </div>
-    </div> -->
+    </div>
 
     <div class="footer">
         <div class="footer-content">
             <div class="footer-column">
                 <h3>SwapTicket</h3>
-                <p>SwapTicket is an independent platform and is not affiliated, endorsed, or authorized by IRCTC or Indian Railways.</p>
+                <p>SwapTicket is an independent travel information sharing platform and is not affiliated, endorsed, or authorized by IRCTC or Indian Railways.</p>
                 <div class="social-links">
                     <a href="https://www.facebook.com/profile.php?id=100039713322909" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
                     <a href="https://x.com/SanatBuyya" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
@@ -1109,7 +1197,7 @@
                 <ul>
                     <li><a href="/privacy"><i class="fas fa-lock"></i> Privacy Policy</a></li>
                     <li><a href="/terms"><i class="fas fa-file-contract"></i> Terms of Service</a></li>
-                    <li><a href="/refund"><i class="fas fa-exchange-alt"></i> Refund Policy</a></li>
+                    <li><a href="/refund"><i class="fas fa-exclamation-triangle"></i> Refund Policy</a></li>
                 </ul>
             </div>
             
@@ -1124,13 +1212,13 @@
         </div>
         
         <div class="copyright">
-            &copy; 2025 SwapTicket. All rights reserved.
+            &copy; <span th:text="${T(java.time.Year).now().value}">2026</span> SwapTicket. All rights reserved. | Information Sharing Platform
         </div>
     </div>
 
     <!-- Floating CTA -->
-    <button class="floating-cta" onclick="window.location.href='/login'" aria-label="Buy Ticket">
-        <i class="fas fa-ticket-alt"></i> Buy Ticket
+    <button class="floating-cta" onclick="window.location.href='/login'" aria-label="Join Community">
+        <i class="fas fa-users"></i> Join Community
     </button>
 
     <!-- Back to Top Button -->
@@ -1236,8 +1324,8 @@ window.addEventListener("load", function () {
                     const updateCounter = () => {
                         if (current < target) {
                             current += increment;
-                            if (target === 99.7) {
-                                counter.textContent = current.toFixed(1) + '%';
+                            if (target === 98) {
+                                counter.textContent = current.toFixed(0) + '%';
                             } else if (target >= 1000) {
                                 counter.textContent = Math.floor(current).toLocaleString() + '+';
                             } else {
@@ -1245,7 +1333,7 @@ window.addEventListener("load", function () {
                             }
                             requestAnimationFrame(updateCounter);
                         } else {
-                            if (target === 99.7) {
+                            if (target === 98) {
                                 counter.textContent = target + '%';
                             } else if (target >= 1000) {
                                 counter.textContent = target.toLocaleString() + '+';
@@ -1504,7 +1592,7 @@ window.addEventListener("load", function () {
         }
     }
 
-    console.log('SwapTicket homepage loaded successfully');
+    console.log('SwapTicket information sharing platform loaded successfully');
 </script>
 
 
@@ -1514,7 +1602,7 @@ window.addEventListener("load", function () {
   "@context": "https://schema.org",
   "@type": "WebSite",
   "name": "SwapTicket",
-  "description": "Secure platform for buying and selling train tickets with guaranteed transactions",
+  "description": "Travel information sharing platform for train travelers to connect and share journey details",
   "url": "https://swapticket.com",
   "potentialAction": {
     "@type": "SearchAction",
@@ -1532,7 +1620,7 @@ window.addEventListener("load", function () {
   "@context": "https://schema.org",
   "@type": "Organization",
   "name": "SwapTicket",
-  "description": "Making train travel flexible and accessible for everyone through our secure ticket exchange platform",
+  "description": "Community-driven platform for travelers to share journey information and connect with fellow travelers",
   "url": "https://swapticket.com",
   "logo": "https://swapticket.com/docs/swaplogo.png",
   "contactPoint": {

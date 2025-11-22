@@ -47,7 +47,7 @@ line-height: 1.6;
 .navbar {
 background: var(--accent);
 color: #fff;
-padding: 0.5rem 2.5rem;
+padding: 0rem 2.1rem;
 display: flex;
 justify-content: space-between;
 align-items: center;
@@ -61,7 +61,7 @@ height: 70px;
 
 .navbar h1 {
 font-size: 1.75rem;
-font-weight: 600;
+
 background: linear-gradient(to right, #fff 0%, #ffd166 100%);
 -webkit-background-clip: text;
 -webkit-text-fill-color: transparent;
@@ -438,14 +438,16 @@ color: white;
 }
 
 @keyframes shimmer {
-  0% { background-position: -200% 0; }
-  100% { background-position: 200% 0; }
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
 }
 
+
 @keyframes borderFlash {
-  0% { background-position: -200% 0; }
-  100% { background-position: 200% 0; }
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
 }
+
 
 #preloader.hidden {
   opacity: 0;
@@ -858,83 +860,13 @@ transform: scale(1.05);
 </head>
 
 <body>
-<div class="navbar">
-<a href="/">
-<h1>
-<img src="/docs/swaplogo.png" alt="logo" height="50px"> 
-<b>SwapTicket</b>
-</h1>
-</a>
-<button class="menu-toggle" id="menuToggle">
-<i class="fas fa-bars"></i>
-</button>
-<div class="navbar-right" id="navbarRight">
-<!-- Desktop version -->
-<div class="user-info">
-<div class="user-avatar" th:text="${userName.substring(0,1).toUpperCase()}">U</div>
-<span class="username" th:text="${userName}">User</span>
-</div>
-<a th:href="@{/logout}" class="logout-btn">
-<i class="fas fa-sign-out-alt"></i>
-<span>Logout</span>
-</a>
-<ul class="mobile-menu">
-<li>
-<a th:href="@{/user/sell}" class="menu-item">
-<i class="fas fa-upload"></i>
-<span>Sell Ticket</span>
-</a>
-</li>
-<li>
-<a th:href="@{/pnr/buy}" class="menu-item">
-<i class="fas fa-search"></i>
-<span>Buy Ticket</span>
-</a>
-</li>
-<li>
-<a th:href="@{/my-listed-tickets}" class="menu-item">
-<i class="fas fa-ticket-alt"></i>
-<span>My Tickets</span>
-</a>
-</li>
-<li>
-<a th:href="@{/pnr/my-purchases}" class="menu-item">
-<i class="fas fa-shopping-cart"></i>
-<span>Purchased Tickets</span>
-</a>
-</li>
-<li>
-<a th:href="@{/user/transactions}" class="menu-item">
-<i class="fas fa-wallet"></i>
-<span>Transactions History</span>
-</a>
-</li>
-<li>
-<a th:href="@{/user/refer}" class="menu-item">
-<i class="fas fa-users"></i>
-<span>Refer A Friend</span>
-</a>
-</li>
-<li>
-<a th:href="@{/support/submit}" class="menu-item">
-<i class="fas fa-headset"></i>
-<span>Customer Support</span>
-</a>
-</li>
-<li>
-<a th:href="@{/logout}" class="menu-item">
-<i class="fas fa-sign-out-alt"></i>
-<span>Logout</span>
-</a>
-</li>
-</ul>
-</div>
-</div>
+
+<th:block th:replace="components/navbar :: navbar"></th:block>
 
 <div class="container">
 	<div class="welcome-section" data-aos="fade-up">
 		<h1 class="welcome-title">Welcome Back!</h1>
-		<p class="welcome-subtitle">Manage your tickets, track, transactions, customer support and refer all in one place</p>
+		<p class="welcome-subtitle">Manage your travel information, shared journeys, user interactions, and support — all in one place.</p>
 	</div>
 
 	<div class="message success" th:if="${successMessage}" id="successMessage">
@@ -986,13 +918,13 @@ transform: scale(1.05);
 			<i class="fas fa-wallet"></i>
 		<div>
 			<h3>Overall Amount</h3>
-			<p>Track SwapTicket transaction</p>
+			<p>Track your platform activity and wallet movements.</p>
 		<form th:action="@{/user/transactions}" method="get">
 		<button class="button" type="submit">
 <i class="fas fa-history button-icon"></i>
 <div class="magic"></div>
 
-<span class="button-text">History</span>
+<span class="button-text">View History</span>
 <div class="loader-dots">
 <span></span>
 <span></span>
@@ -1005,12 +937,12 @@ transform: scale(1.05);
 
 <div class="card" data-aos="fade-up" data-aos-delay="250">
 <img src="/docs/SellTicket.png" alt="SellTicket">
-<h3>Sell a Ticket</h3>
-<p>List your IRCTC ticket for sale</p>
+<h3>Share Journey Details</h3>
+<p>Share non-sensitive information about your upcoming train journey.</p>
 <form th:action="@{/pnr/sell}" method="get">
 <button class="button" type="submit">
 <i class="fas fa-plus-circle button-icon"></i>
-<span class="button-text">Sell</span>
+<span class="button-text">Share</span>
 <div class="loader-dots">
 <span></span>
 <span></span>
@@ -1022,12 +954,12 @@ transform: scale(1.05);
 
 <div class="card" data-aos="fade-up" data-aos-delay="300">
 <img src="/docs/buyticket.png" alt="butTicket">
-<h3>Buy a Ticket</h3>
-<p>Find available tickets to purchase</p>
+<h3>Explore Shared Journeys</h3>
+<p>Browse journey details shared by other verified travellers.</p>
 <form th:action="@{/pnr/buy}" method="get">
 <button class="button" type="submit">
 <i class="fas fa-search-dollar button-icon"></i>
-<span class="button-text">Browse</span>
+<span class="button-text">Explore</span>
 <div class="loader-dots">
 <span></span>
 <span></span>
@@ -1039,8 +971,8 @@ transform: scale(1.05);
 
 <div class="card" data-aos="fade-up" data-aos-delay="200">
 <img src="/docs/purchase.png" alt="purchaseTicket">
-<h3>Purchased Tickets</h3>
-<p>View tickets you've purchased</p>
+<h3>My Viewed Journeys</h3>
+<p>View the journey information you have accessed</p>
 <form th:action="@{/pnr/my-purchases}" method="get">
 <button class="button" type="submit">
 <i class="fas fa-receipt button-icon"></i>
@@ -1056,8 +988,8 @@ transform: scale(1.05);
 
 <div class="card" data-aos="fade-up" data-aos-delay="150">
 <img src="/docs/myListedTicket.png" alt="myListedTicket">
-<h3>My Sold Tickets</h3>
-<p>View and manage your listed tickets</p>
+<h3>My Shared Travel Details</h3>
+<p>View and manage the journeys you have shared.</p>
 <form th:action="@{/my-listed-tickets}" method="get">
 <button class="button" type="submit">
 <i class="fas fa-eye button-icon"></i>
@@ -1074,7 +1006,7 @@ transform: scale(1.05);
 <div class="card" data-aos="fade-up" data-aos-delay="300">
 <img src="/docs/track.png" alt="Track">
 <h3>Track Train</h3>
-<p>Track scheduled train stops</p>
+<p>Check train schedules and live status for your travel planning.</p>
 <form th:action="@{/track-train-between}" method="get">
 <button class="button" type="submit">
 <i class="fas fa-search-location"></i>
