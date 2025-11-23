@@ -275,13 +275,16 @@ public class UserController {
     public List<Map<String, String>> getAllStations() {
         List<Map<String, String>> stations = new ArrayList<>();
         try {
-            Path path = Paths.get("src/main/resources/Train_details_22122017.csv");
-            List<String> lines = Files.readAllLines(path);
+            ClassPathResource resource = new ClassPathResource("Train_details_22122017.csv");
+            List<String> lines = Files.readAllLines(resource.getFile().toPath());
+
             for (String line : lines.subList(1, lines.size())) {
                 String[] columns = line.split(",", -1);
+
                 if (columns.length >= 5) {
                     String code = columns[3].trim().toUpperCase();
                     String name = columns[4].trim().toUpperCase();
+
                     Map<String, String> stationMap = new HashMap<>();
                     stationMap.put("code", code);
                     stationMap.put("name", name);
@@ -293,6 +296,7 @@ public class UserController {
         }
         return stations;
     }
+
     
     @GetMapping("/forgot-password")
     public String forgotPasswordPage(Model model) {

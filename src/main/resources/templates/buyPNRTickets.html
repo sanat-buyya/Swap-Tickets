@@ -837,10 +837,17 @@
         if (existingSuggestions) existingSuggestions.remove();
         if (query.length < 2) return;
 
-        const filteredStations = indianRailwayStations.filter(station =>
+     // ⚡ Remove duplicate stations by CODE
+        const uniqueStations = Array.from(
+            new Map(indianRailwayStations.map(st => [st.code, st])).values()
+        );
+
+        // ⚡ Now filter unique stations only
+        const filteredStations = uniqueStations.filter(station =>
             station.name.toLowerCase().includes(query) ||
             station.code.toLowerCase().includes(query)
         ).slice(0, 8);
+
 
         const suggestionsDiv = document.createElement('div');
         suggestionsDiv.className = 'suggestions';

@@ -1,1210 +1,1279 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
+
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>SwapTicket | Dashboard</title>
-<meta name="description" content="User dashboard for SwapTicket - Buy and sell IRCTC tickets easily." />
-<link rel="icon" href="/docs/swaplogo.png" type="image/png">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
-<link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet" />
-<style>
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SwapTicket | Dashboard</title>
+  <meta name="description" content="User dashboard for SwapTicket - Buy and sell IRCTC tickets easily." />
+  <link rel="icon" href="/docs/swaplogo.png" type="image/png">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet" />
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
 
-:root {
---primary: rgb(128, 64, 64);
---primary-dark: #009688;
---secondary: #4a90e2;
---accent: linear-gradient(135deg, var(--primary), var(--secondary));
---main-bg: #f5f7fa;
---card-bg: #ffffff;
---text: #2d3748;
---text-light: #718096;
---card-radius: 10px;
---shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.1);
---shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
---shadow-lg: 0 10px 25px rgba(0, 0, 0, 0.1);
---transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
-}
+    :root {
+      --primary: rgb(128, 64, 64);
+      --primary-dark: #009688;
+      --secondary: #4a90e2;
+      --accent: linear-gradient(135deg, var(--primary), var(--secondary));
+      --main-bg: #f5f7fa;
+      --card-bg: #ffffff;
+      --text: #2d3748;
+      --text-light: #718096;
+      --card-radius: 10px;
+      --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.1);
+      --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
+      --shadow-lg: 0 10px 25px rgba(0, 0, 0, 0.1);
+      --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+    }
 
-* {
-box-sizing: border-box;
-margin: 0;
-padding: 0;
-}
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
 
-body {
-margin: 0;
-font-family: 'Poppins', sans-serif;
-background: linear-gradient(135deg, #f5f7fa 0%, #c3ecfa 100%);
-background-image: url('https://www.transparenttextures.com/patterns/cubes.png');
-background-repeat: repeat;
-color: var(--text);
-line-height: 1.6;
-}
+    body {
+      margin: 0;
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(135deg, #f5f7fa 0%, #c3ecfa 100%);
+      background-image: url('https://www.transparenttextures.com/patterns/cubes.png');
+      background-repeat: repeat;
+      color: var(--text);
+      line-height: 1.6;
+    }
 
-/* Navbar Styles */
-.navbar {
-background: var(--accent);
-color: #fff;
-padding: 0rem 2.1rem;
-display: flex;
-justify-content: space-between;
-align-items: center;
-flex-wrap: wrap;
-box-shadow: var(--shadow-md);
-position: sticky;
-top: 0;
-z-index: 1000;
-height: 70px;
-}
+    /* Navbar Styles */
+    .navbar {
+      background: var(--accent);
+      color: #fff;
+      padding: 0rem 2.1rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      box-shadow: var(--shadow-md);
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      height: 70px;
+    }
 
-.navbar h1 {
-font-size: 1.75rem;
+    .navbar h1 {
+      font-size: 1.75rem;
 
-background: linear-gradient(to right, #fff 0%, #ffd166 100%);
--webkit-background-clip: text;
--webkit-text-fill-color: transparent;
-margin: 0;
-display: flex;
-align-items: center;
-gap: 10px;
-z-index: 101;
-font-style: bold;
-}
+      background: linear-gradient(to right, #fff 0%, #ffd166 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin: 0;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      z-index: 101;
+      font-style: bold;
+    }
 
-.navbar a{
-text-decoration: none;
-color: var(--dark);
-}
+    .navbar a {
+      text-decoration: none;
+      color: var(--dark);
+    }
 
-.navbar h1 i {
-font-size: 1.5rem;
-}
+    .navbar h1 i {
+      font-size: 1.5rem;
+    }
 
-.menu-toggle {
-display: none;
-background: none;
-border: none;
-color: white;
-font-size: 1.5rem;
-cursor: pointer;
-z-index: 101;
-padding: 0.5rem;
-transition: all 0.4s ease;
-}
+    .menu-toggle {
+      display: none;
+      background: none;
+      border: none;
+      color: white;
+      font-size: 1.5rem;
+      cursor: pointer;
+      z-index: 101;
+      padding: 0.5rem;
+      transition: all 0.4s ease;
+    }
 
-.navbar-right {
-display: flex;
-align-items: center;
-gap: 20px;
-flex-wrap: wrap;
-transition: var(--transition);
-}
+    .navbar-right {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      flex-wrap: wrap;
+      transition: var(--transition);
+    }
 
-.user-info {
-display: flex;
-align-items: center;
-gap: 12px;
-}
+    .user-info {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
 
-.user-avatar {
-width: 42px;
-height: 42px;
-background-color: rgba(255, 255, 255, 0.2);
-color: #fff;
-border-radius: 50%;
-display: flex;
-justify-content: center;
-align-items: center;
-font-weight: bold;
-font-size: 1.1rem;
-transition: var(--transition);
-}
+    .user-avatar {
+      width: 42px;
+      height: 42px;
+      background-color: rgba(255, 255, 255, 0.2);
+      color: #fff;
+      border-radius: 50%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-weight: bold;
+      font-size: 1.1rem;
+      transition: var(--transition);
+    }
 
-.user-avatar:hover {
-transform: scale(1.05);
-background-color: rgba(255, 255, 255, 0.3);
-}
+    .user-avatar:hover {
+      transform: scale(1.05);
+      background-color: rgba(255, 255, 255, 0.3);
+    }
 
-.username {
-font-weight: 500;
-}
+    .username {
+      font-weight: 500;
+    }
 
-.logout-btn {
-background-color: rgba(255, 255, 255, 0.2);
-color: white;
-border: none;
-padding: 8px 18px;
-border-radius: 30px;
-cursor: pointer;
-font-size: 0.9rem;
-font-weight: 500;
-transition: var(--transition);
-display: flex;
-align-items: center;
-gap: 6px;
-text-decoration: none;
-}
+    .logout-btn {
+      background-color: rgba(255, 255, 255, 0.2);
+      color: white;
+      border: none;
+      padding: 8px 18px;
+      border-radius: 30px;
+      cursor: pointer;
+      font-size: 0.9rem;
+      font-weight: 500;
+      transition: var(--transition);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      text-decoration: none;
+    }
 
-.logout-btn:hover {
-background-color: rgba(255, 255, 255, 0.3);
-transform: translateY(-1px);
-}
+    .logout-btn:hover {
+      background-color: rgba(255, 255, 255, 0.3);
+      transform: translateY(-1px);
+    }
 
-.logout-btn i {
-font-size: 0.9rem;
-}
+    .logout-btn i {
+      font-size: 0.9rem;
+    }
 
-/* Mobile Menu Styles */
-.mobile-menu {
-display: none;
-list-style: none;
-width: 100%;
-padding: 0;
-margin: 0;
-}
+    /* Mobile Menu Styles */
+    .mobile-menu {
+      display: none;
+      list-style: none;
+      width: 100%;
+      padding: 0;
+      margin: 0;
+    }
 
-.mobile-menu li {
-width: 100%;
-border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-opacity: 0;
-transform: translateX(50px);
-transition: all 0.5s ease;
-}
+    .mobile-menu li {
+      width: 100%;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      opacity: 0;
+      transform: translateX(50px);
+      transition: all 0.5s ease;
+    }
 
-.mobile-menu li:last-child {
-border-bottom: none;
-}
+    .mobile-menu li:last-child {
+      border-bottom: none;
+    }
 
-.mobile-menu .menu-item {
-display: flex;
-align-items: center;
-padding: 1rem 1.5rem;
-color: white;
-text-decoration: none;
-transition: all 0.4s ease;
-width: 100%;
-}
+    .mobile-menu .menu-item {
+      display: flex;
+      align-items: center;
+      padding: 1rem 1.5rem;
+      color: white;
+      text-decoration: none;
+      transition: all 0.4s ease;
+      width: 100%;
+    }
 
-.mobile-menu .menu-item:hover {
-background-color: rgba(255, 255, 255, 0.1);
-transform: translateX(5px);
-}
+    .mobile-menu .menu-item:hover {
+      background-color: rgba(255, 255, 255, 0.1);
+      transform: translateX(5px);
+    }
 
-.mobile-menu .menu-item i {
-margin-right: 12px;
-font-size: 1.1rem;
-width: 24px;
-text-align: center;
-transition: transform 0.3s ease;
-}
+    .mobile-menu .menu-item i {
+      margin-right: 12px;
+      font-size: 1.1rem;
+      width: 24px;
+      text-align: center;
+      transition: transform 0.3s ease;
+    }
 
-.mobile-menu .menu-item:hover i {
-transform: scale(1.1);
-}
+    .mobile-menu .menu-item:hover i {
+      transform: scale(1.1);
+    }
 
-/* Main Content Styles */
-.container {
-padding: 1.5rem;
-max-width: 1400px;
-margin: 0 auto;
-}
+    /* Main Content Styles */
+    .container {
+      padding: 1.5rem;
+      max-width: 1400px;
+      margin: 0 auto;
+    }
 
-.welcome-section {
-margin-bottom: 1.5rem;
-text-align: center;
-}
+    .welcome-section {
+      margin-bottom: 1.5rem;
+      text-align: center;
+    }
 
-.welcome-title {
-font-size: 1.6rem;
-font-weight: 600;
-margin-bottom: 0.5rem;
-color: var(--text);
-background: var(--accent);
--webkit-background-clip: text;
--webkit-text-fill-color: transparent;
-display: inline-block;
-}
+    .welcome-title {
+      font-size: 1.6rem;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+      color: var(--text);
+      background: var(--accent);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      display: inline-block;
+    }
 
-.welcome-subtitle {
-font-size: 0.95rem;
-color: var(--text-light);
-max-width: 600px;
-margin: 0 auto;
-}
+    .welcome-subtitle {
+      font-size: 0.95rem;
+      color: var(--text-light);
+      max-width: 600px;
+      margin: 0 auto;
+    }
 
-.dashboard {
-display: grid;
-grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-gap: 20px;
-}
+    .dashboard {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 20px;
+    }
 
-/* Updated Wallet Card Design */
-.wallet-card {
-    background: linear-gradient(135deg, #1a2a6c, #b21f1f, #fdbb2d);
-    color: white;
-    border-radius: var(--card-radius);
-    padding: 1.5rem;
-    box-shadow: var(--shadow-md);
-    position: relative;
-    overflow: hidden;
-    min-height: 180px;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    border-top: 3px solid rgba(255, 255, 255, 0.3);
-}
+    /* Updated Wallet Card Design */
+    .wallet-card {
+      background: linear-gradient(135deg, #1a2a6c, #b21f1f, #fdbb2d);
+      color: white;
+      border-radius: var(--card-radius);
+      padding: 1.5rem;
+      box-shadow: var(--shadow-md);
+      position: relative;
+      overflow: hidden;
+      min-height: 180px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      border-top: 3px solid rgba(255, 255, 255, 0.3);
+    }
 
-/* Remove the old ::before line and add dotted half background */
-.wallet-card::before {
-    content: '';
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    height: 60%;
-    /* Create black dots using multiple radial-gradients */
-    background:
+    /* Remove the old ::before line and add dotted half background */
+    .wallet-card::before {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 60%;
+      /* Create black dots using multiple radial-gradients */
+      background:
         repeating-radial-gradient(circle at 10px 10px, #222 0px, #222 2.5px, transparent 3.5px, transparent 20px),
         repeating-radial-gradient(circle at 30px 30px, #222 0px, #222 2.5px, transparent 3.5px, transparent 20px);
-    background-size: 36px 36px;
-    opacity: 0.18;
-    border-bottom-left-radius: var(--card-radius);
-    border-bottom-right-radius: var(--card-radius);
-    z-index: 1;
-    pointer-events: none;
-    animation: blinkDots 1.2s linear infinite;
-}
+      background-size: 36px 36px;
+      opacity: 0.18;
+      border-bottom-left-radius: var(--card-radius);
+      border-bottom-right-radius: var(--card-radius);
+      z-index: 1;
+      pointer-events: none;
+      animation: blinkDots 1.2s linear infinite;
+    }
 
-.wallet-card::after {
-    content: '';
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    height: 31%;
-    /* Halftone effect using a dense dot grid */
-    background:
+    .wallet-card::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 31%;
+      /* Halftone effect using a dense dot grid */
+      background:
         radial-gradient(circle, #222 2px, transparent 3px),
         radial-gradient(circle, #222 2px, transparent 3px);
-    background-size: 18px 18px;
-    background-position: 0 0, 9px 9px;
-    opacity: 0.22;
-    border-bottom-left-radius: var(--card-radius);
-    border-bottom-right-radius: var(--card-radius);
-    z-index: 1;
-    pointer-events: none;
-    animation: blinkDotsWave 1.2s linear infinite;
-}
+      background-size: 18px 18px;
+      background-position: 0 0, 9px 9px;
+      opacity: 0.22;
+      border-bottom-left-radius: var(--card-radius);
+      border-bottom-right-radius: var(--card-radius);
+      z-index: 1;
+      pointer-events: none;
+      animation: blinkDotsWave 1.2s linear infinite;
+    }
 
-@keyframes blinkDotsWave {
-    0%   { opacity: 0.22; filter: brightness(1); }
-    20%  { opacity: 0.38; filter: brightness(1.3); }
-    40%  { opacity: 0.22; filter: brightness(1); }
-    100% { opacity: 0.22; filter: brightness(1); }
-}
+    @keyframes blinkDotsWave {
+      0% {
+        opacity: 0.22;
+        filter: brightness(1);
+      }
 
-/* Animate the wave from left to right using steps and delay */
-.wallet-card::after {
-    animation-delay: 0s;
-}
-.wallet-card::after {
-    /* This trick uses a CSS variable to shift the animation for each column */
-    --wave-columns: 20;
-    --wave-duration: 4s;
-    background-repeat: repeat;
-}
-.wallet-card::after {
-    /* Use a pseudo approach for a simple wave effect */
-    animation-name: blinkDotsWave;
-    animation-timing-function: linear;
-    animation-iteration-count: infinite;
-    animation-duration: 1.2s;
-    /* The wave effect is simulated by the keyframes and the dot grid */
-}
+      20% {
+        opacity: 0.38;
+        filter: brightness(1.3);
+      }
 
-.wallet-card i {
-font-size: 2.2rem;
-color: rgba(255, 255, 255, 0.8);
-margin-bottom: 0.5rem;
-align-self: flex-end;
-text-shadow: 0 2px 4px rgba(0,0,0,0.2);
-}
+      40% {
+        opacity: 0.22;
+        filter: brightness(1);
+      }
 
-.wallet-card h3 {
-font-size: 1rem;
-font-weight: 500;
-margin-bottom: 0.5rem;
-color: rgba(255, 255, 255, 0.9);
-}
+      100% {
+        opacity: 0.22;
+        filter: brightness(1);
+      }
+    }
 
-.wallet-amount {
-font-size: 2rem;
-font-weight: 700;
-margin: 0.5rem 0;
-text-shadow: 0 2px 4px rgba(0,0,0,0.2);
-}
+    /* Animate the wave from left to right using steps and delay */
+    .wallet-card::after {
+      animation-delay: 0s;
+    }
 
-.wallet-card .button {
-background: rgba(255, 255, 255, 0.2);
-backdrop-filter: blur(5px);
-border: 1px solid rgba(255, 255, 255, 0.3);
-align-self: flex-start;
-margin-top: 0.5rem;
-color: white;
-}
+    .wallet-card::after {
+      /* This trick uses a CSS variable to shift the animation for each column */
+      --wave-columns: 20;
+      --wave-duration: 4s;
+      background-repeat: repeat;
+    }
 
-.wallet-card .button:hover {
-background: rgba(255, 255, 255, 0.3);
-}
+    .wallet-card::after {
+      /* Use a pseudo approach for a simple wave effect */
+      animation-name: blinkDotsWave;
+      animation-timing-function: linear;
+      animation-iteration-count: infinite;
+      animation-duration: 1.2s;
+      /* The wave effect is simulated by the keyframes and the dot grid */
+    }
 
-.swap-ticket-label {
-position: absolute;
-top: 10px;
-left: 10px;
-background: rgba(255, 255, 255, 0.2);
-padding: 4px 8px;
-border-radius: 4px;
-font-size: 0.8rem;
-font-weight: 500;
-backdrop-filter: blur(2px);
-color: white;
-}
+    .wallet-card i {
+      font-size: 2.2rem;
+      color: rgba(255, 255, 255, 0.8);
+      margin-bottom: 0.5rem;
+      align-self: flex-end;
+      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    }
 
-/* Preloader Overlay */
-#preloader {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: #fff;
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 20px;
-  justify-content: center;
-  align-items: start;
-  z-index: 1000;
-  padding: 24px;
-}
+    .wallet-card h3 {
+      font-size: 1rem;
+      font-weight: 500;
+      margin-bottom: 0.5rem;
+      color: rgba(255, 255, 255, 0.9);
+    }
 
-/* Responsive: Stack vertically on mobile */
-@media (max-width: 768px) {
-  #preloader {
-    grid-template-columns: 1fr;
-    gap: 15px;
-    padding: 12px;
-  }
-  .preloader-card {
-    min-width: unset;
-    width: 100%;
-    max-width: 400px;
-    margin: 0 auto;
-  }
-}
+    .wallet-amount {
+      font-size: 2rem;
+      font-weight: 700;
+      margin: 0.5rem 0;
+      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    }
 
-.preloader-card {
-  background-color: var(--card-bg);
-  border-radius: var(--card-radius);
-  padding: 1.5rem;
-  box-shadow: var(--shadow-sm);
-  min-height: 250px;
-  min-width: 260px;
-  border: 1px solid rgba(0, 0, 0, 0.08);
-  position: relative;
-  overflow: hidden;
-}
+    .wallet-card .button {
+      background: rgba(255, 255, 255, 0.2);
+      backdrop-filter: blur(5px);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      align-self: flex-start;
+      margin-top: 0.5rem;
+      color: white;
+    }
 
-.preloader-card::before {
-  content: "";
-  position: absolute;
-  top: 0; left: 0; right: 0; bottom: 0;
-  border-radius: inherit;
-  border: 2px solid transparent;
-  background: linear-gradient(90deg, rgba(0,0,0,0.08) 25%, rgba(0,0,0,0.02) 50%, rgba(0,0,0,0.08) 75%);
-  background-size: 200% 100%;
-  animation: borderFlash 2s linear infinite;
-  pointer-events: none;
-}
+    .wallet-card .button:hover {
+      background: rgba(255, 255, 255, 0.3);
+    }
 
-.preloader-content {
-  height: 100%;
-  width: 100%;
-  background: linear-gradient(90deg, #eee 25%, #f9f9f9 50%, #eee 75%);
-  background-size: 200% 100%;
-  animation: shimmer 1.5s infinite;
-  border-radius: 8px;
-}
+    .swap-ticket-label {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      background: rgba(255, 255, 255, 0.2);
+      padding: 4px 8px;
+      border-radius: 4px;
+      font-size: 0.8rem;
+      font-weight: 500;
+      backdrop-filter: blur(2px);
+      color: white;
+    }
 
-@keyframes shimmer {
-  0% { background-position: 200% 0; }
-  100% { background-position: -200% 0; }
-}
+    /* Skeleton Loading Styles */
+    .skeleton {
+      background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+      background-size: 200% 100%;
+      animation: loading 1.5s infinite;
+      border-radius: 4px;
+    }
 
+    .skeleton-text {
+      height: 1rem;
+      margin-bottom: 0.5rem;
+    }
 
-@keyframes borderFlash {
-  0% { background-position: 200% 0; }
-  100% { background-position: -200% 0; }
-}
+    .skeleton-text.short {
+      width: 60%;
+    }
 
+    .skeleton-text.medium {
+      width: 80%;
+    }
 
-#preloader.hidden {
-  opacity: 0;
-  visibility: hidden;
-  transition: opacity 0.6s ease, visibility 0.6s;
-}
-@media (min-width: 992px) {
-  #preloader {
-    grid-template-columns: repeat(4, 1fr);
-  }
-}
+    .skeleton-button {
+      height: 2.5rem;
+      width: 120px;
+      margin-top: 0.5rem;
+      border-radius: 25px;
+    }
 
-/* Standard Cards */
-.card {
-background-color: var(--card-bg);
-border-radius: var(--card-radius);
-padding: 1.5rem;
-box-shadow: var(--shadow-sm);
-text-align: center;
-transition: var(--transition);
-border: 1px solid rgba(0, 0, 0, 0.05);
-min-height: 180px;
-display: flex;
-flex-direction: column;
-justify-content: space-between;
-position: relative;
-}
+    .skeleton-image {
+      height: 90px;
+      width: 90px;
+      margin: 0 auto 1rem;
+      border-radius: 8px;
+    }
 
-.card::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 4px;
-    background: linear-gradient(
-        90deg,
-        #4a90e2 0%,
-        rgb(128, 64, 64) 20%,
-        #4a90e2 40%,
-        rgb(128, 64, 64) 60%,
-        #4a90e2 80%,
-        rgb(128, 64, 64) 100%
-    );
-    background-size: 300% 100%;
-    animation: moveBorder 3s linear infinite;
-    border-radius: 12px 12px 0 0;
-    z-index: 2;
-}
+    @keyframes loading {
+      0% {
+        background-position: 200% 0;
+      }
 
-@keyframes moveBorder {
-    0% {
+      100% {
+        background-position: -200% 0;
+      }
+    }
+
+    /* Standard Cards */
+    .card {
+      background-color: var(--card-bg);
+      border-radius: var(--card-radius);
+      padding: 1.5rem;
+      box-shadow: var(--shadow-sm);
+      text-align: center;
+      transition: var(--transition);
+      border: 1px solid rgba(0, 0, 0, 0.05);
+      min-height: 180px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      position: relative;
+    }
+
+    .card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 4px;
+      background: linear-gradient(90deg,
+          #4a90e2 0%,
+          rgb(128, 64, 64) 20%,
+          #4a90e2 40%,
+          rgb(128, 64, 64) 60%,
+          #4a90e2 80%,
+          rgb(128, 64, 64) 100%);
+      background-size: 300% 100%;
+      animation: moveBorder 3s linear infinite;
+      border-radius: 12px 12px 0 0;
+      z-index: 2;
+    }
+
+    @keyframes moveBorder {
+      0% {
         background-position: 0% 0%;
-    }
-    100% {
+      }
+
+      100% {
         background-position: 100% 0%;
+      }
     }
-}
-.card:hover {
-transform: translateY(-5px);
-box-shadow: var(--shadow-lg);
-}
 
-.card i {
-font-size: 1.8rem;
-background: var(--accent);
--webkit-background-clip: text;
--webkit-text-fill-color: transparent;
-margin-bottom: 0.5rem;
-}
+    .card:hover {
+      transform: translateY(-5px);
+      box-shadow: var(--shadow-lg);
+    }
 
-.card img {
-max-width: 100%;
-height: 90px;
-display: block;
-margin: 0 auto 1rem;
-transition: var(--transition);
-}
+    .card i {
+      font-size: 1.8rem;
+      background: var(--accent);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 0.5rem;
+    }
 
-@media (max-width: 768px) {
-.card img {
-width: 150px;
-}
-}
+    .card img {
+      max-width: 100%;
+      height: 90px;
+      display: block;
+      margin: 0 auto 1rem;
+      transition: var(--transition);
+    }
 
-@media (max-width: 576px) {
-.card img {
-width: 90px;
-}
-}
+    @media (max-width: 768px) {
+      .card img {
+        width: 150px;
+      }
+    }
 
-.card h3 {
-font-size: 1.1rem;
-margin-bottom: 0.5rem;
-font-weight: 600;
-}
+    @media (max-width: 576px) {
+      .card img {
+        width: 90px;
+      }
+    }
 
-.card p {
-font-size: 0.85rem;
-color: var(--text-light);
-margin-bottom: 0.8rem;
-}
+    .card h3 {
+      font-size: 1.1rem;
+      margin-bottom: 0.5rem;
+      font-weight: 600;
+    }
 
-/* Enhanced Button Styles with Pulsing Dots Loader */
-.button {
-background: var(--accent);
-border: none;
-padding: 0.6rem 1.2rem;
-color: #fff;
-border-radius: 30px;
-cursor: pointer;
-font-size: 0.9rem;
-font-weight: 500;
-transition: var(--transition);
-display: inline-flex;
-align-items: center;
-justify-content: center;
-gap: 6px;
-min-width: 120px;
-margin: 0 auto;
-position: relative;
-overflow: hidden;
-}
+    .card p {
+      font-size: 0.85rem;
+      color: var(--text-light);
+      margin-bottom: 0.8rem;
+    }
 
-.button i {
-padding-top: 8px;
-font-size: 0.8rem;
--webkit-text-fill-color: white;
-transition: all 0.3s ease;
-}
+    /* Enhanced Button Styles with Pulsing Dots Loader */
+    .button {
+      background: var(--accent);
+      border: none;
+      padding: 0.6rem 1.2rem;
+      color: #fff;
+      border-radius: 30px;
+      cursor: pointer;
+      font-size: 0.9rem;
+      font-weight: 500;
+      transition: var(--transition);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      min-width: 120px;
+      margin: 0 auto;
+      position: relative;
+      overflow: hidden;
+    }
 
-.button:hover {
-transform: translateY(-2px);
-box-shadow: 0 4px 12px rgba(0, 191, 166, 0.3);
-}
+    .button i {
+      padding-top: 8px;
+      font-size: 0.8rem;
+      -webkit-text-fill-color: white;
+      transition: all 0.3s ease;
+    }
 
-.button:active {
-transform: translateY(-1px) scale(0.98);
-}
+    .button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0, 191, 166, 0.3);
+    }
 
-/* Pulsing Dots Loader */
-.button .loader-dots {
-display: none;
-align-items: center;
-gap: 3px;
-}
+    .button:active {
+      transform: translateY(-1px) scale(0.98);
+    }
 
-.button .loader-dots span {
-width: 4px;
-height: 4px;
-background-color: white;
-border-radius: 50%;
-animation: pulse-dots 1.4s infinite ease-in-out both;
-}
+    /* Pulsing Dots Loader */
+    .button .loader-dots {
+      display: none;
+      align-items: center;
+      gap: 3px;
+    }
 
-.button .loader-dots span:nth-child(1) { 
-animation-delay: -0.32s; 
-}
+    .button .loader-dots span {
+      width: 4px;
+      height: 4px;
+      background-color: white;
+      border-radius: 50%;
+      animation: pulse-dots 1.4s infinite ease-in-out both;
+    }
 
-.button .loader-dots span:nth-child(2) { 
-animation-delay: -0.16s; 
-}
+    .button .loader-dots span:nth-child(1) {
+      animation-delay: -0.32s;
+    }
 
-.button .loader-dots span:nth-child(3) { 
-animation-delay: 0s; 
-}
+    .button .loader-dots span:nth-child(2) {
+      animation-delay: -0.16s;
+    }
 
-@keyframes pulse-dots {
-0%, 80%, 100% { 
-transform: scale(0.8);
-opacity: 0.5;
-}
-40% { 
-transform: scale(1.2);
-opacity: 1;
-}
-}
+    .button .loader-dots span:nth-child(3) {
+      animation-delay: 0s;
+    }
 
-/* Loading State */
-.button.loading {
-pointer-events: none;
-opacity: 0.8;
-}
+    @keyframes pulse-dots {
 
-.button.loading .button-text {
-opacity: 0;
-transform: translateX(-10px);
-}
+      0%,
+      80%,
+      100% {
+        transform: scale(0.8);
+        opacity: 0.5;
+      }
 
-.button.loading .button-icon {
-opacity: 0;
-transform: scale(0);
-}
+      40% {
+        transform: scale(1.2);
+        opacity: 1;
+      }
+    }
 
-.button.loading .loader-dots {
-display: flex;
-position: absolute;
-}
+    /* Loading State */
+    .button.loading {
+      pointer-events: none;
+      opacity: 0.8;
+    }
 
-/* Ripple Effect */
-.button::after {
-content: '';
-position: absolute;
-top: 50%;
-left: 50%;
-width: 0;
-height: 0;
-border-radius: 50%;
-background: rgba(255, 255, 255, 0.3);
-transform: translate(-50%, -50%);
-transition: width 0.6s, height 0.6s;
-}
+    .button.loading .button-text {
+      opacity: 0;
+      transform: translateX(-10px);
+    }
 
-.button.clicked::after {
-width: 300px;
-height: 300px;
-}
+    .button.loading .button-icon {
+      opacity: 0;
+      transform: scale(0);
+    }
 
-/* Message Styles */
-.message {
-max-width: 800px;
-margin: 1.5rem auto;
-text-align: center;
-padding: 1rem 1.5rem;
-border-radius: var(--card-radius);
-font-size: 0.95rem;
-box-shadow: var(--shadow-sm);
-display: flex;
-align-items: center;
-justify-content: center;
-gap: 10px;
-transition: opacity 0.5s ease;
-}
+    .button.loading .loader-dots {
+      display: flex;
+      position: absolute;
+    }
 
-.message.hide {
-opacity: 0;
-height: 0;
-padding: 0;
-margin: 0 auto;
-overflow: hidden;
-}
+    /* Ripple Effect */
+    .button::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 0;
+      height: 0;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.3);
+      transform: translate(-50%, -50%);
+      transition: width 0.6s, height 0.6s;
+    }
 
-.message i {
-font-size: 1.2rem;
-}
+    .button.clicked::after {
+      width: 300px;
+      height: 300px;
+    }
 
-.success {
-background-color: #f0fff4;
-color: #2f855a;
-border-left: 4px solid #38a169;
-}
+    /* Message Styles */
+    .message {
+      max-width: 800px;
+      margin: 1.5rem auto;
+      text-align: center;
+      padding: 1rem 1.5rem;
+      border-radius: var(--card-radius);
+      font-size: 0.95rem;
+      box-shadow: var(--shadow-sm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      transition: opacity 0.5s ease;
+    }
 
-.error {
-background-color: #fff5f5;
-color: #c53030;
-border-left: 4px solid #e53e3e;
-}
+    .message.hide {
+      opacity: 0;
+      height: 0;
+      padding: 0;
+      margin: 0 auto;
+      overflow: hidden;
+    }
 
-/* Responsive Styles */
-@media (max-width: 992px) {
-.navbar {
-padding: 1rem 1.5rem;
-}
-}
+    .message i {
+      font-size: 1.2rem;
+    }
 
-@media (max-width: 768px) {
-.menu-toggle {
-display: block;
-}
+    .success {
+      background-color: #f0fff4;
+      color: #2f855a;
+      border-left: 4px solid #38a169;
+    }
 
-.navbar-right {
-position: fixed;
-top: 0;
-right: -100%;
-width: 70%;
-max-width: 300px;
-height: 100vh;
-background: var(--accent);
-flex-direction: column;
-justify-content: flex-start;
-padding: 5rem 0 2rem;
-gap: 0;
-box-shadow: -5px 0 15px rgba(0, 0, 0, 0.1);
-transition: right 0.8s cubic-bezier(0.25, 0.8, 0.25, 1) 0.2s;
-}
+    .error {
+      background-color: #fff5f5;
+      color: #c53030;
+      border-left: 4px solid #e53e3e;
+    }
 
-.navbar-right.active {
-right: 0;
-transition: right 0.6s cubic-bezier(0.25, 0.8, 0.25, 1);
-}
+    /* Responsive Styles */
+    @media (max-width: 992px) {
+      .navbar {
+        padding: 1rem 1.5rem;
+      }
+    }
 
-.navbar-right.active .mobile-menu li {
-opacity: 1;
-transform: translateX(0);
-}
+    @media (max-width: 768px) {
+      .menu-toggle {
+        display: block;
+      }
 
-.navbar-right.active .mobile-menu li:nth-child(1) {
-transition-delay: 0.1s;
-}
+      .navbar-right {
+        position: fixed;
+        top: 0;
+        right: -100%;
+        width: 70%;
+        max-width: 300px;
+        height: 100vh;
+        background: var(--accent);
+        flex-direction: column;
+        justify-content: flex-start;
+        padding: 5rem 0 2rem;
+        gap: 0;
+        box-shadow: -5px 0 15px rgba(0, 0, 0, 0.1);
+        transition: right 0.8s cubic-bezier(0.25, 0.8, 0.25, 1) 0.2s;
+      }
 
-.navbar-right.active .mobile-menu li:nth-child(2) {
-transition-delay: 0.3s;
-}
+      .navbar-right.active {
+        right: 0;
+        transition: right 0.6s cubic-bezier(0.25, 0.8, 0.25, 1);
+      }
 
-.navbar-right.active .mobile-menu li:nth-child(3) {
-transition-delay: 0.5s;
-}
+      .navbar-right.active .mobile-menu li {
+        opacity: 1;
+        transform: translateX(0);
+      }
 
-.navbar-right.active .mobile-menu li:nth-child(4) {
-transition-delay: 0.7s;
-}
+      .navbar-right.active .mobile-menu li:nth-child(1) {
+        transition-delay: 0.1s;
+      }
 
-.navbar-right.active .mobile-menu li:nth-child(5) {
-transition-delay: 1.1s;
-}
+      .navbar-right.active .mobile-menu li:nth-child(2) {
+        transition-delay: 0.3s;
+      }
 
-.navbar-right.active .mobile-menu li:nth-child(6) {
-transition-delay: 1.3s;
-}
+      .navbar-right.active .mobile-menu li:nth-child(3) {
+        transition-delay: 0.5s;
+      }
 
-.navbar-right.active .mobile-menu li:nth-child(7) {
-transition-delay: 1.5s;
-}
+      .navbar-right.active .mobile-menu li:nth-child(4) {
+        transition-delay: 0.7s;
+      }
 
-.navbar-right.active .mobile-menu li:nth-child(8) {
-transition-delay: 1.7s;
-}
+      .navbar-right.active .mobile-menu li:nth-child(5) {
+        transition-delay: 1.1s;
+      }
 
-.user-info, .logout-btn {
-display: none;
-}
+      .navbar-right.active .mobile-menu li:nth-child(6) {
+        transition-delay: 1.3s;
+      }
 
-.mobile-menu {
-display: block;
-}
+      .navbar-right.active .mobile-menu li:nth-child(7) {
+        transition-delay: 1.5s;
+      }
 
-.mobile-user-info {
-display: flex;
-align-items: center;
-padding: 1.5rem;
-border-bottom: 1px solid rgba(255, 255, 255, 0.2);
-}
+      .navbar-right.active .mobile-menu li:nth-child(8) {
+        transition-delay: 1.7s;
+      }
 
-.mobile-user-avatar {
-width: 42px;
-height: 42px;
-background-color: rgba(255, 255, 255, 0.2);
-color: #fff;
-border-radius: 50%;
-display: flex;
-justify-content: center;
-align-items: center;
-font-weight: bold;
-font-size: 1.1rem;
-margin-right: 12px;
-}
+      .user-info,
+      .logout-btn {
+        display: none;
+      }
 
-.mobile-username {
-font-weight: 500;
-font-size: 1rem;
-}
+      .mobile-menu {
+        display: block;
+      }
 
-.dashboard {
-grid-template-columns: 1fr 1fr;
-gap: 15px;
-}
+      .mobile-user-info {
+        display: flex;
+        align-items: center;
+        padding: 1.5rem;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+      }
 
-.welcome-title {
-font-size: 1.4rem;
-}
-}
+      .mobile-user-avatar {
+        width: 42px;
+        height: 42px;
+        background-color: rgba(255, 255, 255, 0.2);
+        color: #fff;
+        border-radius: 50%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-weight: bold;
+        font-size: 1.1rem;
+        margin-right: 12px;
+      }
 
-@media (max-width: 576px) {
-.dashboard {
-grid-template-columns: 1fr;
-}
+      .mobile-username {
+        font-weight: 500;
+        font-size: 1rem;
+      }
 
-.card, .wallet-card {
-min-height: 160px;
-padding: 1rem;
-width: 85vw;         /* even wider for small screens */
-    max-width: 98vw;
-}
+      .dashboard {
+        grid-template-columns: 1fr 1fr;
+        gap: 15px;
+      }
 
-.wallet-amount {
-font-size: 1.8rem;
-}
+      .welcome-title {
+        font-size: 1.4rem;
+      }
+    }
 
-.navbar h1 {
-font-size: 1.4rem;
-}
+    @media (max-width: 576px) {
+      .dashboard {
+        grid-template-columns: 1fr;
+      }
 
-.navbar-right {
-width: 80%;
-}
-}
+      .card,
+      .wallet-card {
+        min-height: 160px;
+        padding: 1rem;
+        width: 85vw;
+        /* even wider for small screens */
+        max-width: 98vw;
+      }
 
-/* Keyframes for wallet glow animation */
-@keyframes wallet-glow {
-0% {
-opacity: 0.3;
-transform: scale(1);
-}
-100% {
-opacity: 0.6;
-transform: scale(1.05);
-}
-}
-</style>
+      .wallet-amount {
+        font-size: 1.8rem;
+      }
+
+      .navbar h1 {
+        font-size: 1.4rem;
+      }
+
+      .navbar-right {
+        width: 80%;
+      }
+    }
+
+    /* Keyframes for wallet glow animation */
+    @keyframes wallet-glow {
+      0% {
+        opacity: 0.3;
+        transform: scale(1);
+      }
+
+      100% {
+        opacity: 0.6;
+        transform: scale(1.05);
+      }
+    }
+  </style>
 </head>
 
 <body>
 
-<th:block th:replace="components/navbar :: navbar"></th:block>
+  <th:block th:replace="components/navbar :: navbar"></th:block>
 
-<div class="container">
-	<div class="welcome-section" data-aos="fade-up">
-		<h1 class="welcome-title">Welcome Back!</h1>
-		<p class="welcome-subtitle">Manage your travel information, shared journeys, user interactions, and support — all in one place.</p>
-	</div>
+  <div class="container">
+    <div class="welcome-section" data-aos="fade-up">
+      <h1 class="welcome-title">Welcome Back!</h1>
+      <p class="welcome-subtitle">Manage your travel information, shared journeys, user interactions, and support — all
+        in one place.</p>
+    </div>
 
-	<div class="message success" th:if="${successMessage}" id="successMessage">
-		<i class="fas fa-check-circle"></i>
-	<p th:text="${successMessage}"></p>
-	</div>
+    <div class="message success" th:if="${successMessage}" id="successMessage">
+      <i class="fas fa-check-circle"></i>
+      <p th:text="${successMessage}"></p>
+    </div>
 
-	<div class="message error" th:if="${error}" id="errorMessage">
-		<i class="fas fa-exclamation-circle"></i>
-		<p th:text="${error}"></p>
-	</div>
+    <div class="message error" th:if="${error}" id="errorMessage">
+      <i class="fas fa-exclamation-circle"></i>
+      <p th:text="${error}"></p>
+    </div>
 
-  <div class="dashboard" data-aos="fade-up">  
+    <div class="dashboard" data-aos="fade-up">
 
-  
-	<div id="preloader">
-  <div class="preloader-card">
-    <div class="preloader-content"></div>
+
+      <div id="preloader">
+        <div class="preloader-card">
+          <div class="preloader-content"></div>
+        </div>
+        <div class="preloader-card">
+          <div class="preloader-content"></div>
+        </div>
+        <div class="preloader-card">
+          <div class="preloader-content"></div>
+        </div>
+        <div class="preloader-card">
+          <div class="preloader-content"></div>
+        </div>
+        <div class="preloader-card">
+          <div class="preloader-content"></div>
+        </div>
+        <div class="preloader-card">
+          <div class="preloader-content"></div>
+        </div>
+        <div class="preloader-card">
+          <div class="preloader-content"></div>
+        </div>
+        <div class="preloader-card">
+          <div class="preloader-content"></div>
+        </div>
+      </div>
+    </div>
+    <div class="dashboard" id="skeleton-loader">
+      <!-- Wallet Card Skeleton -->
+      <div class="card" data-aos="fade-up" data-aos-delay="250">
+        <div style="display: flex;flex-direction:column; justify-content: center; align-items: center;">
+          <div class="skeleton skeleton-image"></div>
+          <div class="skeleton skeleton-text short"></div>
+          <div class="skeleton skeleton-text medium"></div>
+          <div class="skeleton skeleton-button"></div>
+        </div>
+      </div>
+
+      <!-- Regular Card Skeletons -->
+      <div class="card" data-aos="fade-up" data-aos-delay="250">
+        <div style="display: flex;flex-direction:column; justify-content: center; align-items: center;">
+          <div class="skeleton skeleton-image"></div>
+          <div class="skeleton skeleton-text short"></div>
+          <div class="skeleton skeleton-text medium"></div>
+          <div class="skeleton skeleton-button"></div>
+        </div>
+      </div>
+
+      <div class="card" data-aos="fade-up" data-aos-delay="250">
+        <div style="display: flex;flex-direction:column; justify-content: center; align-items: center;">
+          <div class="skeleton skeleton-image"></div>
+          <div class="skeleton skeleton-text short"></div>
+          <div class="skeleton skeleton-text medium"></div>
+          <div class="skeleton skeleton-button"></div>
+        </div>
+      </div>
+
+      <div class="card" data-aos="fade-up" data-aos-delay="250">
+        <div style="display: flex;flex-direction:column; justify-content: center; align-items: center;">
+          <div class="skeleton skeleton-image"></div>
+          <div class="skeleton skeleton-text short"></div>
+          <div class="skeleton skeleton-text medium"></div>
+          <div class="skeleton skeleton-button"></div>
+        </div>
+      </div>
+
+      <div class="card" data-aos="fade-up" data-aos-delay="250">
+        <div style="display: flex;flex-direction:column; justify-content: center; align-items: center;">
+          <div class="skeleton skeleton-image"></div>
+          <div class="skeleton skeleton-text short"></div>
+          <div class="skeleton skeleton-text medium"></div>
+          <div class="skeleton skeleton-button"></div>
+        </div>
+      </div>
+
+      <div class="card" data-aos="fade-up" data-aos-delay="250">
+        <div style="display: flex;flex-direction:column; justify-content: center; align-items: center;">
+          <div class="skeleton skeleton-image"></div>
+          <div class="skeleton skeleton-text short"></div>
+          <div class="skeleton skeleton-text medium"></div>
+          <div class="skeleton skeleton-button"></div>
+        </div>
+      </div>
+
+      <div class="card" data-aos="fade-up" data-aos-delay="250">
+        <div style="display: flex;flex-direction:column; justify-content: center; align-items: center;">
+          <div class="skeleton skeleton-image"></div>
+          <div class="skeleton skeleton-text short"></div>
+          <div class="skeleton skeleton-text medium"></div>
+          <div class="skeleton skeleton-button"></div>
+        </div>
+      </div>
+
+      <div class="card" data-aos="fade-up" data-aos-delay="250">
+        <div style="display: flex;flex-direction:column; justify-content: center; align-items: center;">
+          <div class="skeleton skeleton-image"></div>
+          <div class="skeleton skeleton-text short"></div>
+          <div class="skeleton skeleton-text medium"></div>
+          <div class="skeleton skeleton-button"></div>
+        </div>
+      </div>
+    </div>
+
+
+
+    <div id="main-content" style="display:none; padding:0.5rem;">
+      <main class="dashboard">
+        <div class="card wallet-card" data-aos="fade-up" data-aos-delay="100">
+          <div class="swap-ticket-label">SwapTicket Wallet</div>
+          <i class="fas fa-wallet"></i>
+          <div>
+            <h3>Overall Amount</h3>
+            <p>Track your platform activity and wallet movements.</p>
+            <form th:action="@{/user/transactions}" method="get">
+              <button class="button" type="submit">
+                <i class="fas fa-history button-icon"></i>
+                <div class="magic"></div>
+
+                <span class="button-text">View History</span>
+                <div class="loader-dots">
+                  <span></span>
+                  <span></span>
+                  <span></span>
+                </div>
+              </button>
+            </form>
+          </div>
+        </div>
+
+        <div class="card" data-aos="fade-up" data-aos-delay="250">
+          <img src="/docs/SellTicket.png" alt="SellTicket">
+          <h3>Share Journey Details</h3>
+          <p>Share non-sensitive information about your upcoming train journey.</p>
+          <form th:action="@{/pnr/sell}" method="get">
+            <button class="button" type="submit">
+              <i class="fas fa-plus-circle button-icon"></i>
+              <span class="button-text">Share</span>
+              <div class="loader-dots">
+                <span></span>
+                <span></span>
+                <span></span>
+              </div>
+            </button>
+          </form>
+        </div>
+
+        <div class="card" data-aos="fade-up" data-aos-delay="300">
+          <img src="/docs/buyticket.png" alt="butTicket">
+          <h3>Explore Shared Journeys</h3>
+          <p>Browse journey details shared by other verified travellers.</p>
+          <form th:action="@{/pnr/buy}" method="get">
+            <button class="button" type="submit">
+              <i class="fas fa-search-dollar button-icon"></i>
+              <span class="button-text">Explore</span>
+              <div class="loader-dots">
+                <span></span>
+                <span></span>
+                <span></span>
+              </div>
+            </button>
+          </form>
+        </div>
+
+        <div class="card" data-aos="fade-up" data-aos-delay="200">
+          <img src="/docs/purchase.png" alt="purchaseTicket">
+          <h3>My Viewed Journeys</h3>
+          <p>View the journey information you have accessed</p>
+          <form th:action="@{/pnr/my-purchases}" method="get">
+            <button class="button" type="submit">
+              <i class="fas fa-receipt button-icon"></i>
+              <span class="button-text">View</span>
+              <div class="loader-dots">
+                <span></span>
+                <span></span>
+                <span></span>
+              </div>
+            </button>
+          </form>
+        </div>
+
+        <div class="card" data-aos="fade-up" data-aos-delay="150">
+          <img src="/docs/myListedTicket.png" alt="myListedTicket">
+          <h3>My Shared Travel Details</h3>
+          <p>View and manage the journeys you have shared.</p>
+          <form th:action="@{/my-listed-tickets}" method="get">
+            <button class="button" type="submit">
+              <i class="fas fa-eye button-icon"></i>
+              <span class="button-text">View</span>
+              <div class="loader-dots">
+                <span></span>
+                <span></span>
+                <span></span>
+              </div>
+            </button>
+          </form>
+        </div>
+
+        <div class="card" data-aos="fade-up" data-aos-delay="300">
+          <img src="/docs/track.png" alt="Track">
+          <h3>Track Train</h3>
+          <p>Check train schedules and live status for your travel planning.</p>
+          <form th:action="@{/track-train-between}" method="get">
+            <button class="button" type="submit">
+              <i class="fas fa-search-location"></i>
+              <span class="button-text">Track Train</span>
+              <div class="loader-dots">
+                <span></span>
+                <span></span>
+                <span></span>
+              </div>
+            </button>
+          </form>
+        </div>
+
+        <div class="card" data-aos="fade-up" data-aos-delay="300">
+          <img src="/docs/Customercare.png" alt="CustomerCare">
+          <h3>Customer Support</h3>
+          <p>Need help? Type your question...</p>
+          <form th:action="@{/support/faq}" method="get">
+            <button class="button" type="submit">
+              <i class="fas fa-comments button-icon"></i>
+              <span class="button-text">Help & Support</span>
+              <div class="loader-dots">
+                <span></span>
+                <span></span>
+                <span></span>
+              </div>
+            </button>
+          </form>
+        </div>
+
+        <div class="card" data-aos="fade-up" data-aos-delay="150">
+          <img src="/docs/refer.png" alt="myListedTicket">
+          <h3>Refer A Friend</h3>
+          <p>Invite friends and earn bonuses when they join</p>
+          <form th:action="@{/user/refer}" method="get">
+            <button class="button" type="submit">
+              <i class="fas fa-users button-icon"></i>
+              <span class="button-text">Invite Now</span>
+              <div class="loader-dots">
+                <span></span>
+                <span></span>
+                <span></span>
+              </div>
+            </button>
+          </form>
+        </div>
+
+      </main>
+    </div>
   </div>
-  <div class="preloader-card">
-    <div class="preloader-content"></div>
-  </div>
-  <div class="preloader-card">
-    <div class="preloader-content"></div>
-  </div>
-  <div class="preloader-card">
-    <div class="preloader-content"></div>
-  </div>
-  <div class="preloader-card">
-    <div class="preloader-content"></div>
-  </div>
-  <div class="preloader-card">
-    <div class="preloader-content"></div>
-  </div>
-  <div class="preloader-card">
-    <div class="preloader-content"></div>
-  </div>
-  <div class="preloader-card">
-    <div class="preloader-content"></div>
-  </div>
-</div>
-</div>
 
+  <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+  <script>
+    // Initialize animations
+    AOS.init({
+      duration: 800,
+      once: true
+    });
 
-<div id="main-content" style="display:none; padding:0.5rem;">
-	<main class="dashboard">
-		<div class="card wallet-card" data-aos="fade-up" data-aos-delay="100">
-		<div class="swap-ticket-label">SwapTicket Wallet</div>
-			<i class="fas fa-wallet"></i>
-		<div>
-			<h3>Overall Amount</h3>
-			<p>Track your platform activity and wallet movements.</p>
-		<form th:action="@{/user/transactions}" method="get">
-		<button class="button" type="submit">
-<i class="fas fa-history button-icon"></i>
-<div class="magic"></div>
+    // Enhanced Button Loading Functionality with Pulsing Dots
+    function addButtonLoaders() {
+      const buttons = document.querySelectorAll('.button');
 
-<span class="button-text">View History</span>
-<div class="loader-dots">
-<span></span>
-<span></span>
-<span></span>
-</div>
-</button>
-</form>
-</div>
-</div>
+      buttons.forEach(button => {
+        button.addEventListener('click', function (e) {
+          // Add ripple effect
+          this.classList.add('clicked');
+          setTimeout(() => {
+            this.classList.remove('clicked');
+          }, 600);
 
-<div class="card" data-aos="fade-up" data-aos-delay="250">
-<img src="/docs/SellTicket.png" alt="SellTicket">
-<h3>Share Journey Details</h3>
-<p>Share non-sensitive information about your upcoming train journey.</p>
-<form th:action="@{/pnr/sell}" method="get">
-<button class="button" type="submit">
-<i class="fas fa-plus-circle button-icon"></i>
-<span class="button-text">Share</span>
-<div class="loader-dots">
-<span></span>
-<span></span>
-<span></span>
-</div>
-</button>
-</form>
-</div>
+          // Add loading state
+          this.classList.add('loading');
 
-<div class="card" data-aos="fade-up" data-aos-delay="300">
-<img src="/docs/buyticket.png" alt="butTicket">
-<h3>Explore Shared Journeys</h3>
-<p>Browse journey details shared by other verified travellers.</p>
-<form th:action="@{/pnr/buy}" method="get">
-<button class="button" type="submit">
-<i class="fas fa-search-dollar button-icon"></i>
-<span class="button-text">Explore</span>
-<div class="loader-dots">
-<span></span>
-<span></span>
-<span></span>
-</div>
-</button>
-</form>
-</div>
+          // Prevent multiple clicks
+          this.style.pointerEvents = 'none';
 
-<div class="card" data-aos="fade-up" data-aos-delay="200">
-<img src="/docs/purchase.png" alt="purchaseTicket">
-<h3>My Viewed Journeys</h3>
-<p>View the journey information you have accessed</p>
-<form th:action="@{/pnr/my-purchases}" method="get">
-<button class="button" type="submit">
-<i class="fas fa-receipt button-icon"></i>
-<span class="button-text">View</span>
-<div class="loader-dots">
-<span></span>
-<span></span>
-<span></span>
-</div>
-</button>
-</form>
-</div>
+          // Optional: Remove loading state after a timeout (fallback)
+          setTimeout(() => {
+            this.classList.remove('loading');
+            this.style.pointerEvents = 'auto';
+          }, 5000); // 5 second fallback
+        });
+      });
+    }
 
-<div class="card" data-aos="fade-up" data-aos-delay="150">
-<img src="/docs/myListedTicket.png" alt="myListedTicket">
-<h3>My Shared Travel Details</h3>
-<p>View and manage the journeys you have shared.</p>
-<form th:action="@{/my-listed-tickets}" method="get">
-<button class="button" type="submit">
-<i class="fas fa-eye button-icon"></i>
-<span class="button-text">View</span>
-<div class="loader-dots">
-<span></span>
-<span></span>
-<span></span>
-</div>
-</button>
-</form>
-</div>
+    // Initialize button loaders when DOM is loaded
+    document.addEventListener('DOMContentLoaded', addButtonLoaders);
 
-<div class="card" data-aos="fade-up" data-aos-delay="300">
-<img src="/docs/track.png" alt="Track">
-<h3>Track Train</h3>
-<p>Check train schedules and live status for your travel planning.</p>
-<form th:action="@{/track-train-between}" method="get">
-<button class="button" type="submit">
-<i class="fas fa-search-location"></i>
-<span class="button-text">Track Train</span>
-<div class="loader-dots">
-<span></span>
-<span></span>
-<span></span>
-</div>
-</button>
-</form>
-</div>
+    // Mobile menu toggle functionality with slower animations
+    const menuToggle = document.getElementById('menuToggle');
+    const navbarRight = document.getElementById('navbarRight');
 
-<div class="card" data-aos="fade-up" data-aos-delay="300">
-<img src="/docs/Customercare.png" alt="CustomerCare">
-<h3>Customer Support</h3>
-<p>Need help? Type your question...</p>
-<form th:action="@{/support/faq}" method="get">
-<button class="button" type="submit">
-<i class="fas fa-comments button-icon"></i>
-<span class="button-text">Help & Support</span>
-<div class="loader-dots">
-<span></span>
-<span></span>
-<span></span>
-</div>
-</button>
-</form>
-</div>
+    menuToggle.addEventListener('click', (e) => {
+      e.stopPropagation();
+      navbarRight.classList.toggle('active');
 
-<div class="card" data-aos="fade-up" data-aos-delay="150">
-<img src="/docs/refer.png" alt="myListedTicket">
-<h3>Refer A Friend</h3>
-<p>Invite friends and earn bonuses when they join</p>
-<form th:action="@{/user/refer}" method="get">
-<button class="button" type="submit">
-<i class="fas fa-users button-icon"></i>
-<span class="button-text">Invite Now</span>
-<div class="loader-dots">
-<span></span>
-<span></span>
-<span></span>
-</div>
-</button>
-</form>
-</div>
+      // Slower icon transition
+      setTimeout(() => {
+        menuToggle.innerHTML = navbarRight.classList.contains('active')
+          ? '<i class="fas fa-times"></i>'
+          : '<i class="fas fa-bars"></i>';
+      }, 200);
+    });
 
-</main>
-</div>
-</div>
+    // Close menu when clicking outside on mobile with slower animation
+    document.addEventListener('click', (e) => {
+      if (window.innerWidth <= 768) {
+        if (!navbarRight.contains(e.target) && e.target !== menuToggle) {
+          navbarRight.classList.remove('active');
 
-<script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
-<script>
-// Initialize animations
-AOS.init({
-duration: 800,
-once: true
-});
+          // Slower icon transition back
+          setTimeout(() => {
+            menuToggle.innerHTML = '<i class="fas fa-bars"></i>';
+          }, 300);
+        }
+      }
+    });
 
-// Enhanced Button Loading Functionality with Pulsing Dots
-function addButtonLoaders() {
-const buttons = document.querySelectorAll('.button');
+    // Close menu when clicking on menu items with delay
+    document.querySelectorAll('.mobile-menu .menu-item').forEach(item => {
+      item.addEventListener('click', () => {
+        // Add delay before closing menu
+        setTimeout(() => {
+          navbarRight.classList.remove('active');
+          setTimeout(() => {
+            menuToggle.innerHTML = '<i class="fas fa-bars"></i>';
+          }, 200);
+        }, 150);
+      });
+    });
 
-buttons.forEach(button => {
-button.addEventListener('click', function(e) {
-// Add ripple effect
-this.classList.add('clicked');
-setTimeout(() => {
-this.classList.remove('clicked');
-}, 600);
+    // Auto-hide success message after 3 seconds
+    document.addEventListener('DOMContentLoaded', function () {
+      const successMessage = document.getElementById('successMessage');
+      const errorMessage = document.getElementById('errorMessage');
 
-// Add loading state
-this.classList.add('loading');
+      if (successMessage) {
+        setTimeout(function () {
+          successMessage.classList.add('hide');
+        }, 3000);
+      }
 
-// Prevent multiple clicks
-this.style.pointerEvents = 'none';
+      if (errorMessage) {
+        setTimeout(function () {
+          errorMessage.classList.add('hide');
+        }, 5000);
+      }
+    });
 
-// Optional: Remove loading state after a timeout (fallback)
-setTimeout(() => {
-this.classList.remove('loading');
-this.style.pointerEvents = 'auto';
-}, 5000); // 5 second fallback
-});
-});
-}
+    // Handle page visibility change to reset button states
+    document.addEventListener('visibilitychange', function () {
+      if (document.visibilityState === 'visible') {
+        // Reset all button states when page becomes visible again
+        const buttons = document.querySelectorAll('.button.loading');
+        buttons.forEach(button => {
+          button.classList.remove('loading');
+          button.style.pointerEvents = 'auto';
+        });
+      }
+    });
 
-// Initialize button loaders when DOM is loaded
-document.addEventListener('DOMContentLoaded', addButtonLoaders);
+    // Handle browser back button to reset button states
+    window.addEventListener('pageshow', function (event) {
+      if (event.persisted) {
+        // Reset all button states when page is restored from cache
+        const buttons = document.querySelectorAll('.button.loading');
+        buttons.forEach(button => {
+          button.classList.remove('loading');
+          button.style.pointerEvents = 'auto';
+        });
+      }
+    });
 
-// Mobile menu toggle functionality with slower animations
-const menuToggle = document.getElementById('menuToggle');
-const navbarRight = document.getElementById('navbarRight');
+    // Add form submission handling to ensure loader shows
+    document.addEventListener('DOMContentLoaded', function () {
+      const forms = document.querySelectorAll('form');
 
-menuToggle.addEventListener('click', (e) => {
-e.stopPropagation();
-navbarRight.classList.toggle('active');
+      forms.forEach(form => {
+        form.addEventListener('submit', function (e) {
+          const button = this.querySelector('.button');
+          if (button && !button.classList.contains('loading')) {
+            button.classList.add('loading');
+            button.style.pointerEvents = 'none';
+          }
+        });
+      });
+    });
 
-// Slower icon transition
-setTimeout(() => {
-menuToggle.innerHTML = navbarRight.classList.contains('active')
-? '<i class="fas fa-times"></i>'
-: '<i class="fas fa-bars"></i>';
-}, 200);
-});
+    //Simulate content loading (replace with your actual loading logic)
+    window.addEventListener("load", function () {
+      // Simulate a delay for demonstration
+      setTimeout(function () {
+        const skeletonLoader = document.getElementById("skeleton-loader");
+        const mainContent = document.getElementById("main-content");
 
-// Close menu when clicking outside on mobile with slower animation
-document.addEventListener('click', (e) => {
-if (window.innerWidth <= 768) {
-if (!navbarRight.contains(e.target) && e.target !== menuToggle) {
-navbarRight.classList.remove('active');
+        skeletonLoader.style.display = "none";
+        mainContent.style.display = "grid";
 
-// Slower icon transition back
-setTimeout(() => {
-menuToggle.innerHTML = '<i class="fas fa-bars"></i>';
-}, 300);
-}
-}
-});
+        // Re-initialize AOS for newly displayed content
+        AOS.refresh();
+      }, 1500); // 1.5 second delay for demo
+    });
+  </script>
 
-// Close menu when clicking on menu items with delay
-document.querySelectorAll('.mobile-menu .menu-item').forEach(item => {
-item.addEventListener('click', () => {
-// Add delay before closing menu
-setTimeout(() => {
-navbarRight.classList.remove('active');
-setTimeout(() => {
-menuToggle.innerHTML = '<i class="fas fa-bars"></i>';
-}, 200);
-}, 150);
-});
-});
-
-// Auto-hide success message after 3 seconds
-document.addEventListener('DOMContentLoaded', function() {
-const successMessage= document.getElementById('successMessage');
-const errorMessage = document.getElementById('errorMessage');
-
-if (successMessage) {
-setTimeout(function() {
-successMessage.classList.add('hide');
-}, 3000);
-}
-
-if (errorMessage) {
-setTimeout(function() {
-errorMessage.classList.add('hide');
-}, 5000);
-}
-});
-
-// Handle page visibility change to reset button states
-document.addEventListener('visibilitychange', function() {
-if (document.visibilityState === 'visible') {
-// Reset all button states when page becomes visible again
-const buttons = document.querySelectorAll('.button.loading');
-buttons.forEach(button => {
-button.classList.remove('loading');
-button.style.pointerEvents = 'auto';
-});
-}
-});
-
-// Handle browser back button to reset button states
-window.addEventListener('pageshow', function(event) {
-if (event.persisted) {
-// Reset all button states when page is restored from cache
-const buttons = document.querySelectorAll('.button.loading');
-buttons.forEach(button => {
-button.classList.remove('loading');
-button.style.pointerEvents = 'auto';
-});
-}
-});
-
-// Add form submission handling to ensure loader shows
-document.addEventListener('DOMContentLoaded', function() {
-const forms = document.querySelectorAll('form');
-
-forms.forEach(form => {
-form.addEventListener('submit', function(e) {
-const button = this.querySelector('.button');
-if (button && !button.classList.contains('loading')) {
-button.classList.add('loading');
-button.style.pointerEvents = 'none';
-}
-});
-});
-});
-
-window.addEventListener("load", function() {
-	  const preloader = document.getElementById("preloader");
-	  preloader.classList.add("hidden");
-	  document.getElementById("main-content").style.display = "block";
-	});
-</script>
-
-<!-- Show live chat only for logged-in users -->
-<!-- <th:block th:if="${userName != null}">
+  <!-- Show live chat only for logged-in users -->
+  <!-- <th:block th:if="${userName != null}">
 <script type="text/javascript">
 var Tawk_API = Tawk_API || {};
 Tawk_API.visitor = {
@@ -1227,5 +1296,5 @@ s0.parentNode.insertBefore(s1, s0);
 </th:block> -->
 
 </body>
-</html>
 
+</html>
