@@ -274,28 +274,40 @@ public class UserController {
     @ResponseBody
     public List<Map<String, String>> getAllStations() {
         List<Map<String, String>> stations = new ArrayList<>();
+
         try {
             ClassPathResource resource = new ClassPathResource("Train_details_22122017.csv");
-            List<String> lines = Files.readAllLines(resource.getFile().toPath());
 
-            for (String line : lines.subList(1, lines.size())) {
-                String[] columns = line.split(",", -1);
+            try (BufferedReader reader = new BufferedReader(new InputStreamReader(resource.getInputStream()))) {
+                String line;
+                boolean firstLine = true;
 
-                if (columns.length >= 5) {
-                    String code = columns[3].trim().toUpperCase();
-                    String name = columns[4].trim().toUpperCase();
+                while ((line = reader.readLine()) != null) {
+                    if (firstLine) {  // skip header
+                        firstLine = false;
+                        continue;
+                    }
 
-                    Map<String, String> stationMap = new HashMap<>();
-                    stationMap.put("code", code);
-                    stationMap.put("name", name);
-                    stations.add(stationMap);
+                    String[] columns = line.split(",", -1);
+                    if (columns.length >= 5) {
+                        String code = columns[3].trim().toUpperCase();
+                        String name = columns[4].trim().toUpperCase();
+
+                        Map<String, String> stationMap = new HashMap<>();
+                        stationMap.put("code", code);
+                        stationMap.put("name", name);
+                        stations.add(stationMap);
+                    }
                 }
             }
-        } catch (IOException e) {
+
+        } catch (Exception e) {
             e.printStackTrace();
         }
+
         return stations;
     }
+
 
 
     
