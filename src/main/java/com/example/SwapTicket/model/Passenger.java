@@ -31,13 +31,8 @@ public class Passenger {
 
     private double price;
 
-<<<<<<< HEAD
-    @Column(nullable = false, columnDefinition = "BOOLEAN DEFAULT FALSE", name = "is_sold")
-    private boolean sold = false;
-=======
     @Column(nullable = false, name = "is_sold")
     private boolean sold = false;
->>>>>>> 86c0709 (Initial commit)
 
     @ManyToOne
     @JoinColumn(name = "pnr_number") 
