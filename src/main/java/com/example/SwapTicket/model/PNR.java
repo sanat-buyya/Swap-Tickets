@@ -37,8 +37,8 @@ public class PNR {
         this.isSold = passenger.stream().allMatch(Passenger::isSold);
         }
 
-    @Column(nullable = false, columnDefinition = "BOOLEAN DEFAULT FALSE", name = "is_sold")
-    private boolean isSold;
+    @Column(nullable = false, name = "is_sold")
+    private boolean isSold = false;
     
     
 

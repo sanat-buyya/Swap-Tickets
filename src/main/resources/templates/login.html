@@ -180,7 +180,7 @@
         }
 
         .login-header h1 {
-            font-size: 2rem;
+            font-size: 1.8rem; /* Reduced from 2rem */
             margin-bottom: 0.5rem;
             color: var(--primary-dark);
             position: relative;
@@ -201,7 +201,7 @@
 
         .login-header p {
             color: var(--gray);
-            font-size: 1rem;
+            font-size: 0.95rem; /* Slightly reduced */
         }
 
         /* Form styles */
@@ -216,6 +216,7 @@
             margin-bottom: 8px;
             font-weight: 500;
             color: var(--dark);
+            font-size: 0.95rem; /* Added font size for labels */
         }
 
         .input-with-icon {
@@ -229,6 +230,7 @@
             transform: translateY(-50%);
             color: var(--gray);
             transition: var(--transition);
+            font-size: 1rem; /* Added consistent icon size */
         }
 
         .form-control {
@@ -236,7 +238,7 @@
             padding: 12px 15px 12px 45px;
             border: 1px solid #ddd;
             border-radius: 8px;
-            font-size: 1rem;
+            font-size: 0.95rem; /* Slightly reduced */
             transition: var(--transition);
         }
 
@@ -329,6 +331,7 @@
             gap: 10px;
             position: relative;
             overflow: hidden;
+            min-height: 50px; /* Added fixed height */
         }
 
         .login-btn-submit::before {
@@ -378,48 +381,54 @@
             transform: translateX(3px);
         }
 
-        /* Spinner styles */
-        /* Multicolor spinner for login button */
-.spinner {
-    width: 20px;
-    height: 20px;
-    --b: 4px;
-    aspect-ratio: 1;
-    border-radius: 50%;
-    background: conic-gradient(
-        #4361ee 0 25%,      /* blue */
-        #721c24 0 50%,      /* chocolate */
-        #1ed0d3 0 75%,      /* cyan */
-        #f8b400 0 100%      /* yellow/orange */
-    );
-    -webkit-mask:
-        repeating-conic-gradient(#0000 0deg,#000 1deg 70deg,#0000 71deg 90deg),
-        radial-gradient(farthest-side,#0000 calc(100% - var(--b) - 1px),#000 calc(100% - var(--b)));
-    -webkit-mask-composite: destination-in;
+        /* Improved Spinner styles */
+        .spinner {
+            width: 22px; /* Slightly larger */
+            height: 22px;
+            --b: 3px; /* Thinner border */
+            aspect-ratio: 1;
+            border-radius: 50%;
+            background: conic-gradient(
+                #f5f5f6 0 25%,      /* blue */
+                #fdfdfd 0 50%,      /* burgundy - matching your theme */
+                #f8fafc 0 75%,      /* blue - matching your theme */
+                #f4f3f6 0 100%      /* dark blue */
+            );
+            -webkit-mask:
+                repeating-conic-gradient(#0000 0deg,#000 1deg 70deg,#0000 71deg 90deg),
+                radial-gradient(farthest-side,#0000 calc(100% - var(--b) - 1px),#000 calc(100% - var(--b)));
+            -webkit-mask-composite: destination-in;
             mask-composite: intersect;
-    animation: l5 1s infinite linear;
-    display: none;
-    vertical-align: middle;
-}
-@keyframes l5 {to{transform: rotate(.5turn)}}
+            animation: l5 0.8s infinite linear;
+            display: none;
+            position: absolute; /* Position absolutely to center it */
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
 
-/* Show spinner when loading */
-.login-btn-submit.loading .spinner {
-    display: block;
-}
+        @keyframes l5 {
+            to {
+                transform: translate(-50%, -50%) rotate(.5turn);
+            }
+        }
+
+        /* Show spinner when loading */
+        .login-btn-submit.loading .spinner {
+            display: block;
+        }
 
         /* Loading state */
         .login-btn-submit.loading .btn-content {
             opacity: 0;
         }
 
-        
-
         /* Register link */
         .register-link {
             text-align: center;
             margin-top: 25px;
             color: var(--gray);
+            font-size: 0.95rem; /* Added font size */
         }
 
         .register-link a {
@@ -430,6 +439,7 @@
             display: inline-flex;
             align-items: center;
             gap: 5px;
+            font-size: 0.95rem; /* Consistent font size */
         }
 
         .register-link a:hover {
@@ -470,7 +480,53 @@
             }
 
             .login-header h1 {
-                font-size: 1.8rem;
+                font-size: 1.6rem; /* Adjusted for mobile */
+            }
+
+            .login-header p {
+                font-size: 0.9rem;
+            }
+
+            .form-group label {
+                font-size: 0.9rem;
+            }
+
+            .form-control {
+                font-size: 0.9rem;
+                padding: 10px 15px 10px 45px; /* Adjusted padding */
+            }
+
+            .login-btn-submit {
+                font-size: 0.95rem;
+                padding: 12px;
+                min-height: 48px;
+            }
+
+            .register-link {
+                font-size: 0.9rem;
+            }
+
+            .register-link a {
+                font-size: 0.9rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .login-container {
+                padding: 25px 15px;
+                margin: 20px auto;
+            }
+
+            .login-header h1 {
+                font-size: 1.5rem;
+            }
+
+            .login-logo {
+                margin-bottom: 1rem;
+            }
+
+            .logo-text {
+                font-size: 1.6rem;
             }
         }
     </style>
@@ -498,7 +554,7 @@
                     <h2 class="logo-text"><span class="swap">Swap</span><span class="ticket">Ticket</span></h2>
                 </div>
                 <h1>Welcome Back</h1>
-                <p>Login to access your account and manage your tickets</p>
+                <p>Login to access your account</p>
             </div>
 
             <div th:if="${param.logout}" class="auth-message success">
@@ -524,11 +580,6 @@
                         <i class="fas fa-lock input-icon"></i>
                         <i class="fas fa-eye password-toggle" id="passwordToggle"></i>
                     </div>
-                </div>
-
-                <div class="remember-me">
-                    <input type="checkbox" id="remember-me" name="remember-me">
-                    <label for="remember-me">Remember me</label>
                 </div>
 
                 <div class="forgot-password">

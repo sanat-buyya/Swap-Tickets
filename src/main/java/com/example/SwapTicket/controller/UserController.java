@@ -290,7 +290,8 @@ public class UserController {
                     stations.add(stationMap);
                 }
             }
-        } catch (IOException e) {
+
+        } catch (Exception e) {
             e.printStackTrace();
         } catch (NullPointerException e) {
             System.err.println("CSV file not found in classpath!");
@@ -410,13 +411,21 @@ public class UserController {
     
     @GetMapping("/user/transactions")
     public String viewMyTransaction(HttpSession session, Model model) {
-        String email = (String) session.getAttribute("loggedInUserEmail");
-        if (email == null) return "redirect:/login";
-
-        List<TransactionHistory> list = transactionHistoryRepository.findByUserEmailOrderByDateDesc(email);
-        model.addAttribute("transactions", list);
-        return "myTransactions";
-    }
+    String email = (String) session.getAttribute("loggedInUserEmail");
+    if (email == null) return "redirect:/login";
+    
+    User user = userService.findByEmail(email);
+    
+    List<TransactionHistory> list = transactionHistoryRepository.findByUserEmailOrderByDateDesc(email);
+    model.addAttribute("transactions", list);
+    
+    // Add userName to model for navbar
+    model.addAttribute("userName", user.getName());
+    
+    session.setAttribute("loggedInUserEmail", user.getEmail());
+    session.setAttribute("loggedInUserName", user.getName());
+    return "myTransactions";
+}
     
     @GetMapping("/privacy")
     public String privacy() {

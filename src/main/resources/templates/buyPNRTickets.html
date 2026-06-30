@@ -535,7 +535,8 @@
 </head>
 
 <body>
-    <h1><span class="emoji">🎫</span> Available Tickets</h1>
+    <!-- <h1><span class="emoji">🎫</span> Available Tickets</h1> -->
+    <h1><span class="emoji">🎫</span> Shared Journey Information</h1>
 
     <!-- 🔍 FILTER FORM -->
     <form method="get" action="/pnr/buy" class="filter-form">
@@ -594,10 +595,10 @@
     <!-- 🎫 LIST OF PNRs -->
     <div class="pnr-container">
     <div th:if="${#lists.isEmpty(pnrs)}" style="grid-column: 1/-1; text-align: center; padding: 40px 0; color: #888; font-size: 1.2em;">
-        <span class="emoji">😔</span> No Tickets Available
-        <div style="font-size: 0.95em; color: #aaa; margin-top: 8px;">
+        <span class="emoji">😔</span> Not Available
+        <!--<div style="font-size: 0.95em; color: #aaa; margin-top: 8px;">
             Try once from Searching Train Number
-        </div>
+        </div> -->
     </div>
         <div th:each="pnr : ${pnrs}" class="pnr-card">
             <div class="pnr-header">
@@ -637,11 +638,12 @@
 
                 <!-- ✅ Ticket Image -->
 				     <div class="ticket-image">
-                    <strong>Ticket Image:</strong>
+                    <!-- <strong>Ticket Image:</strong> -->
+                    <strong>Travel Document:</strong>
                     <div th:if="${pnr.sold}">
                         <img th:src="${pnr.ticketImage}" alt="Ticket Image"/>
                     </div>
-                    <div th:unless="${pnr.sold}" class="image-placeholder">Buy to view</div>
+                    <div th:unless="${pnr.sold}" class="image-placeholder">Visible after connection</div>
                 </div>
 
                 <!-- 👤 Passenger list -->
@@ -674,7 +676,7 @@
                             <i class="fas fa-chair"></i>
                             <strong> Seat No:</strong>
                             <span th:if="${passenger.sold}">SOLD</span>
-                            <span th:unless="${passenger.sold}">Buy to view</span>
+                            <span th:unless="${passenger.sold}">Visible after connection</span>
                         </div>
                         <div class="detail-item">
                             <i class="fas fa-rupee-sign"></i>
@@ -685,12 +687,12 @@
                             <span th:if="${passenger.sold}">
                                 <span class="emoji">📎</span> Uploaded
                             </span>
-                            <span th:unless="${passenger.sold}">Buy to view</span>
+                            <span th:unless="${passenger.sold}">Visible after connection</span>
                         </div>
                     </div>
                     <div th:unless="${passenger.sold}">
                         <a th:href="@{/pnr/preview-amount(passengerId=${passenger.id})}">
-                            <button type="button" class="btn btn-buy">Buy</button>
+                            <button type="button" class="btn btn-buy">Connect</button>
                         </a>
                     </div>
                     <div th:if="${passenger.sold}">
@@ -837,10 +839,17 @@
         if (existingSuggestions) existingSuggestions.remove();
         if (query.length < 2) return;
 
-        const filteredStations = indianRailwayStations.filter(station =>
+     // ⚡ Remove duplicate stations by CODE
+        const uniqueStations = Array.from(
+            new Map(indianRailwayStations.map(st => [st.code, st])).values()
+        );
+
+        // ⚡ Now filter unique stations only
+        const filteredStations = uniqueStations.filter(station =>
             station.name.toLowerCase().includes(query) ||
             station.code.toLowerCase().includes(query)
         ).slice(0, 8);
+
 
         const suggestionsDiv = document.createElement('div');
         suggestionsDiv.className = 'suggestions';

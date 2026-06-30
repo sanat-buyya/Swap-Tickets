@@ -130,45 +130,19 @@
             font-size: 0.9rem;
         }
 
-        /* Responsive adjustments */
         @media (max-width: 768px) {
-            .container {
-                padding: 15px;
-            }
-            
-            header {
-                padding: 30px 0;
-            }
-            
-            h1 {
-                font-size: 2rem;
-            }
-            
-            .policy-content {
-                padding: 25px;
-            }
-            
-            h2 {
-                font-size: 1.3rem;
-            }
+            .container { padding: 15px; }
+            header { padding: 30px 0; }
+            h1 { font-size: 2rem; }
+            .policy-content { padding: 25px; }
+            h2 { font-size: 1.3rem; }
         }
 
         @media (max-width: 480px) {
-            header {
-                padding: 25px 0;
-            }
-            
-            h1 {
-                font-size: 1.7rem;
-            }
-            
-            .policy-content {
-                padding: 20px;
-            }
-            
-            h2 {
-                font-size: 1.2rem;
-            }
+            header { padding: 25px 0; }
+            h1 { font-size: 1.7rem; }
+            .policy-content { padding: 20px; }
+            h2 { font-size: 1.2rem; }
         }
     </style>
 </head>
@@ -176,77 +150,82 @@
     <header>
         <div class="container">
             <h1>Privacy Policy</h1>
-            <p class="effective-date">Effective Date: [16-05-2025]</p>
+            <p class="effective-date">Effective Date: 16 May 2025</p>
         </div>
     </header>
 
     <div class="container">
         <div class="policy-content">
-            <p>At SwapTicket, we value your privacy. This Privacy Policy outlines how we collect, use, store, and protect your personal information when you use our platform to buy or sell train tickets.</p>
+            <p>At <strong>SwapTicket</strong>, we respect your privacy and are committed to protecting your personal data. This Privacy Policy explains how we collect, use, and safeguard information when you use our platform to list or explore journey details shared by other users.</p>
 
             <h2>1. Information We Collect</h2>
-            <p>We collect the following types of information:</p>
+            <p>We collect the following categories of information to operate and improve our services:</p>
             
             <h3>Personal Information</h3>
-            <p>Name, email address, phone number (optional).</p>
+            <p>Your name, email address, and optionally your contact number for account registration and communication.</p>
             
-            <h3>Ticket Details</h3>
-            <p>PNR number, train number, journey details, and passenger information (e.g., age, gender).</p>
+            <h3>Journey Details</h3>
+            <p>Information such as train number, journey date, route (from/to), and PNR number for listing or browsing travel details.</p>
             
             <h3>Uploaded Files</h3>
-            <p>Ticket images and identity documents (only shown to buyer after purchase).</p>
+            <p>Users may upload ticket images or ID proofs solely for verification. These are securely stored and visible only under authorized access conditions (e.g., after a confirmed match between users).</p>
             
             <h3>Transaction Details</h3>
-            <p>Payment IDs, amount, and transaction history.</p>
+            <p>Payment identifiers, transaction IDs, and status information are handled securely through our third-party payment partner (Razorpay). We do not store card or bank information on our servers.</p>
             
             <h3>Session Information</h3>
-            <p>Your login email to maintain session state securely.</p>
+            <p>We use session-based cookies to maintain your login status and enhance user experience. No sensitive personal data is stored in cookies.</p>
 
             <h2>2. How We Use Your Information</h2>
-            <p>We use your data to:</p>
+            <p>Your information is used to:</p>
             <ul>
-                <li>Facilitate secure ticket exchanges between buyers and sellers.</li>
-                <li>Process payments and manage wallets (including admin, seller).</li>
-                <li>Show your tickets and transactions in your dashboard.</li>
-                <li>Prevent fraud and ensure authenticity of uploaded tickets.</li>
+                <li>Facilitate safe communication and interaction between users on the platform.</li>
+                <li>Display relevant journey listings and manage your dashboard.</li>
+                <li>Enable secure payment processing through authorized partners.</li>
+                <li>Prevent misuse, detect fraudulent activities, and ensure platform integrity.</li>
             </ul>
 
             <div class="highlight">
                 <h3>3. Information Sharing</h3>
-                <p>We do not sell or rent your data. We only share:</p>
+                <p>We do not sell, rent, or trade user data. We only share limited data when necessary to operate our services, including:</p>
                 <ul>
-                    <li>Ticket and passenger details with the buyer after purchase.</li>
-                    <li>Transactional data with payment processors (e.g., Razorpay) for processing payments.</li>
-                    <li>Information with law enforcement if required by legal obligations.</li>
+                    <li>With payment processors (e.g., Razorpay) to handle transactions securely.</li>
+                    <li>With other users, only as required for completing a valid journey listing interaction.</li>
+                    <li>With regulatory authorities or law enforcement when legally required.</li>
                 </ul>
             </div>
 
             <h2>4. Data Retention</h2>
             <ul>
-                <li>Ticket data is deleted automatically two days after the journey date.</li>
-                <li>Personal information is retained as long as your account is active or as needed for legal compliance.</li>
+                <li>Journey data is retained until two days after the journey date, after which it is automatically deleted.</li>
+                <li>Personal account data is retained as long as your account remains active or as required by law.</li>
             </ul>
 
             <h2>5. Security</h2>
-            <p>We take reasonable steps to protect your information using modern security practices like:</p>
+            <p>We apply strong security measures to protect your data, including:</p>
             <ul>
-                <li>Encrypted database fields where necessary.</li>
-                <li>Session management to prevent unauthorized access.</li>
-                <li>Limited access to sensitive data.</li>
+                <li>Database encryption and secured access control.</li>
+                <li>Session and CSRF protection for user accounts.</li>
+                <li>Periodic audits to ensure compliance with data security standards.</li>
             </ul>
 
             <h2>6. Your Rights</h2>
             <p>You have the right to:</p>
             <ul>
-                <li>Access or update your personal data.</li>
-                <li>Request deletion of your account or data.</li>
-                <li>Contact us regarding any privacy concern at: <a href="mailto:swap2ticket@gmail.com" class="contact-email">swap2ticket@gmail.com</a></li>
+                <li>Access, correct, or delete your personal data.</li>
+                <li>Withdraw consent for specific data uses.</li>
+                <li>Contact us regarding any privacy issue at <a href="mailto:swap2ticket@gmail.com" class="contact-email">swap2ticket@gmail.com</a>.</li>
             </ul>
 
-            <h2>7. Changes to This Policy</h2>
-            <p>We may update this policy from time to time. All changes will be posted on this page with the updated effective date.</p>
+            <h2>7. Third-Party Services</h2>
+            <p>Our platform integrates Razorpay for payment processing and Cloudinary for secure file hosting. Each third-party service has its own privacy policies, which you can review on their respective websites.</p>
 
-            <p><strong>By using SwapTicket, you agree to the terms of this Privacy Policy.</strong></p>
+            <h2>8. Changes to This Policy</h2>
+            <p>We may update this Privacy Policy periodically. Updates will be reflected on this page with a revised effective date.</p>
+
+            <p><strong>By using SwapTicket, you acknowledge and agree to this Privacy Policy.</strong></p>
+
+            <p><em>Note: SwapTicket is an independent community platform and is not affiliated with IRCTC or Indian Railways.</em></p>
         </div>
     </div>
 

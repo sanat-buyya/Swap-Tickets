@@ -657,10 +657,17 @@
                 return;
             }
 
-            const matches = indianStations.filter(station =>
+         //  Remove duplicate stations by CODE
+            const uniqueStations = Array.from(
+                new Map(indianStations.map(st => [st.code, st])).values()
+            );
+
+            //  Filter unique stations only
+            const matches = uniqueStations.filter(station =>
                 station.name.toLowerCase().includes(value) ||
                 station.code.toLowerCase().includes(value)
             ).slice(0, 8);
+
 
             showSuggestions(matches);
         }

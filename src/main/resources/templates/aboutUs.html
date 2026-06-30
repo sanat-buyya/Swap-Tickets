@@ -30,7 +30,6 @@
             line-height: 1.6;
             color: var(--dark-text);
             background-color: #f9f9f9;
-            padding: 0;
         }
 
         .container {
@@ -169,9 +168,20 @@
             margin-top: 3px;
         }
 
-        .team-section {
-            text-align: center;
-            margin-top: 50px;
+        .disclaimer-box {
+            background-color: rgba(255, 193, 7, 0.1);
+            border-left: 4px solid #ffc107;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 40px;
+        }
+
+        .contact-box {
+            background-color: rgba(67, 97, 238, 0.05);
+            border-left: 4px solid var(--primary);
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 40px;
         }
 
         footer {
@@ -183,53 +193,9 @@
             border-top: 1px solid var(--border-color);
         }
 
-        /* Responsive adjustments */
         @media (max-width: 768px) {
-            .container {
-                padding: 15px;
-            }
-            
-            header {
-                padding: 40px 0;
-            }
-            
-            h1 {
-                font-size: 2.2rem;
-            }
-            
-            .tagline {
-                font-size: 1rem;
-            }
-            
-            .about-content {
-                padding: 25px;
-            }
-            
-            h2 {
-                font-size: 1.5rem;
-            }
-        }
-
-        @media (max-width: 480px) {
-            header {
-                padding: 30px 0;
-            }
-            
-            h1 {
-                font-size: 1.8rem;
-            }
-            
-            .about-content {
-                padding: 20px;
-            }
-            
-            h2 {
-                font-size: 1.3rem;
-            }
-            
-            .offer-container, .features-container {
-                grid-template-columns: 1fr;
-            }
+            h1 { font-size: 2.2rem; }
+            .about-content { padding: 25px; }
         }
     </style>
 </head>
@@ -243,96 +209,47 @@
 
     <div class="container">
         <div class="about-content">
-            <p>SwapTicket is a peer-to-peer platform designed to help passengers buy and sell unused train tickets safely and transparently. Inspired by the need to reduce ticket wastage and scams in WhatsApp groups, SwapTicket ensures that travelers can find genuine tickets while helping others recover their ticket costs.</p>
+            <p>SwapTicket is a peer-to-peer platform that allows verified users to exchange their pre-booked train tickets safely and legally. Our goal is to reduce ticket wastage and provide a transparent, scam-free environment where travelers can find or transfer genuine tickets easily.</p>
 
             <div class="mission-box">
                 <h2><i class="fas fa-bullseye"></i> Our Mission</h2>
-                <p>To create a trusted, user-friendly marketplace for railway passengers to exchange tickets securely and responsibly.</p>
+                <p>To empower train travelers with a reliable and secure digital solution for exchanging tickets responsibly and transparently.</p>
             </div>
 
-            <!-- Inside the same section, just REPLACE the existing offer-container section with this updated version -->
+            <h2><i class="fas fa-handshake"></i> How SwapTicket Works</h2>
+            <p>We act as a facilitator between genuine sellers and interested buyers. Sellers list their valid, unused train tickets, and buyers can choose from available listings. Payments are processed through a secure payment gateway (Razorpay) and held temporarily until ticket verification is complete. Once verified, the seller receives payment directly to their registered wallet.</p>
 
-<h2><i class="fas fa-gift"></i> What We Offer</h2>
-<div class="offer-container">
-    <div class="offer-card">
-        <h3><i class="fas fa-ticket-alt"></i> Sell Unused Tickets</h3>
-        <p>Upload your IRCTC ticket, set a fair price, and let others buy it legally.</p>
-    </div>
-    <div class="offer-card">
-        <h3><i class="fas fa-search"></i> Buy Genuine Tickets</h3>
-        <p>Find available tickets from verified sellers and make secure payments through Razorpay.</p>
-    </div>
-    <div class="offer-card">
-        <h3><i class="fas fa-lock"></i> Secure Transactions</h3>
-        <p>We hold the payment safely and release it to the seller only after successful transfer.</p>
-    </div>
-    <div class="offer-card">
-        <h3><i class="fas fa-shield-alt"></i> Buyer Protection</h3>
-        <p>Sensitive information (passenger names, documents) is only shown after purchase, ensuring privacy.</p>
-    </div>
-    <div class="offer-card">
-        <h3><i class="fas fa-headset"></i> Customer Support</h3>
-        <p>We’re here to help 24/7 with queries and issues via call or WhatsApp.</p>
-    </div>
-    <div class="offer-card">
-        <h3><i class="fas fa-user-friends"></i> Refer a Friend</h3>
-        <p>Earn rewards when you refer friends who successfully sell or buy tickets.</p>
-    </div>
-    <div class="offer-card">
-        <h3><i class="fas fa-train"></i> Track a Train</h3>
-        <p>Live train tracking available directly inside the dashboard.</p>
-    </div>
-    <div class="offer-card">
-        <h3><i class="fas fa-history"></i> Transaction History</h3>
-        <p>View all payments, earnings, and transfers from one dashboard with full transparency.</p>
-    </div>
-</div>
-
-
-            <h2><i class="fas fa-star"></i> Key Features</h2>
-            <div class="features-container">
-                <div>
-                    <div class="feature-item">
-                        <span class="feature-icon"><i class="fas fa-check-circle"></i></span>
-                        <span>Multiple passengers per ticket (PNR-based grouping)</span>
-                    </div>
-                    <div class="feature-item">
-                        <span class="feature-icon"><i class="fas fa-check-circle"></i></span>
-                        <span>Admin-moderated wallet system</span>
-                    </div>
+            <h2><i class="fas fa-gift"></i> What We Offer</h2>
+            <div class="offer-container">
+                <div class="offer-card">
+                    <h3><i class="fas fa-ticket-alt"></i> Sell Unused Tickets</h3>
+                    <p>List your confirmed IRCTC tickets for exchange at fair value with verified buyers.</p>
                 </div>
-                <div>
-                    <div class="feature-item">
-                        <span class="feature-icon"><i class="fas fa-check-circle"></i></span>
-                        <span>Razorpay integration for secure payments</span>
-                    </div>
-                    <div class="feature-item">
-                        <span class="feature-icon"><i class="fas fa-check-circle"></i></span>
-                        <span>Auto-expiry of tickets after journey date</span>
-                    </div>
+                <div class="offer-card">
+                    <h3><i class="fas fa-search"></i> Buy Genuine Tickets</h3>
+                    <p>Find valid train tickets from other users — safely and instantly.</p>
                 </div>
-                <div>
-                    <div class="feature-item">
-                        <span class="feature-icon"><i class="fas fa-check-circle"></i></span>
-                        <span>Live dashboard for buyers, sellers, and admins</span>
-                    </div>
-                
-                    <div class="feature-item">
-                        <span class="feature-icon"><i class="fas fa-check-circle"></i></span>
-                        <span>View credited and debited Amounts in Wallet</span>
-                    </div>
+                <div class="offer-card">
+                    <h3><i class="fas fa-lock"></i> Secure Payments</h3>
+                    <p>Transactions are processed via Razorpay with bank-level encryption and escrow protection.</p>
                 </div>
-                <div>
-                    <div class="feature-item">
-                        <span class="feature-icon"><i class="fas fa-check-circle"></i></span>
-                        <span>Get real-time help via live chat</span>
-                    </div>
+                <div class="offer-card">
+                    <h3><i class="fas fa-headset"></i> 24/7 Assistance</h3>
+                    <p>Our support team is available around the clock to assist with exchanges and payments.</p>
                 </div>
             </div>
 
-            <div class="team-section">
-                <h2><i class="fas fa-users"></i> Who We Are</h2>
-                <p>We are a group of developers passionate about solving real-world travel problems through technology. SwapTicket was built to eliminate fraud and give users a transparent, digital alternative to risky WhatsApp ticket exchanges.</p>
+            <h2><i class="fas fa-exclamation-triangle"></i> Legal Disclaimer</h2>
+            <div class="disclaimer-box">
+                <p>SwapTicket is <strong>not affiliated with IRCTC, Indian Railways, or any government organization.</strong> We do not issue, modify, or cancel train tickets. All listings on this platform are user-generated. We only facilitate communication and secure transactions between verified users for legitimate ticket exchanges.</p>
+                <p>Users are responsible for ensuring that their listed tickets comply with IRCTC and railway policies. Any misuse, fake ticket uploads, or inflated resale pricing will result in permanent account suspension.</p>
+            </div>
+
+            <h2><i class="fas fa-envelope"></i> Contact Information</h2>
+            <div class="contact-box">
+                <p><strong>Email:</strong> <a href="mailto:swap2ticket@gmail.com">swap2ticket@gmail.com</a></p>
+                <p><strong>Phone:</strong> +91 6363356214</p>
+                <p><strong>Address:</strong> Rajajinagar, Bengaluru - 560010</p>
             </div>
         </div>
     </div>
