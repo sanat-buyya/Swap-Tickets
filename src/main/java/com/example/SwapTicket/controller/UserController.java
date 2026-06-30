@@ -272,33 +272,42 @@ public class UserController {
     }
     
     @GetMapping("/api/stations")
-    @ResponseBody
-    public List<Map<String, String>> getAllStations() {
-        List<Map<String, String>> stations = new ArrayList<>();
-        try (InputStream inputStream = getClass().getResourceAsStream("/Train_details_22122017.csv");
-             BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream))) {
+@ResponseBody
+public List<Map<String, String>> getAllStations() {
+    List<Map<String, String>> stations = new ArrayList<>();
+
+    try {
+        InputStream inputStream =
+                getClass().getResourceAsStream("/Train_details_22122017.csv");
+
+        if (inputStream == null) {
+            throw new FileNotFoundException(
+                    "Train_details_22122017.csv not found in classpath");
+        }
+
+        try (BufferedReader reader =
+                     new BufferedReader(new InputStreamReader(inputStream))) {
 
             List<String> lines = reader.lines().toList();
+
             for (String line : lines.subList(1, lines.size())) {
                 String[] columns = line.split(",", -1);
+
                 if (columns.length >= 5) {
-                    String code = columns[3].trim().toUpperCase();
-                    String name = columns[4].trim().toUpperCase();
                     Map<String, String> stationMap = new HashMap<>();
-                    stationMap.put("code", code);
-                    stationMap.put("name", name);
+                    stationMap.put("code", columns[3].trim().toUpperCase());
+                    stationMap.put("name", columns[4].trim().toUpperCase());
                     stations.add(stationMap);
                 }
             }
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        } catch (NullPointerException e) {
-            System.err.println("CSV file not found in classpath!");
         }
 
-        return stations;
+    } catch (Exception e) {
+        e.printStackTrace();
     }
+
+    return stations;
+}
 
     
     @GetMapping("/forgot-password")
