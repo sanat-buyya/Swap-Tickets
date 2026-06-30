@@ -28,6 +28,7 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.InputStreamReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -274,41 +275,30 @@ public class UserController {
     @ResponseBody
     public List<Map<String, String>> getAllStations() {
         List<Map<String, String>> stations = new ArrayList<>();
+        try (InputStream inputStream = getClass().getResourceAsStream("/Train_details_22122017.csv");
+             BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream))) {
 
-        try {
-            ClassPathResource resource = new ClassPathResource("Train_details_22122017.csv");
-
-            try (BufferedReader reader = new BufferedReader(new InputStreamReader(resource.getInputStream()))) {
-                String line;
-                boolean firstLine = true;
-
-                while ((line = reader.readLine()) != null) {
-                    if (firstLine) {  // skip header
-                        firstLine = false;
-                        continue;
-                    }
-
-                    String[] columns = line.split(",", -1);
-                    if (columns.length >= 5) {
-                        String code = columns[3].trim().toUpperCase();
-                        String name = columns[4].trim().toUpperCase();
-
-                        Map<String, String> stationMap = new HashMap<>();
-                        stationMap.put("code", code);
-                        stationMap.put("name", name);
-                        stations.add(stationMap);
-                    }
+            List<String> lines = reader.lines().toList();
+            for (String line : lines.subList(1, lines.size())) {
+                String[] columns = line.split(",", -1);
+                if (columns.length >= 5) {
+                    String code = columns[3].trim().toUpperCase();
+                    String name = columns[4].trim().toUpperCase();
+                    Map<String, String> stationMap = new HashMap<>();
+                    stationMap.put("code", code);
+                    stationMap.put("name", name);
+                    stations.add(stationMap);
                 }
             }
 
         } catch (Exception e) {
             e.printStackTrace();
+        } catch (NullPointerException e) {
+            System.err.println("CSV file not found in classpath!");
         }
 
         return stations;
     }
-
-
 
     
     @GetMapping("/forgot-password")
@@ -607,162 +597,165 @@ public class UserController {
     }
 
     @PostMapping("/train-status")
-    public String getTrainStatus(
-            @RequestParam(required = false) String trainNo,
-            @RequestParam(required = false) String trainName,
-            @RequestParam(required = false) String sourceStation,
-            @RequestParam(required = false) String destinationStation,
-            @RequestParam(required = false) String limit,
-            Model model) {
+public String getTrainStatus(
+        @RequestParam(required = false) String trainNo,
+        @RequestParam(required = false) String trainName,
+        @RequestParam(required = false) String sourceStation,
+        @RequestParam(required = false) String destinationStation,
+        @RequestParam(required = false) String limit,
+        Model model) {
 
-        RestTemplate restTemplate = new RestTemplate();       
+    RestTemplate restTemplate = new RestTemplate();
 
-        trainNo = normalizeInput(trainNo);
-        trainName = normalizeInput(trainName);
-        sourceStation = normalizeInput(sourceStation);
-        destinationStation = normalizeInput(destinationStation);
-        
-        StringBuilder urlBuilder = new StringBuilder(BASE_URL);
-        urlBuilder.append("?api-key=").append(API_KEY);
-        urlBuilder.append("&format=json");
+    trainNo = normalizeInput(trainNo);
+    trainName = normalizeInput(trainName);
+    sourceStation = normalizeInput(sourceStation);
+    destinationStation = normalizeInput(destinationStation);
 
-        // Optional filters
-        if (limit != null && !limit.isEmpty()) urlBuilder.append("&limit=").append(limit);
-        if (trainNo != null && !trainNo.isEmpty()) urlBuilder.append("&filters[train_no]=").append(encode(trainNo));
-        if (trainName != null && !trainName.isEmpty()) urlBuilder.append("&filters[train_name]=").append(encode(trainName));
-        if (sourceStation != null && !sourceStation.isEmpty()) urlBuilder.append("&filters[source_station]=").append(encode(sourceStation));
-        if (destinationStation != null && !destinationStation.isEmpty()) urlBuilder.append("&filters[destination_station]=").append(encode(destinationStation));
+    StringBuilder urlBuilder = new StringBuilder(BASE_URL);
+    urlBuilder.append("?api-key=").append(API_KEY);
+    urlBuilder.append("&format=json");
 
-        try {
-            ResponseEntity<Map> response = restTemplate.getForEntity(urlBuilder.toString(), Map.class);
-            Map<String, Object> data = response.getBody();
-            
-            // Ensure data is not null
-            if (data != null) {
-                model.addAttribute("trainData", data);
-            } else {
-                model.addAttribute("error", "No data received from API");
-            }
-        } catch (Exception e) {
-            model.addAttribute("error", "API error: " + e.getMessage());
+    if (limit != null && !limit.isEmpty()) urlBuilder.append("&limit=").append(limit);
+    if (trainNo != null && !trainNo.isEmpty()) urlBuilder.append("&filters[train_no]=").append(encode(trainNo));
+    if (trainName != null && !trainName.isEmpty()) urlBuilder.append("&filters[train_name]=").append(encode(trainName));
+    if (sourceStation != null && !sourceStation.isEmpty()) urlBuilder.append("&filters[source_station]=").append(encode(sourceStation));
+    if (destinationStation != null && !destinationStation.isEmpty()) urlBuilder.append("&filters[destination_station]=").append(encode(destinationStation));
+
+    try {
+        ResponseEntity<Map> response = restTemplate.getForEntity(urlBuilder.toString(), Map.class);
+        Map<String, Object> data = response.getBody();
+
+        if (data != null) {
+            model.addAttribute("trainData", data);
+        } else {
+            model.addAttribute("error", "No data received from API");
+        }
+    } catch (Exception e) {
+        model.addAttribute("error", "API error: " + e.getMessage());
+    }
+
+    return "trainStatus";
+}
+
+private String normalizeInput(String input) {
+    if (input == null || input.trim().isEmpty()) {
+        return null;
+    }
+    return input.trim().toUpperCase();
+}
+
+private String encode(String value) {
+    return URLEncoder.encode(value, StandardCharsets.UTF_8);
+}
+
+/** ✅ Updated to load CSV from classpath instead of file path **/
+public Map<String, List<TrainStop>> parseTrainCsv(String fileName) {
+    Map<String, List<TrainStop>> trainRoutes = new HashMap<>();
+
+    try (InputStream inputStream = getClass().getResourceAsStream("/" + fileName);
+         BufferedReader br = new BufferedReader(new InputStreamReader(inputStream))) {
+
+        String headerLine = br.readLine(); // read header
+        if (headerLine == null) {
+            throw new RuntimeException("CSV file is empty");
         }
 
-        return "trainStatus";
-    }
-    
-    private String normalizeInput(String input) {
-        if (input == null || input.trim().isEmpty()) {
-            return null;
-        }
-        return input.trim().toUpperCase();
-    }
-
-    private String encode(String value) {
-        return URLEncoder.encode(value, StandardCharsets.UTF_8);
-    }
-    
-    public Map<String, List<TrainStop>> parseTrainCsv(String filePath) {
-        Map<String, List<TrainStop>> trainRoutes = new HashMap<>();
-
-        try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
-            String headerLine = br.readLine(); // read header
-            String[] headers = headerLine.split(",", -1);
-
-            // Map column names to indices
-            Map<String, Integer> columnIndex = new HashMap<>();
-            for (int i = 0; i < headers.length; i++) {
-                columnIndex.put(headers[i].trim(), i);
-            }
-
-            // Ensure required columns exist
-            if (!columnIndex.containsKey("Train No") || !columnIndex.containsKey("Train Name") ||
-                !columnIndex.containsKey("Station Code") || !columnIndex.containsKey("Arrival time") ||
-                !columnIndex.containsKey("Departure Time")) {
-                throw new RuntimeException("CSV missing required columns");
-            }
-
-            String line;
-            while ((line = br.readLine()) != null) {
-                String[] parts = line.split(",", -1);
-
-                try {
-                    String trainNo = parts[columnIndex.get("Train No")].trim();
-                    String trainName = parts[columnIndex.get("Train Name")].trim();
-                    String stationCode = parts[columnIndex.get("Station Code")].trim();
-                    String arrivalTime = parts[columnIndex.get("Arrival time")].trim();
-                    String departureTime = parts[columnIndex.get("Departure Time")].trim();
-
-                    TrainStop stop = new TrainStop(trainNo, trainName, stationCode, arrivalTime, departureTime);
-                    trainRoutes.computeIfAbsent(trainNo, k -> new ArrayList<>()).add(stop);
-
-                } catch (Exception e) {
-                    System.err.println("Skipping line due to error: " + line);
-                    e.printStackTrace();
-                }
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
+        String[] headers = headerLine.split(",", -1);
+        Map<String, Integer> columnIndex = new HashMap<>();
+        for (int i = 0; i < headers.length; i++) {
+            columnIndex.put(headers[i].trim(), i);
         }
 
-        return trainRoutes;
-    }
+        if (!columnIndex.containsKey("Train No") || !columnIndex.containsKey("Train Name") ||
+            !columnIndex.containsKey("Station Code") || !columnIndex.containsKey("Arrival time") ||
+            !columnIndex.containsKey("Departure Time")) {
+            throw new RuntimeException("CSV missing required columns");
+        }
 
-    public List<TrainResult> findMatchingTrains(String start, String end, String csvPath) {
-        Map<String, List<TrainStop>> trainRoutes = parseTrainCsv(csvPath);
-        List<TrainResult> result = new ArrayList<>();
+        String line;
+        while ((line = br.readLine()) != null) {
+            String[] parts = line.split(",", -1);
+            try {
+                String trainNo = parts[columnIndex.get("Train No")].trim();
+                String trainName = parts[columnIndex.get("Train Name")].trim();
+                String stationCode = parts[columnIndex.get("Station Code")].trim();
+                String arrivalTime = parts[columnIndex.get("Arrival time")].trim();
+                String departureTime = parts[columnIndex.get("Departure Time")].trim();
 
-        for (Map.Entry<String, List<TrainStop>> entry : trainRoutes.entrySet()) {
-            List<TrainStop> route = entry.getValue();
-            TrainStop sourceStop = null;
-            TrainStop destinationStop = null;
+                TrainStop stop = new TrainStop(trainNo, trainName, stationCode, arrivalTime, departureTime);
+                trainRoutes.computeIfAbsent(trainNo, k -> new ArrayList<>()).add(stop);
 
-            for (TrainStop stop : route) {
-                if (stop.getStationCode().equalsIgnoreCase(start)) {
-                    sourceStop = stop;
-                } else if (stop.getStationCode().equalsIgnoreCase(end)) {
-                    destinationStop = stop;
-                }
-            }
-
-            if (sourceStop != null && destinationStop != null && route.indexOf(sourceStop) < route.indexOf(destinationStop)) {
-                TrainResult trainResult = new TrainResult(
-                        sourceStop.getTrainNo(),
-                        sourceStop.getTrainName(),
-                        sourceStop.getStationCode(),
-                        destinationStop.getStationCode(),
-                        sourceStop.getDepartureTime(),
-                        destinationStop.getArrivalTime()
-                );
-                result.add(trainResult);
+            } catch (Exception e) {
+                System.err.println("Skipping line due to error: " + line);
             }
         }
 
-        return result;
+    } catch (IOException e) {
+        e.printStackTrace();
+    } catch (NullPointerException e) {
+        System.err.println("CSV file not found in classpath!");
     }
 
-    @GetMapping("/track-train-between")
-    public String trackTrainBetweenStations(HttpSession session) {
-    	String userEmail = (String) session.getAttribute("loggedInUserEmail");
-        if (userEmail == null) {
-            return "redirect:/login";
+    return trainRoutes;
+}
+
+/** ✅ Updated to use classpath CSV **/
+public List<TrainResult> findMatchingTrains(String start, String end, String csvFileName) {
+    Map<String, List<TrainStop>> trainRoutes = parseTrainCsv(csvFileName);
+    List<TrainResult> result = new ArrayList<>();
+
+    for (Map.Entry<String, List<TrainStop>> entry : trainRoutes.entrySet()) {
+        List<TrainStop> route = entry.getValue();
+        TrainStop sourceStop = null;
+        TrainStop destinationStop = null;
+
+        for (TrainStop stop : route) {
+            if (stop.getStationCode().equalsIgnoreCase(start)) {
+                sourceStop = stop;
+            } else if (stop.getStationCode().equalsIgnoreCase(end)) {
+                destinationStop = stop;
+            }
         }
-        return "trainBetweenStations";
+
+        if (sourceStop != null && destinationStop != null &&
+            route.indexOf(sourceStop) < route.indexOf(destinationStop)) {
+            result.add(new TrainResult(
+                    sourceStop.getTrainNo(),
+                    sourceStop.getTrainName(),
+                    sourceStop.getStationCode(),
+                    destinationStop.getStationCode(),
+                    sourceStop.getDepartureTime(),
+                    destinationStop.getArrivalTime()
+            ));
+        }
     }
 
-    @PostMapping("/track-train-between")
-    public String trackTrainBetweenStations(@RequestParam String sourceStation,
-                                            @RequestParam String destinationStation,
-                                            Model model) {
-        String csvPath = "src/main/resources/Train_details_22122017.csv";
+    return result;
+}
 
-        List<TrainResult> matchingTrains = findMatchingTrains(sourceStation, destinationStation, csvPath);
-
-        model.addAttribute("trains", matchingTrains);
-        model.addAttribute("sourceStation", sourceStation);
-        model.addAttribute("destinationStation", destinationStation);
-
-        return "trainBetweenStations";
+@GetMapping("/track-train-between")
+public String trackTrainBetweenStations(HttpSession session) {
+    String userEmail = (String) session.getAttribute("loggedInUserEmail");
+    if (userEmail == null) {
+        return "redirect:/login";
     }
+    return "trainBetweenStations";
+}
 
+/** ✅ Updated to load CSV from classpath **/
+@PostMapping("/track-train-between")
+public String trackTrainBetweenStations(@RequestParam String sourceStation,
+                                        @RequestParam String destinationStation,
+                                        Model model) {
+    String csvFileName = "Train_details_22122017.csv";
+    List<TrainResult> matchingTrains = findMatchingTrains(sourceStation, destinationStation, csvFileName);
+
+    model.addAttribute("trains", matchingTrains);
+    model.addAttribute("sourceStation", sourceStation);
+    model.addAttribute("destinationStation", destinationStation);
+
+    return "trainBetweenStations";
+}
 
 }
