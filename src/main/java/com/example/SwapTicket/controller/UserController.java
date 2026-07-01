@@ -5,7 +5,6 @@ import com.example.SwapTicket.model.PNR;
 import com.example.SwapTicket.model.Passenger;
 import com.example.SwapTicket.model.SupportMessage;
 import com.example.SwapTicket.model.TrainResult;
-import com.example.SwapTicket.model.TrainStop;
 import com.example.SwapTicket.model.TransactionHistory;
 import com.example.SwapTicket.model.User;
 import com.example.SwapTicket.model.Wallet;
@@ -49,8 +48,7 @@ import java.util.HashMap;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ClassPathResource;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
@@ -69,6 +67,12 @@ public class UserController {
 
 	@Value("${admin.password}")
 	String adminPassword;
+
+    @Value("${railradar.api.key}")
+    private String railRadarApiKey;
+
+    @Value("${railradar.api.baseurl}")
+    private String railRadarBaseUrl;
 
     @Autowired
     private WalletRepository walletRepository;
@@ -279,11 +283,6 @@ public List<Map<String, String>> getAllStations() {
     try {
         InputStream inputStream =
                 getClass().getResourceAsStream("/Train_details_22122017.csv");
-
-        if (inputStream == null) {
-            throw new FileNotFoundException(
-                    "Train_details_22122017.csv not found in classpath");
-        }
 
         try (BufferedReader reader =
                      new BufferedReader(new InputStreamReader(inputStream))) {
@@ -592,9 +591,6 @@ public List<Map<String, String>> getAllStations() {
 
         return "refer";
     }
-    
-    private final String BASE_URL = "https://api.data.gov.in/resource/13051d52-05c2-4130-9e7b-891bdde84076";
-    private final String API_KEY = "579b464db66ec23bdd0000014639b061d7f4430f7e28a3efc8e894b3"; // Replace with your own if needed
 
     @GetMapping("/train-status")
     public String showTrainStatusForm(HttpSession session) {
@@ -606,142 +602,35 @@ public List<Map<String, String>> getAllStations() {
     }
 
     @PostMapping("/train-status")
-public String getTrainStatus(
-        @RequestParam(required = false) String trainNo,
-        @RequestParam(required = false) String trainName,
-        @RequestParam(required = false) String sourceStation,
-        @RequestParam(required = false) String destinationStation,
-        @RequestParam(required = false) String limit,
-        Model model) {
+    public String getTrainStatus(@RequestParam(required = false) String trainNo, Model model) {
 
-    RestTemplate restTemplate = new RestTemplate();
-
-    trainNo = normalizeInput(trainNo);
-    trainName = normalizeInput(trainName);
-    sourceStation = normalizeInput(sourceStation);
-    destinationStation = normalizeInput(destinationStation);
-
-    StringBuilder urlBuilder = new StringBuilder(BASE_URL);
-    urlBuilder.append("?api-key=").append(API_KEY);
-    urlBuilder.append("&format=json");
-
-    if (limit != null && !limit.isEmpty()) urlBuilder.append("&limit=").append(limit);
-    if (trainNo != null && !trainNo.isEmpty()) urlBuilder.append("&filters[train_no]=").append(encode(trainNo));
-    if (trainName != null && !trainName.isEmpty()) urlBuilder.append("&filters[train_name]=").append(encode(trainName));
-    if (sourceStation != null && !sourceStation.isEmpty()) urlBuilder.append("&filters[source_station]=").append(encode(sourceStation));
-    if (destinationStation != null && !destinationStation.isEmpty()) urlBuilder.append("&filters[destination_station]=").append(encode(destinationStation));
-
-    try {
-        ResponseEntity<Map> response = restTemplate.getForEntity(urlBuilder.toString(), Map.class);
-        Map<String, Object> data = response.getBody();
-
-        if (data != null) {
-            model.addAttribute("trainData", data);
-        } else {
-            model.addAttribute("error", "No data received from API");
-        }
-    } catch (Exception e) {
-        model.addAttribute("error", "API error: " + e.getMessage());
-    }
-
-    return "trainStatus";
-}
-
-private String normalizeInput(String input) {
-    if (input == null || input.trim().isEmpty()) {
-        return null;
-    }
-    return input.trim().toUpperCase();
-}
-
-private String encode(String value) {
-    return URLEncoder.encode(value, StandardCharsets.UTF_8);
-}
-
-/** ✅ Updated to load CSV from classpath instead of file path **/
-public Map<String, List<TrainStop>> parseTrainCsv(String fileName) {
-    Map<String, List<TrainStop>> trainRoutes = new HashMap<>();
-
-    try (InputStream inputStream = getClass().getResourceAsStream("/" + fileName);
-         BufferedReader br = new BufferedReader(new InputStreamReader(inputStream))) {
-
-        String headerLine = br.readLine(); // read header
-        if (headerLine == null) {
-            throw new RuntimeException("CSV file is empty");
+        if (trainNo == null || trainNo.trim().isEmpty()) {
+            model.addAttribute("error", "Please enter a train number");
+            return "trainStatus";
         }
 
-        String[] headers = headerLine.split(",", -1);
-        Map<String, Integer> columnIndex = new HashMap<>();
-        for (int i = 0; i < headers.length; i++) {
-            columnIndex.put(headers[i].trim(), i);
-        }
+        RestTemplate restTemplate = new RestTemplate();
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("Authorization", "Bearer " + railRadarApiKey);
+        HttpEntity<String> entity = new HttpEntity<>(headers);
 
-        if (!columnIndex.containsKey("Train No") || !columnIndex.containsKey("Train Name") ||
-            !columnIndex.containsKey("Station Code") || !columnIndex.containsKey("Arrival time") ||
-            !columnIndex.containsKey("Departure Time")) {
-            throw new RuntimeException("CSV missing required columns");
-        }
+        String url = railRadarBaseUrl + "/trains/" + trainNo.trim() + "/live";
 
-        String line;
-        while ((line = br.readLine()) != null) {
-            String[] parts = line.split(",", -1);
-            try {
-                String trainNo = parts[columnIndex.get("Train No")].trim();
-                String trainName = parts[columnIndex.get("Train Name")].trim();
-                String stationCode = parts[columnIndex.get("Station Code")].trim();
-                String arrivalTime = parts[columnIndex.get("Arrival time")].trim();
-                String departureTime = parts[columnIndex.get("Departure Time")].trim();
+        try {
+            ResponseEntity<Map> response = restTemplate.exchange(url, HttpMethod.GET, entity, Map.class);
+            Map<String, Object> body = response.getBody();
 
-                TrainStop stop = new TrainStop(trainNo, trainName, stationCode, arrivalTime, departureTime);
-                trainRoutes.computeIfAbsent(trainNo, k -> new ArrayList<>()).add(stop);
-
-            } catch (Exception e) {
-                System.err.println("Skipping line due to error: " + line);
+            if (body != null && Boolean.TRUE.equals(body.get("success"))) {
+                model.addAttribute("trainData", body.get("data"));
+            } else {
+                model.addAttribute("error", "Train not found or no live data available");
             }
+        } catch (Exception e) {
+            model.addAttribute("error", "RailRadar API error: " + e.getMessage());
         }
 
-    } catch (IOException e) {
-        e.printStackTrace();
-    } catch (NullPointerException e) {
-        System.err.println("CSV file not found in classpath!");
+        return "trainStatus";
     }
-
-    return trainRoutes;
-}
-
-/** ✅ Updated to use classpath CSV **/
-public List<TrainResult> findMatchingTrains(String start, String end, String csvFileName) {
-    Map<String, List<TrainStop>> trainRoutes = parseTrainCsv(csvFileName);
-    List<TrainResult> result = new ArrayList<>();
-
-    for (Map.Entry<String, List<TrainStop>> entry : trainRoutes.entrySet()) {
-        List<TrainStop> route = entry.getValue();
-        TrainStop sourceStop = null;
-        TrainStop destinationStop = null;
-
-        for (TrainStop stop : route) {
-            if (stop.getStationCode().equalsIgnoreCase(start)) {
-                sourceStop = stop;
-            } else if (stop.getStationCode().equalsIgnoreCase(end)) {
-                destinationStop = stop;
-            }
-        }
-
-        if (sourceStop != null && destinationStop != null &&
-            route.indexOf(sourceStop) < route.indexOf(destinationStop)) {
-            result.add(new TrainResult(
-                    sourceStop.getTrainNo(),
-                    sourceStop.getTrainName(),
-                    sourceStop.getStationCode(),
-                    destinationStop.getStationCode(),
-                    sourceStop.getDepartureTime(),
-                    destinationStop.getArrivalTime()
-            ));
-        }
-    }
-
-    return result;
-}
 
 @GetMapping("/track-train-between")
 public String trackTrainBetweenStations(HttpSession session) {
@@ -752,19 +641,50 @@ public String trackTrainBetweenStations(HttpSession session) {
     return "trainBetweenStations";
 }
 
-/** ✅ Updated to load CSV from classpath **/
-@PostMapping("/track-train-between")
-public String trackTrainBetweenStations(@RequestParam String sourceStation,
-                                        @RequestParam String destinationStation,
-                                        Model model) {
-    String csvFileName = "Train_details_22122017.csv";
-    List<TrainResult> matchingTrains = findMatchingTrains(sourceStation, destinationStation, csvFileName);
+    @PostMapping("/track-train-between")
+    public String trackTrainBetweenStations(@RequestParam String sourceStation,
+                                            @RequestParam String destinationStation,
+                                            Model model) {
+        RestTemplate restTemplate = new RestTemplate();
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("Authorization", "Bearer " + railRadarApiKey);
+        HttpEntity<String> entity = new HttpEntity<>(headers);
 
-    model.addAttribute("trains", matchingTrains);
-    model.addAttribute("sourceStation", sourceStation);
-    model.addAttribute("destinationStation", destinationStation);
+        String url = railRadarBaseUrl + "/legacy/trains/between?from=" + sourceStation
+                + "&to=" + destinationStation;
 
-    return "trainBetweenStations";
-}
+        List<TrainResult> matchingTrains = new ArrayList<>();
+        try {
+            ResponseEntity<Map> response = restTemplate.exchange(url, HttpMethod.GET, entity, Map.class);
+            Map<String, Object> body = response.getBody();
+
+            if (body != null && Boolean.TRUE.equals(body.get("success"))) {
+                Map<String, Object> data = (Map<String, Object>) body.get("data");
+                List<Map<String, Object>> trains = (List<Map<String, Object>>) data.get("trains");
+
+                for (Map<String, Object> t : trains) {
+                    Map<String, Object> segment = (Map<String, Object>) t.get("journeySegment");
+
+                    matchingTrains.add(new TrainResult(
+                            String.valueOf(t.get("number")),
+                            String.valueOf(t.get("name")),
+                            sourceStation,
+                            destinationStation,
+                            segment != null ? String.valueOf(segment.get("departureTime")) : "",
+                            segment != null ? String.valueOf(segment.get("arrivalTime")) : ""
+                    ));
+                }
+            } else {
+                model.addAttribute("error", "No trains found between these stations");
+            }
+        } catch (Exception e) {
+            model.addAttribute("error", "RailRadar API error: " + e.getMessage());
+        }
+
+        model.addAttribute("trains", matchingTrains);
+        model.addAttribute("sourceStation", sourceStation);
+        model.addAttribute("destinationStation", destinationStation);
+        return "trainBetweenStations";
+    }
 
 }
