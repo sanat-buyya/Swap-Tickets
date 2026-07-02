@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
+
 <head>
     <title>Sell Ticket</title>
     <meta charset="UTF-8">
@@ -36,7 +37,9 @@
             background-image: url('https://www.transparenttextures.com/patterns/cubes.png');
         }
 
-        h1, h2, h3 {
+        h1,
+        h2,
+        h3 {
             color: var(--primary-color);
             margin-bottom: 20px;
         }
@@ -92,7 +95,9 @@
             font-size: 15px;
         }
 
-        input, select, textarea {
+        input,
+        select,
+        textarea {
             width: 100%;
             padding: 12px 15px;
             border: 1px solid var(--border-color);
@@ -101,7 +106,8 @@
             transition: border 0.3s ease;
         }
 
-        input:focus, select:focus {
+        input:focus,
+        select:focus {
             border-color: var(--primary-color);
             outline: none;
             box-shadow: 0 0 0 3px rgba(74, 107, 255, 0.1);
@@ -136,7 +142,7 @@
             height: 100%;
         }
 
-        .gender-radio-input:checked + .gender-radio-tile {
+        .gender-radio-input:checked+.gender-radio-tile {
             border-color: var(--primary-color);
             background-color: #f0f4ff;
         }
@@ -147,7 +153,7 @@
             color: #555;
         }
 
-        .gender-radio-input:checked + .gender-radio-tile .gender-radio-icon {
+        .gender-radio-input:checked+.gender-radio-tile .gender-radio-icon {
             color: var(--primary-color);
         }
 
@@ -157,7 +163,7 @@
             color: #555;
         }
 
-        .gender-radio-input:checked + .gender-radio-tile .gender-radio-label {
+        .gender-radio-input:checked+.gender-radio-tile .gender-radio-label {
             color: var(--primary-color);
         }
 
@@ -208,7 +214,7 @@
             color: #666;
             margin-left: 8px;
         }
-        
+
         .autocomplete-container {
             position: relative;
         }
@@ -221,7 +227,7 @@
             background: white;
             border: 1px solid #ddd;
             border-radius: 4px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
             z-index: 1000;
             margin-top: 5px;
         }
@@ -241,7 +247,8 @@
             align-items: center;
         }
 
-        .suggestion-item:hover, .suggestion-item.highlighted {
+        .suggestion-item:hover,
+        .suggestion-item.highlighted {
             background-color: #f5f5f5;
         }
 
@@ -252,7 +259,7 @@
         .station-code {
             color: #2a78f5;
             font-size: 0.9em;
-            background:  #f0f4ff;
+            background: #f0f4ff;
             padding: 2px 6px;
             border-radius: 3px;
             font-weight: bold;
@@ -426,7 +433,7 @@
         .loader {
             width: 60px;
             height: 22px;
-            -webkit-mask: radial-gradient(circle closest-side,#000 94%,#0000) left/20% 100%;
+            -webkit-mask: radial-gradient(circle closest-side, #000 94%, #0000) left/20% 100%;
             background: linear-gradient(#000 0 0) left/0% 100% no-repeat #ddd;
             animation: l17 2s infinite steps(6);
             display: none;
@@ -435,9 +442,11 @@
             top: 50%;
             transform: translate(-50%, -50%);
         }
-        
+
         @keyframes l17 {
-            100% {background-size:120% 100%}
+            100% {
+                background-size: 120% 100%
+            }
         }
 
         .btn-text {
@@ -469,40 +478,51 @@
             body {
                 padding: 15px;
             }
+
             .form-container {
                 padding: 20px;
             }
+
             h1 {
                 font-size: 1.7rem;
             }
-            input, select, textarea {
+
+            input,
+            select,
+            textarea {
                 padding: 10px 12px;
             }
+
             .passenger-block {
                 padding: 15px;
             }
-            
+
         }
 
         @media (max-width: 480px) {
             body {
                 padding: 10px;
             }
+
             .form-container {
                 padding: 15px;
             }
+
             h1 {
                 font-size: 1.5rem;
             }
+
             .btn {
                 padding: 10px 15px;
                 font-size: 14px;
             }
+
             .ticket-count-container {
                 flex-direction: column;
                 align-items: flex-start;
                 gap: 5px;
             }
+
             .ticket-count-input {
                 max-width: 100%;
             }
@@ -510,8 +530,15 @@
 
         /* Animation */
         @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         .passenger-block {
@@ -529,21 +556,26 @@
             <div class="form-section">
                 <!-- <h3><i class="fas fa-train"></i> Journey Details</h3> -->
                 <h3><i class="fas fa-train"></i> Travel Information</h3>
-                
-            <div class="form-group">
-    			<label for="pnrNumber">PNR Number</label>
-                  <input type="text" id="pnrNumber" name="pnrNumber" pattern="\d{10}" title="PNR must be exactly 10 digits" required maxlength="10" inputmode="numeric" oninput="this.value=this.value.replace(/[^0-9]/g,'').slice(0,10)">
-			</div>
 
-            <div class="form-group">
-    			<label for="trainNumber">Train Number</label>
-    			<input type="text" id="trainNumber" name="trainNumber" pattern="\d{5}" title="Train Number must be exactly 5 digits" required maxlength="5" inputmode="numeric" oninput="this.value=this.value.replace(/[^0-9]/g,'').slice(0,5)">
-			</div>
+                <div class="form-group">
+                    <label for="pnrNumber">PNR Number</label>
+                    <input type="text" id="pnrNumber" name="pnrNumber" pattern="\d{10}"
+                        title="PNR must be exactly 10 digits" required maxlength="10" inputmode="numeric"
+                        oninput="this.value=this.value.replace(/[^0-9]/g,'').slice(0,10)">
+                </div>
+
+                <div class="form-group">
+                    <label for="trainNumber">Train Number</label>
+                    <input type="text" id="trainNumber" name="trainNumber" pattern="\d{5}"
+                        title="Train Number must be exactly 5 digits" required maxlength="5" inputmode="numeric"
+                        oninput="this.value=this.value.replace(/[^0-9]/g,'').slice(0,5)">
+                </div>
 
                 <div class="form-group">
                     <label for="fromStation">From Station</label>
                     <div class="autocomplete-container">
-                        <input type="text" id="fromStation" name="fromStation" placeholder="Enter station name or code" required autocomplete="off">
+                        <input type="text" id="fromStation" name="fromStation" placeholder="Enter station name or code"
+                            required autocomplete="off">
                         <div class="suggestions" id="suggestions-fromStation"></div>
                     </div>
                 </div>
@@ -551,21 +583,24 @@
                 <div class="form-group">
                     <label for="toStation">To Station</label>
                     <div class="autocomplete-container">
-                        <input type="text" id="toStation" name="toStation" placeholder="Enter station name or code" required autocomplete="off">
+                        <input type="text" id="toStation" name="toStation" placeholder="Enter station name or code"
+                            required autocomplete="off">
                         <div class="suggestions" id="suggestions-toStation"></div>
                     </div>
                 </div>
 
                 <div class="form-group">
                     <label for="journeyDate">Journey Date (MM/DD/YYYY)</label>
-                    <input type="date" id="journeyDate" name="journeyDate" th:min="${T(java.time.LocalDate).now()}" required>
+                    <input type="date" id="journeyDate" name="journeyDate" th:min="${T(java.time.LocalDate).now()}"
+                        required>
                 </div>
 
                 <div class="form-group">
                     <!-- <label for="numberOfTickets">Number of Passengers</label> -->
                     <label for="numberOfTickets">Traveller Count</label>
                     <div class="ticket-count-container">
-                        <input type="number" id="numberOfTickets" name="numberOfTickets" min="1" max="6" value="1" class="ticket-count-input" required>
+                        <input type="number" id="numberOfTickets" name="numberOfTickets" min="1" max="6" value="1"
+                            class="ticket-count-input" required>
                     </div>
                 </div>
 
@@ -578,7 +613,8 @@
                             <!-- <span>Click to upload ticket image</span> -->
                             <span>Upload supporting document related to your journey</span>
                         </div>
-                        <input type="file" name="ticketImage" accept=".jpg,.jpeg,.png,.pdf" required onchange="showFileName(this)">
+                        <input type="file" name="ticketImage" accept=".jpg,.jpeg,.png,.pdf" required
+                            onchange="showFileName(this)">
                     </div>
                     <div class="file-name" id="ticketFileName"></div>
                 </div>
@@ -588,23 +624,25 @@
             <div class="form-section">
                 <!-- <h3><i class="fas fa-user-circle"></i> Seller Information</h3> -->
                 <h3><i class="fas fa-user-circle"></i> Your Profile Information</h3>
-                
+
                 <div class="form-group">
                     <label for="sellerMobile">Mobile Number</label>
-                    <input type="tel" id="sellerMobile" name="sellerMobile" placeholder="Enter Mobile Number" pattern="[0-9]{10}" required maxlength="10" inputmode="numeric" oninput="this.value=this.value.replace(/[^0-9]/g,'').slice(0,10)">
+                    <input type="tel" id="sellerMobile" name="sellerMobile" placeholder="Enter Mobile Number"
+                        pattern="[0-9]{10}" required maxlength="10" inputmode="numeric"
+                        oninput="this.value=this.value.replace(/[^0-9]/g,'').slice(0,10)">
                 </div>
 
                 <div class="form-group">
-    <label for="upiId">UPI ID</label>
-    <input type="text" id="upiId" name="upiId" placeholder="Enter Your UPI Id" required>
-    
-    <!-- This is where the holder name will appear -->
-   <!-- <div id="upiHolderName" style="margin-top: 5px; font-weight: bold; color: green;"></div>      -->
-    
-    <!-- <div class="note">For receiving payment after journey completion</div> -->
-    <div class="note">For identity confirmation and secure verification</div>
-</div>
-      
+                    <label for="upiId">UPI ID</label>
+                    <input type="text" id="upiId" name="upiId" placeholder="Enter Your UPI Id" required>
+
+                    <!-- This is where the holder name will appear -->
+                    <!-- <div id="upiHolderName" style="margin-top: 5px; font-weight: bold; color: green;"></div>      -->
+
+                    <!-- <div class="note">For receiving payment after journey completion</div> -->
+                    <div class="note">For identity confirmation and secure verification</div>
+                </div>
+
 
                 <div class="terms-checkbox">
                     <input type="checkbox" id="acceptUpi" name="acceptUpi" required>
@@ -652,262 +690,257 @@
         </a>
     </div>
 
-   <script>
-    let passengerCount = 0;
-    let indianRailwayStations = [];
-    let currentHighlightedIndex = -1;
-	
-    document.getElementById("upiId").addEventListener("blur", function() { 
-        const upiId = this.value.trim();
-        const holderDiv = document.getElementById("upiHolderName");
+    <script>
+        let passengerCount = 0;
+        let indianRailwayStations = [];
+        let currentHighlightedIndex = -1;
 
-        if (upiId.length > 5) { // Basic validation
-            holderDiv.textContent = "Verifying...";
-            holderDiv.style.color = "orange";
+        document.getElementById("upiId").addEventListener("blur", function () {
+            const upiId = this.value.trim();
+            const holderDiv = document.getElementById("upiHolderName");
 
-            // IMPORTANT: backend expects 'vpa', not 'upiId'
-            fetch(`/pnr/verify?vpa=${encodeURIComponent(upiId)}`)
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error("Verification failed");
-                    }
-                    return response.json();
-                })
-                .then(data => {
-                    if (data.success) {
-                        holderDiv.textContent = `Account Holder: ${data.name}`;
-                        holderDiv.style.color = "green";
-                    } else {
-                        holderDiv.textContent = data.message || "Invalid UPI ID";
+            if (upiId.length > 5) { // Basic validation
+                holderDiv.textContent = "Verifying...";
+                holderDiv.style.color = "orange";
+
+                // IMPORTANT: backend expects 'vpa', not 'upiId'
+                fetch(`/pnr/verify?vpa=${encodeURIComponent(upiId)}`)
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error("Verification failed");
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        if (data.success) {
+                            holderDiv.textContent = `Account Holder: ${data.name}`;
+                            holderDiv.style.color = "green";
+                        } else {
+                            holderDiv.textContent = data.message || "Invalid UPI ID";
+                            holderDiv.style.color = "red";
+                        }
+                    })
+                    .catch(error => {
+                        holderDiv.textContent = "Error verifying UPI";
                         holderDiv.style.color = "red";
-                    }
-                })
-                .catch(error => {
-                    holderDiv.textContent = "Error verifying UPI";
-                    holderDiv.style.color = "red";
-                });
-        } else {
-            holderDiv.textContent = "";
-        }
-    });
-    // Fetch stations from backend API
-    fetch('/api/stations')
-        .then(response => response.json())
-        .then(data => {
-            indianRailwayStations = data;
-            setupStationAutocomplete(['fromStation', 'toStation']);
-        })
-        .catch(error => {
-            console.error('Error loading stations:', error);
-            // Fallback to local station data if API fails
-            indianRailwayStations = [
-                // Your existing station data here...
-                { name: "Bangalore City Junction", code: "SBC", state: "Karnataka", district: "Bangalore Urban", zone: "SWR" },
-                // ... rest of your station data
-            ];
-            setupStationAutocomplete(['fromStation', 'toStation']);
-        });
-
-    function setupStationAutocomplete(inputIds) {
-        inputIds.forEach(inputId => {
-            const input = document.getElementById(inputId);
-            if (!input) return;
-
-            let lastValidValue = "";
-
-            input.addEventListener('input', function() {
-                debounceSearch(this);
-            });
-
-            input.addEventListener('keydown', function(event) {
-                handleKeyNavigation(this, event);
-            });
-
-            input.addEventListener('focus', function() {
-                if (this.value.length >= 2) {
-                    showStationSuggestions(this);
-                }
-            });
-
-            input.addEventListener('blur', function() {
-                setTimeout(() => {
-                    const suggestions = document.getElementById(`suggestions-${this.id}`);
-                    if (suggestions) suggestions.remove();
-                    currentHighlightedIndex = -1;
-
-                    // Validate input: only allow if matches a suggestion
-                    const value = input.value.trim();
-                    const valid = indianRailwayStations.some(station =>
-                        value === `${station.name} (${station.code})`
-                    );
-                    if (!valid) {
-                        input.value = "";
-                    }
-                }, 200);
-            });
-
-            // When a suggestion is clicked, set the input value
-            input.addEventListener('stationSelected', function(e) {
-                lastValidValue = e.detail.value;
-                input.value = lastValidValue;
-            });
-        });
-
-        document.addEventListener('click', function(event) {
-            if (!event.target.closest('.autocomplete-container')) {
-                document.querySelectorAll('.suggestions').forEach(s => s.remove());
-                currentHighlightedIndex = -1;
+                    });
+            } else {
+                holderDiv.textContent = "";
             }
         });
-    }
+        // Fetch stations from backend API
+        fetch('/api/stations')
+            .then(response => response.json())
+            .then(data => {
+                indianRailwayStations = data;
+                setupStationAutocomplete(['fromStation', 'toStation']);
+            })
+            .catch(error => {
+                console.error('Error loading stations:', error);
+                // Fallback to local station data if API fails
 
-    // Update suggestion click handler in showStationSuggestions:
-    function showStationSuggestions(input) {
-        const query = input.value.toLowerCase().trim();
-        const suggestionsId = `suggestions-${input.id}`;
-        const existingSuggestions = document.getElementById(suggestionsId);
-        if (existingSuggestions) existingSuggestions.remove();
-        if (query.length < 2) return;
+                setupStationAutocomplete(['fromStation', 'toStation']);
+            });
 
-     // Remove duplicate stations by CODE
-        const uniqueStations = Array.from(
-            new Map(
-                indianRailwayStations.map(st => [st.code, st])
-            ).values()
-        );
+        function setupStationAutocomplete(inputIds) {
+            inputIds.forEach(inputId => {
+                const input = document.getElementById(inputId);
+                if (!input) return;
 
-        // Now filter only unique stations
-        const filteredStations = uniqueStations.filter(station =>
-            station.name.toLowerCase().includes(query) ||
-            station.code.toLowerCase().includes(query)
-        ).slice(0, 8);
+                let lastValidValue = "";
+
+                input.addEventListener('input', function () {
+                    debounceSearch(this);
+                });
+
+                input.addEventListener('keydown', function (event) {
+                    handleKeyNavigation(this, event);
+                });
+
+                input.addEventListener('focus', function () {
+                    if (this.value.length >= 2) {
+                        showStationSuggestions(this);
+                    }
+                });
+
+                input.addEventListener('blur', function () {
+                    setTimeout(() => {
+                        const suggestions = document.getElementById(`suggestions-${this.id}`);
+                        if (suggestions) suggestions.remove();
+                        currentHighlightedIndex = -1;
+
+                        // Validate input: only allow if matches a suggestion
+                        const value = input.value.trim();
+                        const valid = indianRailwayStations.some(station =>
+                            value === `${station.name} (${station.code})`
+                        );
+                        if (!valid) {
+                            input.value = "";
+                        }
+                    }, 200);
+                });
+
+                // When a suggestion is clicked, set the input value
+                input.addEventListener('stationSelected', function (e) {
+                    lastValidValue = e.detail.value;
+                    input.value = lastValidValue;
+                });
+            });
+
+            document.addEventListener('click', function (event) {
+                if (!event.target.closest('.autocomplete-container')) {
+                    document.querySelectorAll('.suggestions').forEach(s => s.remove());
+                    currentHighlightedIndex = -1;
+                }
+            });
+        }
+
+        // Update suggestion click handler in showStationSuggestions:
+        function showStationSuggestions(input) {
+            const query = input.value.toLowerCase().trim();
+            const suggestionsId = `suggestions-${input.id}`;
+            const existingSuggestions = document.getElementById(suggestionsId);
+            if (existingSuggestions) existingSuggestions.remove();
+            if (query.length < 2) return;
+
+            // Remove duplicate stations by CODE
+            const uniqueStations = Array.from(
+                new Map(
+                    indianRailwayStations.map(st => [st.code, st])
+                ).values()
+            );
+
+            // Now filter only unique stations
+            const filteredStations = uniqueStations.filter(station =>
+                station.name.toLowerCase().includes(query) ||
+                station.code.toLowerCase().includes(query)
+            ).slice(0, 10);
 
 
-        const suggestionsDiv = document.createElement('div');
-        suggestionsDiv.className = 'suggestions';
-        suggestionsDiv.id = suggestionsId;
+            const suggestionsDiv = document.createElement('div');
+            suggestionsDiv.className = 'suggestions';
+            suggestionsDiv.id = suggestionsId;
 
-        if (filteredStations.length === 0) {
-            const noResults = document.createElement('div');
-            noResults.className = 'no-suggestions';
-            noResults.innerHTML = `
+            if (filteredStations.length === 0) {
+                const noResults = document.createElement('div');
+                noResults.className = 'no-suggestions';
+                noResults.innerHTML = `
                 <i class="fas fa-search"></i>
                 <div>No stations found matching "${input.value}"</div>
                 <small>Try searching by station name or code</small>
             `;
-            suggestionsDiv.appendChild(noResults);
-        } else {
-            const headerDiv = document.createElement('div');
-            headerDiv.className = 'suggestions-header';
-            headerDiv.textContent = `${filteredStations.length} station(s) found`;
-            suggestionsDiv.appendChild(headerDiv);
+                suggestionsDiv.appendChild(noResults);
+            } else {
+                const headerDiv = document.createElement('div');
+                headerDiv.className = 'suggestions-header';
+                headerDiv.textContent = `${filteredStations.length} station(s) found`;
+                suggestionsDiv.appendChild(headerDiv);
 
-            filteredStations.forEach((station, index) => {
-                const suggestionDiv = document.createElement('div');
-                suggestionDiv.className = 'suggestion-item';
-                suggestionDiv.innerHTML = `
-                    <div class="station-info">
-                        <div class="station-name">${station.name}</div>
-                    </div>
-                    <div class="station-code">${station.code}</div>
-                `;
-                suggestionDiv.addEventListener('click', () => {
-                    const selectedValue = `${station.name} (${station.code})`;
-                    input.value = selectedValue;
-                    suggestionsDiv.remove();
-                    currentHighlightedIndex = -1;
-                    // Fire custom event for validation
-                    input.dispatchEvent(new CustomEvent('stationSelected', { detail: { value: selectedValue } }));
+                filteredStations.forEach((station, index) => {
+                    const suggestionDiv = document.createElement('div');
+                    suggestionDiv.className = 'suggestion-item';
+                    suggestionDiv.innerHTML = `
+    <div class="station-name">
+        ${station.name} (${station.code})
+    </div>
+`;
+                    suggestionDiv.addEventListener('click', () => {
+                        const selectedValue = `${station.name} (${station.code})`;
+                        input.value = selectedValue;
+                        suggestionsDiv.remove();
+                        currentHighlightedIndex = -1;
+                        // Fire custom event for validation
+                        input.dispatchEvent(new CustomEvent('stationSelected', { detail: { value: selectedValue } }));
+                    });
+                    suggestionsDiv.appendChild(suggestionDiv);
                 });
-                suggestionsDiv.appendChild(suggestionDiv);
+            }
+
+            input.parentElement.appendChild(suggestionsDiv);
+            currentHighlightedIndex = -1;
+        }
+
+        function handleKeyNavigation(input, event) {
+            const suggestions = document.getElementById(`suggestions-${input.id}`);
+            if (!suggestions) return;
+
+            const items = suggestions.querySelectorAll('.suggestion-item');
+            if (items.length === 0) return;
+
+            switch (event.key) {
+                case 'ArrowDown':
+                    event.preventDefault();
+                    currentHighlightedIndex = Math.min(currentHighlightedIndex + 1, items.length - 1);
+                    updateHighlight(items);
+                    break;
+                case 'ArrowUp':
+                    event.preventDefault();
+                    currentHighlightedIndex = Math.max(currentHighlightedIndex - 1, -1);
+                    updateHighlight(items);
+                    break;
+                case 'Enter':
+                    event.preventDefault();
+                    if (currentHighlightedIndex >= 0 && items[currentHighlightedIndex]) {
+                        items[currentHighlightedIndex].click();
+                    }
+                    break;
+                case 'Escape':
+                    suggestions.remove();
+                    currentHighlightedIndex = -1;
+                    break;
+            }
+        }
+
+        function updateHighlight(items) {
+            items.forEach((item, index) => {
+                item.classList.toggle('highlighted', index === currentHighlightedIndex);
             });
         }
 
-        input.parentElement.appendChild(suggestionsDiv);
-        currentHighlightedIndex = -1;
-    }
-
-    function handleKeyNavigation(input, event) {
-        const suggestions = document.getElementById(`suggestions-${input.id}`);
-        if (!suggestions) return;
-
-        const items = suggestions.querySelectorAll('.suggestion-item');
-        if (items.length === 0) return;
-
-        switch (event.key) {
-            case 'ArrowDown':
-                event.preventDefault();
-                currentHighlightedIndex = Math.min(currentHighlightedIndex + 1, items.length - 1);
-                updateHighlight(items);
-                break;
-            case 'ArrowUp':
-                event.preventDefault();
-                currentHighlightedIndex = Math.max(currentHighlightedIndex - 1, -1);
-                updateHighlight(items);
-                break;
-            case 'Enter':
-                event.preventDefault();
-                if (currentHighlightedIndex >= 0 && items[currentHighlightedIndex]) {
-                    items[currentHighlightedIndex].click();
-                }
-                break;
-            case 'Escape':
-                suggestions.remove();
-                currentHighlightedIndex = -1;
-                break;
+        // Debounce function for better performance
+        let searchTimeout;
+        function debounceSearch(input) {
+            clearTimeout(searchTimeout);
+            searchTimeout = setTimeout(() => {
+                showStationSuggestions(input);
+            }, 300);
         }
-    }
 
-    function updateHighlight(items) {
-        items.forEach((item, index) => {
-            item.classList.toggle('highlighted', index === currentHighlightedIndex);
+        // Form submission with loader
+        document.getElementById('sellTicketForm')?.addEventListener('submit', function (e) {
+            const submitBtn = this.querySelector('button[type="submit"]');
+            if (submitBtn) {
+                const btnText = submitBtn.querySelector('.btn-text');
+                const loader = submitBtn.querySelector('.loader');
+
+                // Add loading state
+                submitBtn.classList.add('btn-loading');
+                submitBtn.disabled = true;
+                btnText.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Submitting...';
+            }
         });
-    }
 
-    // Debounce function for better performance
-    let searchTimeout;
-    function debounceSearch(input) {
-        clearTimeout(searchTimeout);
-        searchTimeout = setTimeout(() => {
-            showStationSuggestions(input);
-        }, 300);
-    }
+        function addPassenger() {
+            const container = document.getElementById('passenger-container');
+            const ticketCountInput = document.getElementById('numberOfTickets');
+            const maxTickets = parseInt(ticketCountInput?.max || 6);
 
-    // Form submission with loader
-    document.getElementById('sellTicketForm')?.addEventListener('submit', function(e) {
-        const submitBtn = this.querySelector('button[type="submit"]');
-        if (submitBtn) {
-            const btnText = submitBtn.querySelector('.btn-text');
-            const loader = submitBtn.querySelector('.loader');
+            // Check if we've reached maximum tickets
+            if (passengerCount >= maxTickets) {
+                alert(`Maximum ${maxTickets} tickets allowed per PNR`);
+                return;
+            }
 
-            // Add loading state
-            submitBtn.classList.add('btn-loading');
-            submitBtn.disabled = true;
-            btnText.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Submitting...';
-        }
-    });
+            const index = passengerCount++;
 
-    function addPassenger() {
-        const container = document.getElementById('passenger-container');
-        const ticketCountInput = document.getElementById('numberOfTickets');
-        const maxTickets = parseInt(ticketCountInput?.max || 6);
+            // Increment the ticket count
+            if (ticketCountInput) {
+                ticketCountInput.value = passengerCount;
+            }
 
-        // Check if we've reached maximum tickets
-        if (passengerCount >= maxTickets) {
-            alert(`Maximum ${maxTickets} tickets allowed per PNR`);
-            return;
-        }
-
-        const index = passengerCount++;
-
-        // Increment the ticket count
-        if (ticketCountInput) {
-            ticketCountInput.value = passengerCount;
-        }
-
-        const block = document.createElement('div');
-        block.className = 'passenger-block';
-        block.innerHTML = `
+            const block = document.createElement('div');
+            block.className = 'passenger-block';
+            block.innerHTML = `
             <button type="button" class="remove-passenger" onclick="removePassenger(this)">
                 <i class="fas fa-times"></i>
             </button>
@@ -980,134 +1013,135 @@
                 <div class="file-name" id="passengerFile${index}"></div>
             </div>
         `;
-        container.appendChild(block);
-    }
-	
-    function checkUpiName() {
-        const vpa = document.getElementById("upiId").value.trim();
-        if (vpa.length > 5) {
-          fetch('/pnr/verify-upi', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/x-www-form-urlencoded'
-            },
-            body: 'vpa=' + encodeURIComponent(vpa)
-          })
-          .then(res => res.text())
-          .then(name => {
-            document.getElementById("upiHolderName").innerText = name;
-          })
-          .catch(() => {
-            document.getElementById("upiHolderName").innerText = "Error verifying UPI";
-          });
-        }
-      }
-    
-    function removePassenger(button) {
-        const container = document.getElementById('passenger-container');
-        const block = button.parentNode;
-        container.removeChild(block);
-        passengerCount--;
-
-        // Update the ticket count
-        const ticketCountInput = document.getElementById('numberOfTickets');
-        if (ticketCountInput) {
-            ticketCountInput.value = passengerCount;
+            container.appendChild(block);
         }
 
-        // Reindex remaining passengers
-        const passengerBlocks = container.getElementsByClassName('passenger-block');
-        for (let i = 0; i < passengerBlocks.length; i++) {
-            const inputs = passengerBlocks[i].querySelectorAll('input, select');
-            inputs.forEach(input => {
-                const name = input.name.replace(/\[\d+\]/, `[${i}]`);
-                input.name = name;
-            });
-
-            const fileInput = passengerBlocks[i].querySelector('input[type="file"]');
-            if (fileInput) {
-                fileInput.setAttribute('onchange', `showPassengerFileName(this, ${i})`);
+        function checkUpiName() {
+            const vpa = document.getElementById("upiId").value.trim();
+            if (vpa.length > 5) {
+                fetch('/pnr/verify-upi', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded'
+                    },
+                    body: 'vpa=' + encodeURIComponent(vpa)
+                })
+                    .then(res => res.text())
+                    .then(name => {
+                        document.getElementById("upiHolderName").innerText = name;
+                    })
+                    .catch(() => {
+                        document.getElementById("upiHolderName").innerText = "Error verifying UPI";
+                    });
             }
         }
-    }
 
-    function showFileName(input) {
-        const fileNameDisplay = document.getElementById('ticketFileName');
-        if (input.files.length > 0 && fileNameDisplay) {
-            fileNameDisplay.textContent = input.files[0].name;
-            fileNameDisplay.style.display = 'block';
-        }
-    }
+        function removePassenger(button) {
+            const container = document.getElementById('passenger-container');
+            const block = button.parentNode;
+            container.removeChild(block);
+            passengerCount--;
 
-    function showPassengerFileName(input, index) {
-        const fileNameDisplay = document.getElementById(`passengerFile${index}`);
-        if (input.files.length > 0 && fileNameDisplay) {
-            fileNameDisplay.textContent = input.files[0].name;
-            fileNameDisplay.style.display = 'block';
-        }
-    }
-
-    function updateSeatOptions(selectElement) {
-        const index = selectElement.dataset.index;
-        const seatSelect = document.getElementById('seat-' + index);
-        const selectedCoach = selectElement.value;
-
-        if (!seatSelect) return;
-
-        seatSelect.innerHTML = '<option value="">-- Seat Format --</option>';
-
-        if (selectedCoach === 'SL') {
-            generateBerthOptions(seatSelect, 'S', 1, 12, 80);
-        } else if (selectedCoach === '3A') {
-            generateBerthOptions(seatSelect, 'B', 1, 9, 72);
-        } else if (selectedCoach === '2A') {
-            generateBerthOptions(seatSelect, 'A', 1, 3, 54);
-        } else if (selectedCoach === '1A') {
-            generateBerthOptions(seatSelect, 'H', 1, 2, 30);
-        }
-    }
-
-    function generateBerthOptions(selectElement, prefix, coachStart, coachEnd, maxBerthsPerCoach) {
-        for (let i = coachStart; i <= coachEnd; i++) {
-            for (let b = 1; b <= maxBerthsPerCoach; b++) {
-                const code = `${prefix}${i}/${b}`;
-                const option = document.createElement('option');
-                option.value = code;
-                option.textContent = code;
-                selectElement.appendChild(option);
+            // Update the ticket count
+            const ticketCountInput = document.getElementById('numberOfTickets');
+            if (ticketCountInput) {
+                ticketCountInput.value = passengerCount;
             }
-        }
-    }
 
-    // Add first passenger by default
-    window.onload = function() {
-        addPassenger();
+            // Reindex remaining passengers
+            const passengerBlocks = container.getElementsByClassName('passenger-block');
+            for (let i = 0; i < passengerBlocks.length; i++) {
+                const inputs = passengerBlocks[i].querySelectorAll('input, select');
+                inputs.forEach(input => {
+                    const name = input.name.replace(/\[\d+\]/, `[${i}]`);
+                    input.name = name;
+                });
 
-        // Link number of tickets to passenger count
-        const ticketCountInput = document.getElementById('numberOfTickets');
-        if (ticketCountInput) {
-            ticketCountInput.addEventListener('change', function() {
-                const ticketCount = parseInt(this.value);
-                const passengerContainer = document.getElementById('passenger-container');
-                const currentPassengers = passengerContainer.children.length;
-
-                if (ticketCount > currentPassengers) {
-                    // Add missing passengers
-                    for (let i = currentPassengers; i < ticketCount; i++) {
-                        addPassenger();
-                    }
-                } else if (ticketCount < currentPassengers) {
-                    // Remove extra passengers
-                    while (passengerContainer.children.length > ticketCount) {
-                        passengerContainer.removeChild(passengerContainer.lastChild);
-                        passengerCount--;
-                    }
+                const fileInput = passengerBlocks[i].querySelector('input[type="file"]');
+                if (fileInput) {
+                    fileInput.setAttribute('onchange', `showPassengerFileName(this, ${i})`);
                 }
-            });
+            }
         }
-    };
-    
-    
-</script>
+
+        function showFileName(input) {
+            const fileNameDisplay = document.getElementById('ticketFileName');
+            if (input.files.length > 0 && fileNameDisplay) {
+                fileNameDisplay.textContent = input.files[0].name;
+                fileNameDisplay.style.display = 'block';
+            }
+        }
+
+        function showPassengerFileName(input, index) {
+            const fileNameDisplay = document.getElementById(`passengerFile${index}`);
+            if (input.files.length > 0 && fileNameDisplay) {
+                fileNameDisplay.textContent = input.files[0].name;
+                fileNameDisplay.style.display = 'block';
+            }
+        }
+
+        function updateSeatOptions(selectElement) {
+            const index = selectElement.dataset.index;
+            const seatSelect = document.getElementById('seat-' + index);
+            const selectedCoach = selectElement.value;
+
+            if (!seatSelect) return;
+
+            seatSelect.innerHTML = '<option value="">-- Seat Format --</option>';
+
+            if (selectedCoach === 'SL') {
+                generateBerthOptions(seatSelect, 'S', 1, 12, 80);
+            } else if (selectedCoach === '3A') {
+                generateBerthOptions(seatSelect, 'B', 1, 9, 72);
+            } else if (selectedCoach === '2A') {
+                generateBerthOptions(seatSelect, 'A', 1, 3, 54);
+            } else if (selectedCoach === '1A') {
+                generateBerthOptions(seatSelect, 'H', 1, 2, 30);
+            }
+        }
+
+        function generateBerthOptions(selectElement, prefix, coachStart, coachEnd, maxBerthsPerCoach) {
+            for (let i = coachStart; i <= coachEnd; i++) {
+                for (let b = 1; b <= maxBerthsPerCoach; b++) {
+                    const code = `${prefix}${i}/${b}`;
+                    const option = document.createElement('option');
+                    option.value = code;
+                    option.textContent = code;
+                    selectElement.appendChild(option);
+                }
+            }
+        }
+
+        // Add first passenger by default
+        window.onload = function () {
+            addPassenger();
+
+            // Link number of tickets to passenger count
+            const ticketCountInput = document.getElementById('numberOfTickets');
+            if (ticketCountInput) {
+                ticketCountInput.addEventListener('change', function () {
+                    const ticketCount = parseInt(this.value);
+                    const passengerContainer = document.getElementById('passenger-container');
+                    const currentPassengers = passengerContainer.children.length;
+
+                    if (ticketCount > currentPassengers) {
+                        // Add missing passengers
+                        for (let i = currentPassengers; i < ticketCount; i++) {
+                            addPassenger();
+                        }
+                    } else if (ticketCount < currentPassengers) {
+                        // Remove extra passengers
+                        while (passengerContainer.children.length > ticketCount) {
+                            passengerContainer.removeChild(passengerContainer.lastChild);
+                            passengerCount--;
+                        }
+                    }
+                });
+            }
+        };
+
+
+    </script>
 </body>
+
 </html>

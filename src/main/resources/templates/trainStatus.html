@@ -1,575 +1,532 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<link rel="icon" href="/docs/swaplogo.png" type="image/png">
+
 <head>
-    <title>Train Status Lookup</title>
+    <link rel="icon" href="/docs/swaplogo.png" type="image/png">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <title>Live Train Status</title>
     <style>
-        body {
-            background-color: #f8f9fa;
-            padding: 10px;
-            background-image: url('https://www.transparenttextures.com/patterns/cubes.png');
+        * {
+            box-sizing: border-box;
         }
-        
-        .search-container {
-            background-color: white;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background-color: #f8f9fa;
             padding: 15px;
+            margin: 0;
+        }
+
+        h2 {
+            text-align: center;
+            color: #333;
             margin-bottom: 20px;
         }
-        
+
+        .search-container {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            padding: 18px;
+            margin: 0 auto 20px;
+            max-width: 480px;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 16px;
+            margin-bottom: 10px;
+        }
+
+        .btn-primary {
+            width: 100%;
+            padding: 12px;
+            background-color: #0d6efd;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .btn-primary:hover {
+            background-color: #084298;
+        }
+
+        .btn-primary:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .alert {
+            padding: 12px 16px;
+            border-radius: 6px;
+            margin: 0 auto 20px;
+            max-width: 800px;
+        }
+
+        .alert-danger {
+            background: #f8d7da;
+            color: #842029;
+            border: 1px solid #f5c2c7;
+        }
+
+        .alert-warning {
+            background: #fff3cd;
+            color: #664d03;
+            border: 1px solid #ffecb5;
+        }
+
         .train-header {
             background-color: #0d6efd;
             color: white;
-            padding: 15px;
-            border-radius: 5px;
-            margin-bottom: 15px;
+            padding: 16px;
+            border-radius: 8px;
+            margin: 0 auto 15px;
+            max-width: 800px;
         }
-        .text-center{
-        color: blue}
-        
-        .station-table {
+
+        .train-header h4 {
+            margin: 0 0 8px 0;
+            font-size: 1.1rem;
+        }
+
+        .train-header p {
+            margin: 4px 0;
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+
+        .train-header .last-updated {
+            font-size: 0.78rem;
+            opacity: 0.75;
+            margin-top: 6px;
+        }
+
+        .table-wrap {
+            max-width: 800px;
+            margin: 0 auto 20px;
+            overflow-x: auto;
+        }
+
+        .timeline-container {
+            max-width: 900px;
+            margin: 20px auto;
+        }
+
+        .timeline-item {
+            display: flex;
+            gap: 15px;
+            position: relative;
+            margin-bottom: 20px;
+        }
+
+        .timeline-left {
+            width: 70px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .timeline-line {
+            width: 3px;
+            background: #d6d6d6;
+            flex: 1;
+            min-height: 100px;
+        }
+
+        .station-dot {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            z-index: 2;
+        }
+
+        .completed {
+            background: #28a745;
+            color: white;
+        }
+
+        .upcoming {
+            border: 3px solid #bdbdbd;
+            background: white;
+        }
+
+        .train-marker {
+            width: 55px;
+            height: 55px;
+            z-index: 5;
+        }
+
+        .train-marker img {
+            width: 100%;
+            animation: trainPulse 1.5s infinite;
+        }
+
+        @keyframes trainPulse {
+            0% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.15);
+            }
+
+            100% {
+                transform: scale(1);
+            }
+        }
+
+        .station-card {
+            flex: 1;
+            background: white;
+            border-radius: 12px;
+            padding: 18px;
+            box-shadow: 0 3px 12px rgba(0, 0, 0, .08);
+        }
+
+        .station-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .time-column {
+            width: 130px;
+        }
+
+        .label {
+            color: #666;
+            font-size: 13px;
+            margin-bottom: 4px;
+        }
+
+        .time {
+            font-size: 15px;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .station-info {
+            flex: 1;
+            padding: 0 20px;
+        }
+
+        .station-name {
+            font-size: 20px;
+            font-weight: 700;
+            color: #222;
+        }
+
+        .station-meta {
+            margin-top: 10px;
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            color: #666;
+        }
+
+        .platform {
+            background: #e8f1ff;
+            color: #0d6efd;
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-weight: 600;
+        }
+
+        .early {
+            color: #28a745;
+        }
+
+        .late {
+            color: #dc3545;
+        }
+
+        .current-station {
+            border: 2px solid #ff9800;
+            background: #fffdf3;
+        }
+
+        @media(max-width:768px) {
+
+            .station-row {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 12px;
+            }
+
+            .time-column {
+                width: 100%;
+            }
+
+            .station-info {
+                padding: 0;
+            }
+
+            .station-name {
+                font-size: 18px;
+            }
+
+            .timeline-left {
+                width: 50px;
+            }
+        }
+
+        table {
             width: 100%;
             border-collapse: collapse;
-            margin-bottom: 30px;
+            background: white;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
+            border-radius: 8px;
+            overflow: hidden;
         }
-        
-        .station-table th {
+
+        th {
             background-color: #f1f1f1;
-            padding: 10px;
+            padding: 10px 8px;
             text-align: left;
-            border: 1px solid #ddd;
+            border-bottom: 2px solid #ddd;
+            font-size: 0.82rem;
+            white-space: nowrap;
         }
-        
-        .station-table td {
-            padding: 8px 10px;
-            border: 1px solid #ddd;
+
+        td {
+            padding: 8px;
+            border-bottom: 1px solid #eee;
+            font-size: 0.83rem;
         }
-        
-        .station-table tr:hover {
-            background-color: #f5f5f5;
+
+        tr.departed td {
+            color: #999;
         }
-        
+
+        tr.current td {
+            background-color: #fff8e1;
+            font-weight: 600;
+        }
+
         .no-time {
-            color: #6c757d;
-            font-style: italic;
+            color: #aaa;
         }
-        
+
         .action-btn {
             display: block;
-            margin: 30px auto 0 auto;
+            margin: 20px auto;
             padding: 12px 32px;
             background-color: #0d6efd;
             color: #fff;
             border: none;
             border-radius: 6px;
-            font-size: 1.1em;
+            font-size: 1rem;
             font-weight: 600;
             cursor: pointer;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.08);
-            transition: background 0.2s;
+            text-decoration: none;
             text-align: center;
+            max-width: 280px;
         }
-        
+
         .action-btn:hover {
             background-color: #084298;
         }
-
-        /* Autocomplete Styles - Mobile Optimized */
-        .autocomplete-container {
-            position: relative;
-        }
-
-        .suggestions {
-            position: absolute;
-            top: 100%;
-            left: 0;
-            right: 0;
-            background: white;
-            border: 1px solid #ddd;
-            border-top: none;
-            border-radius: 0 0 6px 6px;
-            max-height: 200px;
-            overflow-y: auto;
-            z-index: 9999;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        }
-
-        .suggestion-item {
-            padding: 12px 15px;
-            cursor: pointer;
-            border-bottom: 1px solid #f0f0f0;
-            transition: background-color 0.2s ease;
-            font-size: 14px;
-        }
-
-        .suggestion-item:hover,
-        .suggestion-item.highlighted {
-            background-color: #f8f9fa;
-        }
-
-        .suggestion-item:last-child {
-            border-bottom: none;
-        }
-
-        .no-suggestions {
-            padding: 12px 15px;
-            color: #6c757d;
-            font-style: italic;
-            font-size: 14px;
-        }
-
-        /* Preloader Loader */
-.loader {
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  display: inline-grid;
-  width: 80px;
-  aspect-ratio: 2;
-  box-sizing: content-box;
-  border-bottom: 8px solid #0000; 
-  background: 
-    linear-gradient(90deg,#0B486B 50%,#C02942 0) 
-    50% 100%/52% 8px border-box repeat-x;
-  animation: l8-0 1s linear infinite;
-  z-index: 2000;
-}
-.loader:before {
-  content:"";
-  margin: 0 25%;
-  border-radius: 50%;
-  background: repeating-conic-gradient(#C02942 0 60deg,#0B486B 0 120deg);
-  animation: l8-1 1s linear infinite;
-}
-@keyframes l8-0 {to{background-position: -58% 100%}}
-@keyframes l8-1 {to{rotate: 120deg}}
-
-        /* Mobile optimizations */
-        @media (max-width: 768px) {
-            body {
-                padding: 5px;
-            }
-            
-            .search-container {
-                padding: 10px;
-            }
-            
-            .search-container h2 {
-                font-size: 1.3rem;
-                margin-bottom: 1rem !important;
-            }
-            
-            .form-label {
-                font-size: 0.9rem;
-                margin-bottom: 0.3rem;
-            }
-            
-            .form-control {
-                font-size: 16px; /* Prevents zoom on iOS */
-                padding: 0.75rem 0.5rem;
-                height: auto;
-            }
-            
-            .btn {
-                font-size: 0.9rem;
-                padding: 0.6rem 1.5rem;
-            }
-            
-            .station-table {
-                font-size: 0.8rem;
-            }
-            
-            .station-table th,
-            .station-table td {
-                padding: 6px 4px;
-            }
-            
-            .train-header {
-                padding: 10px;
-            }
-            
-            .train-header h4 {
-                font-size: 1.1rem;
-            }
-            
-            .train-header p {
-                font-size: 0.9rem;
-            }
-
-            /* Mobile-specific autocomplete adjustments */
-            .suggestions {
-                max-height: 150px;
-                border-radius: 0 0 4px 4px;
-            }
-
-            .suggestion-item {
-                padding: 10px 12px;
-                font-size: 14px;
-                line-height: 1.3;
-            }
-
-            .suggestion-item strong {
-                display: block;
-                font-size: 13px;
-            }
-
-            /* Ensure suggestions appear above other elements on mobile */
-            .autocomplete-container {
-                z-index: 1000;
-            }
-        }
-
-        /* Compact form layout */
-        .compact-form .row {
-            margin-bottom: 0.5rem;
-        }
-        
-        .compact-form .form-label {
-            font-weight: 600;
-            color: #495057;
-        }
-
-        /* Fix for mobile touch events */
-        @media (max-width: 768px) {
-            .suggestion-item {
-                -webkit-tap-highlight-color: rgba(0,0,0,0.1);
-                tap-highlight-color: rgba(0,0,0,0.1);
-            }
-        }
     </style>
 </head>
+
 <body>
-    <div class="loader" id="pageLoader"></div>
-    <div class="container-fluid" style="display:none;">
-        <div class="search-container">
-            <h2 class="text-center mb-3">🚇 Train Time Table Lookup</h2>
-             <!--<form method="post" action="/train-status" class="compact-form">
-                <!-- Row 1: Limit & Train No 
-                <div class="row g-2 mb-2">
-                    <div class="col-6">
-                        <label class="form-label">Limit</label>
-                        <input type="number" name="limit" class="form-control" value="50">
-                    </div>
-                    <div class="col-6">
-                        <label class="form-label">Train No</label>
-                        <input type="text" name="trainNo" class="form-control" placeholder="e.g. 12345" th:value="${param.trainNo}">
-                    </div>
-                </div>
-                
-                <!-- Row 2: Source Station & Destination Station 
-                <div class="row g-2 mb-2">
-                    <div class="col-6">
-                        <label class="form-label">From</label>
-                        <div class="autocomplete-container">
-                            <input type="text" id="sourceStation" name="sourceStation" class="form-control" placeholder="Starting station code" autocomplete="off">
-                        </div>
-                    </div>
-                    <div class="col-6">
-                        <label class="form-label">To</label>
-                        <div class="autocomplete-container">
-                            <input type="text" id="destinationStation" name="destinationStation" class="form-control" placeholder="Ending station code" autocomplete="off">
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- Row 3: Train Name (Full Width) -->
-        <!--        <div class="row g-2 mb-3">
-                    <div class="col-12">
-                        <label class="form-label">Train Name</label>
-                        <input type="text" name="trainName" class="form-control" placeholder="e.g. Rajdhani Express">
-                    </div>
-                </div>
-           -->      
-                <!-- Search Button 
-                <div class="text-center">
-                    <button type="submit" class="btn btn-primary">Search</button>
-                </div>
-            </form>
-        </div>-->
-        
-        <!-- Error Message -->
-        <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
 
-        <!-- Results Section -->
-        <div th:if="${trainData}">
-            <div th:if="${trainData.records}">
-                <!-- Train Header - using first record -->
-                <div class="train-header" th:if="${not #lists.isEmpty(trainData.records)}">
-                    <h4 th:text="${trainData.records[0].train_name} + ' (' + ${trainData.records[0].train_no} + ')'"></h4>
-                    <p th:text="${trainData.records[0].source_station_name} + ' to ' + ${trainData.records[0].destination_station_name}"></p>
+    <h2>🚇 Live Train Status</h2>
+
+    <div class="search-container">
+        <form method="post" action="/train-status">
+            <input type="text" name="trainNo" class="form-control" placeholder="Enter 5-digit train number e.g. 12919"
+                maxlength="5" required th:value="${param.trainNo}" />
+            <button type="submit" class="btn-primary" id="searchBtn">Search</button>
+        </form>
+    </div>
+
+    <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
+
+    <div th:if="${trainData != null}">
+
+        <!-- Train Header -->
+        <div class="train-header">
+            <h4 th:text="${trainData['trainName']} + ' (' + ${trainData['trainNumber']} + ')'"></h4>
+            <p>
+                <strong>Status:</strong>
+                <span th:text="${trainData['status']}"></span>
+            </p>
+            <p th:if="${trainData['delayMinutes'] != null}">
+                <strong>Delay:</strong>
+                <span th:text="${trainData['delayMinutes']} + ' min'"></span>
+            </p>
+            <p th:if="${trainData['nextHalt'] != null}">
+                <strong>Next stop:</strong>
+                <span
+                    th:text="${trainData['nextHalt']['stationName']} + ' (' + ${trainData['nextHalt']['stationCode']} + ')'"></span>
+            </p>
+            <p class="last-updated" th:if="${trainData['lastUpdatedAt'] != null}"
+                th:text="'Last updated: ' + ${trainData['lastUpdatedAt']}"></p>
+        </div>
+
+        <!-- Exceptions / Alerts -->
+        <div th:if="${trainData['exceptions'] != null}">
+            <div th:each="ex : ${trainData['exceptions']}" class="alert alert-warning" th:text="${ex['message']}"></div>
+        </div>
+
+        <!-- Route Table -->
+        <div class="timeline-container" th:if="${trainData['route'] != null}">
+
+            <div class="timeline-item" th:each="stop : ${trainData['route']}" th:if="${stop['isHalt']}">
+
+                <!-- Left Timeline -->
+                <div class="timeline-left">
+
+                    <!-- Passed Station -->
+                    <div th:if="${stop['status'] == 'departed'}" class="station-dot completed">
+                        ✓
+                    </div>
+
+                    <!-- Current Train Position -->
+                    <div th:if="${stop['status'] == 'arrived'}" class="train-marker">
+                        <img src="https://banner2.cleanpng.com/cb4/zsn/pxc/ac68xdo1k.webp" alt="Train">
+                    </div>
+
+                    <!-- Upcoming -->
+                    <div th:if="${stop['status'] != 'departed' && stop['status'] != 'arrived'}"
+                        class="station-dot upcoming">
+                    </div>
+
+                    <div class="timeline-line"></div>
                 </div>
 
-                <!-- Station Table -->
-                <div class="table-responsive" th:if="${not #lists.isEmpty(trainData.records)}">
-                    <table class="station-table table">
-                        <thead>
-                            <tr>
-                                <th>SEQ</th>
-                                <th>Station Code</th>
-                                <th>Station Name</th>
-                                <th>Arrival</th>
-                                <th>Departure</th>
-                                <th>Distance</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr th:each="record : ${trainData.records}">
-                                <td th:text="${record.seq}"></td>
-                                <td th:text="${record.station_code}"></td>
-                                <td th:text="${record.station_name}"></td>
-                                <td>
-                                    <span th:if="${record.arrival_time != '00:00:00'}" th:text="${record.arrival_time}"></span>
-                                    <span th:if="${record.arrival_time == '00:00:00'}" class="no-time">-</span>
-                                </td>
-                                <td>
-                                    <span th:if="${record.departure_time != '00:00:00'}" th:text="${record.departure_time}"></span>
-                                    <span th:if="${record.departure_time == '00:00:00'}" class="no-time">-</span>
-                                </td>
-                                <td th:text="${record._distance} + ' km'"></td>
-                            </tr>
-                        </tbody>
-                    </table>
+                <!-- Station Card -->
+                <div class="station-card">
+
+                    <div class="station-row">
+
+                        <!-- Arrival -->
+                        <div class="time-column">
+
+
+                            <div class="time time-cell" th:text="${stop['scheduledArrival']}">
+                            </div>
+
+
+                            <div class="time time-cell" th:classappend="${stop['delayArrival'] != null && stop['delayArrival'] > 0} ? 'late' :
+                                          (${stop['delayArrival'] != null && stop['delayArrival'] < 0} ? 'early' : '')"
+                                th:text="${stop['actualArrival']}">
+                            </div>
+
+                        </div>
+
+                        <!-- Center Station -->
+                        <div class="station-info">
+
+                            <div class="station-name">
+
+                                <span th:if="${stop['status']=='departed'}">✅</span>
+
+                                <span th:if="${stop['status']=='arrived'}">🚆</span>
+
+                                <span th:if="${stop['status']!='departed' && stop['status']!='arrived'}">
+                                    ⚪
+                                </span>
+
+                                <span th:text="${stop['stationName']}"></span>
+
+                                <small th:text="'(' + ${stop['stationCode']} + ')'"></small>
+
+                            </div>
+
+                            <div class="station-meta">
+
+                                <span>
+                                    <span th:text="${stop['distance']}"></span>
+                                    km
+                                </span>
+
+                                <span class="platform" th:if="${stop['platform'] != null}">
+                                    PF
+                                    <span th:text="${stop['platform']}"></span>
+                                </span>
+
+                            </div>
+
+                        </div>
+
+                        <!-- Departure -->
+                        <div class="time-column">
+
+
+                            <div class="time time-cell" th:text="${stop['scheduledDeparture']}">
+                            </div>
+
+
+
+                            <div class="time time-cell" th:classappend="${stop['delayArrival'] != null && stop['delayArrival'] > 0} ? 'late' :
+                                          (${stop['delayArrival'] != null && stop['delayArrival'] < 0} ? 'early' : '')"
+                                th:text="${stop['actualDeparture']}">
+                            </div>
+
+                        </div>
+
+                    </div>
+
                 </div>
+
             </div>
 
-            <!-- No Records Message -->
-            <div th:if="${#lists.isEmpty(trainData.records)}" class="alert alert-info">
-                <h4>No Results Found</h4>
-                <p>Try adjusting your search criteria and search again.</p>
-            </div>
-
-            <button onclick="location.href='/user/home'" class="action-btn">Back to Dashboard</button>
         </div>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <a href="/user/home" class="action-btn">← Back to Dashboard</a>
+
     <script>
-        let indianStations = [];
-
-        // Load station list dynamically
-        fetch('/api/stations')
-            .then(response => response.json())
-            .then(data => {
-                indianStations = data;
-                setupAutocomplete('sourceStation');
-                setupAutocomplete('destinationStation');
-            })
-            .catch(error => console.error("Error loading stations:", error));
-
-        function setupAutocomplete(inputId) {
-            const input = document.getElementById(inputId);
-            const container = input.parentElement;
-            let currentIndex = -1;
-            let touchStarted = false;
-
-            // Handle input events
-            input.addEventListener('input', function () {
-                const value = this.value.toLowerCase().trim();
-                const old = document.getElementById(`suggestions-${inputId}`);
-                if (old) old.remove();
-                
-                currentIndex = -1;
-
-                if (value.length < 2) return;
-
-                const matches = indianStations.filter(station =>
-                    station.name.toLowerCase().includes(value) || 
-                    station.code.toLowerCase().includes(value)
-                ).slice(0, 8);
-
-                const box = document.createElement('div');
-                box.className = 'suggestions';
-                box.id = `suggestions-${inputId}`;
-
-                if (matches.length === 0) {
-                    const no = document.createElement('div');
-                    no.className = 'no-suggestions';
-                    no.innerHTML = `No station found`;
-                    box.appendChild(no);
-                } else {
-                    matches.forEach((station, index) => {
-                        const item = document.createElement('div');
-                        item.className = 'suggestion-item';
-                        item.innerHTML = `<strong>${station.name}</strong> (${station.code})`;
-                        
-                        // Handle both click and touch events
-                        item.addEventListener('click', (e) => {
-                            e.preventDefault();
-                            e.stopPropagation();
-                            selectStation(station.code);
-                        });
-
-                        // Touch events for mobile
-                        item.addEventListener('touchstart', (e) => {
-                            e.preventDefault();
-                            touchStarted = true;
-                            item.classList.add('highlighted');
-                        });
-
-                        item.addEventListener('touchend', (e) => {
-                            e.preventDefault();
-                            e.stopPropagation();
-                            if (touchStarted) {
-                                selectStation(station.code);
-                                touchStarted = false;
-                            }
-                        });
-
-                        item.addEventListener('touchcancel', () => {
-                            touchStarted = false;
-                            item.classList.remove('highlighted');
-                        });
-
-                        box.appendChild(item);
-                    });
-                }
-
-                container.appendChild(box);
-            });
-
-            function selectStation(code) {
-                input.value = code;
-                const box = document.getElementById(`suggestions-${inputId}`);
-                if (box) box.remove();
-                currentIndex = -1;
-                input.blur(); // Hide mobile keyboard
-            }
-
-            // Handle blur events with delay for mobile touch
-            input.addEventListener('blur', () => {
-                setTimeout(() => {
-                    if (!touchStarted) {
-                        const box = document.getElementById(`suggestions-${inputId}`);
-                        if (box) box.remove();
-                    }
-                }, 300); // Increased delay for mobile
-            });
-
-            // Handle focus events
-            input.addEventListener('focus', () => {
-                // Re-trigger suggestions if input has value
-                if (input.value.length >= 2) {
-                    input.dispatchEvent(new Event('input'));
-                }
-            });
-
-            // Keyboard navigation
-            input.addEventListener('keydown', function (e) {
-                const box = document.getElementById(`suggestions-${inputId}`);
-                const items = box ? box.querySelectorAll('.suggestion-item') : [];
-
-                if (e.key === 'ArrowDown') {
-                    e.preventDefault();
-                    currentIndex = Math.min(currentIndex + 1, items.length - 1);
-                    highlight(items);
-                } else if (e.key === 'ArrowUp') {
-                    e.preventDefault();
-                    currentIndex = Math.max(currentIndex - 1, 0);
-                    highlight(items);
-                } else if (e.key === 'Enter') {
-                    e.preventDefault();
-                    if (items[currentIndex]) {
-                        const stationCode = items[currentIndex].textContent.match(/\(([^)]+)\)$/)[1];
-                        selectStation(stationCode);
-                    }
-                } else if (e.key === 'Escape') {
-                    const box = document.getElementById(`suggestions-${inputId}`);
-                    if (box) box.remove();
-                    currentIndex = -1;
-                }
-            });
-
-            function highlight(items) {
-                items.forEach((item, idx) => {
-                    item.classList.toggle('highlighted', idx === currentIndex);
-                });
-            }
-
-            // Handle outside clicks/touches
-            document.addEventListener('click', (e) => {
-                if (!container.contains(e.target)) {
-                    const box = document.getElementById(`suggestions-${inputId}`);
-                    if (box) box.remove();
-                    currentIndex = -1;
-                }
-            });
-
-            document.addEventListener('touchstart', (e) => {
-                if (!container.contains(e.target)) {
-                    const box = document.getElementById(`suggestions-${inputId}`);
-                    if (box) box.remove();
-                    currentIndex = -1;
-                }
-            });
-        }
-      
-window.addEventListener("load", function() {
-  document.getElementById("pageLoader").style.display = "none";
-  document.querySelector(".container-fluid").style.display = "block";
-});
-
-        // Uppercase for specific fields
+        // Trim ISO datetime strings like "2026-06-23T00:55:00+05:30" → "00:55"
         document.addEventListener('DOMContentLoaded', function () {
-            const inputs = ['trainNo', 'sourceStation', 'destinationStation', 'trainName'];
-            inputs.forEach(name => {
-                const el = document.querySelector(`input[name="${name}"]`);
-                if (el) {
-                    el.addEventListener('input', function () {
-                        this.value = this.value.toUpperCase();
+            document.querySelectorAll('.time-cell').forEach(function (cell) {
+                const val = cell.textContent.trim();
+                if (val && val.includes('T')) {
+                    const date = new Date(val);
+
+                    cell.textContent = date.toLocaleTimeString('en-IN', {
+                        hour: '2-digit',
+                        minute: '2-digit',
+                        hour12: true
                     });
+                } else if (!val) {
+                    cell.innerHTML = '<span class="no-time">—</span>';
                 }
             });
 
-            // Form validation
-            const form = document.querySelector('form');
-            form.addEventListener('submit', function (e) {
-                const fields = form.querySelectorAll('input[type="text"]');
-                let filled = Array.from(fields).some(input => 
-                    input.name !== 'limit' && input.value.trim() !== ''
-                );
-
-                if (!filled) {
-                    e.preventDefault();
-                    alert("Please enter at least one search criteria.");
-                    return;
-                }
-
-                const btn = form.querySelector('button[type="submit"]');
-                if (btn) {
-                    btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Searching...';
-                    btn.disabled = true;
-                }
-            });
-
-            // Prevent zoom on iOS when focusing input fields
-            if (/iPad|iPhone|iPod/.test(navigator.userAgent)) {
-                const inputs = document.querySelectorAll('input[type="text"], input[type="number"]');
-                inputs.forEach(input => {
-                    input.addEventListener('focus', () => {
-                        input.style.fontSize = '16px';
-                    });
-                    input.addEventListener('blur', () => {
-                        input.style.fontSize = '';
-                    });
+            // Digits-only for train number
+            const trainInput = document.querySelector('input[name="trainNo"]');
+            if (trainInput) {
+                trainInput.addEventListener('input', function () {
+                    this.value = this.value.replace(/[^0-9]/g, '');
                 });
             }
-        });
 
-        // Handle viewport changes on mobile (keyboard show/hide)
-        let initialViewportHeight = window.innerHeight;
-        window.addEventListener('resize', () => {
-            // If viewport height decreased significantly (keyboard shown)
-            if (window.innerHeight < initialViewportHeight * 0.75) {
-                document.body.style.height = window.innerHeight + 'px';
-            } else {
-                document.body.style.height = '';
+            // Disable button on submit
+            const form = document.querySelector('.search-container form');
+            const btn = document.getElementById('searchBtn');
+            if (form && btn) {
+                form.addEventListener('submit', function () {
+                    btn.disabled = true;
+                    btn.textContent = 'Searching…';
+                });
             }
         });
     </script>
 </body>
+
 </html>

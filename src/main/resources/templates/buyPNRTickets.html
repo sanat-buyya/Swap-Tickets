@@ -874,11 +874,10 @@
                 const suggestionDiv = document.createElement('div');
                 suggestionDiv.className = 'suggestion-item';
                 suggestionDiv.innerHTML = `
-                    <div class="station-info">
-                        <div class="station-name">${station.name}</div>
-                    </div>
-                    <div class="station-code">${station.code}</div>
-                `;
+    <div class="station-name">
+        ${station.name} (${station.code})
+    </div>
+`;
                 suggestionDiv.addEventListener('click', () => {
                     const selectedValue = `${station.name} (${station.code})`;
                     input.value = selectedValue;
